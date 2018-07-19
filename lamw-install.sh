@@ -7,6 +7,7 @@
 #Descrição: Este script configura o ambiente de desenvolvimento para o LAMW
 
 pwd 
+export DEBIAN_FRONTEND="gnome"
 APT_OPT=""
 PROXY_SERVER="internet.cua.ufmt.br"
 PORT_SERVER=3128
@@ -14,8 +15,14 @@ PROXY_URL="http://$PROXY_SERVER:$PORT_SERVER"
 USE_PROXY=0
 SDK_MANAGER_CMD_PARAMETERS=()
 CROSS_COMPILE_URL="https://github.com/newpascal/fpcupdeluxe/releases/tag/v1.6.1e"
-echo "arq=$0"
+export URL_FPC=""
+export FPC_VERSION=""
+export FPC_CFG_PATH=""
+export FPC_RELEASE=""
+#echo "arq=$0"
 sleep 3
+
+export FPC_VERSION=""
 
 changeDirectory(){
 	if [ "$1" != "" ] ; then
@@ -59,30 +66,99 @@ ANDROID_HOME="$HOME/android"
 ANDROID_SDK="$ANDROID_HOME/sdk"
 FPC_STABLE=""
 LAZARUS_STABLE=""
+export FPC_LIB_PATH=""
 libs_android="libx11-dev libgtk2.0-dev libgdk-pixbuf2.0-dev libcairo2-dev libpango1.0-dev libxtst-dev libatk1.0-dev libghc-x11-dev freeglut3 freeglut3-dev "
 prog_tools=" git subversion make build-essential zip unzip unrar android-tools-adb ant openjdk-8-jdk "
+packs=()
 
 
+SearchPackage(){
+	index=0
+	#vetor que armazena informações sobre a intalação do pacote
+	if [ $1 != "" ]  ; then
+		packs=( $(dpkg -l $1) )
+		
+		tam=${#packs[@]}
+		if  [ $tam = 0 ] ; then
+			sudo apt-get install fpc -y
+			packs=( $(dpkg -l $1) )
+		fi
+
+		for (( i = 0 ; i < ${#packs[*]};i++))
+		do
+			if [ "${packs[i]}" = "$1" ] ; then
+				((index=i))
+				((index++))
+				FPC_VERSION=${packs[index]}
+				echo "${packs[index]}"
+				break
+			fi
+		done
+	fi
+	return $index
+}
+#detecta a versão do fpc instalada no PC  seta as váriavies de ambiente
+parseFPC(){ 
+
+	flag_new_ubuntu_lts=0
+	dist_file=$(cat /etc/issue.net)
+	case "$dist_file" in 
+		*"Ubuntu 18."*)
+			flag_new_ubuntu_lts=1
+		;;
+		*"Linux Mint 19"*)
+			flag_new_ubuntu_lts=1
+		;;
+	esac
+
+	case "$1" in 
+		*"3.0.0"*)
+			export URL_FPC="https://svn.freepascal.org/svn/fpc/tags/release_3_0_0"
+			export FPC_LIB_PATH="/usr/lib/fpc"
+			export FPC_CFG_PATH="/etc/fpc-3.0.0"
+			export FPC_RELEASE="release_3_0_0"
+			export FPC_VERSION="3.0.0"
+		;;
+		*"3.0.4"*)
+			export FPC_VERSION="3.0.4"
+			export URL_FPC="https://svn.freepascal.org/svn/fpc/tags/release_3_0_4"
+			export FPC_CFG_PATH="/etc/fpc-3.0.4"
+			if [ $flag_new_ubuntu_lts = 0 ] ; then
+				if [ -e /usr/lib/fpc/$FPC_VERSION ]; then
+					export FPC_LIB_PATH="/usr/lib/fpc/$FPC_VERSION"
+				fi
+
+			else
+				if [ -e /usr/lib/x86_64-linux-gnu/fpc/$FPC_VERSION ]; then
+					export FPC_LIB_PATH="/usr/lib/x86_64-linux-gnu/fpc/$FPC_VERSION"
+				fi
+			fi
+
+			export FPC_RELEASE="release_3_0_4"
+		;;
+	esac
+}
 
 configureFPC(){
 	if [ "$(whoami)" = "root" ];then
 		ANDROID_HOME=$1
 	fi
+	# parte do arquivo de configuração do fpc, 
 	fpc_cfg_str=(
 			"#IFDEF ANDROID"
 			"#IFDEF CPUARM"
 			"-XParm-linux-androideabi-"
 			"-Fl$ANDROID_HOME/ndk/platforms/android-21/arch-arm/usr/lib"
 			"-FD$ANDROID_HOME/ndk/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin"
-			"-Fu/usr/lib/fpc/$fpcversion/units/$fpctarget"
-			"-Fu/usr/lib/fpc/$fpcversion/units/$fpctarget/*"
-			"-Fu/usr/lib/fpc/$fpcversion/units/$fpctarget/rtl"
+			'-Fu/usr/lib/fpc/$fpcversion/units/$fpctarget'
+			'-Fu/usr/lib/fpc/$fpcversion/units/$fpctarget/*'
+			'-Fu/usr/lib/fpc/$fpcversion/units/$fpctarget/rtl'
 			"#ENDIF"
 			"#ENDIF"
 		)
 
-	if [ -e /etc/fpc-3.0.4.cfg ] ; then  # se exiir /etc/fpc.cfg
-		fpc_cfg_teste=$(cat /etc/fpc.cfg) # abre /etc/fpc.cfg
+	if [ -e $FPC_CFG_PATH ] ; then  # se exiir /etc/fpc.cfg
+		fpc_cfg_teste=$(cat $FPC_CFG_PATH) # abre /etc/fpc.cfg
 		flag_fpc_cfg=0 # flag da sub string de configuração"
 		case "$fpc_cfg_teste" in 
 			*"#IFDEF ANDROID"*)
@@ -90,16 +166,15 @@ configureFPC(){
 			;;
 		esac
 
-		if [ $flag_fpc_cfg != 1 ]; then
+		if [ $flag_fpc_cfg != 1 ]; then # caso o arquvo ainda não esteja configurado
 			for ((i = 0 ; i<${#fpc_cfg_str[@]};i++)) 
 			do
 				echo ${fpc_cfg_str[i]}
-				echo "${fpc_cfg_str[i]}" >> /etc/fpc-3.0.4.cfg
+				echo "${fpc_cfg_str[i]}" >> $FPC_CFG_PATH
 			done	
 		fi
 	fi
 }
-
 
 case "$1" in
 	"cfg-fpc")
@@ -130,6 +205,9 @@ case "$1" in
 		fi
 			sudo apt update;
 
+		SearchPackage fpc
+		index=$?
+		parseFPC ${packs[$index]}
 
 		sudo apt install $libs_android $prog_tools  -y --allow-unauthenticated
 		if [ "$?" != "0" ]; then
@@ -158,6 +236,8 @@ case "$1" in
 		#./sdkmanager "platforms;android-25" "build-tools;25.0.3" "tools" "ndk-bundle" "extras;android;m2repository"
 		#$SDK_MANAGER_CMD
 		ls
+		sudo apt-get remove --purge openjdk-9-* -y 
+		sudo apt-get remove --purge openjdk-11* -y
 		./sdkmanager ${SDK_MANAGER_CMD_PARAMETERS[*]}
 
 		ln -sf "$ANDROID_HOME/sdk/ndk-bundle" "$ANDROID_HOME/ndk"
@@ -212,15 +292,15 @@ case "$1" in
 
 		#make manual cross comp+i+l+e+
 		changeDirectory /usr/src
-		sudo svn checkout https://svn.freepascal.org/svn/fpc/tags/release_3_0_4
-		sudo mv release_3_0_4 fpcsrc
+		sudo svn checkout $URL_FPC
+		sudo $FPC_RELEASE fpcsrc
 		changeDirectory fpcsrc
 		#sudo make clean crossall OS_TARGET=android CPU_TARGET=arm
 		#sudo make clean crossall  CPU_TARGET=arm OS_TARGET=android OPT="-dFPC_ARMEL" CROSSOPT="-CpARMv6 -CfSoft"
 		#sudo make crossinstall  CPU_TARGET=arm OS_TARGET=android OPT="-dFPC_ARMEL" CROSSOPT="-CpARMv6 -CfSoft" INSTALL_PREFIX=/usr
-		make install TARGET=linux PREFIX_INSTALL=/usr
+		#make install TARGET=linux PREFIX_INSTALL=/usr
 		make clean crossall crossinstall  CPU_TARGET=arm OS_TARGET=android OPT="-dFPC_ARMHF" SUBARCH="armv7a" INSTALL_PREFIX=/usr
-		sudo ln -sf /usr/lib/fpc/3.0.4/ppcrossarm /usr/bin/ppcrossarm
+		sudo ln -sf $FPC_LIB_PATH/ppcrossarm /usr/bin/ppcrossarm
 		sudo ln -sf /usr/bin/ppcrossarm /usr/bin/ppcarm
 
 		sudo bash $0 cfg-fpc $ANDROID_HOME
@@ -242,12 +322,10 @@ case "$1" in
 		echo "Type=Application" >> ~/.local/share/applications/laz4android.desktop
 		echo "Categories=Development;IDE;" >> ~/.local/share/applications/laz4android.desktop
 		chmod +x ~/.local/share/applications/laz4android.desktop
-		sudo printf 'SUBSYSTEM=="usb", ATTR{idVendor}=="<VENDOR>", MODE="0666", GROUP="plugdev"\n' > /etc/udev/rules.d/51-android.rules
+		sudo printf 'SUBSYSTEM=="usb", ATTR{idVendor}=="<VENDOR>", MODE="0666", GROUP="plugdev"\n'  | sudo tee /etc/udev/rules.d/51-android.rules
 	;;
 	*)
 		printf "Use:\n\tbash lamw-install.sh clean\n\tbash lamw-install.sh install\n\tbash lamw-install.sh install --use_proxy\n"
 	;;
-
 	
 esac
-
