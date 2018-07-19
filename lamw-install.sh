@@ -115,14 +115,14 @@ parseFPC(){
 		*"3.0.0"*)
 			export URL_FPC="https://svn.freepascal.org/svn/fpc/tags/release_3_0_0"
 			export FPC_LIB_PATH="/usr/lib/fpc"
-			export FPC_CFG_PATH="/etc/fpc-3.0.0"
+			export FPC_CFG_PATH="/etc/fpc-3.0.0.cfg"
 			export FPC_RELEASE="release_3_0_0"
 			export FPC_VERSION="3.0.0"
 		;;
 		*"3.0.4"*)
 			export FPC_VERSION="3.0.4"
 			export URL_FPC="https://svn.freepascal.org/svn/fpc/tags/release_3_0_4"
-			export FPC_CFG_PATH="/etc/fpc-3.0.4"
+			export FPC_CFG_PATH="/etc/fpc-3.0.4.cfg"
 			if [ $flag_new_ubuntu_lts = 0 ] ; then
 				if [ -e /usr/lib/fpc/$FPC_VERSION ]; then
 					export FPC_LIB_PATH="/usr/lib/fpc/$FPC_VERSION"
@@ -141,7 +141,11 @@ parseFPC(){
 
 configureFPC(){
 	if [ "$(whoami)" = "root" ];then
+		packs=()
 		ANDROID_HOME=$1
+		SearchPackage fpc
+		index=$?
+		parseFPC ${packs[$index]}
 	fi
 	# parte do arquivo de configuração do fpc, 
 	fpc_cfg_str=(
@@ -261,7 +265,7 @@ case "$1" in
 			profile_data=$(cat $profile_file)
 			case "$profile_data" in 
 				*'export PATH=$PATH:$HOME/android/'*)
-				flag_profile_paths=1
+				flag_profile_paths=1ndk-bundle
 				#exit 1
 				;;
 			esac
@@ -293,17 +297,17 @@ case "$1" in
 		#make manual cross comp+i+l+e+
 		changeDirectory /usr/src
 		sudo svn checkout $URL_FPC
-		sudo $FPC_RELEASE fpcsrc
+		sudo mv $FPC_RELEASE fpcsrc
 		changeDirectory fpcsrc
 		#sudo make clean crossall OS_TARGET=android CPU_TARGET=arm
 		#sudo make clean crossall  CPU_TARGET=arm OS_TARGET=android OPT="-dFPC_ARMEL" CROSSOPT="-CpARMv6 -CfSoft"
 		#sudo make crossinstall  CPU_TARGET=arm OS_TARGET=android OPT="-dFPC_ARMEL" CROSSOPT="-CpARMv6 -CfSoft" INSTALL_PREFIX=/usr
 		#make install TARGET=linux PREFIX_INSTALL=/usr
-		make clean crossall crossinstall  CPU_TARGET=arm OS_TARGET=android OPT="-dFPC_ARMHF" SUBARCH="armv7a" INSTALL_PREFIX=/usr
+		sudo make clean crossall crossinstall  CPU_TARGET=arm OS_TARGET=android OPT="-dFPC_ARMHF" SUBARCH="armv7a" INSTALL_PREFIX=$FPC_LIB_PATH
 		sudo ln -sf $FPC_LIB_PATH/ppcrossarm /usr/bin/ppcrossarm
 		sudo ln -sf /usr/bin/ppcrossarm /usr/bin/ppcarm
 
-		sudo bash $0 cfg-fpc $ANDROID_HOME
+		sudo bash -x $0 cfg-fpc $ANDROID_HOME
 		#firefox $CROSS_COMPILE_URL
 		changeDirectory $HOME
 		mkdir -p LazarusAndroid
@@ -315,6 +319,9 @@ case "$1" in
 		changeDirectory $ANDROID_HOME
 		svn co https://github.com/jmpessoa/lazandroidmodulewizard.git
 		ln -sf $ANDROID_HOME/lazandroidmodulewizard.git $ANDROID_HOME/lazandroidmodulewizard
+		if [ ! -e ~/.local/share/applications ] ; then
+			mkdir ~/.local/share/applications
+		fi
 		echo "[Desktop Entry]" > ~/.local/share/applications/laz4android.desktop
 		echo "Name=laz4android" >>  ~/.local/share/applications/laz4android
 		echo "Exec=$HOME/LazarusAndroid/lazarus/lazarus --primary-config-path=$HOME/.laz4android" >> ~/.local/share/applications/laz4android.desktop
