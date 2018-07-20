@@ -212,6 +212,37 @@ case "$1" in
 		SearchPackage fpc
 		index=$?
 		parseFPC ${packs[$index]}
+		fpc_cfg_str=(
+			"#IFDEF ANDROID"
+			"#IFDEF CPUARM"
+			"-XParm-linux-androideabi-"
+			"-Fl$ANDROID_HOME/ndk/platforms/android-21/arch-arm/usr/lib"
+			"-FD$ANDROID_HOME/ndk/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin"
+			'-Fu/usr/lib/fpc/$fpcversion/units/$fpctarget'
+			'-Fu/usr/lib/fpc/$fpcversion/units/$fpctarget/*'
+			'-Fu/usr/lib/fpc/$fpcversion/units/$fpctarget/rtl'
+			"#ENDIF"
+			"#ENDIF"
+		)
+
+	if [ -e $FPC_CFG_PATH ] ; then  # se exiir /etc/fpc.cfg
+		fpc_cfg_teste=$(cat $FPC_CFG_PATH) # abre /etc/fpc.cfg
+		flag_fpc_cfg=0 # flag da sub string de configuração"
+		case "$fpc_cfg_teste" in 
+			*"#IFDEF ANDROID"*)
+			flag_fpc_cfg=1
+			;;
+		esac
+
+		if [ $flag_fpc_cfg != 1 ]; then # caso o arquvo ainda não esteja configurado
+			for ((i = 0 ; i<${#fpc_cfg_str[@]};i++)) 
+			do
+				echo ${fpc_cfg_str[i]}
+				sudo echo "${fpc_cfg_str[i]}" | sudo tee -a  $FPC_CFG_PATH
+			done	
+		fi
+	fi
+
 
 		sudo apt install $libs_android $prog_tools  -y --allow-unauthenticated
 		if [ "$?" != "0" ]; then
@@ -307,7 +338,7 @@ case "$1" in
 		sudo ln -sf $FPC_LIB_PATH/ppcrossarm /usr/bin/ppcrossarm
 		sudo ln -sf /usr/bin/ppcrossarm /usr/bin/ppcarm
 
-		sudo bash -x $0 cfg-fpc $ANDROID_HOME
+		#sudo bash -x $0 cfg-fpc $ANDROID_HOME
 		#firefox $CROSS_COMPILE_URL
 		changeDirectory $HOME
 		mkdir -p LazarusAndroid
@@ -323,7 +354,7 @@ case "$1" in
 			mkdir ~/.local/share/applications
 		fi
 		echo "[Desktop Entry]" > ~/.local/share/applications/laz4android.desktop
-		echo "Name=laz4android" >>  ~/.local/share/applications/laz4android
+		echo "Name=laz4android" >>  ~/.local/share/applications/laz4android.desktop
 		echo "Exec=$HOME/LazarusAndroid/lazarus/lazarus --primary-config-path=$HOME/.laz4android" >> ~/.local/share/applications/laz4android.desktop
 		echo "Icon=$HOME/LazarusAndroid/lazarus_1_8_4/images/icons/lazarus_orange.ico" >> ~/.local/share/applications/laz4android.desktop
 		echo "Type=Application" >> ~/.local/share/applications/laz4android.desktop
