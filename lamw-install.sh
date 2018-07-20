@@ -3,7 +3,7 @@
 #Universidade federal de Mato Grosso
 #Curso ciencia da computação
 #AUTOR: Daniel Oliveira Souza <oliveira.daniel@gmail.com>
-#Versao PST: 0.0.2
+#Versao PST: 0.0.3
 #Descrição: Este script configura o ambiente de desenvolvimento para o LAMW
 
 pwd 
