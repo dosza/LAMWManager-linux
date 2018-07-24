@@ -19,6 +19,7 @@ export URL_FPC=""
 export FPC_VERSION=""
 export FPC_CFG_PATH=""
 export FPC_RELEASE=""
+export flag_new_ubuntu_lts=0
 #echo "arq=$0"
 sleep 3
 
@@ -100,14 +101,14 @@ SearchPackage(){
 #detecta a versão do fpc instalada no PC  seta as váriavies de ambiente
 parseFPC(){ 
 
-	flag_new_ubuntu_lts=0
+	
 	dist_file=$(cat /etc/issue.net)
 	case "$dist_file" in 
 		*"Ubuntu 18."*)
-			flag_new_ubuntu_lts=1
+			export flag_new_ubuntu_lts=1
 		;;
 		*"Linux Mint 19"*)
-			flag_new_ubuntu_lts=1
+			export flag_new_ubuntu_lts=1
 		;;
 	esac
 
@@ -118,6 +119,7 @@ parseFPC(){
 			export FPC_CFG_PATH="/etc/fpc-3.0.0.cfg"
 			export FPC_RELEASE="release_3_0_0"
 			export FPC_VERSION="3.0.0"
+			export FPC_LIB_PATH="/usr/lib/fpc/$FPC_VERSION"
 		;;
 		*"3.0.4"*)
 			export FPC_VERSION="3.0.4"
@@ -333,10 +335,20 @@ case "$1" in
 		#sudo make clean crossall OS_TARGET=android CPU_TARGET=arm
 		#sudo make clean crossall  CPU_TARGET=arm OS_TARGET=android OPT="-dFPC_ARMEL" CROSSOPT="-CpARMv6 -CfSoft"
 		#sudo make crossinstall  CPU_TARGET=arm OS_TARGET=android OPT="-dFPC_ARMEL" CROSSOPT="-CpARMv6 -CfSoft" INSTALL_PREFIX=/usr
+		
 		#make install TARGET=linux PREFIX_INSTALL=/usr
-		sudo make clean crossall crossinstall  CPU_TARGET=arm OS_TARGET=android OPT="-dFPC_ARMHF" SUBARCH="armv7a" INSTALL_PREFIX=$FPC_LIB_PATH
+		if [ $flag_new_ubuntu_lts = 0 ]
+		then
+			sudo make clean crossall crossinstall  CPU_TARGET=arm OS_TARGET=android OPT="-dFPC_ARMHF" SUBARCH="armv7a" INSTALL_PREFIX=/usr		
+		else
+			# sudo make clean build  install OS_TARGET=linux INSTALL_PREFIX=/usr
+			sudo make clean crossall crossinstall  CPU_TARGET=arm OS_TARGET=android OPT="-dFPC_ARMHF" SUBARCH="armv7a" INSTALL_PREFIX=/tmp/usr
+			sudo cp /tmp/usr/
+		fi
+
 		sudo ln -sf $FPC_LIB_PATH/ppcrossarm /usr/bin/ppcrossarm
 		sudo ln -sf /usr/bin/ppcrossarm /usr/bin/ppcarm
+		#fi
 
 		#sudo bash -x $0 cfg-fpc $ANDROID_HOME
 		#firefox $CROSS_COMPILE_URL
