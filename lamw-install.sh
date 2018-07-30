@@ -132,7 +132,8 @@ parseFPC(){
 
 			else
 				if [ -e /usr/lib/x86_64-linux-gnu/fpc/$FPC_VERSION ]; then
-					export FPC_LIB_PATH="/usr/lib/x86_64-linux-gnu/fpc/$FPC_VERSION"
+					sudo ln -s /usr/lib/x86_64-linux-gnu/fpc /usr/lib/fpc 
+					export FPC_LIB_PATH="/usr/lib/fpc/$FPC_VERSION"
 				fi
 			fi
 
@@ -342,7 +343,7 @@ case "$1" in
 			sudo make clean crossall crossinstall  CPU_TARGET=arm OS_TARGET=android OPT="-dFPC_ARMHF" SUBARCH="armv7a" INSTALL_PREFIX=/usr		
 		else
 			# sudo make clean build  install OS_TARGET=linux INSTALL_PREFIX=/usr
-			sudo make clean crossall crossinstall  CPU_TARGET=arm OS_TARGET=android OPT="-dFPC_ARMHF" SUBARCH="armv7a" INSTALL_PREFIX=/tmp/usr
+			sudo make clean crossall crossinstall  CPU_TARGET=arm OS_TARGET=android OPT="-dFPC_ARMHF" SUBARCH="armv7a" INSTALL_PREFIX=/usr
 			sudo cp /tmp/usr/
 		fi
 
