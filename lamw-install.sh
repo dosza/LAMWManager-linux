@@ -194,7 +194,7 @@ case "$1" in
 	"clean")
 	sudo rm $LAZANDROID_HOME -r
 	sudo rm $ANDROID_HOME  -r
-	sudo rm /usr/src/fpcsrc -r
+	#sudo rm /usr/src/fpcsrc -r
 	;;
 	"install")
 			if [ "$2" = "--use_proxy" ] ;then
@@ -228,23 +228,23 @@ case "$1" in
 			"#ENDIF"
 		)
 
-	if [ -e $FPC_CFG_PATH ] ; then  # se exiir /etc/fpc.cfg
-		fpc_cfg_teste=$(cat $FPC_CFG_PATH) # abre /etc/fpc.cfg
-		flag_fpc_cfg=0 # flag da sub string de configuração"
-		case "$fpc_cfg_teste" in 
-			*"#IFDEF ANDROID"*)
-			flag_fpc_cfg=1
-			;;
-		esac
+		if [ -e $FPC_CFG_PATH ] ; then  # se exiir /etc/fpc.cfg
+			fpc_cfg_teste=$(cat $FPC_CFG_PATH) # abre /etc/fpc.cfg
+			flag_fpc_cfg=0 # flag da sub string de configuração"
+			case "$fpc_cfg_teste" in 
+				*"#IFDEF ANDROID"*)
+				flag_fpc_cfg=1
+				;;
+			esac
 
-		if [ $flag_fpc_cfg != 1 ]; then # caso o arquvo ainda não esteja configurado
-			for ((i = 0 ; i<${#fpc_cfg_str[@]};i++)) 
-			do
-				echo ${fpc_cfg_str[i]}
-				sudo echo "${fpc_cfg_str[i]}" | sudo tee -a  $FPC_CFG_PATH
-			done	
+			if [ $flag_fpc_cfg != 1 ]; then # caso o arquvo ainda não esteja configurado
+				for ((i = 0 ; i<${#fpc_cfg_str[@]};i++)) 
+				do
+					echo ${fpc_cfg_str[i]}
+					sudo echo "${fpc_cfg_str[i]}" | sudo tee -a  $FPC_CFG_PATH
+				done	
+			fi
 		fi
-	fi
 
 
 		sudo apt install $libs_android $prog_tools  -y --allow-unauthenticated
@@ -273,9 +273,12 @@ case "$1" in
 		#Install SDK packages and NDK
 		#./sdkmanager "platforms;android-25" "build-tools;25.0.3" "tools" "ndk-bundle" "extras;android;m2repository"
 		#$SDK_MANAGER_CMD
-		ls
-		sudo apt-get remove --purge openjdk-9-* -y 
-		sudo apt-get remove --purge openjdk-11* -y
+		#ls
+		if [ $flag_new_ubuntu_lts = 1 ]
+		then
+			sudo apt-get remove --purge openjdk-9-* -y 
+			sudo apt-get remove --purge openjdk-11* -y
+		fi
 		./sdkmanager ${SDK_MANAGER_CMD_PARAMETERS[*]}
 
 		ln -sf "$ANDROID_HOME/sdk/ndk-bundle" "$ANDROID_HOME/ndk"
@@ -299,7 +302,7 @@ case "$1" in
 			profile_data=$(cat $profile_file)
 			case "$profile_data" in 
 				*'export PATH=$PATH:$HOME/android/'*)
-				flag_profile_paths=1ndk-bundle
+				flag_profile_paths=1
 				#exit 1
 				;;
 			esac
@@ -329,10 +332,13 @@ case "$1" in
 
 
 		#make manual cross comp+i+l+e+
-		changeDirectory /usr/src
+		changeDirectory $HOME
+		mkdir -p $LAZANDROID_HOME
+		mkdir -p $LAZANDROID_HOME/fpcsrc
+		changeDirectory $LAZANDROID_HOME
 		sudo svn checkout $URL_FPC
 		sudo mv $FPC_RELEASE fpcsrc
-		changeDirectory fpcsrc
+		changeDirectory fpcsrc/$FPC_RELEASE
 		#sudo make clean crossall OS_TARGET=android CPU_TARGET=arm
 		#sudo make clean crossall  CPU_TARGET=arm OS_TARGET=android OPT="-dFPC_ARMEL" CROSSOPT="-CpARMv6 -CfSoft"
 		#sudo make crossinstall  CPU_TARGET=arm OS_TARGET=android OPT="-dFPC_ARMEL" CROSSOPT="-CpARMv6 -CfSoft" INSTALL_PREFIX=/usr
@@ -344,7 +350,7 @@ case "$1" in
 		else
 			# sudo make clean build  install OS_TARGET=linux INSTALL_PREFIX=/usr
 			sudo make clean crossall crossinstall  CPU_TARGET=arm OS_TARGET=android OPT="-dFPC_ARMHF" SUBARCH="armv7a" INSTALL_PREFIX=/usr
-			sudo cp /tmp/usr/
+			#sudo cp /tmp/usr/
 		fi
 
 		sudo ln -sf $FPC_LIB_PATH/ppcrossarm /usr/bin/ppcrossarm
@@ -353,8 +359,7 @@ case "$1" in
 
 		#sudo bash -x $0 cfg-fpc $ANDROID_HOME
 		#firefox $CROSS_COMPILE_URL
-		changeDirectory $HOME
-		mkdir -p LazarusAndroid
+		
 		changeDirectory $LAZANDROID_HOME
 		svn co https://svn.freepascal.org/svn/lazarus/tags/lazarus_1_8_4
 		ln -sf $LAZANDROID_HOME/lazarus_1_8_4 $HOME/LazarusAndroid/lazarus
