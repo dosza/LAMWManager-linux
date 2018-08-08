@@ -3,7 +3,7 @@
 #Universidade federal de Mato Grosso
 #Curso ciencia da computação
 #AUTOR: Daniel Oliveira Souza <oliveira.daniel@gmail.com>
-#Versao PST: 0.0.3
+#Versao PST: 0.0.4
 #Descrição: Este script configura o ambiente de desenvolvimento para o LAMW
 
 pwd 
@@ -452,8 +452,8 @@ case "$1" in
 		done
 
 		changeDirectory $ANDROID_HOME
-		svn co https://github.com/jmpessoa/lazandroidmodulewizard.git
-		ln -sf $ANDROID_HOME/lazandroidmodulewizard.git $ANDROID_HOME/lazandroidmodulewizard
+		#svn co https://github.com/jmpessoa/lazandroidmodulewizard.git
+		#ln -sf $ANDROID_HOME/lazandroidmodulewizard.git $ANDROID_HOME/lazandroidmodulewizard
 		if [ ! -e ~/.local/share/applications ] ; then
 			mkdir ~/.local/share/applications
 		fi
