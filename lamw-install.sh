@@ -347,12 +347,8 @@ case "$1" in
 			sudo apt-get remove --purge openjdk-9-* -y 
 			sudo apt-get remove --purge openjdk-11* -y
 		fi
-		echo "y" > /tmp/yes
-		for ((i=0;i<10000;i++))
-		do
-			echo "y" >> /tmp/yes
-		done
-		./sdkmanager ${SDK_MANAGER_CMD_PARAMETERS[*]}  < /tmp/yes # instala sdk sem intervenção humana  
+		
+		yes | ./sdkmanager ${SDK_MANAGER_CMD_PARAMETERS[*]}  # instala sdk sem intervenção humana  
 
 		ln -sf "$ANDROID_HOME/sdk/ndk-bundle" "$ANDROID_HOME/ndk"
 		ln -sf "$ANDROID_HOME/ndk/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin" "$ANDROID_HOME/ndk-toolchain"
@@ -409,8 +405,8 @@ case "$1" in
 		mkdir -p $LAZANDROID_HOME
 		mkdir -p $LAZANDROID_HOME/fpcsrc
 		changeDirectory $LAZANDROID_HOME
-		sudo svn checkout $URL_FPC
-		sudo mv $FPC_RELEASE fpcsrc
+		svn checkout $URL_FPC
+		mv $FPC_RELEASE fpcsrc
 		changeDirectory fpcsrc/$FPC_RELEASE
 		#sudo make clean crossall OS_TARGET=android CPU_TARGET=arm
 		#sudo make clean crossall  CPU_TARGET=arm OS_TARGET=android OPT="-dFPC_ARMEL" CROSSOPT="-CpARMv6 -CfSoft"
