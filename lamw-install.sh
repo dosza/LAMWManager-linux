@@ -24,7 +24,57 @@ export flag_new_ubuntu_lts=0
 sleep 3
 
 export FPC_VERSION=""
+Laz4AndroidPostConfig(){
+	if [ ! -e $HOME/.laz4android ] ; then
+		mkdir $HOME/.laz4android
+	fi
 
+	if [ ! -e  $HOME/Dev/lamw_workspace ] ; then
+		mkdir -p $HOME/Dev/lamw_workspace 
+	fi
+	java_versions=("/usr/lib/jvm/java-8-openjdk-amd64" "/usr/lib/jvm/java-7-openjdk-amd64" "/usr/lib/jvm/java-8-oracle" "/usr/lib/jvm/java-7-oracle" "/usr/lib/jvm/java-8-openjdk-i386")
+	java_path=""
+	tam=${#java_versions[@]} #tam recebe o tamanho do vetor 
+	ant_path=$(which ant)
+	ant_path=${ant_path%/ant*} #
+	i=0 #Inicializando o contador 
+	for (( i = 0; i < tam ; i++ )) # Laço para percorrer o vetor 
+	do
+		if [ -e ${java_versions[i]} ]; then
+			java_path=${java_versions[i]}
+			break;
+		fi
+	done
+
+
+# contem o arquivo de configuração do lamw
+	LAMW_init_str=(
+		"[NewProject]"
+		"PathToWorkspace=$HOME/Dev/lamw_workspace"
+		"PathToJavaTemplates=$HOME/android/lazandroidmodulewizard.git/trunk/java"
+		"PathToJavaJDK=$java_path"
+		"PathToAndroidNDK=$HOME/android/ndk"
+		"PathToAndroidSDK=$HOME/android/sdk"
+		"PathToAntBin=$ant_path"
+		"PathToGradle=$HOME/android/gradle-4.1"
+		"PrebuildOSYS=linux-x86_64"
+		"MainActivity=App"
+		"FullProjectName="
+		"InstructionSet=1"
+		"AntPackageName=org.lamw"
+		"AndroidPlatform=0"
+		"AntBuildMode=debug"
+		"NDK=3"
+	)
+	for ((i=0;i<${#LAMW_init_str[@]};i++))
+	do
+		if [ $i = 0 ]; then 
+			echo ${LAMW_init_str[i]} > $HOME/.laz4android/JNIAndroidProject.ini 
+		else
+			echo ${LAMW_init_str[i]} >> $HOME/.laz4android/JNIAndroidProject.ini
+		fi
+	done
+}
 changeDirectory(){
 	if [ "$1" != "" ] ; then
 		if [ -e $1  ]; then
@@ -62,9 +112,14 @@ ActiveProxy(){
 }
 
 
-LAZANDROID_HOME=$HOME/LazarusAndroid
+LAZANDROID_HOME=$HOME/laz4ndroid
 ANDROID_HOME="$HOME/android"
 ANDROID_SDK="$ANDROID_HOME/sdk"
+LAZBUILD_PARAMETERS=(
+	"--build-ide= --add-package $ANDROID_HOME/lazandroidmodulewizard/trunk/android_bridges/tfpandroidbridge_pack.lpk --primary-config-path=$HOME/.laz4android"
+	"--build-ide= --add-package $ANDROID_HOME/lazandroidmodulewizard/trunk/android_wizard/lazandroidwizardpack.lpk --primary-config-path=$HOME/.laz4android"
+	"--build-ide= --add-package $ANDROID_HOME/lazandroidmodulewizard/trunk/ide_tools/amw_ide_tools.lpk --primary-config-path=$HOME/.laz4android"
+	)
 FPC_STABLE=""
 LAZARUS_STABLE=""
 export FPC_LIB_PATH=""
@@ -72,7 +127,11 @@ libs_android="libx11-dev libgtk2.0-dev libgdk-pixbuf2.0-dev libcairo2-dev libpan
 prog_tools=" git subversion make build-essential zip unzip unrar android-tools-adb ant openjdk-8-jdk "
 packs=()
 
-
+OldClean(){
+	if [ -e $HOME/LazarusAndroid ]; then
+		sudo rm  -r $HOME/LazarusAndroid
+	fi
+}
 SearchPackage(){
 	index=0
 	#vetor que armazena informações sobre a intalação do pacote
@@ -192,8 +251,18 @@ case "$1" in
 		fi
 	;;
 	"clean")
-	sudo rm $LAZANDROID_HOME -r
-	sudo rm $ANDROID_HOME  -r
+		OldClean
+		if [ -e $LAZANDROID_HOME ] ; then
+			sudo rm $LAZANDROID_HOME -r
+		fi
+
+		if [ -e $ANDROID_HOME ] ; then
+			sudo rm $ANDROID_HOME  -r
+		fi
+
+		if [ -e $HOME/.laz4android ] ; then
+			rm -r $HOME/.laz4android
+		fi
 	#sudo rm /usr/src/fpcsrc -r
 	;;
 	"install")
@@ -207,8 +276,7 @@ case "$1" in
 			export https_proxy=$PROXY_URL
 		#	ActiveProxy 1
 		else
-			SDK_MANAGER_CMD_PARAMETERS=("platforms;android-25" "build-tools;25.0.3" "tools" "ndk-bundle" "extras;android;m2repository")
-			#ActiveProxy 0
+			SDK_MANAGER_CMD_PARAMETERS=("platforms;android-25" "build-tools;25.0.3" "tools" "ndk-bundle" "extras;android;m2repository")			#ActiveProxy 0
 		fi
 			sudo apt update;
 
@@ -219,7 +287,7 @@ case "$1" in
 			"#IFDEF ANDROID"
 			"#IFDEF CPUARM"
 			"-XParm-linux-androideabi-"
-			"-Fl$ANDROID_HOME/ndk/platforms/android-21/arch-arm/usr/lib"
+			"-Fl$ANDROID_HOME/ndk/platforms/android-28/arch-arm/usr/lib"
 			"-FD$ANDROID_HOME/ndk/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin"
 			'-Fu/usr/lib/fpc/$fpcversion/units/$fpctarget'
 			'-Fu/usr/lib/fpc/$fpcversion/units/$fpctarget/*'
@@ -279,7 +347,12 @@ case "$1" in
 			sudo apt-get remove --purge openjdk-9-* -y 
 			sudo apt-get remove --purge openjdk-11* -y
 		fi
-		./sdkmanager ${SDK_MANAGER_CMD_PARAMETERS[*]}
+		echo "y" > /tmp/yes
+		for ((i=0;i<10000;i++))
+		do
+			echo "y" >> /tmp/yes
+		done
+		./sdkmanager ${SDK_MANAGER_CMD_PARAMETERS[*]}  < /tmp/yes # instala sdk sem intervenção humana  
 
 		ln -sf "$ANDROID_HOME/sdk/ndk-bundle" "$ANDROID_HOME/ndk"
 		ln -sf "$ANDROID_HOME/ndk/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin" "$ANDROID_HOME/ndk-toolchain"
@@ -359,12 +432,25 @@ case "$1" in
 
 		#sudo bash -x $0 cfg-fpc $ANDROID_HOME
 		#firefox $CROSS_COMPILE_URL
-		
+		changeDirectory $ANDROID_HOME
+		svn co https://github.com/jmpessoa/lazandroidmodulewizard.git
+		ln -sf $ANDROID_HOME/lazandroidmodulewizard.git $ANDROID_HOME/lazandroidmodulewizard
+
 		changeDirectory $LAZANDROID_HOME
 		svn co https://svn.freepascal.org/svn/lazarus/tags/lazarus_1_8_4
-		ln -sf $LAZANDROID_HOME/lazarus_1_8_4 $HOME/LazarusAndroid/lazarus
-		changeDirectory $HOME/LazarusAndroid/lazarus
+		ln -sf $LAZANDROID_HOME/lazarus_1_8_4 $LAZANDROID_HOME/laz4android
+		ln -sf $LAZANDROID_HOME/laz4android/lazarus $LAZANDROID_HOME/laz4android/laz4android
+		changeDirectory $LAZANDROID_HOME/laz4android
 		make clean all
+
+		for((i=0;i< ${#LAZBUILD_PARAMETERS[@]};i++))
+		do
+			./lazbuild ${LAZBUILD_PARAMETERS[i]}
+			if [ $? != 0 ]; then
+				./lazbuild ${LAZBUILD_PARAMETERS[i]}
+			fi
+		done
+
 		changeDirectory $ANDROID_HOME
 		svn co https://github.com/jmpessoa/lazandroidmodulewizard.git
 		ln -sf $ANDROID_HOME/lazandroidmodulewizard.git $ANDROID_HOME/lazandroidmodulewizard
@@ -373,12 +459,20 @@ case "$1" in
 		fi
 		echo "[Desktop Entry]" > ~/.local/share/applications/laz4android.desktop
 		echo "Name=laz4android" >>  ~/.local/share/applications/laz4android.desktop
-		echo "Exec=$HOME/LazarusAndroid/lazarus/lazarus --primary-config-path=$HOME/.laz4android" >> ~/.local/share/applications/laz4android.desktop
-		echo "Icon=$HOME/LazarusAndroid/lazarus_1_8_4/images/icons/lazarus_orange.ico" >> ~/.local/share/applications/laz4android.desktop
+		echo "Exec=$LAZANDROID_HOME/laz4android/laz4android --primary-config-path=$HOME/.laz4android" >> ~/.local/share/applications/laz4android.desktop
+		echo "Icon=$LAZANDROID_HOME/laz4android/images/icons/lazarus_orange.ico" >> ~/.local/share/applications/laz4android.desktop
 		echo "Type=Application" >> ~/.local/share/applications/laz4android.desktop
 		echo "Categories=Development;IDE;" >> ~/.local/share/applications/laz4android.desktop
 		chmod +x ~/.local/share/applications/laz4android.desktop
+		Laz4AndroidPostConfig
 		sudo printf 'SUBSYSTEM=="usb", ATTR{idVendor}=="<VENDOR>", MODE="0666", GROUP="plugdev"\n'  | sudo tee /etc/udev/rules.d/51-android.rules
+		sudo service udev restart
+		update-menus
+		zenity --info --text "Suas inforamações\nlaz4android:$LAZANDROID_HOME\nLAMW workspace : $HOME/Dev/lamw_workspace\nAndroid SDK:$HOME/android/sdk\nAndroid NDK:$HOME/android/ndk\nGradle:$ANDROID_HOME/gradle-4.1\n"
+		if [ -e /tmp/yes ]; then
+			rm /tmp/yes
+		fi
+
 	;;
 	*)
 		printf "Use:\n\tbash lamw-install.sh clean\n\tbash lamw-install.sh install\n\tbash lamw-install.sh install --use_proxy\n"
