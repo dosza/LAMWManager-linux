@@ -124,7 +124,7 @@ FPC_STABLE=""
 LAZARUS_STABLE=""
 export FPC_LIB_PATH=""
 libs_android="libx11-dev libgtk2.0-dev libgdk-pixbuf2.0-dev libcairo2-dev libpango1.0-dev libxtst-dev libatk1.0-dev libghc-x11-dev freeglut3 freeglut3-dev "
-prog_tools=" git subversion make build-essential zip unzip unrar android-tools-adb ant openjdk-8-jdk "
+prog_tools="fpc git subversion make build-essential zip unzip unrar android-tools-adb ant openjdk-8-jdk "
 packs=()
 
 OldClean(){
@@ -133,7 +133,7 @@ OldClean(){
 	fi
 }
 SearchPackage(){
-	index=0
+	index=-1
 	#vetor que armazena informações sobre a intalação do pacote
 	if [ $1 != "" ]  ; then
 		packs=( $(dpkg -l $1) )
@@ -263,6 +263,9 @@ case "$1" in
 		if [ -e $HOME/.laz4android ] ; then
 			rm -r $HOME/.laz4android
 		fi
+		if [ -e $HOME/.local/share/applications/laz4android.desktop ];then
+			rm $HOME/.local/share/applications/laz4android.desktop
+		fi
 	#sudo rm /usr/src/fpcsrc -r
 	;;
 	"install")
@@ -271,14 +274,27 @@ case "$1" in
 			fi
 
 			if [ $USE_PROXY = 1 ]; then
-			SDK_MANAGER_CMD_PARAMETERS=("platforms;android-25" "build-tools;25.0.3" "tools" "ndk-bundle" "extras;android;m2repository" --no_https --proxy=http --proxy_host=$PROXY_SERVER --proxy_port=$PORT_SERVER )
-			export http_proxy=$PROXY_URL
-			export https_proxy=$PROXY_URL
+				SDK_MANAGER_CMD_PARAMETERS=("platforms;android-25" "build-tools;25.0.3" "tools" "ndk-bundle" "extras;android;m2repository" --no_https --proxy=http --proxy_host=$PROXY_SERVER --proxy_port=$PORT_SERVER )
+				export http_proxy=$PROXY_URL
+				export https_proxy=$PROXY_URL
 		#	ActiveProxy 1
-		else
-			SDK_MANAGER_CMD_PARAMETERS=("platforms;android-25" "build-tools;25.0.3" "tools" "ndk-bundle" "extras;android;m2repository")			#ActiveProxy 0
-		fi
+			else
+				SDK_MANAGER_CMD_PARAMETERS=("platforms;android-25" "build-tools;25.0.3" "tools" "ndk-bundle" "extras;android;m2repository")			#ActiveProxy 0
+			fi
 			sudo apt update;
+			sudo apt-get remove --purge fpc* -y
+			sudo apt-get remove --purge  lazarus* -y
+			sudo apt-get autoremove --purge -y
+			#sudo apt-get install fpc
+
+
+
+
+		sudo apt install $libs_android $prog_tools  -y --allow-unauthenticated
+		if [ "$?" != "0" ]; then
+			sudo apt install $libs_android $prog_tools  -y --allow-unauthenticated --fix-missing
+		fi
+
 
 		SearchPackage fpc
 		index=$?
@@ -313,12 +329,6 @@ case "$1" in
 				done	
 			fi
 		fi
-
-
-		sudo apt install $libs_android $prog_tools  -y --allow-unauthenticated
-		if [ "$?" != "0" ]; then
-			sudo apt install $libs_android $prog_tools  -y --allow-unauthenticated --fix-missing
-		fi
 		if [ $USE_PROXY = 1 ] ; then
 			ActiveProxy 1
 		else
@@ -338,17 +348,20 @@ case "$1" in
 		rm sdk-tools-linux-3859397.zip
 
 		changeDirectory $ANDROID_SDK/tools/bin #change directory
+		#sed -i 's/exec "$JAVACMD" "$@"/yes | exec "$JAVACMD" "$@"/g' sdkmanager #modifica o sdkmanager adicionando pipe para aceitar a licença
 		#Install SDK packages and NDK
 		#./sdkmanager "platforms;android-25" "build-tools;25.0.3" "tools" "ndk-bundle" "extras;android;m2repository"
 		#$SDK_MANAGER_CMD
 		#ls
+		
 		if [ $flag_new_ubuntu_lts = 1 ]
 		then
 			sudo apt-get remove --purge openjdk-9-* -y 
 			sudo apt-get remove --purge openjdk-11* -y
 		fi
 		
-		yes | ./sdkmanager ${SDK_MANAGER_CMD_PARAMETERS[*]}  # instala sdk sem intervenção humana  
+		./sdkmanager ${SDK_MANAGER_CMD_PARAMETERS[*]}  # instala sdk sem intervenção humana  
+		#sed -i 's/yes | exec "$JAVACMD" "$@"/exec "$JAVACMD" "$@"/g' sdkmanager # restaura o estado anterior do arquivo
 
 		ln -sf "$ANDROID_HOME/sdk/ndk-bundle" "$ANDROID_HOME/ndk"
 		ln -sf "$ANDROID_HOME/ndk/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin" "$ANDROID_HOME/ndk-toolchain"
