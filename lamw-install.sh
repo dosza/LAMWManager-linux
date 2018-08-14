@@ -266,6 +266,11 @@ case "$1" in
 		if [ -e $HOME/.local/share/applications/laz4android.desktop ];then
 			rm $HOME/.local/share/applications/laz4android.desktop
 		fi
+
+		if [ -e $HOME/.gradle ]; then
+			rm -r $HOME/.gradle
+		fi
+		
 	#sudo rm /usr/src/fpcsrc -r
 	;;
 	"install")
@@ -377,7 +382,7 @@ case "$1" in
 		fi
 
 
-		profile_file=$HOME/.profile
+		profile_file=$HOME/.bashrc
 		flag_profile_paths=0
 
 		if [ -e $profile_file ];then 
@@ -391,8 +396,8 @@ case "$1" in
 		fi
 
 		if [ $flag_profile_paths = 0 ] ; then 
-			echo 'export PATH=$PATH:$HOME/android/ndk-toolchain' >> $HOME/.profile
-			echo 'export PATH=$PATH:$HOME/android/gradle-4.1/bin' >> $HOME/.profile
+			echo 'export PATH=$PATH:$HOME/android/ndk-toolchain' >> $HOME/.bashrc
+			echo 'export PATH=$PATH:$HOME/android/gradle-4.1/bin' >> $HOME/.bashrc
 		fi
 
 		export PATH=$PATH:$HOME/android/ndk-toolchain
