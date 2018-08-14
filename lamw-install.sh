@@ -3,10 +3,20 @@
 #Universidade federal de Mato Grosso
 #Curso ciencia da computação
 #AUTOR: Daniel Oliveira Souza <oliveira.daniel@gmail.com>
-#Versao PST: 0.0.4
+#Versao LAMW-INSTALL: 0.0.5
 #Descrição: Este script configura o ambiente de desenvolvimento para o LAMW
 
-pwd 
+#pwd
+LAMW_INSTALL_VERSION="0.0.5"
+LAMW_INSTALL_WELCOME=(
+	"\t\tWelcome LAMW-INSTALL $LAMW_INSTALL_VERSION\n"
+	"\t\tPowerd by DanielTimelord <oliveira.daniel109@gmail.com\n"
+)
+
+echo "----------------------------------------------------------------------"
+printf "${LAMW_INSTALL_WELCOME[*]}"
+echo "----------------------------------------------------------------------"
+echo "WARM: Older lazarus and FPC will be removed "
 export DEBIAN_FRONTEND="gnome"
 APT_OPT=""
 PROXY_SERVER="internet.cua.ufmt.br"
@@ -14,6 +24,7 @@ PORT_SERVER=3128
 PROXY_URL="http://$PROXY_SERVER:$PORT_SERVER"
 USE_PROXY=0
 SDK_MANAGER_CMD_PARAMETERS=()
+SDK_LICENSES_PARAMETERS=()
 CROSS_COMPILE_URL="https://github.com/newpascal/fpcupdeluxe/releases/tag/v1.6.1e"
 export URL_FPC=""
 export FPC_VERSION=""
@@ -21,7 +32,7 @@ export FPC_CFG_PATH=""
 export FPC_RELEASE=""
 export flag_new_ubuntu_lts=0
 #echo "arq=$0"
-sleep 3
+#sleep 3
 
 export FPC_VERSION=""
 Laz4AndroidPostConfig(){
@@ -116,9 +127,9 @@ LAZANDROID_HOME=$HOME/laz4ndroid
 ANDROID_HOME="$HOME/android"
 ANDROID_SDK="$ANDROID_HOME/sdk"
 LAZBUILD_PARAMETERS=(
-	"--build-ide= --add-package $ANDROID_HOME/lazandroidmodulewizard/trunk/android_bridges/tfpandroidbridge_pack.lpk --primary-config-path=$HOME/.laz4android"
-	"--build-ide= --add-package $ANDROID_HOME/lazandroidmodulewizard/trunk/android_wizard/lazandroidwizardpack.lpk --primary-config-path=$HOME/.laz4android"
-	"--build-ide= --add-package $ANDROID_HOME/lazandroidmodulewizard/trunk/ide_tools/amw_ide_tools.lpk --primary-config-path=$HOME/.laz4android"
+	"--build-ide= --add-package $ANDROID_HOME/lazandroidmodulewizard/trunk/android_bridges/tfpandroidbridge_pack.lpk --primary-config-path=$HOME/.laz4android  --lazarusdir=$LAZANDROID_HOME/laz4android"
+	"--build-ide= --add-package $ANDROID_HOME/lazandroidmodulewizard/trunk/android_wizard/lazandroidwizardpack.lpk --primary-config-path=$HOME/.laz4android --lazarusdir=$LAZANDROID_HOME/laz4android"
+	"--build-ide= --add-package $ANDROID_HOME/lazandroidmodulewizard/trunk/ide_tools/amw_ide_tools.lpk --primary-config-path=$HOME/.laz4android --lazarusdir=$LAZANDROID_HOME/laz4android"
 	)
 FPC_STABLE=""
 LAZARUS_STABLE=""
@@ -280,11 +291,13 @@ case "$1" in
 
 			if [ $USE_PROXY = 1 ]; then
 				SDK_MANAGER_CMD_PARAMETERS=("platforms;android-25" "build-tools;25.0.3" "tools" "ndk-bundle" "extras;android;m2repository" --no_https --proxy=http --proxy_host=$PROXY_SERVER --proxy_port=$PORT_SERVER )
+				SDK_LICENSES_PARAMETERS=( "--licenses" --no_https --proxy=http --proxy_host=$PROXY_SERVER --proxy_port=$PORT_SERVER)
 				export http_proxy=$PROXY_URL
 				export https_proxy=$PROXY_URL
 		#	ActiveProxy 1
 			else
 				SDK_MANAGER_CMD_PARAMETERS=("platforms;android-25" "build-tools;25.0.3" "tools" "ndk-bundle" "extras;android;m2repository")			#ActiveProxy 0
+				SDK_LICENSES_PARAMETERS=(--licenses )
 			fi
 			sudo apt update;
 			sudo apt-get remove --purge fpc* -y
@@ -295,9 +308,9 @@ case "$1" in
 
 
 
-		sudo apt install $libs_android $prog_tools  -y --allow-unauthenticated
+		sudo apt-get install $libs_android $prog_tools  -y --allow-unauthenticated
 		if [ "$?" != "0" ]; then
-			sudo apt install $libs_android $prog_tools  -y --allow-unauthenticated --fix-missing
+			sudo apt-get install $libs_android $prog_tools  -y --allow-unauthenticated --fix-missing
 		fi
 
 
@@ -364,7 +377,7 @@ case "$1" in
 			sudo apt-get remove --purge openjdk-9-* -y 
 			sudo apt-get remove --purge openjdk-11* -y
 		fi
-		
+		yes | ./sdkmanager ${SDK_LICENSES_PARAMETERS[*]}
 		./sdkmanager ${SDK_MANAGER_CMD_PARAMETERS[*]}  # instala sdk sem intervenção humana  
 		#sed -i 's/yes | exec "$JAVACMD" "$@"/exec "$JAVACMD" "$@"/g' sdkmanager # restaura o estado anterior do arquivo
 
