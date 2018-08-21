@@ -3,13 +3,13 @@
 #Universidade federal de Mato Grosso
 #Curso ciencia da computação
 #AUTOR: Daniel Oliveira Souza <oliveira.daniel@gmail.com>
-#Versao LAMW-INSTALL: 0.0.6
+#Versao LAMW-INSTALL: 0.1.0
 #Descrição: Este script configura o ambiente de desenvolvimento para o LAMW
 
 #pwd
-LAMW_INSTALL_VERSION="0.0.6"
+LAMW_INSTALL_VERSION="0.1.0"
 LAMW_INSTALL_WELCOME=(
-	"\t\tWelcome LAMW-Install version: $LAMW_INSTALL_VERSION\n"
+	"\t\tWelcome LAMW4Linux Installer  version: $LAMW_INSTALL_VERSION\n"
 	"\t\tPowerd by DanielTimelord\n"
 	"\t\t<oliveira.daniel109@gmail.com>\n"
 )
@@ -23,6 +23,8 @@ export FPC_RELEASE=""
 export flag_new_ubuntu_lts=0
 export FPC_LIB_PATH=""
 export FPC_VERSION=""
+ANDROID_HOME="$HOME/android"
+ANDROID_SDK="$ANDROID_HOME/sdk"
 CROSS_COMPILE_URL="https://github.com/newpascal/fpcupdeluxe/releases/tag/v1.6.1e"
 APT_OPT=""
 PROXY_SERVER="internet.cua.ufmt.br"
@@ -32,31 +34,39 @@ USE_PROXY=0
 SDK_VERSION="28"
 SDK_MANAGER_CMD_PARAMETERS=()
 SDK_LICENSES_PARAMETERS=()
-LAZANDROID_HOME=$HOME/laz4ndroid
-ANDROID_HOME="$HOME/android"
-ANDROID_SDK="$ANDROID_HOME/sdk"
+LAZARUS_STABLE_SRC_LNK="//svn.freepascal.org/svn/lazarus/tags/lazarus_1_8_4"
+LAMW_SRC_LNK="https://github.com/jmpessoa/lazandroidmodulewizard.git"
+LAMW4_LINUX_PATH_CFG="$HOME/.lamw4linux"
+LAMW4LINUX_HOME=$HOME/lamw4linux
+LAMW_IDE_HOME="$LAMW4LINUX_HOME/lamw4linux" # path to link-simbolic to ide 
+LAMW_WORKSPACE_HOME="$HOME/Dev/lamw_workspace"  #path to lamw_workspace
+LAMW4LINUX_EXE_PATH="$LAMW_IDE_HOME/lamw4linux"
+LAMW_MENU_ITEM_PATH="$HOME/.local/share/applications/lamw4linux.desktop"
+GRADLE_HOME="$ANDROID_HOME/gradle-4.1"
+GRADLE_CFG_HOME="$HOME/.gradle"
 FPC_STABLE=""
-LAZARUS_STABLE=""
+LAZARUS_STABLE="lazarus_1_8_4"
 LAZBUILD_PARAMETERS=(
-	"--build-ide= --add-package $ANDROID_HOME/lazandroidmodulewizard/trunk/android_bridges/tfpandroidbridge_pack.lpk --primary-config-path=$HOME/.laz4android  --lazarusdir=$LAZANDROID_HOME/laz4android"
-	"--build-ide= --add-package $ANDROID_HOME/lazandroidmodulewizard/trunk/android_wizard/lazandroidwizardpack.lpk --primary-config-path=$HOME/.laz4android --lazarusdir=$LAZANDROID_HOME/laz4android"
-	"--build-ide= --add-package $ANDROID_HOME/lazandroidmodulewizard/trunk/ide_tools/amw_ide_tools.lpk --primary-config-path=$HOME/.laz4android --lazarusdir=$LAZANDROID_HOME/laz4android"
+	"--build-ide= --add-package $ANDROID_HOME/lazandroidmodulewizard/trunk/android_bridges/tfpandroidbridge_pack.lpk --primary-config-path=$LAMW4_LINUX_PATH_CFG  --lazarusdir=$LAMW_IDE_HOME"
+	"--build-ide= --add-package $ANDROID_HOME/lazandroidmodulewizard/trunk/android_wizard/lazandroidwizardpack.lpk --primary-config-path=$LAMW4_LINUX_PATH_CFG --lazarusdir=$LAMW_IDE_HOME"
+	"--build-ide= --add-package $ANDROID_HOME/lazandroidmodulewizard/trunk/ide_tools/amw_ide_tools.lpk --primary-config-path=$LAMW4_LINUX_PATH_CFG --lazarusdir=$LAMW_IDE_HOME"
 )
 
 
 libs_android="libx11-dev libgtk2.0-dev libgdk-pixbuf2.0-dev libcairo2-dev libpango1.0-dev libxtst-dev libatk1.0-dev libghc-x11-dev freeglut3 freeglut3-dev "
-prog_tools="fpc git subversion make build-essential zip unzip unrar android-tools-adb ant openjdk-8-jdk "
+prog_tools="menu fpc git subversion make build-essential zip unzip unrar android-tools-adb ant openjdk-8-jdk "
 packs=()
 
-Laz4AndroidPostConfig(){
-	if [ ! -e $HOME/.laz4android ] ; then
-		mkdir $HOME/.laz4android
+
+LAMW4LinuxPostConfig(){
+	if [ ! -e $LAMW4_LINUX_PATH_CFG ] ; then
+		mkdir LAMW4_LINUX_PATH_CFG
 	fi
 
-	if [ ! -e  $HOME/Dev/lamw_workspace ] ; then
-		mkdir -p $HOME/Dev/lamw_workspace 
+	if [ ! -e LAMW_WORKSPACE_HOME ] ; then
+		mkdir -p LAMW_WORKSPACE_HOME
 	fi
-	java_versions=("/usr/lib/jvm/java-8-openjdk-amd64" "/usr/lib/jvm/java-7-openjdk-amd64" "/usr/lib/jvm/java-8-oracle" "/usr/lib/jvm/java-7-oracle" "/usr/lib/jvm/java-8-openjdk-i386")
+	java_versions=("/usr/lib/jvm/java-8-openjdk-amd64"  "/usr/lib/jvm/java-8-oracle"  "/usr/lib/jvm/java-8-openjdk-i386")
 	java_path=""
 	tam=${#java_versions[@]} #tam recebe o tamanho do vetor 
 	ant_path=$(which ant)
@@ -74,13 +84,13 @@ Laz4AndroidPostConfig(){
 # contem o arquivo de configuração do lamw
 	LAMW_init_str=(
 		"[NewProject]"
-		"PathToWorkspace=$HOME/Dev/lamw_workspace"
+		"PathToWorkspace=$LAMW_WORKSPACE_HOME"
 		"PathToJavaTemplates=$HOME/android/lazandroidmodulewizard.git/trunk/java"
 		"PathToJavaJDK=$java_path"
 		"PathToAndroidNDK=$HOME/android/ndk"
 		"PathToAndroidSDK=$HOME/android/sdk"
 		"PathToAntBin=$ant_path"
-		"PathToGradle=$HOME/android/gradle-4.1"
+		"PathToGradle=$GRADLE_HOME"
 		"PrebuildOSYS=linux-x86_64"
 		"MainActivity=App"
 		"FullProjectName="
@@ -88,14 +98,14 @@ Laz4AndroidPostConfig(){
 		"AntPackageName=org.lamw"
 		"AndroidPlatform=0"
 		"AntBuildMode=debug"
-		"NDK=3"
+		"NDK=5"
 	)
 	for ((i=0;i<${#LAMW_init_str[@]};i++))
 	do
 		if [ $i = 0 ]; then 
-			echo ${LAMW_init_str[i]} > $HOME/.laz4android/JNIAndroidProject.ini 
+			echo ${LAMW_init_str[i]} > $LAMW4_LINUX_PATH_CFG/JNIAndroidProject.ini 
 		else
-			echo ${LAMW_init_str[i]} >> $HOME/.laz4android/JNIAndroidProject.ini
+			echo ${LAMW_init_str[i]} >> $LAMW4_LINUX_PATH_CFG/JNIAndroidProject.ini
 		fi
 	done
 }
@@ -138,26 +148,31 @@ ActiveProxy(){
 
 
 CleanOldConfig(){
-	if [ -e $HOME/LazarusAndroid ]; then
-		sudo rm  -r $HOME/LazarusAndroid
+	if [ -e $HOME/laz4ndroid ]; then
+		sudo rm  -r $HOME/laz4ndroid
 	fi
-	if [ -e $LAZANDROID_HOME ] ; then
-		sudo rm $LAZANDROID_HOME -r
+	if [ -e $HOME/.laz4android ] ; then
+		rm -r $HOME/.laz4android
+	fi
+	if [ -e $LAMW4LINUX_HOME ] ; then
+		sudo rm $LAMW4LINUX_HOME -r
 	fi
 
 	if [ -e $ANDROID_HOME ] ; then
 		sudo rm $ANDROID_HOME  -r
 	fi
 
-	if [ -e $HOME/.laz4android ] ; then
-		rm -r $HOME/.laz4android
-	fi
+
 	if [ -e $HOME/.local/share/applications/laz4android.desktop ];then
 		rm $HOME/.local/share/applications/laz4android.desktop
 	fi
 
-	if [ -e $HOME/.gradle ]; then
-		rm -r $HOME/.gradle
+	if [ -e $LAMW_MENU_ITEM_PATH ]; then
+		rm $LAMW_MENU_ITEM_PATH
+	fi
+
+	if [ -e $GRADLE_CFG_HOME ]; then
+		rm -r $GRADLE_CFG_HOME
 	fi
 	if [ -e /usr/lib/fpc ] ; then
 		sudo rm /usr/lib/fpc -r 
@@ -348,15 +363,25 @@ mainInstall(){
 		mkdir -p $ANDROID_SDK
 
 		changeDirectory $ANDROID_HOME
-		wget "https://services.gradle.org/distributions/gradle-4.1-bin.zip"
+		if [ ! -e $GRADLE_HOME ]; then
+			wget "https://services.gradle.org/distributions/gradle-4.1-bin.zip"
+			if [ $? != 0 ] ; then
+				wget "https://services.gradle.org/distributions/gradle-4.1-bin.zip"
+			fi
+		fi
 		unzip "gradle-4.1-bin.zip"
 		rm "gradle-4.1-bin.zip"
 		changeDirectory $ANDROID_SDK
-		#echo "pwd=$PWD"
+		#echo "pwd=$PWD"1
 		#ls -la 
-		wget "https://dl.google.com/android/repository/sdk-tools-linux-3859397.zip" #getting sdk 
+		if [ ! -e tools ] ; then
+			wget "https://dl.google.com/android/repository/sdk-tools-linux-3859397.zip" #getting sdk 
+			if [ $? != 0 ]; then 
+				wget "https://dl.google.com/android/repository/sdk-tools-linux-3859397.zip"
+			fi
+		fi
 		unzip sdk-tools-linux-3859397.zip
-		rm sdk-tools-linux-3859397.zip
+		#rm sdk-tools-linux-3859397.zip
 
 		changeDirectory $ANDROID_SDK/tools/bin #change directory
 		#sed -i 's/exec "$JAVACMD" "$@"/yes | exec "$JAVACMD" "$@"/g' sdkmanager #modifica o sdkmanager adicionando pipe para aceitar a licença
@@ -426,9 +451,9 @@ mainInstall(){
 
 		#make manual cross comp+i+l+e+
 		changeDirectory $HOME
-		mkdir -p $LAZANDROID_HOME
-		mkdir -p $LAZANDROID_HOME/fpcsrc
-		changeDirectory $LAZANDROID_HOME/fpcsrc
+		mkdir -p $LAMW4LINUX_HOME
+		mkdir -p $LAMW4LINUX_HOME/fpcsrc
+		changeDirectory $LAMW4LINUX_HOME/fpcsrc
 		svn checkout $URL_FPC
 		#mv $FPC_RELEASE fpcsrc
 		changeDirectory $FPC_RELEASE
@@ -437,14 +462,14 @@ mainInstall(){
 		#sudo make crossinstall  CPU_TARGET=arm OS_TARGET=android OPT="-dFPC_ARMEL" CROSSOPT="-CpARMv6 -CfSoft" INSTALL_PREFIX=/usr
 		
 		#make install TARGET=linux PREFIX_INSTALL=/usr
-		if [ $flag_new_ubuntu_lts = 0 ]
-		then
+		#if [ $flag_new_ubuntu_lts = 0 ]
+		#then
 			sudo make clean crossall crossinstall  CPU_TARGET=arm OS_TARGET=android OPT="-dFPC_ARMHF" SUBARCH="armv7a" INSTALL_PREFIX=/usr		
-		else
+		#else
 			# sudo make clean build  install OS_TARGET=linux INSTALL_PREFIX=/usr
-			sudo make clean crossall crossinstall  CPU_TARGET=arm OS_TARGET=android OPT="-dFPC_ARMHF" SUBARCH="armv7a" INSTALL_PREFIX=/usr
+			#sudo make clean crossall crossinstall  CPU_TARGET=arm OS_TARGET=android OPT="-dFPC_ARMHF" SUBARCH="armv7a" INSTALL_PREFIX=/usr
 			#sudo cp /tmp/usr/
-		fi
+		#fi
 
 		sudo ln -sf $FPC_LIB_PATH/ppcrossarm /usr/bin/ppcrossarm
 		sudo ln -sf /usr/bin/ppcrossarm /usr/bin/ppcarm
@@ -453,16 +478,17 @@ mainInstall(){
 		#sudo bash -x $0 cfg-fpc $ANDROID_HOME
 		#firefox $CROSS_COMPILE_URL
 		changeDirectory $ANDROID_HOME
-		svn co https://github.com/jmpessoa/lazandroidmodulewizard.git
+		svn co $LAMW_SRC_LNK
 		ln -sf $ANDROID_HOME/lazandroidmodulewizard.git $ANDROID_HOME/lazandroidmodulewizard
 
-		changeDirectory $LAZANDROID_HOME
-		svn co https://svn.freepascal.org/svn/lazarus/tags/lazarus_1_8_4
-		ln -sf $LAZANDROID_HOME/lazarus_1_8_4 $LAZANDROID_HOME/laz4android
-		ln -sf $LAZANDROID_HOME/laz4android/lazarus $LAZANDROID_HOME/laz4android/laz4android
-		changeDirectory $LAZANDROID_HOME/laz4android
+		changeDirectory $LAMW4LINUX_HOME
+		svn co $LAZARUS_STABLE_SRC_LNK
+		ln -sf $LAMW4LINUX_HOME/$LAZARUS_STABLE $LAMW_IDE_HOME  # link to lamw4_home directory 
+		ln -sf $LAMW_IDE_HOME/lazarus $LAMW4LINUX_EXE_PATH #link  to lazarus executable
+		changeDirectory $LAMW_IDE_HOME
 		make clean all
 
+		#build ide 
 		for((i=0;i< ${#LAZBUILD_PARAMETERS[@]};i++))
 		do
 			./lazbuild ${LAZBUILD_PARAMETERS[i]}
@@ -477,18 +503,26 @@ mainInstall(){
 		if [ ! -e ~/.local/share/applications ] ; then
 			mkdir ~/.local/share/applications
 		fi
-		echo "[Desktop Entry]" > ~/.local/share/applications/laz4android.desktop
-		echo "Name=laz4android" >>  ~/.local/share/applications/laz4android.desktop
-		echo "Exec=$LAZANDROID_HOME/laz4android/laz4android --primary-config-path=$HOME/.laz4android" >> ~/.local/share/applications/laz4android.desktop
-		echo "Icon=$LAZANDROID_HOME/laz4android/images/icons/lazarus_orange.ico" >> ~/.local/share/applications/laz4android.desktop
-		echo "Type=Application" >> ~/.local/share/applications/laz4android.desktop
-		echo "Categories=Development;IDE;" >> ~/.local/share/applications/laz4android.desktop
-		chmod +x ~/.local/share/applications/laz4android.desktop
-		Laz4AndroidPostConfig
+		echo "[Desktop Entry]" > $LAMW_MENU_ITEM_PATH
+		echo "Name=LAMW4Linux" >>  $LAMW_MENU_ITEM_PATH
+		echo "Exec=$LAMW4LINUX_EXE_PATH --primary-config-path=$LAMW4_LINUX_PATH_CFG" >>$LAMW_MENU_ITEM_PATH
+		echo "Icon=$LAMW_IDE_HOME/images/icons/lazarus_orange.ico" >>$LAMW_MENU_ITEM_PATH
+		echo "Type=Application" >> $LAMW_MENU_ITEM_PATH
+		echo "Categories=Development;IDE;" >> $LAMW_MENU_ITEM_PATH
+		chmod +x $LAMW_MENU_ITEM_PATH
+		LAMW4LinuxPostConfig
 		sudo printf 'SUBSYSTEM=="usb", ATTR{idVendor}=="<VENDOR>", MODE="0666", GROUP="plugdev"\n'  | sudo tee /etc/udev/rules.d/51-android.rules
 		sudo service udev restart
 		update-menus
-		zenity --info --text "Suas inforamações\nlaz4android:$LAZANDROID_HOME\nLAMW workspace : $HOME/Dev/lamw_workspace\nAndroid SDK:$HOME/android/sdk\nAndroid NDK:$HOME/android/ndk\nGradle:$ANDROID_HOME/gradle-4.1\n"
+		lamw_log_str=("Info:\nLAMW4Linux:$LAMW4LINUX_HOME\nLAMW workspace:"  "$HOME/Dev/lamw_workspace\nAndroid SDK:$ANDROID_HOME/sdk\n" "Android NDK:$ANDROID_HOME/ndk\nGradle:$GRADLE_HOME\n")
+		for((i=0; i<${#lamw_log_str[*]};i++)) do
+			if [ $i = 0 ] ; then 
+				echo ${lamw_log_str[i]} > $LAMW4LINUX_HOME/lamw-install.log
+			else
+				echo ${lamw_log_str[i]} >> $LAMW4LINUX_HOME/lamw-install.log
+			fi
+		done
+		zenity --info --text "Info:\nLAMW4Linux:$LAMW4LINUX_HOME\nLAMW workspace : $HOME/Dev/lamw_workspace\nAndroid SDK:$ANDROID_HOME/sdk\nAndroid NDK:$ANDROID_HOME/ndk\nGradle:$GRADLE_HOME\nLOG:$LAMW4LINUX_HOME/lamw-install.log"
 
 
 }
@@ -497,7 +531,7 @@ printf "${LAMW_INSTALL_WELCOME[*]}"
 echo "----------------------------------------------------------------------"
 echo "Warning: Earlier versions of FPC and Lazarus will be removed!
 LAMW-Install (Linux supported Debian 9, Ubuntu 16.04 LTS, Linux Mint 18)
-Generate Laz4LAMW to  android-sdk=$SDK_VERSION"
+Generate LAMW4Linux to  android-sdk=$SDK_VERSION"
 
 case "$1" in
 
