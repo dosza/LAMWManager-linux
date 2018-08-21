@@ -515,7 +515,8 @@ mainInstall(){
 		sudo service udev restart
 		update-menus
 		lamw_log_str=("Info:\nLAMW4Linux:$LAMW4LINUX_HOME\nLAMW workspace:"  "$HOME/Dev/lamw_workspace\nAndroid SDK:$ANDROID_HOME/sdk\n" "Android NDK:$ANDROID_HOME/ndk\nGradle:$GRADLE_HOME\n")
-		for((i=0; i<${#lamw_log_str[*]};i++)) do
+		for((i=0; i<${#lamw_log_str[*]};i++)) 
+		do
 			if [ $i = 0 ] ; then 
 				echo ${lamw_log_str[i]} > $LAMW4LINUX_HOME/lamw-install.log
 			else
