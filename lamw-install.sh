@@ -3,11 +3,11 @@
 #Universidade federal de Mato Grosso
 #Curso ciencia da computação
 #AUTOR: Daniel Oliveira Souza <oliveira.daniel@gmail.com>
-#Versao LAMW-INSTALL: 0.1.0
+#Versao LAMW-INSTALL: 0.1.1
 #Descrição: Este script configura o ambiente de desenvolvimento para o LAMW
 
 #pwd
-LAMW_INSTALL_VERSION="0.1.0"
+LAMW_INSTALL_VERSION="0.1.1"
 LAMW_INSTALL_WELCOME=(
 	"\t\tWelcome LAMW4Linux Installer  version: $LAMW_INSTALL_VERSION\n"
 	"\t\tPowerd by DanielTimelord\n"
@@ -31,10 +31,11 @@ PROXY_SERVER="internet.cua.ufmt.br"
 PORT_SERVER=3128
 PROXY_URL="http://$PROXY_SERVER:$PORT_SERVER"
 USE_PROXY=0
+SDK_TOOLS_URL="https://dl.google.com/android/repository/sdk-tools-linux-3859397.zip"
 SDK_VERSION="28"
 SDK_MANAGER_CMD_PARAMETERS=()
 SDK_LICENSES_PARAMETERS=()
-LAZARUS_STABLE_SRC_LNK="//svn.freepascal.org/svn/lazarus/tags/lazarus_1_8_4"
+LAZARUS_STABLE_SRC_LNK="https://svn.freepascal.org/svn/lazarus/tags/lazarus_1_8_4"
 LAMW_SRC_LNK="https://github.com/jmpessoa/lazandroidmodulewizard.git"
 LAMW4_LINUX_PATH_CFG="$HOME/.lamw4linux"
 LAMW4LINUX_HOME=$HOME/lamw4linux
@@ -44,6 +45,8 @@ LAMW4LINUX_EXE_PATH="$LAMW_IDE_HOME/lamw4linux"
 LAMW_MENU_ITEM_PATH="$HOME/.local/share/applications/lamw4linux.desktop"
 GRADLE_HOME="$ANDROID_HOME/gradle-4.1"
 GRADLE_CFG_HOME="$HOME/.gradle"
+GRADE_ZIP_LNK="https://services.gradle.org/distributions/gradle-4.1-bin.zip"
+GRADE_ZIP_FILE="gradle-4.1-bin.zip"
 FPC_STABLE=""
 LAZARUS_STABLE="lazarus_1_8_4"
 LAZBUILD_PARAMETERS=(
@@ -157,6 +160,8 @@ CleanOldConfig(){
 	if [ -e $LAMW4LINUX_HOME ] ; then
 		sudo rm $LAMW4LINUX_HOME -r
 	fi
+
+	if [ -e $LAMW4_LINUX_PATH_CFG ]; then  rm -r $LAMW4_LINUX_PATH_CFG; fi
 
 	if [ -e $ANDROID_HOME ] ; then
 		sudo rm $ANDROID_HOME  -r
@@ -332,7 +337,7 @@ mainInstall(){
 
 			if [ $USE_PROXY = 1 ]; then
 				SDK_MANAGER_CMD_PARAMETERS=("platforms;android-25" "build-tools;25.0.3" "tools" "ndk-bundle" "extras;android;m2repository" --no_https --proxy=http --proxy_host=$PROXY_SERVER --proxy_port=$PORT_SERVER )
-				SDK_LICENSES_PARAMETERS=( "--licenses" --no_https --proxy=http --proxy_host=$PROXY_SERVER --proxy_port=$PORT_SERVER)
+				SDK_LICENSES_PARAMETERS=( --licenses --no_https --proxy=http --proxy_host=$PROXY_SERVER --proxy_port=$PORT_SERVER )
 				export http_proxy=$PROXY_URL
 				export https_proxy=$PROXY_URL
 		#	ActiveProxy 1
@@ -364,23 +369,28 @@ mainInstall(){
 
 		changeDirectory $ANDROID_HOME
 		if [ ! -e $GRADLE_HOME ]; then
-			wget "https://services.gradle.org/distributions/gradle-4.1-bin.zip"
+			wget $GRADE_ZIP_LNK
 			if [ $? != 0 ] ; then
-				wget "https://services.gradle.org/distributions/gradle-4.1-bin.zip"
+				rm *.zip*
+				wget $GRADE_ZIP_LNK
 			fi
+			unzip $GRADE_ZIP_FILE
 		fi
-		unzip "gradle-4.1-bin.zip"
-		rm "gradle-4.1-bin.zip"
+		
+		if [ -e  $GRADE_ZIP_FILE ]; then
+			rm $GRADE_ZIP_FILE
+		fi
 		changeDirectory $ANDROID_SDK
 		#echo "pwd=$PWD"1
 		#ls -la 
 		if [ ! -e tools ] ; then
-			wget "https://dl.google.com/android/repository/sdk-tools-linux-3859397.zip" #getting sdk 
+			wget $SDK_TOOLS_URL #getting sdk 
 			if [ $? != 0 ]; then 
-				wget "https://dl.google.com/android/repository/sdk-tools-linux-3859397.zip"
+				wget $SDK_TOOLS_URL
 			fi
+			unzip sdk-tools-linux-3859397.zip
 		fi
-		unzip sdk-tools-linux-3859397.zip
+		
 		#rm sdk-tools-linux-3859397.zip
 
 		changeDirectory $ANDROID_SDK/tools/bin #change directory
@@ -455,6 +465,9 @@ mainInstall(){
 		mkdir -p $LAMW4LINUX_HOME/fpcsrc
 		changeDirectory $LAMW4LINUX_HOME/fpcsrc
 		svn checkout $URL_FPC
+		if [ $? != 0 ]; then
+			svn checkout $URL_FPC
+		fi
 		#mv $FPC_RELEASE fpcsrc
 		changeDirectory $FPC_RELEASE
 		#sudo make clean crossall OS_TARGET=android CPU_TARGET=arm
@@ -518,9 +531,9 @@ mainInstall(){
 		for((i=0; i<${#lamw_log_str[*]};i++)) 
 		do
 			if [ $i = 0 ] ; then 
-				echo ${lamw_log_str[i]} > $LAMW4LINUX_HOME/lamw-install.log
+				printf "${lamw_log_str[i]}" > $LAMW4LINUX_HOME/lamw-install.log
 			else
-				echo ${lamw_log_str[i]} >> $LAMW4LINUX_HOME/lamw-install.log
+				printf "${lamw_log_str[i]}" >> $LAMW4LINUX_HOME/lamw-install.log
 			fi
 		done
 		zenity --info --text "Info:\nLAMW4Linux:$LAMW4LINUX_HOME\nLAMW workspace : $HOME/Dev/lamw_workspace\nAndroid SDK:$ANDROID_HOME/sdk\nAndroid NDK:$ANDROID_HOME/ndk\nGradle:$GRADLE_HOME\nLOG:$LAMW4LINUX_HOME/lamw-install.log"
