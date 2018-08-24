@@ -3,11 +3,11 @@
 #Universidade federal de Mato Grosso
 #Curso ciencia da computação
 #AUTOR: Daniel Oliveira Souza <oliveira.daniel@gmail.com>
-#Versao LAMW-INSTALL: 0.1.1
+#Versao LAMW-INSTALL: 0.1.2
 #Descrição: Este script configura o ambiente de desenvolvimento para o LAMW
 
 #pwd
-LAMW_INSTALL_VERSION="0.1.1"
+LAMW_INSTALL_VERSION="0.1.2"
 LAMW_INSTALL_WELCOME=(
 	"\t\tWelcome LAMW4Linux Installer  version: $LAMW_INSTALL_VERSION\n"
 	"\t\tPowerd by DanielTimelord\n"
@@ -146,7 +146,6 @@ ActiveProxy(){
 		fi
 	fi
 }
-
 
 
 CleanOldConfig(){
