@@ -60,14 +60,13 @@ libs_android="libx11-dev libgtk2.0-dev libgdk-pixbuf2.0-dev libcairo2-dev libpan
 prog_tools="menu fpc git subversion make build-essential zip unzip unrar android-tools-adb ant openjdk-8-jdk "
 packs=()
 
-
 LAMW4LinuxPostConfig(){
 	if [ ! -e $LAMW4_LINUX_PATH_CFG ] ; then
 		mkdir LAMW4_LINUX_PATH_CFG
 	fi
 
-	if [ ! -e LAMW_WORKSPACE_HOME ] ; then
-		mkdir -p LAMW_WORKSPACE_HOME
+	if [ ! -e $LAMW_WORKSPACE_HOME ] ; then
+		mkdir -p $LAMW_WORKSPACE_HOME
 	fi
 	java_versions=("/usr/lib/jvm/java-8-openjdk-amd64"  "/usr/lib/jvm/java-8-oracle"  "/usr/lib/jvm/java-8-openjdk-i386")
 	java_path=""
@@ -543,7 +542,7 @@ mainInstall(){
 echo "----------------------------------------------------------------------"
 printf "${LAMW_INSTALL_WELCOME[*]}"
 echo "----------------------------------------------------------------------"
-echo "Warning: Earlier versions of FPC and Lazarus will be removed!
+echo "Warning: Earlier versions of FPC and Lazarus (debian package) will be removed!
 LAMW-Install (Linux supported Debian 9, Ubuntu 16.04 LTS, Linux Mint 18)
 Generate LAMW4Linux to  android-sdk=$SDK_VERSION"
 
