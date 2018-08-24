@@ -62,7 +62,7 @@ packs=()
 
 LAMW4LinuxPostConfig(){
 	if [ ! -e $LAMW4_LINUX_PATH_CFG ] ; then
-		mkdir LAMW4_LINUX_PATH_CFG
+		mkdir $LAMW4_LINUX_PATH_CFG
 	fi
 
 	if [ ! -e $LAMW_WORKSPACE_HOME ] ; then
