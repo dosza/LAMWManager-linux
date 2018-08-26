@@ -3,17 +3,16 @@
 #Universidade federal de Mato Grosso
 #Curso ciencia da computação
 #AUTOR: Daniel Oliveira Souza <oliveira.daniel@gmail.com>
-#Versao LAMW-INSTALL: 0.1.2
+#Versao LAMW-INSTALL: 0.1.3
 #Descrição: Este script configura o ambiente de desenvolvimento para o LAMW
 
-#pwd
-LAMW_INSTALL_VERSION="0.1.2"
+
+LAMW_INSTALL_VERSION="0.1.3"
 LAMW_INSTALL_WELCOME=(
 	"\t\tWelcome LAMW4Linux Installer  version: $LAMW_INSTALL_VERSION\n"
 	"\t\tPowerd by DanielTimelord\n"
 	"\t\t<oliveira.daniel109@gmail.com>\n"
 )
-
 
 export DEBIAN_FRONTEND="gnome"
 export URL_FPC=""
@@ -38,7 +37,7 @@ SDK_LICENSES_PARAMETERS=()
 LAZARUS_STABLE_SRC_LNK="https://svn.freepascal.org/svn/lazarus/tags/lazarus_1_8_4"
 LAMW_SRC_LNK="https://github.com/jmpessoa/lazandroidmodulewizard.git"
 LAMW4_LINUX_PATH_CFG="$HOME/.lamw4linux"
-LAMW4LINUX_HOME=$HOME/lamw4linux
+LAMW4LINUX_HOME="$HOME/lamw4linux"
 LAMW_IDE_HOME="$LAMW4LINUX_HOME/lamw4linux" # path to link-simbolic to ide 
 LAMW_WORKSPACE_HOME="$HOME/Dev/lamw_workspace"  #path to lamw_workspace
 LAMW4LINUX_EXE_PATH="$LAMW_IDE_HOME/lamw4linux"
@@ -49,6 +48,8 @@ GRADE_ZIP_LNK="https://services.gradle.org/distributions/gradle-4.1-bin.zip"
 GRADE_ZIP_FILE="gradle-4.1-bin.zip"
 FPC_STABLE=""
 LAZARUS_STABLE="lazarus_1_8_4"
+
+#this array store the configuration for lazbuild install the LAMW 
 LAZBUILD_PARAMETERS=(
 	"--build-ide= --add-package $ANDROID_HOME/lazandroidmodulewizard/trunk/android_bridges/tfpandroidbridge_pack.lpk --primary-config-path=$LAMW4_LINUX_PATH_CFG  --lazarusdir=$LAMW_IDE_HOME"
 	"--build-ide= --add-package $ANDROID_HOME/lazandroidmodulewizard/trunk/android_wizard/lazandroidwizardpack.lpk --primary-config-path=$LAMW4_LINUX_PATH_CFG --lazarusdir=$LAMW_IDE_HOME"
@@ -59,7 +60,10 @@ LAZBUILD_PARAMETERS=(
 libs_android="libx11-dev libgtk2.0-dev libgdk-pixbuf2.0-dev libcairo2-dev libpango1.0-dev libxtst-dev libatk1.0-dev libghc-x11-dev freeglut3 freeglut3-dev "
 prog_tools="menu fpc git subversion make build-essential zip unzip unrar android-tools-adb ant openjdk-8-jdk "
 packs=()
+#
 
+
+#this  fuction create a INI file to config  all paths used in lamw framework 
 LAMW4LinuxPostConfig(){
 	if [ ! -e $LAMW4_LINUX_PATH_CFG ] ; then
 		mkdir $LAMW4_LINUX_PATH_CFG
@@ -111,6 +115,8 @@ LAMW4LinuxPostConfig(){
 		fi
 	done
 }
+
+#cd not a native command, is a systemcall used to exec, read more in exec man 
 changeDirectory(){
 	if [ "$1" != "" ] ; then
 		if [ -e $1  ]; then
@@ -118,6 +124,7 @@ changeDirectory(){
 		fi
 	fi 
 }
+#this code add support a proxy 
 ActiveProxy(){
 	svn --help > /dev/null
 	if  [ $1 = 1 ]; then
@@ -147,7 +154,7 @@ ActiveProxy(){
 	fi
 }
 
-
+#this function remove old config of lamw4linux  
 CleanOldConfig(){
 	if [ -e $HOME/laz4ndroid ]; then
 		sudo rm  -r $HOME/laz4ndroid
@@ -215,6 +222,9 @@ CleanOldConfig(){
 	sed -i '/export PATH=$PATH:$HOME\/android\/ndk-toolchain/d'  $HOME/.profile
 	sed -i '/export PATH=$PATH:$HOME\/android\/gradle-4.1\/bin/d' $HOME/.profile		
 }
+
+
+#this function returns a version fpc 
 SearchPackage(){
 	index=-1
 	#vetor que armazena informações sobre a intalação do pacote
@@ -296,6 +306,8 @@ configureFPC(){
 	SearchPackage fpc
 		index=$?
 		parseFPC ${packs[$index]}
+
+		#this config enable to crosscompile in fpc 
 		fpc_cfg_str=(
 			"#IFDEF ANDROID"
 			"#IFDEF CPUARM"
@@ -367,10 +379,10 @@ mainInstall(){
 
 		changeDirectory $ANDROID_HOME
 		if [ ! -e $GRADLE_HOME ]; then
-			wget $GRADE_ZIP_LNK
+			wget -c $GRADE_ZIP_LNK
 			if [ $? != 0 ] ; then
-				rm *.zip*
-				wget $GRADE_ZIP_LNK
+				#rm *.zip*
+				wget -c $GRADE_ZIP_LNK
 			fi
 			unzip $GRADE_ZIP_FILE
 		fi
@@ -382,9 +394,9 @@ mainInstall(){
 		#echo "pwd=$PWD"1
 		#ls -la 
 		if [ ! -e tools ] ; then
-			wget $SDK_TOOLS_URL #getting sdk 
+			wget -c $SDK_TOOLS_URL #getting sdk 
 			if [ $? != 0 ]; then 
-				wget $SDK_TOOLS_URL
+				wget -c $SDK_TOOLS_URL
 			fi
 			unzip sdk-tools-linux-3859397.zip
 		fi
@@ -404,7 +416,14 @@ mainInstall(){
 			sudo apt-get remove --purge openjdk-11* -y
 		fi
 		yes | ./sdkmanager ${SDK_LICENSES_PARAMETERS[*]}
+		if [ $? != 0 ]; then 
+			yes | ./sdkmanager ${SDK_LICENSES_PARAMETERS[*]}
+		fi
 		./sdkmanager ${SDK_MANAGER_CMD_PARAMETERS[*]}  # instala sdk sem intervenção humana  
+
+		if [ $? != 0 ]; then 
+			./sdkmanager ${SDK_MANAGER_CMD_PARAMETERS[*]}
+		fi
 		#sed -i 's/yes | exec "$JAVACMD" "$@"/exec "$JAVACMD" "$@"/g' sdkmanager # restaura o estado anterior do arquivo
 
 		ln -sf "$ANDROID_HOME/sdk/ndk-bundle" "$ANDROID_HOME/ndk"
@@ -464,7 +483,14 @@ mainInstall(){
 		changeDirectory $LAMW4LINUX_HOME/fpcsrc
 		svn checkout $URL_FPC
 		if [ $? != 0 ]; then
+			#sudo rm $FPC_RELEASE/.svn -r
+			sudo rm -r $FPC_RELEASE
 			svn checkout $URL_FPC
+			if [ $? != 0 ]; then 
+				sudo rm -r $FPC_RELEASE
+				echo "possible network instability! Try later!"
+				exit 1
+			fi
 		fi
 		#mv $FPC_RELEASE fpcsrc
 		changeDirectory $FPC_RELEASE
@@ -490,16 +516,37 @@ mainInstall(){
 		#firefox $CROSS_COMPILE_URL
 		changeDirectory $ANDROID_HOME
 		svn co $LAMW_SRC_LNK
+		if [ $? != 0 ]; then #case fails last command , try svn chekout
+			sudo rm -r lazandroidmodulewizard.git
+			svn co $LAMW_SRC_LNK
+			if [ $? != 0 ]; then 
+				sudo rm -r lazandroidmodulewizard.git
+				echo "possible network instability! Try later!"
+				exit 1
+			fi
+		fi
 		ln -sf $ANDROID_HOME/lazandroidmodulewizard.git $ANDROID_HOME/lazandroidmodulewizard
 
 		changeDirectory $LAMW4LINUX_HOME
 		svn co $LAZARUS_STABLE_SRC_LNK
+		if [ $? != 0 ]; then  #case fails last command , try svn chekout 
+			sudo rm -r $LAZARUS_STABLE
+			#svn cleanup
+			#changeDirectory $LAMW4LINUX_HOME
+			svn co $LAZARUS_STABLE_SRC_LNK
+			if [ $? != 0 ]; then 
+				sudo rm -r $LAZARUS_STABLE
+				echo "possible network instability! Try later!"
+				exit 1
+			fi
+			#svn revert -R  $LAMW_SRC_LNK
+		fi
 		ln -sf $LAMW4LINUX_HOME/$LAZARUS_STABLE $LAMW_IDE_HOME  # link to lamw4_home directory 
 		ln -sf $LAMW_IDE_HOME/lazarus $LAMW4LINUX_EXE_PATH #link  to lazarus executable
 		changeDirectory $LAMW_IDE_HOME
 		make clean all
 
-		#build ide 
+		#build ide  with lamw framework 
 		for((i=0;i< ${#LAZBUILD_PARAMETERS[@]};i++))
 		do
 			./lazbuild ${LAZBUILD_PARAMETERS[i]}
@@ -511,9 +558,11 @@ mainInstall(){
 		changeDirectory $ANDROID_HOME
 		#svn co https://github.com/jmpessoa/lazandroidmodulewizard.git
 		#ln -sf $ANDROID_HOME/lazandroidmodulewizard.git $ANDROID_HOME/lazandroidmodulewizard
-		if [ ! -e ~/.local/share/applications ] ; then
+		if [ ! -e ~/.local/share/applications ] ; then #create a directory of local apps launcher, if not exists 
 			mkdir ~/.local/share/applications
 		fi
+
+		#create a lauch to lamw4linux in start menu 
 		echo "[Desktop Entry]" > $LAMW_MENU_ITEM_PATH
 		echo "Name=LAMW4Linux" >>  $LAMW_MENU_ITEM_PATH
 		echo "Exec=$LAMW4LINUX_EXE_PATH --primary-config-path=$LAMW4_LINUX_PATH_CFG" >>$LAMW_MENU_ITEM_PATH
@@ -522,6 +571,7 @@ mainInstall(){
 		echo "Categories=Development;IDE;" >> $LAMW_MENU_ITEM_PATH
 		chmod +x $LAMW_MENU_ITEM_PATH
 		LAMW4LinuxPostConfig
+		#add support the usb debug  on linux for anywhere android device 
 		sudo printf 'SUBSYSTEM=="usb", ATTR{idVendor}=="<VENDOR>", MODE="0666", GROUP="plugdev"\n'  | sudo tee /etc/udev/rules.d/51-android.rules
 		sudo service udev restart
 		update-menus
@@ -538,15 +588,26 @@ mainInstall(){
 
 
 }
-echo "----------------------------------------------------------------------"
-printf "${LAMW_INSTALL_WELCOME[*]}"
-echo "----------------------------------------------------------------------"
-echo "Warning: Earlier versions of FPC and Lazarus (debian package) will be removed!
-LAMW-Install (Linux supported Debian 9, Ubuntu 16.04 LTS, Linux Mint 18)
-Generate LAMW4Linux to  android-sdk=$SDK_VERSION"
 
+if  [  "$(whoami)" = "root" ] #impede que o script seja executado pelo root 
+then
+	echo "Error: this version  of LAMW4Linux was designed  to run without root priveleges" >&2 # >&2 is a file descriptor to /dev/stderror
+	echo "Exiting ..."
+	exit 1
+fi
+#else 
+	echo "----------------------------------------------------------------------"
+	printf "${LAMW_INSTALL_WELCOME[*]}"
+	echo "----------------------------------------------------------------------"
+	echo "Warning: Earlier versions of FPC and Lazarus (debian package) will be removed!
+	LAMW-Install (Linux supported Debian 9, Ubuntu 16.04 LTS, Linux Mint 18)
+	Generate LAMW4Linux to  android-sdk=$SDK_VERSION"
+
+#Parameters are useful for understanding script operation
 case "$1" in
-
+	"version")
+	echo "LAMW4Linux  version $LAMW_INSTALL_VERSION"
+	;;
 	"clean")
 		CleanOldConfig
 	;;
@@ -570,3 +631,4 @@ case "$1" in
 	;;
 	
 esac
+#fi
