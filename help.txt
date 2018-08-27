@@ -15,7 +15,7 @@ What is new!
 	Add in start menu a launcher to LAMW4Linux
 
 
-----------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------
 
 Commands:
 this script is lamw-install.sh
@@ -26,7 +26,16 @@ this script is lamw-install.sh
 			--use_proxy # this option is beta, (comming soom will be detect proxyconfig , wait)
 	
 
-Warm:	Does must use absolute path to run these is script!
+Warm:	Does must use absolute path to run these is script!s
 
 If script are in current directory run: 
-bash $(pwd)/lamw-install.sh
+bash $(pwd)/lamw-install.sh clean-install
+
+
+If script are in other directory:
+
+bash /absolute_path/lamw-install clean-install
+sample:
+
+bash /home/danny/Downloads/LAMWAutoRunScripts/lamw-install.sh clean-install
+

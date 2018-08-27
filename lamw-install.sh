@@ -228,7 +228,7 @@ CleanOldConfig(){
 SearchPackage(){
 	index=-1
 	#vetor que armazena informações sobre a intalação do pacote
-	if [ $1 != "" ]  ; then
+	if [ "$1" != "" ]  ; then
 		packs=( $(dpkg -l $1) )
 		
 		tam=${#packs[@]}
