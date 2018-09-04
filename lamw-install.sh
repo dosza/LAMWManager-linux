@@ -17,11 +17,13 @@ LAMW_INSTALL_WELCOME=(
 export DEBIAN_FRONTEND="gnome"
 export URL_FPC=""
 export FPC_VERSION=""
-export FPC_CFG_PATH=""
+export FPC_CFG_PATH="$HOME/.fpc.cfg"
+export PPC_CONFIG_PATH=$FPC_CFG_PATH
 export FPC_RELEASE=""
 export flag_new_ubuntu_lts=0
 export FPC_LIB_PATH=""
 export FPC_VERSION=""
+work_home_desktop=$(xdg-user-dir DESKTOP)
 ANDROID_HOME="$HOME/android"
 ANDROID_SDK="$ANDROID_HOME/sdk"
 CROSS_COMPILE_URL="https://github.com/newpascal/fpcupdeluxe/releases/tag/v1.6.1e"
@@ -49,7 +51,9 @@ GRADE_ZIP_FILE="gradle-4.1-bin.zip"
 FPC_STABLE=""
 LAZARUS_STABLE="lazarus_1_8_4"
 
-#this array store the configuration for lazbuild install the LAMW 
+FPC_ID_DEFAULT=0
+FPC_CROSS_ARM_DEFAULT_PARAMETERS=('clean crossall crossinstall  CPU_TARGET=arm OS_TARGET=android OPT="-dFPC_ARMHF" SUBARCH="armv7a" INSTALL_PREFIX=/usr')
+FPC_CROSS_ARM_MODE_FPCDELUXE=(clean crossall crossinstall  CPU_TARGET=arm OS_TARGET=android CROSSOPT="-CpARMV7A -CfVFPV3" INSTALL_PREFIX=/usr)
 LAZBUILD_PARAMETERS=(
 	"--build-ide= --add-package $ANDROID_HOME/lazandroidmodulewizard/trunk/android_bridges/tfpandroidbridge_pack.lpk --primary-config-path=$LAMW4_LINUX_PATH_CFG  --lazarusdir=$LAMW_IDE_HOME"
 	"--build-ide= --add-package $ANDROID_HOME/lazandroidmodulewizard/trunk/android_wizard/lazandroidwizardpack.lpk --primary-config-path=$LAMW4_LINUX_PATH_CFG --lazarusdir=$LAMW_IDE_HOME"
@@ -61,8 +65,47 @@ libs_android="libx11-dev libgtk2.0-dev libgdk-pixbuf2.0-dev libcairo2-dev libpan
 prog_tools="menu fpc git subversion make build-essential zip unzip unrar android-tools-adb ant openjdk-8-jdk "
 packs=()
 #
+#to build
+BuildCrossArm(){
+	if [ "$1" != "" ]; then # 
+		#changeDirectory $FPC_RELEASE
+		case $1 in 
+			0 )
+				
+				#sudo rm /usr/lib/fpc/$FPC_VERSION/ppcrossarm
+				#sudo rm /usr/lib/fpc/$FPC_VERSION/units/arm-android -r
+				sudo make clean 
+				sudo make crossall crossinstall  CPU_TARGET=arm OPT="-dFPC_ARMEL" OS_TARGET=android CROSSOPT="-CpARMV7A -CfVFPV3" INSTALL_PREFIX=/usr
+			;;
+			1 )
+				echo "build to Processor ARMV7a -CfSoft"
+				sudo make clean crossall crossinstall  CPU_TARGET=arm OS_TARGET=android OPT="-dFPC_ARMHF" SUBARCH="armv7a" INSTALL_PREFIX=/usr #default ARMV7 option  
+			;;
+			2)
+				echo "build to Processor ARMv6"
+				sudo make clean crossall crossinstall  CPU_TARGET=arm OS_TARGET=android OPT="-dFPC_ARMEL" CROSSOPT="-CpARMv6 -CfSoft" INSTALL_PREFIX=/usr
+			;;
+			# 2 )
+			# 	sudo make clean crossall  crossinstall OS_TARGET=android CPU_TARGET=arm CROSSOPT="-CpARMv7a -CfVFPv3_D16 -OpARMv7a -OoFastMath -O3 -XX -Xs -CX" CROSSBINDIR="$ANDROID_HOME/android-ndk/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin" BINUTILSPREFIX=arm-linux-androideabi- INSTALL_PREFIX=/usr
+			# ;;
+			
+			# 4 )
+			# 	sudo make clean crossall crossinstall  CPU_TARGET=arm OS_TARGET=android OPT="-dFPC_ARMHF" SUBARCH="armv7a" CROSSOPT="-Cparmv7a -Cfvfpv3"  INSTALL_PREFIX=/usr
+			# ;;
+			# 5 )
+			# 	echo "build by  instruction by simonsayz"
+			# 	sudo make clean crossall crossinstall  OS_TARGET=android CPU_TARGET=arm OPT="-dFPC_ARMEL" CROSSOPT="-CpARMv7a -CfVFPv3" INSTALL_PREFIX=/usr
 
-
+			# ;;
+			# #by renabor
+			# 3 )
+			# 	#fpcmake -Tarm-android
+ 		# 		#make clean crossall OS_TARGET=android CPU_TARGET=arm
+			# 	sudo make clean crossall crossinstall OS_TARGET=android CPU_TARGET=arm CROSSOPT="-Cparmv7a -Cfvfpv3 -OpARMv7a -XX -Xs -CX" INSTALL_PREFIX=/usr 
+			# ;;
+		esac
+	fi				
+}
 #this  fuction create a INI file to config  all paths used in lamw framework 
 LAMW4LinuxPostConfig(){
 	if [ ! -e $LAMW4_LINUX_PATH_CFG ] ; then
@@ -100,7 +143,7 @@ LAMW4LinuxPostConfig(){
 		"PrebuildOSYS=linux-x86_64"
 		"MainActivity=App"
 		"FullProjectName="
-		"InstructionSet=1"
+		"InstructionSet=2"
 		"AntPackageName=org.lamw"
 		"AndroidPlatform=0"
 		"AntBuildMode=debug"
@@ -109,9 +152,9 @@ LAMW4LinuxPostConfig(){
 	for ((i=0;i<${#LAMW_init_str[@]};i++))
 	do
 		if [ $i = 0 ]; then 
-			echo ${LAMW_init_str[i]} > $LAMW4_LINUX_PATH_CFG/JNIAndroidProject.ini 
+			echo "${LAMW_init_str[i]}" > $LAMW4_LINUX_PATH_CFG/JNIAndroidProject.ini 
 		else
-			echo ${LAMW_init_str[i]} >> $LAMW4_LINUX_PATH_CFG/JNIAndroidProject.ini
+			echo "${LAMW_init_str[i]}" >> $LAMW4_LINUX_PATH_CFG/JNIAndroidProject.ini
 		fi
 	done
 }
@@ -209,6 +252,9 @@ CleanOldConfig(){
 	if [ -e /usr/bin/arm-linux-as ] ; then 
 	 	sudo rm  /usr/bin/arm-linux-as
 	fi
+	if [ -e /usr/lib/fpc/$FPC_VERSION/fpmkinst/arm-android ]; then
+		sudo rm -r /usr/lib/fpc/$FPC_VERSION/fpmkinst/arm-android
+	fi
 
 
 	if [ -e /usr/bin/arm-linux-androideabi-as ]; then
@@ -216,6 +262,10 @@ CleanOldConfig(){
 	fi
 	if [ -e /usr/bin/arm-linux-ld ] ; then 
 		sudo rm /usr/bin/arm-linux-ld
+	fi
+
+	if [ -e $FPC_CFG_PATH ]; then #remove local ppc config
+		rm $FPC_CFG_PATH
 	fi
 	sed -i '/export PATH=$PATH:$HOME\/android\/ndk-toolchain/d'  $HOME/.bashrc #\/ is scape of /
 	sed -i '/export PATH=$PATH:$HOME\/android\/gradle-4.1\/bin/d' $HOME/.bashrc
@@ -268,7 +318,7 @@ parseFPC(){
 		*"3.0.0"*)
 			export URL_FPC="https://svn.freepascal.org/svn/fpc/tags/release_3_0_0"
 			export FPC_LIB_PATH="/usr/lib/fpc"
-			export FPC_CFG_PATH="/etc/fpc-3.0.0.cfg"
+			#export FPC_CFG_PATH="/etc/fpc-3.0.0.cfg"
 			export FPC_RELEASE="release_3_0_0"
 			export FPC_VERSION="3.0.0"
 			export FPC_LIB_PATH="/usr/lib/fpc/$FPC_VERSION"
@@ -276,7 +326,7 @@ parseFPC(){
 		*"3.0.4"*)
 			export FPC_VERSION="3.0.4"
 			export URL_FPC="https://svn.freepascal.org/svn/fpc/tags/release_3_0_4"
-			export FPC_CFG_PATH="/etc/fpc-3.0.4.cfg"
+			#export FPC_CFG_PATH="/etc/fpc-3.0.4.cfg"
 			if [ $flag_new_ubuntu_lts = 0 ] ; then
 				if [ -e /usr/lib/fpc/$FPC_VERSION ]; then
 					export FPC_LIB_PATH="/usr/lib/fpc/$FPC_VERSION"
@@ -306,13 +356,20 @@ configureFPC(){
 	SearchPackage fpc
 		index=$?
 		parseFPC ${packs[$index]}
+		if [ ! -e $FPC_CFG_PATH ]; then
+			fpcmkcfg-$FPC_VERSION -d basepath=/usr/lib/fpc/$FPC_VERSION -o $FPC_CFG_PATH
+		fi
 
 		#this config enable to crosscompile in fpc 
 		fpc_cfg_str=(
 			"#IFDEF ANDROID"
 			"#IFDEF CPUARM"
+			"-CpARMV7A"
+			"-CfVFPV3"
+			"-Xd"
 			"-XParm-linux-androideabi-"
 			"-Fl$ANDROID_HOME/ndk/platforms/android-$SDK_VERSION/arch-arm/usr/lib"
+			"-FLlibdl.so"
 			"-FD$ANDROID_HOME/ndk/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin"
 			'-Fu/usr/lib/fpc/$fpcversion/units/$fpctarget'
 			'-Fu/usr/lib/fpc/$fpcversion/units/$fpctarget/*'
@@ -334,7 +391,7 @@ configureFPC(){
 				for ((i = 0 ; i<${#fpc_cfg_str[@]};i++)) 
 				do
 					#echo ${fpc_cfg_str[i]}
-					sudo echo "${fpc_cfg_str[i]}" | sudo tee -a  $FPC_CFG_PATH
+					echo "${fpc_cfg_str[i]}" | tee -a  $FPC_CFG_PATH
 				done	
 			fi
 		fi
@@ -343,248 +400,221 @@ configureFPC(){
 mainInstall(){
 	if [ "$1" = "--use_proxy" ] ;then
 				USE_PROXY=1
-			fi
+	fi
 
-			if [ $USE_PROXY = 1 ]; then
-				SDK_MANAGER_CMD_PARAMETERS=("platforms;android-25" "build-tools;25.0.3" "tools" "ndk-bundle" "extras;android;m2repository" --no_https --proxy=http --proxy_host=$PROXY_SERVER --proxy_port=$PORT_SERVER )
-				SDK_LICENSES_PARAMETERS=( --licenses --no_https --proxy=http --proxy_host=$PROXY_SERVER --proxy_port=$PORT_SERVER )
-				export http_proxy=$PROXY_URL
-				export https_proxy=$PROXY_URL
-		#	ActiveProxy 1
-			else
-				SDK_MANAGER_CMD_PARAMETERS=("platforms;android-25" "build-tools;25.0.3" "tools" "ndk-bundle" "extras;android;m2repository")			#ActiveProxy 0
-				SDK_LICENSES_PARAMETERS=(--licenses )
-			fi
-			sudo apt update;
-			sudo apt-get remove --purge fpc* -y
-			sudo apt-get remove --purge  lazarus* -y
-			sudo apt-get autoremove --purge -y
+	if [ $USE_PROXY = 1 ]; then
+		SDK_MANAGER_CMD_PARAMETERS=("platforms;android-25" "build-tools;25.0.3" "tools" "ndk-bundle" "extras;android;m2repository" --no_https --proxy=http --proxy_host=$PROXY_SERVER --proxy_port=$PORT_SERVER )
+		SDK_LICENSES_PARAMETERS=( --licenses --no_https --proxy=http --proxy_host=$PROXY_SERVER --proxy_port=$PORT_SERVER )
+		export http_proxy=$PROXY_URL
+		export https_proxy=$PROXY_URL
+#	ActiveProxy 1
+	else
+		SDK_MANAGER_CMD_PARAMETERS=("platforms;android-25" "build-tools;25.0.3" "tools" "ndk-bundle" "extras;android;m2repository")			#ActiveProxy 0
+		SDK_LICENSES_PARAMETERS=(--licenses )
+	fi
+	sudo apt-get update;
+	sudo apt-get remove --purge  lazarus* -y
+	sudo apt-get autoremove --purge -y
 			#sudo apt-get install fpc
 
 
 
 
-		sudo apt-get install $libs_android $prog_tools  -y --allow-unauthenticated
-		if [ "$?" != "0" ]; then
-			sudo apt-get install $libs_android $prog_tools  -y --allow-unauthenticated --fix-missing
-		fi
+	sudo apt-get install $libs_android $prog_tools  -y --allow-unauthenticated
+	if [ "$?" != "0" ]; then
+		sudo apt-get install $libs_android $prog_tools  -y --allow-unauthenticated --fix-missing
+	fi
 
-		configureFPC
-		if [ $USE_PROXY = 1 ] ; then
-			ActiveProxy 1
-		else
-			ActiveProxy 0
-		fi
-		mkdir -p $ANDROID_SDK
+	configureFPC
+	if [ $USE_PROXY = 1 ] ; then
+		ActiveProxy 1
+	else
+		ActiveProxy 0
+	fi
+	mkdir -p $ANDROID_SDK
 
-		changeDirectory $ANDROID_HOME
-		if [ ! -e $GRADLE_HOME ]; then
+	changeDirectory $ANDROID_HOME
+	if [ ! -e $GRADLE_HOME ]; then
+		wget -c $GRADE_ZIP_LNK
+		if [ $? != 0 ] ; then
+			#rm *.zip*
 			wget -c $GRADE_ZIP_LNK
-			if [ $? != 0 ] ; then
-				#rm *.zip*
-				wget -c $GRADE_ZIP_LNK
-			fi
-			unzip $GRADE_ZIP_FILE
 		fi
-		
-		if [ -e  $GRADE_ZIP_FILE ]; then
-			rm $GRADE_ZIP_FILE
+		unzip $GRADE_ZIP_FILE
+	fi
+	
+	if [ -e  $GRADE_ZIP_FILE ]; then
+		rm $GRADE_ZIP_FILE
+	fi
+	changeDirectory $ANDROID_SDK
+	
+	if [ ! -e tools ] ; then
+		wget -c $SDK_TOOLS_URL #getting sdk 
+		if [ $? != 0 ]; then 
+			wget -c $SDK_TOOLS_URL
 		fi
-		changeDirectory $ANDROID_SDK
-		#echo "pwd=$PWD"1
-		#ls -la 
-		if [ ! -e tools ] ; then
-			wget -c $SDK_TOOLS_URL #getting sdk 
-			if [ $? != 0 ]; then 
-				wget -c $SDK_TOOLS_URL
-			fi
-			unzip sdk-tools-linux-3859397.zip
-		fi
-		
-		#rm sdk-tools-linux-3859397.zip
+		unzip sdk-tools-linux-3859397.zip
+	fi
 
-		changeDirectory $ANDROID_SDK/tools/bin #change directory
-		#sed -i 's/exec "$JAVACMD" "$@"/yes | exec "$JAVACMD" "$@"/g' sdkmanager #modifica o sdkmanager adicionando pipe para aceitar a licença
-		#Install SDK packages and NDK
-		#./sdkmanager "platforms;android-25" "build-tools;25.0.3" "tools" "ndk-bundle" "extras;android;m2repository"
-		#$SDK_MANAGER_CMD
-		#ls
-		
-		if [ $flag_new_ubuntu_lts = 1 ]
-		then
-			sudo apt-get remove --purge openjdk-9-* -y 
-			sudo apt-get remove --purge openjdk-11* -y
-		fi
+
+	changeDirectory $ANDROID_SDK/tools/bin #change directory
+
+	
+	if [ $flag_new_ubuntu_lts = 1 ]
+	then
+		sudo apt-get remove --purge openjdk-9-* -y 
+		sudo apt-get remove --purge openjdk-11* -y
+	fi
+	yes | ./sdkmanager ${SDK_LICENSES_PARAMETERS[*]}
+	if [ $? != 0 ]; then 
 		yes | ./sdkmanager ${SDK_LICENSES_PARAMETERS[*]}
-		if [ $? != 0 ]; then 
-			yes | ./sdkmanager ${SDK_LICENSES_PARAMETERS[*]}
-		fi
-		./sdkmanager ${SDK_MANAGER_CMD_PARAMETERS[*]}  # instala sdk sem intervenção humana  
+	fi
+	./sdkmanager ${SDK_MANAGER_CMD_PARAMETERS[*]}  # instala sdk sem intervenção humana  
 
-		if [ $? != 0 ]; then 
-			./sdkmanager ${SDK_MANAGER_CMD_PARAMETERS[*]}
-		fi
-		#sed -i 's/yes | exec "$JAVACMD" "$@"/exec "$JAVACMD" "$@"/g' sdkmanager # restaura o estado anterior do arquivo
+	if [ $? != 0 ]; then 
+		./sdkmanager ${SDK_MANAGER_CMD_PARAMETERS[*]}
+	fi
+	#sed -i 's/yes | exec "$JAVACMD" "$@"/exec "$JAVACMD" "$@"/g' sdkmanager # restaura o estado anterior do arquivo
 
-		ln -sf "$ANDROID_HOME/sdk/ndk-bundle" "$ANDROID_HOME/ndk"
-		ln -sf "$ANDROID_HOME/ndk/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin" "$ANDROID_HOME/ndk-toolchain"
-		ln -sf "$ANDROID_HOME/ndk-toolchain/arm-linux-androideabi-as" "$ANDROID_HOME/ndk-toolchain/arm-linux-as"
-		ln -sf "$ANDROID_HOME/ndk-toolchain/arm-linux-androideabi-ld" "$ANDROID_HOME/ndk-toolchain/arm-linux-ld"
+	ln -sf "$ANDROID_HOME/sdk/ndk-bundle" "$ANDROID_HOME/ndk"
+	ln -sf "$ANDROID_HOME/ndk/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin" "$ANDROID_HOME/ndk-toolchain"
+	ln -sf "$ANDROID_HOME/ndk-toolchain/arm-linux-androideabi-as" "$ANDROID_HOME/ndk-toolchain/arm-linux-as"
+	ln -sf "$ANDROID_HOME/ndk-toolchain/arm-linux-androideabi-ld" "$ANDROID_HOME/ndk-toolchain/arm-linux-ld"
 
-		sudo ln -sf "$ANDROID_HOME/ndk-toolchain/arm-linux-androideabi-as" "/usr/bin/arm-linux-androideabi-as"
-		sudo ln -sf "$ANDROID_HOME/ndk-toolchain/arm-linux-ld"  "/usr/bin/arm-linux-androideabi-ld"
+	sudo ln -sf "$ANDROID_HOME/ndk-toolchain/arm-linux-androideabi-as" "/usr/bin/arm-linux-androideabi-as"
+	sudo ln -sf "$ANDROID_HOME/ndk-toolchain/arm-linux-ld"  "/usr/bin/arm-linux-androideabi-ld"
 
-		aux=$(tail -1 $HOME/.profile)       #tail -1 mostra a última linha do arquivo 
-		if [ "$aux" != "" ] ; then   # verifica se a última linha é vazia
-				sed  -i '$a\' $HOME/.profile #adiciona uma linha ao fim do arquivo
-		fi
+	aux=$(tail -1 $HOME/.profile)       #tail -1 mostra a última linha do arquivo 
+	if [ "$aux" != "" ] ; then   # verifica se a última linha é vazia
+			sed  -i '$a\' $HOME/.profile #adiciona uma linha ao fim do arquivo
+	fi
 
 
-		profile_file=$HOME/.bashrc
-		flag_profile_paths=0
+	profile_file=$HOME/.bashrc
+	flag_profile_paths=0
 
-		if [ -e $profile_file ];then 
-			profile_data=$(cat $profile_file)
-			case "$profile_data" in 
-				*'export PATH=$PATH:$HOME/android/'*)
-				flag_profile_paths=1
-				#exit 1
-				;;
-			esac
-		fi
+	if [ -e $profile_file ];then 
+		profile_data=$(cat $profile_file)
+		case "$profile_data" in 
+			*'export PATH=$PATH:$HOME/android/'*)
+			flag_profile_paths=1
+			#exit 1
+			;;
+		esac
+	fi
 
-		if [ $flag_profile_paths = 0 ] ; then 
-			echo 'export PATH=$PATH:$HOME/android/ndk-toolchain' >> $HOME/.bashrc
-			echo 'export PATH=$PATH:$HOME/android/gradle-4.1/bin' >> $HOME/.bashrc
-		fi
+	if [ $flag_profile_paths = 0 ] ; then 
+		echo 'export PATH=$PATH:$HOME/android/ndk-toolchain' >> $HOME/.bashrc
+		echo 'export PATH=$PATH:$HOME/android/gradle-4.1/bin' >> $HOME/.bashrc
+	fi
 
-		export PATH=$PATH:$HOME/android/ndk-toolchain
-		export PATH=$PATH:$HOME/android/gradle-4.1/bin
-		#get fpdlux
-		changeDirectory $HOME
-		#codigo para obter o crosscompile
-		# wget https://github.com/newpascal/fpcupdeluxe/releases/tag/v1.6.1e
-		# fpcupdeluxe_lnk=($( cat v1.6.1e  | grep x86 | grep linux | sed "s/<a href=\"//g" | sed "s/\"//g")) # processa o arquivo removendo < a href= e = do arquivo 
-		# i=0
-		# while [ $i -lt ${#fpcupdeluxe_lnk[*]} ]
-		# do
-		# 	echo "i=$i=${fpcupdeluxe_lnk[i]}"
-		# 	((i++))
-		# done
-		# cros_lk=$CROSS_COMPILE_URL${fpcupdeluxe_lnk[0]}
-		# echo "$cros_lk"
-		# wget $cros_lk
-
-
-		#make manual cross comp+i+l+e+
-		changeDirectory $HOME
-		mkdir -p $LAMW4LINUX_HOME
-		mkdir -p $LAMW4LINUX_HOME/fpcsrc
-		changeDirectory $LAMW4LINUX_HOME/fpcsrc
+	export PATH=$PATH:$HOME/android/ndk-toolchain
+	export PATH=$PATH:$HOME/android/gradle-4.1/bin
+	#get fpdlux
+	changeDirectory $HOME
+	#make manual cross comp+i+l+e+
+	changeDirectory $HOME
+	mkdir -p $LAMW4LINUX_HOME
+	mkdir -p $LAMW4LINUX_HOME/fpcsrc
+	changeDirectory $LAMW4LINUX_HOME/fpcsrc
+	svn checkout $URL_FPC
+	if [ $? != 0 ]; then
+		#sudo rm $FPC_RELEASE/.svn -r
+		sudo rm -r $FPC_RELEASE
 		svn checkout $URL_FPC
-		if [ $? != 0 ]; then
-			#sudo rm $FPC_RELEASE/.svn -r
+		if [ $? != 0 ]; then 
 			sudo rm -r $FPC_RELEASE
-			svn checkout $URL_FPC
-			if [ $? != 0 ]; then 
-				sudo rm -r $FPC_RELEASE
-				echo "possible network instability! Try later!"
-				exit 1
-			fi
+			echo "possible network instability! Try later!"
+			exit 1
 		fi
-		#mv $FPC_RELEASE fpcsrc
-		changeDirectory $FPC_RELEASE
-		#sudo make clean crossall OS_TARGET=android CPU_TARGET=arm
-		#sudo make clean crossall  CPU_TARGET=arm OS_TARGET=android OPT="-dFPC_ARMEL" CROSSOPT="-CpARMv6 -CfSoft"
-		#sudo make crossinstall  CPU_TARGET=arm OS_TARGET=android OPT="-dFPC_ARMEL" CROSSOPT="-CpARMv6 -CfSoft" INSTALL_PREFIX=/usr
-		
-		#make install TARGET=linux PREFIX_INSTALL=/usr
-		#if [ $flag_new_ubuntu_lts = 0 ]
-		#then
-			sudo make clean crossall crossinstall  CPU_TARGET=arm OS_TARGET=android OPT="-dFPC_ARMHF" SUBARCH="armv7a" INSTALL_PREFIX=/usr		
-		#else
-			# sudo make clean build  install OS_TARGET=linux INSTALL_PREFIX=/usr
-			#sudo make clean crossall crossinstall  CPU_TARGET=arm OS_TARGET=android OPT="-dFPC_ARMHF" SUBARCH="armv7a" INSTALL_PREFIX=/usr
-			#sudo cp /tmp/usr/
-		#fi
+	fi
+	if [ -e $FPC_LIB_PATH/ppcrossarm ]; then
+		sudo rm $FPC_LIB_PATH/ppcrossarm
+	fi
+	
+	if [ -e /usr/lib/fpc/$FPC_VERSION/fpmkinst/arm-android ]; then
+		sudo rm -r /usr/lib/fpc/$FPC_VERSION/fpmkinst/arm-android
+	fi
+	if [ -e /usr/lib/fpc/$FPC_VERSION/units/arm-android ]; then
+		sudo rm -r /usr/lib/fpc/$FPC_VERSION/units/arm-android
+	fi
 
-		sudo ln -sf $FPC_LIB_PATH/ppcrossarm /usr/bin/ppcrossarm
-		sudo ln -sf /usr/bin/ppcrossarm /usr/bin/ppcarm
-		#fi
+	changeDirectory $FPC_RELEASE
+	BuildCrossArm $FPC_ID_DEFAULT
 
-		#sudo bash -x $0 cfg-fpc $ANDROID_HOME
-		#firefox $CROSS_COMPILE_URL
-		changeDirectory $ANDROID_HOME
+	sudo ln -sf $FPC_LIB_PATH/ppcrossarm /usr/bin/ppcrossarm
+	sudo ln -sf /usr/bin/ppcrossarm /usr/bin/ppcarm
+	changeDirectory $ANDROID_HOME
+	svn co $LAMW_SRC_LNK
+	if [ $? != 0 ]; then #case fails last command , try svn chekout
+		sudo rm -r lazandroidmodulewizard.git
 		svn co $LAMW_SRC_LNK
-		if [ $? != 0 ]; then #case fails last command , try svn chekout
+		if [ $? != 0 ]; then 
 			sudo rm -r lazandroidmodulewizard.git
-			svn co $LAMW_SRC_LNK
-			if [ $? != 0 ]; then 
-				sudo rm -r lazandroidmodulewizard.git
-				echo "possible network instability! Try later!"
-				exit 1
-			fi
+			echo "possible network instability! Try later!"
+			exit 1
 		fi
-		ln -sf $ANDROID_HOME/lazandroidmodulewizard.git $ANDROID_HOME/lazandroidmodulewizard
+	fi
+	ln -sf $ANDROID_HOME/lazandroidmodulewizard.git $ANDROID_HOME/lazandroidmodulewizard
 
-		changeDirectory $LAMW4LINUX_HOME
+	changeDirectory $LAMW4LINUX_HOME
+	svn co $LAZARUS_STABLE_SRC_LNK
+	if [ $? != 0 ]; then  #case fails last command , try svn chekout 
+		sudo rm -r $LAZARUS_STABLE
+		#svn cleanup
+		#changeDirectory $LAMW4LINUX_HOME
 		svn co $LAZARUS_STABLE_SRC_LNK
-		if [ $? != 0 ]; then  #case fails last command , try svn chekout 
+		if [ $? != 0 ]; then 
 			sudo rm -r $LAZARUS_STABLE
-			#svn cleanup
-			#changeDirectory $LAMW4LINUX_HOME
-			svn co $LAZARUS_STABLE_SRC_LNK
-			if [ $? != 0 ]; then 
-				sudo rm -r $LAZARUS_STABLE
-				echo "possible network instability! Try later!"
-				exit 1
-			fi
-			#svn revert -R  $LAMW_SRC_LNK
+			echo "possible network instability! Try later!"
+			exit 1
 		fi
-		ln -sf $LAMW4LINUX_HOME/$LAZARUS_STABLE $LAMW_IDE_HOME  # link to lamw4_home directory 
-		ln -sf $LAMW_IDE_HOME/lazarus $LAMW4LINUX_EXE_PATH #link  to lazarus executable
-		changeDirectory $LAMW_IDE_HOME
-		make clean all
+		#svn revert -R  $LAMW_SRC_LNK
+	fi
+	ln -sf $LAMW4LINUX_HOME/$LAZARUS_STABLE $LAMW_IDE_HOME  # link to lamw4_home directory 
+	ln -sf $LAMW_IDE_HOME/lazarus $LAMW4LINUX_EXE_PATH #link  to lazarus executable
+	changeDirectory $LAMW_IDE_HOME
+	make clean all
 
-		#build ide  with lamw framework 
-		for((i=0;i< ${#LAZBUILD_PARAMETERS[@]};i++))
-		do
+	#build ide  with lamw framework 
+	for((i=0;i< ${#LAZBUILD_PARAMETERS[@]};i++))
+	do
+		./lazbuild ${LAZBUILD_PARAMETERS[i]}
+		if [ $? != 0 ]; then
 			./lazbuild ${LAZBUILD_PARAMETERS[i]}
-			if [ $? != 0 ]; then
-				./lazbuild ${LAZBUILD_PARAMETERS[i]}
-			fi
-		done
-
-		changeDirectory $ANDROID_HOME
-		#svn co https://github.com/jmpessoa/lazandroidmodulewizard.git
-		#ln -sf $ANDROID_HOME/lazandroidmodulewizard.git $ANDROID_HOME/lazandroidmodulewizard
-		if [ ! -e ~/.local/share/applications ] ; then #create a directory of local apps launcher, if not exists 
-			mkdir ~/.local/share/applications
 		fi
+	done
 
-		#create a lauch to lamw4linux in start menu 
-		echo "[Desktop Entry]" > $LAMW_MENU_ITEM_PATH
-		echo "Name=LAMW4Linux" >>  $LAMW_MENU_ITEM_PATH
-		echo "Exec=$LAMW4LINUX_EXE_PATH --primary-config-path=$LAMW4_LINUX_PATH_CFG" >>$LAMW_MENU_ITEM_PATH
-		echo "Icon=$LAMW_IDE_HOME/images/icons/lazarus_orange.ico" >>$LAMW_MENU_ITEM_PATH
-		echo "Type=Application" >> $LAMW_MENU_ITEM_PATH
-		echo "Categories=Development;IDE;" >> $LAMW_MENU_ITEM_PATH
-		chmod +x $LAMW_MENU_ITEM_PATH
-		LAMW4LinuxPostConfig
-		#add support the usb debug  on linux for anywhere android device 
-		sudo printf 'SUBSYSTEM=="usb", ATTR{idVendor}=="<VENDOR>", MODE="0666", GROUP="plugdev"\n'  | sudo tee /etc/udev/rules.d/51-android.rules
-		sudo service udev restart
-		update-menus
-		lamw_log_str=("Info:\nLAMW4Linux:$LAMW4LINUX_HOME\nLAMW workspace:"  "$HOME/Dev/lamw_workspace\nAndroid SDK:$ANDROID_HOME/sdk\n" "Android NDK:$ANDROID_HOME/ndk\nGradle:$GRADLE_HOME\n")
-		for((i=0; i<${#lamw_log_str[*]};i++)) 
-		do
-			if [ $i = 0 ] ; then 
-				printf "${lamw_log_str[i]}" > $LAMW4LINUX_HOME/lamw-install.log
-			else
-				printf "${lamw_log_str[i]}" >> $LAMW4LINUX_HOME/lamw-install.log
-			fi
-		done
-		zenity --info --text "Info:\nLAMW4Linux:$LAMW4LINUX_HOME\nLAMW workspace : $HOME/Dev/lamw_workspace\nAndroid SDK:$ANDROID_HOME/sdk\nAndroid NDK:$ANDROID_HOME/ndk\nGradle:$GRADLE_HOME\nLOG:$LAMW4LINUX_HOME/lamw-install.log"
+	changeDirectory $ANDROID_HOME
+	
+	if [ ! -e ~/.local/share/applications ] ; then #create a directory of local apps launcher, if not exists 
+		mkdir ~/.local/share/applications
+	fi
+
+	#create a lauch to lamw4linux in start menu 
+	echo "[Desktop Entry]" > $LAMW_MENU_ITEM_PATH
+	echo "Name=LAMW4Linux" >>  $LAMW_MENU_ITEM_PATH
+	echo "Exec=$LAMW4LINUX_EXE_PATH --primary-config-path=$LAMW4_LINUX_PATH_CFG" >>$LAMW_MENU_ITEM_PATH
+	echo "Icon=$LAMW_IDE_HOME/images/icons/lazarus_orange.ico" >>$LAMW_MENU_ITEM_PATH
+	echo "Type=Application" >> $LAMW_MENU_ITEM_PATH
+	echo "Categories=Development;IDE;" >> $LAMW_MENU_ITEM_PATH
+	chmod +x $LAMW_MENU_ITEM_PATH
+	cp $LAMW_MENU_ITEM_PATH "$work_home_desktop"
+	LAMW4LinuxPostConfig
+	#add support the usb debug  on linux for anywhere android device 
+	sudo printf 'SUBSYSTEM=="usb", ATTR{idVendor}=="<VENDOR>", MODE="0666", GROUP="plugdev"\n'  | sudo tee /etc/udev/rules.d/51-android.rules
+	sudo service udev restart
+	update-menus
+	lamw_log_str=("Info:\nLAMW4Linux:$LAMW4LINUX_HOME\nLAMW workspace:"  "$HOME/Dev/lamw_workspace\nAndroid SDK:$ANDROID_HOME/sdk\n" "Android NDK:$ANDROID_HOME/ndk\nGradle:$GRADLE_HOME\n")
+	for((i=0; i<${#lamw_log_str[*]};i++)) 
+	do
+		if [ $i = 0 ] ; then 
+			printf "${lamw_log_str[i]}" > $LAMW4LINUX_HOME/lamw-install.log
+		else
+			printf "${lamw_log_str[i]}" >> $LAMW4LINUX_HOME/lamw-install.log
+		fi
+	done
+	zenity --info --text "Info:\nLAMW4Linux:$LAMW4LINUX_HOME\nLAMW workspace : $HOME/Dev/lamw_workspace\nAndroid SDK:$ANDROID_HOME/sdk\nAndroid NDK:$ANDROID_HOME/ndk\nGradle:$GRADLE_HOME\nLOG:$LAMW4LINUX_HOME/lamw-install.log"
 
 
 }
@@ -619,15 +649,8 @@ case "$1" in
 		CleanOldConfig
 		mainInstall $2
 	;;
-		# "cfg-fpc")
-	# 	if [ "$(whoami)" = "root" ]
-	# 	then
-	# 		echo "executando em mode root"
-	# 		configureFPC $2
-	# 	fi
-	# ;;
 	*)
-		printf "Use:\n\tbash lamw-install.sh clean\n\tbash lamw-install.sh install\n\tbash lamw-install.sh install --use_proxy\n\tbash lamw-install.sh clean-install\n\tbash lamw-install.sh clean-install --use_proxy\n"
+		printf "Use:\n\tbash lamw-install.sh [Options]\n\tbash lamw-install.sh clean\n\tbash lamw-install.sh install\n\tbash lamw-install.sh install --use_proxy\n\tbash lamw-install.sh clean-install\n\tbash lamw-install.sh clean-install --use_proxy\n"
 	;;
 	
 esac
