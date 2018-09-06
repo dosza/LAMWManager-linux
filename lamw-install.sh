@@ -23,6 +23,7 @@ export FPC_RELEASE=""
 export flag_new_ubuntu_lts=0
 export FPC_LIB_PATH=""
 export FPC_VERSION=""
+export FPC_MKCFG_EXE=""
 work_home_desktop=$(xdg-user-dir DESKTOP)
 ANDROID_HOME="$HOME/android"
 ANDROID_SDK="$ANDROID_HOME/sdk"
@@ -77,14 +78,14 @@ BuildCrossArm(){
 				sudo make clean 
 				sudo make crossall crossinstall  CPU_TARGET=arm OPT="-dFPC_ARMEL" OS_TARGET=android CROSSOPT="-CpARMV7A -CfVFPV3" INSTALL_PREFIX=/usr
 			;;
-			1 )
-				echo "build to Processor ARMV7a -CfSoft"
-				sudo make clean crossall crossinstall  CPU_TARGET=arm OS_TARGET=android OPT="-dFPC_ARMHF" SUBARCH="armv7a" INSTALL_PREFIX=/usr #default ARMV7 option  
-			;;
-			2)
-				echo "build to Processor ARMv6"
-				sudo make clean crossall crossinstall  CPU_TARGET=arm OS_TARGET=android OPT="-dFPC_ARMEL" CROSSOPT="-CpARMv6 -CfSoft" INSTALL_PREFIX=/usr
-			;;
+			# 1 )
+			# 	echo "build to Processor ARMV7a -CfSoft"
+			# 	sudo make clean crossall crossinstall  CPU_TARGET=arm OS_TARGET=android OPT="-dFPC_ARMHF" SUBARCH="armv7a" INSTALL_PREFIX=/usr #default ARMV7 option  
+			# ;;
+			# 2)
+			# 	echo "build to Processor ARMv6"
+			# 	sudo make clean crossall crossinstall  CPU_TARGET=arm OS_TARGET=android OPT="-dFPC_ARMEL" CROSSOPT="-CpARMv6 -CfSoft" INSTALL_PREFIX=/usr
+			# ;;
 			# 2 )
 			# 	sudo make clean crossall  crossinstall OS_TARGET=android CPU_TARGET=arm CROSSOPT="-CpARMv7a -CfVFPv3_D16 -OpARMv7a -OoFastMath -O3 -XX -Xs -CX" CROSSBINDIR="$ANDROID_HOME/android-ndk/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin" BINUTILSPREFIX=arm-linux-androideabi- INSTALL_PREFIX=/usr
 			# ;;
@@ -227,19 +228,19 @@ CleanOldConfig(){
 	if [ -e $GRADLE_CFG_HOME ]; then
 		rm -r $GRADLE_CFG_HOME
 	fi
-	if [ -e /usr/lib/fpc ] ; then
-		sudo rm /usr/lib/fpc -r 
-		sudo rm /etc/fpc* 
-	fi
-	if [ -e /usr/local/lib/fpc ]; then
-		sudo rm /usr/local/lib/fpc -r 
-	fi
-	if [ /usr/bin/ppcrossarm ]; then
-		sudo rm /usr/bin/ppc* 
-	fi
-	if [  /usr/bin/fpc ]; then
-		sudo rm /usr/bin/fpc* 
-	fi
+	# if [ -e /usr/lib/fpc ] ; then
+	# 	sudo rm /usr/lib/fpc -r 
+	# 	sudo rm /etc/fpc* 
+	# fi
+	# if [ -e /usr/local/lib/fpc ]; then
+	# 	sudo rm /usr/local/lib/fpc -r 
+	# fi
+	# if [ /usr/bin/ppcrossarm ]; then
+	# 	sudo rm /usr/bin/ppc* 
+	# fi
+	# if [  /usr/bin/fpc ]; then
+	# 	sudo rm /usr/bin/fpc* 
+	# fi
 	if [ -e usr/bin/arm-embedded-as ] ; then    
 		sudo rm usr/bin/arm-embedded-as
 	fi
@@ -267,6 +268,10 @@ CleanOldConfig(){
 	if [ -e $FPC_CFG_PATH ]; then #remove local ppc config
 		rm $FPC_CFG_PATH
 	fi
+	if [ -e "$work_home_desktop/lamw4linux.desktop" ]; then
+		rm "$work_home_desktop/lamw4linux.desktop"
+	fi
+
 	sed -i '/export PATH=$PATH:$HOME\/android\/ndk-toolchain/d'  $HOME/.bashrc #\/ is scape of /
 	sed -i '/export PATH=$PATH:$HOME\/android\/gradle-4.1\/bin/d' $HOME/.bashrc
 	sed -i '/export PATH=$PATH:$HOME\/android\/ndk-toolchain/d'  $HOME/.profile
@@ -342,6 +347,10 @@ parseFPC(){
 			export FPC_RELEASE="release_3_0_4"
 		;;
 	esac
+	export FPC_MKCFG_EXE=$(which fpcmkcfg-$FPC_VERSION)
+	if [ "$FPC_MKCFG_EXE" = "" ]; then
+		export FPC_MKCFG_EXE=$(which x86_64-linux-gnu-fpcmkcfg-$FPC_VERSION)
+	fi
 }
 
 configureFPC(){
@@ -357,7 +366,7 @@ configureFPC(){
 		index=$?
 		parseFPC ${packs[$index]}
 		if [ ! -e $FPC_CFG_PATH ]; then
-			fpcmkcfg-$FPC_VERSION -d basepath=/usr/lib/fpc/$FPC_VERSION -o $FPC_CFG_PATH
+			$FPC_MKCFG_EXE -d basepath=/usr/lib/fpc/$FPC_VERSION -o $FPC_CFG_PATH
 		fi
 
 		#this config enable to crosscompile in fpc 
@@ -629,7 +638,7 @@ fi
 	echo "----------------------------------------------------------------------"
 	printf "${LAMW_INSTALL_WELCOME[*]}"
 	echo "----------------------------------------------------------------------"
-	echo "Warning: Earlier versions of FPC and Lazarus (debian package) will be removed!
+	echo "Warning: Earlier versions of Lazarus (debian package) will be removed!
 	LAMW-Install (Linux supported Debian 9, Ubuntu 16.04 LTS, Linux Mint 18)
 	Generate LAMW4Linux to  android-sdk=$SDK_VERSION"
 
