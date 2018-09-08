@@ -613,9 +613,17 @@ writeLAMWLogInstall(){
 	done
 	zenity --info --text "Info:\nLAMW4Linux:$LAMW4LINUX_HOME\nLAMW workspace : $HOME/Dev/lamw_workspace\nAndroid SDK:$ANDROID_HOME/sdk\nAndroid NDK:$ANDROID_HOME/ndk\nGradle:$GRADLE_HOME\nLOG:$LAMW4LINUX_HOME/lamw-install.log"
 }
+checkProxyStatus(){
+	if [ $USE_PROXY = 1 ] ; then
+		ActiveProxy 1
+	else
+		ActiveProxy 0
+	fi
+}
 mainInstall(){
 
 	installDependences
+	checkProxyStatus
 	configureFPC
 	getAndroidSDKTools
 	changeDirectory $ANDROID_SDK/tools/bin #change directory
@@ -652,11 +660,7 @@ fi
 
 	#configure parameters sdk before init download and build
 	initParameters $2
-	if [ $USE_PROXY = 1 ] ; then
-		ActiveProxy 1
-	else
-		ActiveProxy 0
-	fi
+	
 
 #Parameters are useful for understanding script operation
 case "$1" in
