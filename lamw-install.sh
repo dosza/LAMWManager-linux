@@ -3,11 +3,11 @@
 #Universidade federal de Mato Grosso
 #Curso ciencia da computação
 #AUTOR: Daniel Oliveira Souza <oliveira.daniel@gmail.com>
-#Versao LAMW-INSTALL: 0.1.3
+#Versao LAMW-INSTALL: 0.2.0
 #Descrição: Este script configura o ambiente de desenvolvimento para o LAMW
 
 
-LAMW_INSTALL_VERSION="0.1.3"
+LAMW_INSTALL_VERSION="0.2.0"
 LAMW_INSTALL_WELCOME=(
 	"\t\tWelcome LAMW4Linux Installer  version: $LAMW_INSTALL_VERSION\n"
 	"\t\tPowerd by DanielTimelord\n"
@@ -45,10 +45,11 @@ LAMW_IDE_HOME="$LAMW4LINUX_HOME/lamw4linux" # path to link-simbolic to ide
 LAMW_WORKSPACE_HOME="$HOME/Dev/LAMWProjects"  #path to lamw_workspace
 LAMW4LINUX_EXE_PATH="$LAMW_IDE_HOME/lamw4linux"
 LAMW_MENU_ITEM_PATH="$HOME/.local/share/applications/lamw4linux.desktop"
-GRADLE_HOME="$ANDROID_HOME/gradle-4.1"
+GRADLE_HOME="$ANDROID_HOME/gradle-4.4.1"
+
 GRADLE_CFG_HOME="$HOME/.gradle"
-GRADE_ZIP_LNK="https://services.gradle.org/distributions/gradle-4.1-bin.zip"
-GRADE_ZIP_FILE="gradle-4.1-bin.zip"
+GRADE_ZIP_LNK="https://services.gradle.org/distributions/gradle-4.4.1-bin.zip"
+GRADE_ZIP_FILE="gradle-4.4.1-bin.zip"
 FPC_STABLE=""
 LAZARUS_STABLE="lazarus_1_8_4"
 
@@ -61,11 +62,64 @@ LAZBUILD_PARAMETERS=(
 	"--build-ide= --add-package $ANDROID_HOME/lazandroidmodulewizard/trunk/ide_tools/amw_ide_tools.lpk --primary-config-path=$LAMW4_LINUX_PATH_CFG --lazarusdir=$LAMW_IDE_HOME"
 )
 
+#REGEX VARIABLES
 
+WR_GRADLE_HOME=""
+WR_ANDROID_HOME=""
+HOME_USER_SPLITTED_ARRAY=(${HOME//\// })
+HOME_STR_SPLITTED=""
 libs_android="libx11-dev libgtk2.0-dev libgdk-pixbuf2.0-dev libcairo2-dev libpango1.0-dev libxtst-dev libatk1.0-dev libghc-x11-dev freeglut3 freeglut3-dev "
 prog_tools="menu fpc git subversion make build-essential zip unzip unrar android-tools-adb ant openjdk-8-jdk "
 packs=()
 #[[]]
+
+#args $1 is str
+#args $2 is delimeter token 
+#call this function output=($(SplitStr $str $delimiter))
+splitStr(){
+	str=""
+	token=""
+	str_spl=()
+	if [ "$1" != "" ] && [ "$2" != "" ] ; then 
+		str="$1"
+		delimeter=$2
+		case "$delimeter" in 
+			"/")
+			str_spl=(${str//\// })
+			echo "${str_spl[@]}"
+			;;
+			*)
+				#if [ $(echo $str | grep [a-zA-Z0-9;]) = 0 ] ; then  # if str  regex alphanumeric
+					str_spl=(${str//$delimeter/ })
+					echo "${str_spl[@]}"
+				#fi
+			;;
+		esac
+	fi
+}
+GenerateScapesStr(){
+	tam=${#HOME_USER_SPLITTED_ARRAY[@]}
+	str_scapes=""
+	#echo "tam=$tam"
+	if [ "$1" = "" ] ; then
+		for ((i=0;i<tam;i++))
+		do
+			HOME_STR_SPLITTED=$HOME_STR_SPLITTED"\/"${HOME_USER_SPLITTED_ARRAY[i]}
+		#echo ${HOME_USER_SPLITTED_ARRAY[i]}
+		done
+	else
+		echo $1
+		#str_scapes=""
+		str_array=($(splitStr "$1" "/"))
+		#echo ${str_array[@]}
+		tam=${#str_array[@]}
+		for ((i=0;i<tam;i++))
+		do
+			str_scapes=$str_scapes"\/"${str_array[i]}
+		done
+		echo "$str_scapes"
+	fi
+}
 
 #unistall java not supported
 unistallJavaUnsupported(){
@@ -94,13 +148,13 @@ initParameters(){
 	fi
 
 	if [ $USE_PROXY = 1 ]; then
-		SDK_MANAGER_CMD_PARAMETERS=("platforms;android-25" "build-tools;25.0.3" "tools" "ndk-bundle" "extras;android;m2repository" --no_https --proxy=http --proxy_host=$PROXY_SERVER --proxy_port=$PORT_SERVER )
+		SDK_MANAGER_CMD_PARAMETERS=("platforms;android-21" "build-tools;21.1.2" "platforms;android-24" "build-tools;24.0.3" "platforms;android-25"  "build-tools;25.0.3" "build-tools;26.0.2" "tools" "ndk-bundle" "extras;android;m2repository" --no_https --proxy=http --proxy_host=$PROXY_SERVER --proxy_port=$PORT_SERVER )
 		SDK_LICENSES_PARAMETERS=( --licenses --no_https --proxy=http --proxy_host=$PROXY_SERVER --proxy_port=$PORT_SERVER )
 		export http_proxy=$PROXY_URL
 		export https_proxy=$PROXY_URL
 #	ActiveProxy 1
 	else
-		SDK_MANAGER_CMD_PARAMETERS=("platforms;android-25" "build-tools;25.0.3" "tools" "ndk-bundle" "extras;android;m2repository")			#ActiveProxy 0
+		SDK_MANAGER_CMD_PARAMETERS=("platforms;android-21" "build-tools;21.1.2" "platforms;android-24" "build-tools;24.0.3" "platforms;android-25" "platforms;android-26" "build-tools;25.0.3"  "build-tools;26.0.2" "tools" "ndk-bundle" "extras;android;m2repository")			#ActiveProxy 0
 		SDK_LICENSES_PARAMETERS=(--licenses )
 	fi
 }
@@ -228,7 +282,7 @@ AddSDKPathstoProfile(){
 	if [ -e $profile_file ];then 
 		profile_data=$(cat $profile_file)
 		case "$profile_data" in 
-			*'export PATH=$PATH:$HOME/android/'*)
+			*'export PATH=$PATH:$GRADLE_HOME'*)
 			flag_profile_paths=1
 			#exit 1
 			;;
@@ -236,12 +290,16 @@ AddSDKPathstoProfile(){
 	fi
 
 	if [ $flag_profile_paths = 0 ] ; then 
-		echo 'export PATH=$PATH:$HOME/android/ndk-toolchain' >> $HOME/.bashrc
-		echo 'export PATH=$PATH:$HOME/android/gradle-4.1/bin' >> $HOME/.bashrc
+		#echo 'export PATH=$PATH'"\":$ANDROID_HOME/ndk-toolchain\"" >> $HOME/.bashrc
+		#echo 'export PATH=$PATH'"\":$GRADLE_HOME/bin\"" >> $HOME/.bashrc
+		echo "export ANDROID_HOME=$ANDROID_HOME" >>  $HOME/.bashrc
+		echo "export GRADLE_HOME=$GRADLE_HOME" >> $HOME/.bashrc
+		echo 'export PATH=$PATH:$ANDROID_HOME/ndk-toolchain' >> $HOME/.bashrc
+		echo 'export PATH=$PATH:$GRADLE_HOME/bin' >> $HOME/.bashrc
 	fi
 
-	export PATH=$PATH:$HOME/android/ndk-toolchain
-	export PATH=$PATH:$HOME/android/gradle-4.1/bin
+	export PATH=$PATH:$ANDROID_HOME/ndk-toolchain
+	export PATH=$PATH:$GRADLE_HOME/bin
 }
 #to build
 BuildCrossArm(){
@@ -400,6 +458,17 @@ CleanOldCrossCompileBins(){
 		sudo rm -r /usr/lib/fpc/$FPC_VERSION/units/arm-android
 	fi
 }
+
+cleanPATHS(){
+	sed -i "/export ANDROID_HOME=*/d"  $HOME/.bashrc
+	sed -i "/export GRADLE_HOME=*/d" $HOME/.bashrc
+	sed -i '/export PATH=$PATH:$HOME\/android\/ndk-toolchain/d'  $HOME/.bashrc #\/ is scape of /
+	sed -i '/export PATH=$PATH:$HOME\/android\/gradle-4.1\/bin/d' $HOME/.bashrc
+	sed -i '/export PATH=$PATH:$HOME\/android\/ndk-toolchain/d'  $HOME/.profile
+	sed -i '/export PATH=$PATH:$HOME\/android\/gradle-4.1\/bin/d' $HOME/.profile	
+	sed -i '/export PATH=$PATH:$ANDROID_HOME\/ndk-toolchain/d'  $HOME/.bashrc
+	sed -i '/export PATH=$PATH:$GRADLE_HOME/d'  $HOME/.bashrc
+}
 #this function remove old config of lamw4linux  
 CleanOldConfig(){
 	if [ -e $HOME/laz4ndroid ]; then
@@ -461,11 +530,11 @@ CleanOldConfig(){
 	if [ -e "$work_home_desktop/lamw4linux.desktop" ]; then
 		rm "$work_home_desktop/lamw4linux.desktop"
 	fi
-
-	sed -i '/export PATH=$PATH:$HOME\/android\/ndk-toolchain/d'  $HOME/.bashrc #\/ is scape of /
-	sed -i '/export PATH=$PATH:$HOME\/android\/gradle-4.1\/bin/d' $HOME/.bashrc
-	sed -i '/export PATH=$PATH:$HOME\/android\/ndk-toolchain/d'  $HOME/.profile
-	sed -i '/export PATH=$PATH:$HOME\/android\/gradle-4.1\/bin/d' $HOME/.profile		
+	cleanPATHS
+	# sed -i '/export PATH=$PATH:$HOME\/android\/ndk-toolchain/d'  $HOME/.bashrc #\/ is scape of /
+	# sed -i '/export PATH=$PATH:$HOME\/android\/gradle-4.1\/bin/d' $HOME/.bashrc
+	# sed -i '/export PATH=$PATH:$HOME\/android\/ndk-toolchain/d'  $HOME/.profile
+	# sed -i '/export PATH=$PATH:$HOME\/android\/gradle-4.1\/bin/d' $HOME/.profile		
 }
 
 
@@ -519,22 +588,31 @@ parseFPC(){
 			export FPC_LIB_PATH="/usr/lib/fpc/$FPC_VERSION"
 		;;
 		*"3.0.4"*)
-			export FPC_VERSION="3.0.4"
 			export URL_FPC="https://svn.freepascal.org/svn/fpc/tags/release_3_0_4"
+			export FPC_RELEASE="release_3_0_4"
+			export FPC_VERSION="3.0.4"
+			
 			#export FPC_CFG_PATH="/etc/fpc-3.0.4.cfg"
-			if [ $flag_new_ubuntu_lts = 0 ] ; then
-				if [ -e /usr/lib/fpc/$FPC_VERSION ]; then
-					export FPC_LIB_PATH="/usr/lib/fpc/$FPC_VERSION"
-				fi
+			#if [ $flag_new_ubuntu_lts = 0 ] ; then
+			#	if [ -e /usr/lib/fpc/$FPC_VERSION ]; then
+			#	#	export FPC_LIB_PATH="/usr/lib/fpc/$FPC_VERSION"
+				#fi
 
+			#else
+			
+			if [ -e /usr/lib/x86_64-linux-gnu/fpc/$FPC_VERSION ]; then #case new location fpc directory 
+				if [   -e /usr/lib/fpc  ]; then #para estar versão do fpc, obrigatóriamente /usr/lib/fpc dever ser um link simbólico
+					 sudo rm -r /usr/lib/fpc
+				fi
+				sudo ln -s /usr/lib/x86_64-linux-gnu/fpc /usr/lib/fpc
+				export FPC_LIB_PATH="/usr/lib/fpc/$FPC_VERSION"
 			else
-				if [ -e /usr/lib/x86_64-linux-gnu/fpc/$FPC_VERSION ]; then
-					sudo ln -s /usr/lib/x86_64-linux-gnu/fpc /usr/lib/fpc 
+				if [ -e /usr/lib/fpc/$FPC_VERSION ]; then
 					export FPC_LIB_PATH="/usr/lib/fpc/$FPC_VERSION"
 				fi
 			fi
 
-			export FPC_RELEASE="release_3_0_4"
+		
 		;;
 	esac
 	export FPC_MKCFG_EXE=$(which fpcmkcfg-$FPC_VERSION)
@@ -602,7 +680,8 @@ configureFPC(){
 
 #write log lamw install 
 writeLAMWLogInstall(){
-	lamw_log_str=("Info:\nLAMW4Linux:$LAMW4LINUX_HOME\nLAMW workspace:"  "$HOME/Dev/lamw_workspace\nAndroid SDK:$ANDROID_HOME/sdk\n" "Android NDK:$ANDROID_HOME/ndk\nGradle:$GRADLE_HOME\n")
+	lamw_log_str=("Generate $LAMW_INSTALL_VERSION" "Info:\nLAMW4Linux:$LAMW4LINUX_HOME\nLAMW workspace:"  "$LAMW_WORKSPACE_HOME\nAndroid SDK:$ANDROID_HOME/sdk\n" "Android NDK:$ANDROID_HOME/ndk\nGradle:$GRADLE_HOME\n")
+	NOTIFY_SEND_EXE=$(which notify-send)
 	for((i=0; i<${#lamw_log_str[*]};i++)) 
 	do
 		if [ $i = 0 ] ; then 
@@ -611,7 +690,12 @@ writeLAMWLogInstall(){
 			printf "${lamw_log_str[i]}" >> $LAMW4LINUX_HOME/lamw-install.log
 		fi
 	done
-	zenity --info --text "Info:\nLAMW4Linux:$LAMW4LINUX_HOME\nLAMW workspace : $HOME/Dev/lamw_workspace\nAndroid SDK:$ANDROID_HOME/sdk\nAndroid NDK:$ANDROID_HOME/ndk\nGradle:$GRADLE_HOME\nLOG:$LAMW4LINUX_HOME/lamw-install.log"
+	if [ "$NOTIFY_SEND_EXE" != "" ]; then
+		$NOTIFY_SEND_EXE  "Info:\nLAMW4Linux:$LAMW4LINUX_HOME\nLAMW workspace : $LAMW_WORKSPACE_HOME\nAndroid SDK:$ANDROID_HOME/sdk\nAndroid NDK:$ANDROID_HOME/ndk\nGradle:$GRADLE_HOME\nLOG:$LAMW4LINUX_HOME/lamw-install.log"
+	else
+		printf "Info:\nLAMW4Linux:$LAMW4LINUX_HOME\nLAMW workspace : $HOME/Dev/lamw_workspace\nAndroid SDK:$ANDROID_HOME/sdk\nAndroid NDK:$ANDROID_HOME/ndk\nGradle:$GRADLE_HOME\nLOG:$LAMW4LINUX_HOME/lamw-install.log"
+	fi		
+
 }
 checkProxyStatus(){
 	if [ $USE_PROXY = 1 ] ; then
@@ -660,6 +744,7 @@ fi
 
 	#configure parameters sdk before init download and build
 	initParameters $2
+	GenerateScapesStr
 	
 
 #Parameters are useful for understanding script operation
@@ -680,8 +765,20 @@ case "$1" in
 		CleanOldConfig
 		mainInstall
 	;;
+
+	"update-lamw")
+		
+		checkProxyStatus;
+		echo "Updating LAMW";
+		getLAMWFramework;
+		sleep 1;
+		BuildLazarusIDE;
+	;;
+	"delete_paths")
+		cleanPATHS
+	;;
 	*)
-		printf "Use:\n\tbash lamw-install.sh [Options]\n\tbash lamw-install.sh clean\n\tbash lamw-install.sh install\n\tbash lamw-install.sh install --use_proxy\n\tbash lamw-install.sh clean-install\n\tbash lamw-install.sh clean-install --use_proxy\n"
+		printf "Use:\n\tbash lamw-install.sh [Options]\n\tbash lamw-install.sh clean\n\tbash lamw-install.sh install\n\tbash lamw-install.sh install --use_proxy\n\tbash lamw-install.sh clean-install\n\tbash lamw-install.sh clean-install --use_proxy\nupdate-lamw\n"
 	;;
 esac
 #fi
