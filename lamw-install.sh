@@ -71,8 +71,35 @@ HOME_STR_SPLITTED=""
 libs_android="libx11-dev libgtk2.0-dev libgdk-pixbuf2.0-dev libcairo2-dev libpango1.0-dev libxtst-dev libatk1.0-dev libghc-x11-dev freeglut3 freeglut3-dev "
 prog_tools="menu fpc git subversion make build-essential zip unzip unrar android-tools-adb ant openjdk-8-jdk "
 packs=()
-#[[]]
+#[[]
 
+# searchLineinFile(FILE *fp, char * str )
+#$1 is File Path
+#$2 is a String to search 
+#this function return 0 if not found or 1  if found
+searchLineinFile(){
+	flag=0
+	if [ "$1" != "" ]
+	then
+		if [ -e "$1" ]
+		then
+			if [ "$2" != "" ]
+			then
+				line="NULL"
+				#file=$1
+				while read line # read a line from
+				do
+					if [ "$line" = "$2" ] # if current line is equal $2
+					then
+						flag=1
+						break #break loop 
+					fi
+				done < "$1"
+			fi
+		fi
+	fi
+	return $flag # return value 
+}
 #args $1 is str
 #args $2 is delimeter token 
 #call this function output=($(SplitStr $str $delimiter))
@@ -278,17 +305,18 @@ AddSDKPathstoProfile(){
 
 	profile_file=$HOME/.bashrc
 	flag_profile_paths=0
-
-	if [ -e $profile_file ];then 
-		profile_data=$(cat $profile_file)
-		case "$profile_data" in 
-			*'export PATH=$PATH:$GRADLE_HOME'*)
-			flag_profile_paths=1
+	profile_line_path='export PATH=$PATH:$GRADLE_HOME/1-bin'
+#	if [ -e $profile_file ];then 
+	#	profile_data=$(cat $profile_file)
+		#case "$profile_data" in 
+		#	*'export PATH=$PATH:$GRADLE_HOME'*)
+		#	flag_profile_paths=1
 			#exit 1
-			;;
-		esac
-	fi
-
+		#	;;
+		#esac
+	#fi
+	searchLineinFile "$profile_file" "$profile_line_path"
+	flag_profile_paths=$?
 	if [ $flag_profile_paths = 0 ] ; then 
 		#echo 'export PATH=$PATH'"\":$ANDROID_HOME/ndk-toolchain\"" >> $HOME/.bashrc
 		#echo 'export PATH=$PATH'"\":$GRADLE_HOME/bin\"" >> $HOME/.bashrc
@@ -304,7 +332,7 @@ AddSDKPathstoProfile(){
 #to build
 BuildCrossArm(){
 	if [ "$1" != "" ]; then #
-		changeDirectory $LAMW4LINUX_HOME/fpcsrc
+		changeDirectory $LAMW4LINUX_HOME/fpcsrc 
 		changeDirectory $FPC_RELEASE
 		case $1 in 
 			0 )
@@ -660,13 +688,15 @@ configureFPC(){
 		)
 
 		if [ -e $FPC_CFG_PATH ] ; then  # se exiir /etc/fpc.cfg
-			fpc_cfg_teste=$(cat $FPC_CFG_PATH) # abre /etc/fpc.cfg
-			flag_fpc_cfg=0 # flag da sub string de configuração"
-			case "$fpc_cfg_teste" in 
-				*"#IFDEF ANDROID"*)
-				flag_fpc_cfg=1
-				;;
-			esac
+			#fpc_cfg_teste=$(cat $FPC_CFG_PATH) # abre /etc/fpc.cfg
+			#flag_fpc_cfg=0 # flag da sub string de configuração"
+			#case "$fpc_cfg_teste" in 
+			#	*"#IFDEF ANDROID"*)
+			#	flag_fpc_cfg=1
+			#	;;
+			#esac
+			searchLineinFile $FPC_CFG_PATH  "${fpc_cfg_str[0]}"
+			flag_fpc_cfg=$?
 
 			if [ $flag_fpc_cfg != 1 ]; then # caso o arquvo ainda não esteja configurado
 				for ((i = 0 ; i<${#fpc_cfg_str[@]};i++)) 
