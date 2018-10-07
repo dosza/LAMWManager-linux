@@ -79,18 +79,14 @@ packs=()
 #this function return 0 if not found or 1  if found
 searchLineinFile(){
 	flag=0
-	if [ "$1" != "" ]
-	then
-		if [ -e "$1" ]
-		then
-			if [ "$2" != "" ]
-			then
+	if [ "$1" != "" ];then
+		if [ -e "$1" ];then
+			if [ "$2" != "" ];then
 				line="NULL"
 				#file=$1
 				while read line # read a line from
 				do
-					if [ "$line" = "$2" ] # if current line is equal $2
-					then
+					if [ "$line" = "$2" ];then # if current line is equal $2
 						flag=1
 						break #break loop 
 					fi
@@ -808,7 +804,16 @@ case "$1" in
 		cleanPATHS
 	;;
 	*)
-		printf "Use:\n\tbash lamw-install.sh [Options]\n\tbash lamw-install.sh clean\n\tbash lamw-install.sh install\n\tbash lamw-install.sh install --use_proxy\n\tbash lamw-install.sh clean-install\n\tbash lamw-install.sh clean-install --use_proxy\nupdate-lamw\n"
+		lamw_opts=(
+			"Usage:\n\tbash lamw-install.sh [Options]\n"
+			"\tbash lamw-install.sh clean\n"
+			"\tbash lamw-install.sh install\n"
+			"\tbash lamw-install.sh install --use_proxy\n"
+			"\tbash lamw-install.sh clean-install\n"
+			"\tbash lamw-install.sh clean-install --use_proxy\n"
+			"\tbash lamw-install.sh update-lamw\n"
+			)
+		printf "${lamw_opts[*]}"
 	;;
 esac
 #fi
