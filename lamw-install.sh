@@ -166,18 +166,26 @@ installDependences(){
 
 #iniciandoparametros
 initParameters(){
-	if [ "$1" = "--use_proxy" ] ;then
-				USE_PROXY=1
+	if [ $# = 1 ]; then  
+		if [ "$1" = "--use_proxy" ] ;then
+					USE_PROXY=1
+		fi
+	else
+		if [ "$1" = "--use_proxy" ]; then 
+			PROXY_SERVER=$2
+			PORT_SERVER=$3
+			printf "PROXY_SERVER=$2\nPORT_SERVER=$3\n"
+		fi
 	fi
 
 	if [ $USE_PROXY = 1 ]; then
-		SDK_MANAGER_CMD_PARAMETERS=("platforms;android-21" "build-tools;21.1.2" "platforms;android-24" "build-tools;24.0.3" "platforms;android-25"  "build-tools;25.0.3" "build-tools;26.0.2" "tools" "ndk-bundle" "extras;android;m2repository" --no_https --proxy=http --proxy_host=$PROXY_SERVER --proxy_port=$PORT_SERVER )
+		SDK_MANAGER_CMD_PARAMETERS=("platforms;android-26" "build-tools;26.0.2" "tools" "ndk-bundle" "extras;android;m2repository" --no_https --proxy=http --proxy_host=$PROXY_SERVER --proxy_port=$PORT_SERVER )
 		SDK_LICENSES_PARAMETERS=( --licenses --no_https --proxy=http --proxy_host=$PROXY_SERVER --proxy_port=$PORT_SERVER )
 		export http_proxy=$PROXY_URL
 		export https_proxy=$PROXY_URL
 #	ActiveProxy 1
 	else
-		SDK_MANAGER_CMD_PARAMETERS=("platforms;android-21" "build-tools;21.1.2" "platforms;android-24" "build-tools;24.0.3" "platforms;android-25" "platforms;android-26" "build-tools;25.0.3"  "build-tools;26.0.2" "tools" "ndk-bundle" "extras;android;m2repository")			#ActiveProxy 0
+		SDK_MANAGER_CMD_PARAMETERS=("platforms;android-26" "build-tools;26.0.2" "tools" "ndk-bundle" "extras;android;m2repository")			#ActiveProxy 0
 		SDK_LICENSES_PARAMETERS=(--licenses )
 	fi
 }
@@ -288,6 +296,10 @@ CreateSDKSimbolicLinks(){
 	sudo ln -sf "$ANDROID_HOME/ndk-toolchain/arm-linux-ld"  "/usr/bin/arm-linux-androideabi-ld"
 	sudo ln -sf $FPC_LIB_PATH/ppcrossarm /usr/bin/ppcrossarm
 	sudo ln -sf /usr/bin/ppcrossarm /usr/bin/ppcarm
+
+	#CORRIGE TEMPORARIAMENTE BUG GRADLE TO MIPSEL
+	ln -sf "$ANDROID_HOME/sdk/ndk-bundle/toolchains/arm-linux-androideabi-4.9" "$ANDROID_HOME/sdk/ndk-bundle/toolchains/mips64el-linux-android-4.9"
+	ln -sf "$ANDROID_HOME/sdk/ndk-bundle/toolchains/arm-linux-androideabi-4.9" "$ANDROID_HOME/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9"
 }
 
 #Addd sdk to .bashrc and .profile
@@ -769,7 +781,17 @@ fi
 	Generate LAMW4Linux to  android-sdk=$SDK_VERSION"
 
 	#configure parameters sdk before init download and build
-	initParameters $2
+	if [ $# = 6 ]; then
+		if [ "$2" = "--use_proxy" ] ;then 
+			if [ "$3" = "--server" ]; then
+				if [ "$5" = "--port" ] ;then
+					initParameters $2 $4 $6
+				fi
+			fi
+		fi
+	else
+		initParameters $2
+	fi
 	GenerateScapesStr
 	
 
