@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  StdCtrls,uprocessos,uglobal;
+  StdCtrls, Menus,uprocessos,uglobal,uproxy;
 
 type
 
@@ -14,18 +14,27 @@ type
 
   TFmain = class(TForm)
     CheckBox1: TCheckBox;
-    CheckBox2: TCheckBox;
     Image1: TImage;
     Image2: TImage;
     Image3: TImage;
-    Image4: TImage;
-    Label1: TLabel;
-    Label2: TLabel;
-    Label3: TLabel;
-    Label4: TLabel;
-    Label7: TLabel;
+    ImageList1: TImageList;
+    MainMenu1: TMainMenu;
+    MenuItem1: TMenuItem;
+    MenuItem10: TMenuItem;
+    MenuItem11: TMenuItem;
+    MenuItem12: TMenuItem;
+    MenuItem2: TMenuItem;
+    MenuItem3: TMenuItem;
+    MenuItem4: TMenuItem;
+    MenuItem5: TMenuItem;
+    MenuItem6: TMenuItem;
+    MenuItem7: TMenuItem;
+    MenuItem8: TMenuItem;
+    MenuItem9: TMenuItem;
+    Panel1: TPanel;
+    Panel2: TPanel;
     procedure CheckBox1Change(Sender: TObject);
-    procedure CheckBox2Change(Sender: TObject);
+   // procedure CheckBox2Change(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure Image1Click(Sender: TObject);
     procedure Image2Click(Sender: TObject);
@@ -35,6 +44,12 @@ type
     procedure Label4Click(Sender: TObject);
     procedure Label5Click(Sender: TObject);
     procedure Label7Click(Sender: TObject);
+    procedure MenuItem12Click(Sender: TObject);
+    procedure MenuItem1Click(Sender: TObject);
+    procedure MenuItem4Click(Sender: TObject);
+    procedure MenuItem8Click(Sender: TObject);
+    procedure MenuItem9Click(Sender: TObject);
+    procedure Panel1Click(Sender: TObject);
   private
     cmd_args : TstringList;
     proc : RunnableScripts;
@@ -83,15 +98,7 @@ begin
           uglobal.CLEAN_INSTALL_FLAG:=false;
 end;
 
-procedure TFmain.CheckBox2Change(Sender: TObject);
-begin
-  if (CheckBox2.Checked )then
-      //self.cmd_args.add('--use_proxy');
-      uglobal.USE_PROXY:= true
-  else
-     uglobal.USE_PROXY:=false;
 
-end;
 
 procedure TFmain.Image2Click(Sender: TObject);
 begin
@@ -134,6 +141,45 @@ begin
 end;
 
 procedure TFmain.Label7Click(Sender: TObject);
+begin
+
+end;
+
+procedure TFmain.MenuItem12Click(Sender: TObject);
+begin
+
+end;
+
+procedure TFmain.MenuItem1Click(Sender: TObject);
+begin
+
+end;
+
+procedure TFmain.MenuItem4Click(Sender: TObject);
+begin
+
+end;
+
+procedure TFmain.MenuItem8Click(Sender: TObject);
+begin
+
+end;
+
+procedure TFmain.MenuItem9Click(Sender: TObject);
+begin
+  if ( FormProxy.ShowModal = mrOK ) then
+  begin
+    //ShowMessage('ok');
+    if( FormProxy.CheckBox3.Checked ) then
+        Self.MenuItem9.Checked:= true
+    else
+        Self.MenuItem9.Checked:= False;
+
+  end;
+
+end;
+
+procedure TFmain.Panel1Click(Sender: TObject);
 begin
 
 end;
