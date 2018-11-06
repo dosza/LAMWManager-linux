@@ -24,18 +24,22 @@ export flag_new_ubuntu_lts=0
 export FPC_LIB_PATH=""
 export FPC_VERSION=""
 export FPC_MKCFG_EXE=""
+export FORCE_LAWM4INSTALL=0
 work_home_desktop=$(xdg-user-dir DESKTOP)
 ANDROID_HOME="$HOME/android"
 ANDROID_SDK="$ANDROID_HOME/sdk"
 CROSS_COMPILE_URL="https://github.com/newpascal/fpcupdeluxe/releases/tag/v1.6.1e"
 APT_OPT=""
-PROXY_SERVER="internet.cua.ufmt.br"
-PORT_SERVER=3128
+export PROXY_SERVER="internet.cua.ufmt.br"
+export PORT_SERVER=3128
 PROXY_URL="http://$PROXY_SERVER:$PORT_SERVER"
-USE_PROXY=0
-SDK_TOOLS_URL="https://dl.google.com/android/repository/sdk-tools-linux-3859397.zip"
+export USE_PROXY=0
+export JAVA_PATH=""
+export SDK_TOOLS_URL="https://dl.google.com/android/repository/sdk-tools-linux-3859397.zip"
+export NDK_URL="https://dl.google.com/android/repository/android-ndk-r16b-linux-x86_64.zip"
 SDK_VERSION="28"
 SDK_MANAGER_CMD_PARAMETERS=()
+SDK_MANAGER_CMD_PARAMETERS2=()
 SDK_LICENSES_PARAMETERS=()
 LAZARUS_STABLE_SRC_LNK="https://svn.freepascal.org/svn/lazarus/tags/lazarus_1_8_4"
 LAMW_SRC_LNK="https://github.com/jmpessoa/lazandroidmodulewizard.git"
@@ -73,6 +77,48 @@ prog_tools="menu fpc git subversion make build-essential zip unzip unrar android
 packs=()
 #[[]
 
+export OLD_ANDROID_SDK=0
+
+checkForceLAMW4LinuxInstall(){
+	args=($*)
+	for((i=0;i<${#args[*]};i++))
+	do
+		if [ "${args[i]}" = "--force" ]; then
+			#printf "Warning: This application theres power binary deb"
+			
+			sleep 2
+			export FORCE_LAWM4INSTALL=1
+			break
+		fi
+	done
+}
+#setJRE8 as default
+setJava8asDefault(){
+	path_java=($(dpkg -L openjdk-8-jre))
+
+i=0
+found_path=""
+while [ $i -lt ${#path_java[@]} ]
+do
+	wi=${path_java[$i]}
+	#printf "$wi\n"
+	case "$wi" in
+		*"jre"*)
+		#printf "found: i=$i $wi\n"
+		#found_path=$w8asDefault
+		if [ -e $wi/bin/java ]; then
+			#printf "found: i=$i $wi\nStopping search ...\n"
+			found_path=$wi
+			export JAVA_PATH="$found_path/bin/java"
+			sudo update-alternatives --set java $JAVA_PATH
+			break;
+		fi
+	esac
+	((i++))
+done
+
+
+}
 # searchLineinFile(FILE *fp, char * str )
 #$1 is File Path
 #$2 is a String to search 
@@ -155,8 +201,10 @@ unistallJavaUnsupported(){
 #install deps
 installDependences(){
 	sudo apt-get update;
-	sudo apt-get remove --purge  lazarus* -y
-	sudo apt-get autoremove --purge -y
+	if [ $FORCE_LAWM4INSTALL = 1 ]; then 
+		sudo apt-get remove --purge  lazarus* -y
+		sudo apt-get autoremove --purge -y
+	fi
 			#sudo apt-get install fpc
 	sudo apt-get install $libs_android $prog_tools  -y --allow-unauthenticated
 	if [ "$?" != "0" ]; then
@@ -172,20 +220,24 @@ initParameters(){
 		fi
 	else
 		if [ "$1" = "--use_proxy" ]; then 
-			PROXY_SERVER=$2
-			PORT_SERVER=$3
+			export USE_PROXY=1
+			export PROXY_SERVER=$2
+			export PORT_SERVER=$3
+			export PROXY_URL="http://$2:$3"
 			printf "PROXY_SERVER=$2\nPORT_SERVER=$3\n"
 		fi
 	fi
 
 	if [ $USE_PROXY = 1 ]; then
 		SDK_MANAGER_CMD_PARAMETERS=("platforms;android-26" "build-tools;26.0.2" "tools" "ndk-bundle" "extras;android;m2repository" --no_https --proxy=http --proxy_host=$PROXY_SERVER --proxy_port=$PORT_SERVER )
+		SDK_MANAGER_CMD_PARAMETERS2=("ndk-bundle" "extras;android;m2repository" --no_https --proxy=http --proxy_host=$PROXY_SERVER --proxy_port=$PORT_SERVER )
 		SDK_LICENSES_PARAMETERS=( --licenses --no_https --proxy=http --proxy_host=$PROXY_SERVER --proxy_port=$PORT_SERVER )
 		export http_proxy=$PROXY_URL
 		export https_proxy=$PROXY_URL
 #	ActiveProxy 1
 	else
 		SDK_MANAGER_CMD_PARAMETERS=("platforms;android-26" "build-tools;26.0.2" "tools" "ndk-bundle" "extras;android;m2repository")			#ActiveProxy 0
+		SDK_MANAGER_CMD_PARAMETERS2=("ndk-bundle" "extras;android;m2repository")
 		SDK_LICENSES_PARAMETERS=(--licenses )
 	fi
 }
@@ -244,8 +296,10 @@ getLAMWFramework(){
 #Get Gradle and SDK Tools 
 getAndroidSDKTools(){
 	changeDirectory $HOME
-	mkdir -p $ANDROID_SDK
-
+	if [ ! -e ANDROID_HOME ]; then
+		mkdir $ANDROID_HOME
+	fi
+	
 	changeDirectory $ANDROID_HOME
 	if [ ! -e $GRADLE_HOME ]; then
 		wget -c $GRADE_ZIP_LNK
@@ -259,15 +313,43 @@ getAndroidSDKTools(){
 	if [ -e  $GRADE_ZIP_FILE ]; then
 		rm $GRADE_ZIP_FILE
 	fi
-	changeDirectory $ANDROID_SDK
-	
-	if [ ! -e tools ] ; then
-		wget -c $SDK_TOOLS_URL #getting sdk 
-		if [ $? != 0 ]; then 
-			wget -c $SDK_TOOLS_URL
+	#mode OLD SDK (24 with ant support )
+	if [ $OLD_ANDROID_SDK = 0 ]; then
+		mkdir -p $ANDROID_SDK
+		changeDirectory $ANDROID_SDK
+ 
+		if [ ! -e tools ] ; then
+			wget -c $SDK_TOOLS_URL #getting sdk 
+			if [ $? != 0 ]; then 
+				wget -c $SDK_TOOLS_URL
+			fi
+			unzip sdk-tools-linux-3859397.zip
 		fi
-		unzip sdk-tools-linux-3859397.zip
+	else
+		changeDirectory $ANDROID_HOME 
+		export SDK_TOOLS_URL="http://dl.google.com/android/android-sdk_r24.0.2-linux.tgz"
+		if [ ! -e sdk ]; then 
+			wget -c $SDK_TOOLS_URL
+			if [ $? != 0 ]; then
+				wget -c $SDK_TOOLS_URL
+			fi
+			tar -zxvf android-sdk_r24.0.2-linux.tgz 
+			mv android-sdk-linux sdk
+		fi
+
+
+		if [ ! -e ndk ] ; then 
+			wget -c $NDK_URL
+			if [ $? != 0 ]; then
+				wget -c $NDK_URL
+			fi
+			unzip android-ndk-r16b-linux-x86_64.zip
+			mv android-ndk-r16b ndk
+			rm unzip android-ndk-r16b-linux-x86_64.zip
+		fi
 	fi
+
+
 
 }
 
@@ -284,10 +366,23 @@ getSDKAndroid(){
 	fi
 
 }
+
+getOldAndroidSDK(){
+	if [ -e $ANDROID_SDK/tools/android  ]; then 
+		changeDirectory $ANDROID_SDK/tools
+		./android update sdk
+		echo "--> After update sdk tools to 24.1.1"
+		changeDirectory $ANDROID_SDK/tools
+		./android update sdk
+	fi
+
+}
 #Create SDK simbolic links
 
 CreateSDKSimbolicLinks(){
-	ln -sf "$ANDROID_HOME/sdk/ndk-bundle" "$ANDROID_HOME/ndk"
+	if [ $OLD_ANDROID_SDK = 0 ]; then 
+		ln -sf "$ANDROID_HOME/sdk/ndk-bundle" "$ANDROID_HOME/ndk"
+	fi
 	ln -sf "$ANDROID_HOME/ndk/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin" "$ANDROID_HOME/ndk-toolchain"
 	ln -sf "$ANDROID_HOME/ndk-toolchain/arm-linux-androideabi-as" "$ANDROID_HOME/ndk-toolchain/arm-linux-as"
 	ln -sf "$ANDROID_HOME/ndk-toolchain/arm-linux-androideabi-ld" "$ANDROID_HOME/ndk-toolchain/arm-linux-ld"
@@ -297,9 +392,12 @@ CreateSDKSimbolicLinks(){
 	sudo ln -sf $FPC_LIB_PATH/ppcrossarm /usr/bin/ppcrossarm
 	sudo ln -sf /usr/bin/ppcrossarm /usr/bin/ppcarm
 
+	if [ $OLD_ANDROID_SDK=0 ]; then 
 	#CORRIGE TEMPORARIAMENTE BUG GRADLE TO MIPSEL
-	ln -sf "$ANDROID_HOME/sdk/ndk-bundle/toolchains/arm-linux-androideabi-4.9" "$ANDROID_HOME/sdk/ndk-bundle/toolchains/mips64el-linux-android-4.9"
-	ln -sf "$ANDROID_HOME/sdk/ndk-bundle/toolchains/arm-linux-androideabi-4.9" "$ANDROID_HOME/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9"
+		ln -sf "$ANDROID_HOME/sdk/ndk-bundle/toolchains/arm-linux-androideabi-4.9" "$ANDROID_HOME/sdk/ndk-bundle/toolchains/mips64el-linux-android-4.9"
+		ln -sf "$ANDROID_HOME/sdk/ndk-bundle/toolchains/arm-linux-androideabi-4.9" "$ANDROID_HOME/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9"
+	fi
+
 }
 
 #Addd sdk to .bashrc and .profile
@@ -336,6 +434,14 @@ AddSDKPathstoProfile(){
 
 	export PATH=$PATH:$ANDROID_HOME/ndk-toolchain
 	export PATH=$PATH:$GRADLE_HOME/bin
+}
+WrappergetAndroidSDK(){
+	if [ $OLD_ANDROID_SDK = 0 ]; then
+		getSDKAndroid
+	else
+		getOldAndroidSDK
+	fi
+
 }
 #to build
 BuildCrossArm(){
@@ -401,7 +507,7 @@ LAMW4LinuxPostConfig(){
 	LAMW_init_str=(
 		"[NewProject]"
 		"PathToWorkspace=$LAMW_WORKSPACE_HOME"
-		"PathToJavaTemplates=$HOME/android/lazandroidmodulewizard.git/trunk/java"
+		"PathToJavaTemplates=$HOME/android/lazandroidmodulewizard/trunk/java"
 		"PathToJavaJDK=$java_path"
 		"PathToAndroidNDK=$HOME/android/ndk"
 		"PathToAndroidSDK=$HOME/android/sdk"
@@ -749,8 +855,10 @@ mainInstall(){
 	configureFPC
 	getAndroidSDKTools
 	changeDirectory $ANDROID_SDK/tools/bin #change directory
-	unistallJavaUnsupported
-	getSDKAndroid
+	#unistallJavaUnsupported
+	setJava8asDefault
+	#getSDKAndroid
+	WrappergetAndroidSDK
 	getFPCSources
 	getLAMWFramework
 	getLazarusSources
@@ -776,12 +884,22 @@ fi
 	echo "----------------------------------------------------------------------"
 	printf "${LAMW_INSTALL_WELCOME[*]}"
 	echo "----------------------------------------------------------------------"
-	echo "Warning: Earlier versions of Lazarus (debian package) will be removed!
-	LAMW-Install (Linux supported Debian 9, Ubuntu 16.04 LTS, Linux Mint 18)
+	echo "LAMW-Install (Linux supported Debian 9, Ubuntu 16.04 LTS, Linux Mint 18)
 	Generate LAMW4Linux to  android-sdk=$SDK_VERSION"
-
+	if [ $FORCE_LAWM4INSTALL = 1 ]; then
+		echo "Warning: Earlier versions of Lazarus (debian package) will be removed!"
+	else
+		echo "This application not  is compatible with lazarus (debian package)"
+		echo "use --force parameter remove anywhere lazarus (debian package)"
+		sleep 1
+	fi
 	#configure parameters sdk before init download and build
-	if [ $# = 6 ]; then
+
+	#Checa se necessario habilitar remocao forcada
+	checkForceLAMW4LinuxInstall $*
+#else
+	echo "LAMW4LinuxInstall  manager recomen"
+	if [ $# = 6 ] || [ $# = 7 ]; then
 		if [ "$2" = "--use_proxy" ] ;then 
 			if [ "$3" = "--server" ]; then
 				if [ "$5" = "--port" ] ;then
@@ -808,6 +926,13 @@ case "$1" in
 		mainInstall
 	;;
 
+	"install=sdk24")
+		printf "Mode SDKTOOLS=24 with ant support "
+		export OLD_ANDROID_SDK=1
+
+		mainInstall
+	;;
+
 	"clean-install")
 		#initParameters $2
 		CleanOldConfig
@@ -830,8 +955,15 @@ case "$1" in
 			"Usage:\n\tbash lamw-install.sh [Options]\n"
 			"\tbash lamw-install.sh clean\n"
 			"\tbash lamw-install.sh install\n"
+			"\tbash lawmw-install.sh install --force"
 			"\tbash lamw-install.sh install --use_proxy\n"
+			"\tbash lawmw-install.sh install=sdk24"
+			"----------------------------------------------\n"
+			"\tbash lamw-install.sh install --use_proxy --server [HOST] --port [NUMBER] \n"
+			"sample:\n\tbash lamw-install.sh install --use_proxy --server 10.0.16.1 --port 3128\n"
+			"-----------------------------------------------\n"
 			"\tbash lamw-install.sh clean-install\n"
+			"\tbash lamw-install.sh clean-install --force\n"
 			"\tbash lamw-install.sh clean-install --use_proxy\n"
 			"\tbash lamw-install.sh update-lamw\n"
 			)

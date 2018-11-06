@@ -16,7 +16,7 @@ begin
   RequireDerivedFormResource:=True;
   Application.Initialize;
   Application.CreateForm(TFmain, Fmain);
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TFormProxy, FormProxy);
   Application.Run;
 end.
 
