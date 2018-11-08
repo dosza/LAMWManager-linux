@@ -4,5 +4,5 @@ $MINGW_PACKAGES="msys-wget-bin  mingw32-base-bin mingw-developer-toolkit-bin msy
 $MINGW_PARA=$MINGW_PACKAGES.Split('')
 $MINGW_OPT="--reinstall"
 $client = New-Object System.Net.WebClient
-$path="C:\mingw-get-setup.exe"
+$path="\mingw-get-setup.exe"
 $client.DownloadFile($MINGW_URL, $path)

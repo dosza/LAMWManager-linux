@@ -18,9 +18,9 @@ if [  $WINDOWS_CMD_WRAPPERS  = 1 ]; then
 	#source $WINDOWS_CMD_WRAPPERS
 	export user=$(whoami)
 	export HOME="/c/Users/$user"
-	/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe  Get-ExecutionPolicy 
-	/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe Set-ExecutionPolicy AllSigned
-	/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe  -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))" && SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin"
+	#/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe  Get-ExecutionPolicy 
+	#/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe Set-ExecutionPolicy AllSigned
+	#/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe  -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))" && SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin"
 	
 	#unzip wrappers to windows 
 	unzip(){
