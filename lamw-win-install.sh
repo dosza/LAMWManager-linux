@@ -7,9 +7,31 @@
 #Descrição: Este script configura o ambiente de desenvolvimento para o LAMW
 
 
+export WINDOWS_CMD_WRAPPERS=1
+MINGW_URL="http://osdn.net/projects/mingw/downloads/68260/mingw-get-setup.exe"
+WIN_PROGR="freepascal git.install svn jdk8  7zip.install ant  "
+MINGW_PACKAGES="msys-wget-bin  mingw32-base-bin mingw-developer-toolkit-bin msys-base-bin msys-zip-bin "
+MINGW_OPT="--reinstall"
+
+
+if [  $WINDOWS_CMD_WRAPPERS  = 1 ]; then
+	#source $WINDOWS_CMD_WRAPPERS
+	export user=$(whoami)
+	export HOME="/c/Users/$user"
+	/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe  Get-ExecutionPolicy 
+	/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe Set-ExecutionPolicy AllSigned
+	/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe  -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))" && SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin"
+	
+	#unzip wrappers to windows 
+	unzip(){
+		/c/Program\ Files/7-zip/7z.exe x $*
+	}
+
+fi
+
 LAMW_INSTALL_VERSION="0.2.0"
 LAMW_INSTALL_WELCOME=(
-	"\t\tWelcome LAMW4Linux Installer  version: $LAMW_INSTALL_VERSION\n"
+	"\t\tWelcome LAMW4Windows Installer  version: $LAMW_INSTALL_VERSION\n"
 	"\t\tPowerd by DanielTimelord\n"
 	"\t\t<oliveira.daniel109@gmail.com>\n"
 )
@@ -25,24 +47,24 @@ export FPC_LIB_PATH=""
 export FPC_VERSION=""
 export FPC_MKCFG_EXE=""
 export FORCE_LAWM4INSTALL=0
-work_home_desktop=$(xdg-user-dir DESKTOP)
+#work_home_desktop=$(xdg-user-dir DESKTOP)
 ANDROID_HOME="$HOME/android"
 ANDROID_SDK="$ANDROID_HOME/sdk"
-CROSS_COMPILE_URL="https://github.com/newpascal/fpcupdeluxe/releases/tag/v1.6.1e"
+CROSS_COMPILE_URL="http://github.com/newpascal/fpcupdeluxe/releases/tag/v1.6.1e"
 APT_OPT=""
 export PROXY_SERVER="internet.cua.ufmt.br"
 export PORT_SERVER=3128
 PROXY_URL="http://$PROXY_SERVER:$PORT_SERVER"
 export USE_PROXY=0
 export JAVA_PATH=""
-export SDK_TOOLS_URL="https://dl.google.com/android/repository/sdk-tools-linux-3859397.zip"
-export NDK_URL="https://dl.google.com/android/repository/android-ndk-r16b-linux-x86_64.zip"
+export SDK_TOOLS_URL="http://dl.google.com/android/installer_r24.0.2-windows.exe"
+export NDK_URL="http://dl.google.com/android/repository/android-ndk-r16b-windows-x86_64.zip"
 SDK_VERSION="28"
 SDK_MANAGER_CMD_PARAMETERS=()
 SDK_MANAGER_CMD_PARAMETERS2=()
 SDK_LICENSES_PARAMETERS=()
-LAZARUS_STABLE_SRC_LNK="https://svn.freepascal.org/svn/lazarus/tags/lazarus_1_8_4"
-LAMW_SRC_LNK="https://github.com/jmpessoa/lazandroidmodulewizard.git"
+LAZARUS_STABLE_SRC_LNK="http://svn.freepascal.org/svn/lazarus/tags/lazarus_1_8_4"
+LAMW_SRC_LNK="http://github.com/jmpessoa/lazandroidmodulewizard.git"
 LAMW4_LINUX_PATH_CFG="$HOME/.lamw4linux"
 LAMW4LINUX_HOME="$HOME/lamw4linux"
 LAMW_IDE_HOME="$LAMW4LINUX_HOME/lamw4linux" # path to link-simbolic to ide 
@@ -52,7 +74,7 @@ LAMW_MENU_ITEM_PATH="$HOME/.local/share/applications/lamw4linux.desktop"
 GRADLE_HOME="$ANDROID_HOME/gradle-4.4.1"
 
 GRADLE_CFG_HOME="$HOME/.gradle"
-GRADE_ZIP_LNK="https://services.gradle.org/distributions/gradle-4.4.1-bin.zip"
+GRADE_ZIP_LNK="http://services.gradle.org/distributions/gradle-4.4.1-bin.zip"
 GRADE_ZIP_FILE="gradle-4.4.1-bin.zip"
 FPC_STABLE=""
 LAZARUS_STABLE="lazarus_1_8_4"
@@ -110,7 +132,7 @@ do
 			#printf "found: i=$i $wi\nStopping search ...\n"
 			found_path=$wi
 			export JAVA_PATH="$found_path/bin/java"
-			sudo update-alternatives --set java $JAVA_PATH
+			update-alternatives --set java $JAVA_PATH
 			break;
 		fi
 	esac
@@ -194,21 +216,32 @@ GenerateScapesStr(){
 unistallJavaUnsupported(){
 	if [ $flag_new_ubuntu_lts = 1 ]
 	then
-		sudo apt-get remove --purge openjdk-9-* -y 
-		sudo apt-get remove --purge openjdk-11* -y
+		apt-get remove --purge openjdk-9-* -y 
+		apt-get remove --purge openjdk-11* -y
 	fi
 }
-#install deps
 installDependences(){
-	sudo apt-get update;
-	if [ $FORCE_LAWM4INSTALL = 1 ]; then 
-		sudo apt-get remove --purge  lazarus* -y
-		sudo apt-get autoremove --purge -y
-	fi
-			#sudo apt-get install fpc
-	sudo apt-get install $libs_android $prog_tools  -y --allow-unauthenticated
-	if [ "$?" != "0" ]; then
-		sudo apt-get install $libs_android $prog_tools  -y --allow-unauthenticated --fix-missing
+	if [ $WINDOWS_CMD_WRAPPERS = 0 ]; then 
+		apt-get update;
+		if [ $FORCE_LAWM4INSTALL = 1 ]; then 
+			apt-get remove --purge  lazarus* -y
+			apt-get autoremove --purge -y
+		fi
+				#apt-get install fpc
+		apt-get install $libs_android $prog_tools  -y --allow-unauthenticated
+		if [ "$?" != "0" ]; then
+			apt-get install $libs_android $prog_tools  -y --allow-unauthenticated --fix-missing
+		fi
+	else
+
+		echo "trying get mingw ..."
+		sleep 2
+		changeDirectory $HOME
+		wget $MINGW_URL
+		./mingw-get-setup.exe 
+		/c/Mingw/bin/mingw-get.exe update
+		/c/Mingw/bin/mingw-get.exe install $MINGW_PACKAGES $MINGW_OPT
+		choco install $WIN_PROGR -y
 	fi
 }
 
@@ -248,11 +281,11 @@ getFPCSources(){
 	changeDirectory $LAMW4LINUX_HOME/fpcsrc
 	svn checkout $URL_FPC
 	if [ $? != 0 ]; then
-		#sudo rm $FPC_RELEASE/.svn -r
-		sudo rm -r $FPC_RELEASE
+		#rm $FPC_RELEASE/.svn -r
+		rm -r $FPC_RELEASE
 		svn checkout $URL_FPC
 		if [ $? != 0 ]; then 
-			sudo rm -r $FPC_RELEASE
+			rm -r $FPC_RELEASE
 			echo "possible network instability! Try later!"
 			exit 1
 		fi
@@ -263,12 +296,12 @@ getLazarusSources(){
 	changeDirectory $LAMW4LINUX_HOME
 	svn co $LAZARUS_STABLE_SRC_LNK
 	if [ $? != 0 ]; then  #case fails last command , try svn chekout 
-		sudo rm -r $LAZARUS_STABLE
+		rm -r $LAZARUS_STABLE
 		#svn cleanup
 		#changeDirectory $LAMW4LINUX_HOME
 		svn co $LAZARUS_STABLE_SRC_LNK
 		if [ $? != 0 ]; then 
-			sudo rm -r $LAZARUS_STABLE
+			rm -r $LAZARUS_STABLE
 			echo "possible network instability! Try later!"
 			exit 1
 		fi
@@ -282,10 +315,10 @@ getLAMWFramework(){
 	changeDirectory $ANDROID_HOME
 	svn co $LAMW_SRC_LNK
 	if [ $? != 0 ]; then #case fails last command , try svn chekout
-		sudo rm -r lazandroidmodulewizard.git
+		rm -r lazandroidmodulewizard.git
 		svn co $LAMW_SRC_LNK
 		if [ $? != 0 ]; then 
-			sudo rm -r lazandroidmodulewizard.git
+			rm -r lazandroidmodulewizard.git
 			echo "possible network instability! Try later!"
 			exit 1
 		fi
@@ -293,7 +326,38 @@ getLAMWFramework(){
 	ln -sf $ANDROID_HOME/lazandroidmodulewizard.git $ANDROID_HOME/lazandroidmodulewizard
 }
 
-#Get Gradle and SDK Tools 
+#Get Gradle and SDK Tools
+getAnndroidSDKToolsW32(){
+	changeDirectory $HOME
+	if [ ! -e ANDROID_HOME ]; then
+		mkdir $ANDROID_HOME
+	fi
+	
+	changeDirectory $ANDROID_HOME
+	if [ ! -e $GRADLE_HOME ]; then
+		wget -c $GRADE_ZIP_LNK
+		if [ $? != 0 ] ; then
+			#rm *.zip*
+			wget -c $GRADE_ZIP_LNK
+		fi
+		unzip $GRADE_ZIP_FILE
+	fi
+	
+	if [ -e  $GRADE_ZIP_FILE ]; then
+		rm $GRADE_ZIP_FILE
+	fi
+	#mkdir
+	#changeDirectory $ANDROID_SDK
+	if [ ! -e sdk ] ; then
+		wget -c $SDK_TOOLS_URL #getting sdk 
+		if [ $? != 0 ]; then 
+			wget -c $SDK_TOOLS_URL
+		fi
+		./installer_r24.0.2-windows.exe
+	fi
+
+
+}
 getAndroidSDKTools(){
 	changeDirectory $HOME
 	if [ ! -e ANDROID_HOME ]; then
@@ -345,9 +409,7 @@ getAndroidSDKTools(){
 			fi
 			unzip android-ndk-r16b-linux-x86_64.zip
 			mv android-ndk-r16b ndk
-			if [ -e android-ndk-r16b-linux-x86_64.zip ]; then 
-				rm unzip android-ndk-r16b-linux-x86_64.zip
-			fi 
+			rm unzip android-ndk-r16b-linux-x86_64.zip
 		fi
 	fi
 
@@ -389,10 +451,10 @@ CreateSDKSimbolicLinks(){
 	ln -sf "$ANDROID_HOME/ndk-toolchain/arm-linux-androideabi-as" "$ANDROID_HOME/ndk-toolchain/arm-linux-as"
 	ln -sf "$ANDROID_HOME/ndk-toolchain/arm-linux-androideabi-ld" "$ANDROID_HOME/ndk-toolchain/arm-linux-ld"
 
-	sudo ln -sf "$ANDROID_HOME/ndk-toolchain/arm-linux-androideabi-as" "/usr/bin/arm-linux-androideabi-as"
-	sudo ln -sf "$ANDROID_HOME/ndk-toolchain/arm-linux-ld"  "/usr/bin/arm-linux-androideabi-ld"
-	sudo ln -sf $FPC_LIB_PATH/ppcrossarm /usr/bin/ppcrossarm
-	sudo ln -sf /usr/bin/ppcrossarm /usr/bin/ppcarm
+	ln -sf "$ANDROID_HOME/ndk-toolchain/arm-linux-androideabi-as" "/usr/bin/arm-linux-androideabi-as"
+	ln -sf "$ANDROID_HOME/ndk-toolchain/arm-linux-ld"  "/usr/bin/arm-linux-androideabi-ld"
+	ln -sf $FPC_LIB_PATH/ppcrossarm /usr/bin/ppcrossarm
+	ln -sf /usr/bin/ppcrossarm /usr/bin/ppcarm
 
 	if [ $OLD_ANDROID_SDK=0 ]; then 
 	#CORRIGE TEMPORARIAMENTE BUG GRADLE TO MIPSEL
@@ -438,11 +500,14 @@ AddSDKPathstoProfile(){
 	export PATH=$PATH:$GRADLE_HOME/bin
 }
 WrappergetAndroidSDK(){
-	if [ $OLD_ANDROID_SDK = 0 ]; then
-		getSDKAndroid
-	else
-		getOldAndroidSDK
-	fi
+	if [ $WINDOWS_CMD_WRAPPERS = 1 ]; then
+		getAnndroidSDKToolsW32
+	fi 
+	#if [ $OLD_ANDROID_SDK = 0 ]; then
+	#	getSDKAndroid
+	#else
+	#	getOldAndroidSDK
+	#fi
 
 }
 #to build
@@ -452,8 +517,8 @@ BuildCrossArm(){
 		changeDirectory $FPC_RELEASE
 		case $1 in 
 			0 )
-				sudo make clean 
-				sudo make crossall crossinstall  CPU_TARGET=arm OPT="-dFPC_ARMEL" OS_TARGET=android CROSSOPT="-CpARMV7A -CfVFPV3" INSTALL_PREFIX=/usr
+				make clean 
+				make crossall crossinstall  CPU_TARGET=arm OPT="-dFPC_ARMEL" OS_TARGET=android CROSSOPT="-CpARMV7A -CfVFPV3" INSTALL_PREFIX=/usr
 			;;
 
 		esac
@@ -592,14 +657,14 @@ ActiveProxy(){
 }
 CleanOldCrossCompileBins(){
 	if [ -e $FPC_LIB_PATH/ppcrossarm ]; then
-		sudo rm $FPC_LIB_PATH/ppcrossarm
+		rm $FPC_LIB_PATH/ppcrossarm
 	fi
 	
 	if [ -e /usr/lib/fpc/$FPC_VERSION/fpmkinst/arm-android ]; then
-		sudo rm -r /usr/lib/fpc/$FPC_VERSION/fpmkinst/arm-android
+		rm -r /usr/lib/fpc/$FPC_VERSION/fpmkinst/arm-android
 	fi
 	if [ -e /usr/lib/fpc/$FPC_VERSION/units/arm-android ]; then
-		sudo rm -r /usr/lib/fpc/$FPC_VERSION/units/arm-android
+		rm -r /usr/lib/fpc/$FPC_VERSION/units/arm-android
 	fi
 }
 
@@ -615,20 +680,30 @@ cleanPATHS(){
 }
 #this function remove old config of lamw4linux  
 CleanOldConfig(){
+
+	if [ $WINDOWS_CMD_WRAPPERS = 1 ]; then
+		if [ -e $ANDROID_HOME/sdk/unistall.exe ]; then
+			$ANDROID_HOME/sdk/unistall.exe
+		fi
+		if [ -e $HOME/mingw-get-setup.exe ]; then
+			rm $HOME/mingw-get-setup.exe
+		fi
+	fi
+
 	if [ -e $HOME/laz4ndroid ]; then
-		sudo rm  -r $HOME/laz4ndroid
+		rm  -r $HOME/laz4ndroid
 	fi
 	if [ -e $HOME/.laz4android ] ; then
 		rm -r $HOME/.laz4android
 	fi
 	if [ -e $LAMW4LINUX_HOME ] ; then
-		sudo rm $LAMW4LINUX_HOME -r
+		rm $LAMW4LINUX_HOME -r
 	fi
 
 	if [ -e $LAMW4_LINUX_PATH_CFG ]; then  rm -r $LAMW4_LINUX_PATH_CFG; fi
 
 	if [ -e $ANDROID_HOME ] ; then
-		sudo rm $ANDROID_HOME  -r
+		rm $ANDROID_HOME  -r
 	fi
 
 
@@ -645,27 +720,27 @@ CleanOldConfig(){
 	fi
 
 	if [ -e usr/bin/arm-embedded-as ] ; then    
-		sudo rm usr/bin/arm-embedded-as
+		rm usr/bin/arm-embedded-as
 	fi
 	if [ -e  /usr/bin/arm-linux-androideabi-ld ]; then
-		 sudo rm /usr/bin/arm-linux-androideabi-ld
+		 rm /usr/bin/arm-linux-androideabi-ld
 	fi
 	if [ -e /usr/bin/arm-embedded-ld  ]; then
-		sudo /usr/bin/arm-embedded-ld           
+		/usr/bin/arm-embedded-ld           
 	fi 
 	if [ -e /usr/bin/arm-linux-as ] ; then 
-	 	sudo rm  /usr/bin/arm-linux-as
+	 	rm  /usr/bin/arm-linux-as
 	fi
 	if [ -e /usr/lib/fpc/$FPC_VERSION/fpmkinst/arm-android ]; then
-		sudo rm -r /usr/lib/fpc/$FPC_VERSION/fpmkinst/arm-android
+		rm -r /usr/lib/fpc/$FPC_VERSION/fpmkinst/arm-android
 	fi
 
 
 	if [ -e /usr/bin/arm-linux-androideabi-as ]; then
-		sudo rm /usr/bin/arm-linux-androideabi-as
+		rm /usr/bin/arm-linux-androideabi-as
 	fi
 	if [ -e /usr/bin/arm-linux-ld ] ; then 
-		sudo rm /usr/bin/arm-linux-ld
+		rm /usr/bin/arm-linux-ld
 	fi
 
 	if [ -e $FPC_CFG_PATH ]; then #remove local ppc config
@@ -691,7 +766,7 @@ SearchPackage(){
 		
 		tam=${#packs[@]}
 		if  [ $tam = 0 ] ; then
-			sudo apt-get install fpc -y
+			apt-get install fpc -y
 			packs=( $(dpkg -l $1) )
 		fi
 
@@ -724,7 +799,7 @@ parseFPC(){
 
 	case "$1" in 
 		*"3.0.0"*)
-			export URL_FPC="https://svn.freepascal.org/svn/fpc/tags/release_3_0_0"
+			export URL_FPC="http://svn.freepascal.org/svn/fpc/tags/release_3_0_0"
 			export FPC_LIB_PATH="/usr/lib/fpc"
 			#export FPC_CFG_PATH="/etc/fpc-3.0.0.cfg"
 			export FPC_RELEASE="release_3_0_0"
@@ -732,7 +807,7 @@ parseFPC(){
 			export FPC_LIB_PATH="/usr/lib/fpc/$FPC_VERSION"
 		;;
 		*"3.0.4"*)
-			export URL_FPC="https://svn.freepascal.org/svn/fpc/tags/release_3_0_4"
+			export URL_FPC="http://svn.freepascal.org/svn/fpc/tags/release_3_0_4"
 			export FPC_RELEASE="release_3_0_4"
 			export FPC_VERSION="3.0.4"
 			
@@ -746,9 +821,9 @@ parseFPC(){
 			
 			if [ -e /usr/lib/x86_64-linux-gnu/fpc/$FPC_VERSION ]; then #case new location fpc directory 
 				if [   -e /usr/lib/fpc  ]; then #para estar versão do fpc, obrigatóriamente /usr/lib/fpc dever ser um link simbólico
-					 sudo rm -r /usr/lib/fpc
+					 rm -r /usr/lib/fpc
 				fi
-				sudo ln -s /usr/lib/x86_64-linux-gnu/fpc /usr/lib/fpc
+				ln -s /usr/lib/x86_64-linux-gnu/fpc /usr/lib/fpc
 				export FPC_LIB_PATH="/usr/lib/fpc/$FPC_VERSION"
 			else
 				if [ -e /usr/lib/fpc/$FPC_VERSION ]; then
@@ -766,8 +841,8 @@ parseFPC(){
 }
 
 enableADBtoUdev(){
-	 sudo printf 'SUBSYSTEM=="usb", ATTR{idVendor}=="<VENDOR>", MODE="0666", GROUP="plugdev"\n'  | sudo tee /etc/udev/rules.d/51-android.rules
-	 sudo service udev restart
+	 printf 'SUBSYSTEM=="usb", ATTR{idVendor}=="<VENDOR>", MODE="0666", GROUP="plugdev"\n'  | tee /etc/udev/rules.d/51-android.rules
+	 service udev restart
 }
 configureFPC(){
 	if [ "$(whoami)" = "root" ];then
@@ -851,6 +926,10 @@ checkProxyStatus(){
 	fi
 }
 mainInstall(){
+
+
+	
+
 
 	installDependences
 	checkProxyStatus
