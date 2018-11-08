@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<CONFIG>
-  <Compiler Value="/usr/bin/fpc" Date="1535575190"/>
-  <Params Value=" -MObjFPC -Scghi -Cg -O1 -g -gl -l -vewnhibq -Fi/home/danny/Dev/LAMW-tweak-tools/lib/x86_64-linux -Fu/home/danny/Dev/LAMW-tweak-tools/icons -Fu/home/danny/lazarus/lcl/units/x86_64-linux/gtk2 -Fu/home/danny/lazarus/lcl/units/x86_64-linux -Fu/home/danny/lazarus/components/lazutils/lib/x86_64-linux -Fu/home/danny/lazarus/packager/units/x86_64-linux -Fu/home/danny/Dev/LAMW-tweak-tools/ -FU/home/danny/Dev/LAMW-tweak-tools/lib/x86_64-linux/ -dLCL -dLCLgtk2 LAMW4LinuxInstallManager.lpr"/>
-</CONFIG>
