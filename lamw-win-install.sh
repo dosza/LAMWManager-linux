@@ -6,18 +6,30 @@
 #Versao LAMW-INSTALL: 0.2.0
 #Descrição: Este script configura o ambiente de desenvolvimento para o LAMW
 
-
+#GLOBAL VARIABLES 
 export WINDOWS_CMD_WRAPPERS=1
 MINGW_URL="http://osdn.net/projects/mingw/downloads/68260/mingw-get-setup.exe"
 WIN_PROGR="freepascal git.install svn jdk8  7zip.install ant  "
 MINGW_PACKAGES="msys-wget-bin  mingw32-base-bin mingw-developer-toolkit-bin msys-base-bin msys-zip-bin "
 MINGW_OPT="--reinstall"
-
-
+export WIN_CURRENT_USER=""
+export WIN_HOME_4_UNIX=""
+export WIN_HOME="" #this path compatible with Windows
+export HOME=""
 if [  $WINDOWS_CMD_WRAPPERS  = 1 ]; then
 	#source $WINDOWS_CMD_WRAPPERS
-	export user=$(whoami)
-	export HOME="/c/Users/$user"
+	#export user=$(whoami)
+	echo '$env:username' > /tmp/pscommand.ps1
+
+	/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe Set-ExecutionPolicy Bypass
+	export WIN_CURRENT_USER=$(/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe  /tmp/pscommand.ps1)
+	
+	export WIN_HOME_4_UNIX="/c/Users/$WIN_CURRENT_USER"
+	export WIN_HOME='\Users\'
+	export WIN_HOME="$WIN_HOME$WIN_CURRENT_USER"
+	export HOME="/home/$WIN_CURRENT_USER"
+	echo "username=$WIN_HOME_4_UNIX"
+	sleep 2
 	#/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe  Get-ExecutionPolicy 
 	#/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe Set-ExecutionPolicy AllSigned
 	#/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe  -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))" && SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin"
@@ -39,7 +51,7 @@ LAMW_INSTALL_WELCOME=(
 export DEBIAN_FRONTEND="gnome"
 export URL_FPC=""
 export FPC_VERSION=""
-export FPC_CFG_PATH="$HOME/.fpc.cfg"
+export FPC_CFG_PATH="$WIN_HOME_4_UNIX/.fpc.cfg"
 export PPC_CONFIG_PATH=$FPC_CFG_PATH
 export FPC_RELEASE=""
 export flag_new_ubuntu_lts=0
@@ -48,8 +60,23 @@ export FPC_VERSION=""
 export FPC_MKCFG_EXE=""
 export FORCE_LAWM4INSTALL=0
 #work_home_desktop=$(xdg-user-dir DESKTOP)
-ANDROID_HOME="$HOME/android"
+ANDROID_HOME="$WIN_HOME_4_UNIX/android"
 ANDROID_SDK="$ANDROID_HOME/sdk"
+#ANDROID_HOME for $win 
+
+
+#------------ PATHS translated for windows------------------------------
+WIN_ANDROID_HOME="$WIN_HOME\android"
+WIN_ANDROID_SDK="$WIN_ANDROID_HOME\sdk"
+WIN_LAMW4_LINUX_PATH_CFG="$WIN_HOME\.lamw4linux"
+WIN_LAMW4LINUX_HOME="$WIN_HOME\lamw4linux"
+WIN_LAMW_IDE_HOME="$WIN_LAMW4LINUX_HOME\lamw4linux" # path to link-simbolic to ide 
+WIN_LAMW_WORKSPACE_HOME="$WIN_HOME\Dev\LAMWProjects"  #piath to lamw_workspacewin
+WIN_LAMW4LINUX_EXE_PATH="$WIN_LAMW_IDE_HOME\lamw4linux"
+WIN_LAMW_MENU_ITEM_PATH="\ProgramData\Microsoft\Windows\Start Menu\Programs\lamw4linux.lnk"
+WIN_GRADLE_HOME="$WIN_ANDROID_HOME\gradle-4.4.1"
+
+#--------------------------------------------------------------------------
 CROSS_COMPILE_URL="http://github.com/newpascal/fpcupdeluxe/releases/tag/v1.6.1e"
 APT_OPT=""
 export PROXY_SERVER="internet.cua.ufmt.br"
@@ -65,15 +92,16 @@ SDK_MANAGER_CMD_PARAMETERS2=()
 SDK_LICENSES_PARAMETERS=()
 LAZARUS_STABLE_SRC_LNK="http://svn.freepascal.org/svn/lazarus/tags/lazarus_1_8_4"
 LAMW_SRC_LNK="http://github.com/jmpessoa/lazandroidmodulewizard.git"
-LAMW4_LINUX_PATH_CFG="$HOME/.lamw4linux"
-LAMW4LINUX_HOME="$HOME/lamw4linux"
+LAMW4_LINUX_PATH_CFG="$WIN_HOME_4_UNIX/.lamw4linux"
+LAMW4LINUX_HOME="$WIN_HOME_4_UNIX/lamw4linux"
 LAMW_IDE_HOME="$LAMW4LINUX_HOME/lamw4linux" # path to link-simbolic to ide 
-LAMW_WORKSPACE_HOME="$HOME/Dev/LAMWProjects"  #path to lamw_workspace
+LAMW_WORKSPACE_HOME="$WIN_HOME_4_UNIX/Dev/LAMWProjects"  #piath to lamw_workspace
 LAMW4LINUX_EXE_PATH="$LAMW_IDE_HOME/lamw4linux"
-LAMW_MENU_ITEM_PATH="$HOME/.local/share/applications/lamw4linux.desktop"
+LAMW_MENU_ITEM_PATH="$WIN_HOME_4_UNIX/.local/share/applications/lamw4linux.desktop"
 GRADLE_HOME="$ANDROID_HOME/gradle-4.4.1"
+#WIN_GRADLE_HOME=
+GRADLE_CFG_HOME="$WIN_HOME_4_UNIX/.gradle"
 
-GRADLE_CFG_HOME="$HOME/.gradle"
 GRADE_ZIP_LNK="http://services.gradle.org/distributions/gradle-4.4.1-bin.zip"
 GRADE_ZIP_FILE="gradle-4.4.1-bin.zip"
 FPC_STABLE=""
@@ -98,9 +126,80 @@ libs_android="libx11-dev libgtk2.0-dev libgdk-pixbuf2.0-dev libcairo2-dev libpan
 prog_tools="menu fpc git subversion make build-essential zip unzip unrar android-tools-adb ant openjdk-8-jdk "
 packs=()
 #[[]
-
+#echo "WIN_GRADLE_HOME=$WIN_GRADLE_HOME"
+#sleep 3
 export OLD_ANDROID_SDK=0
+#--------------Win32 functions-------------------------
+#Get Gradle and SDK Tools
+getAnndroidSDKToolsW32(){
+	changeDirectory $WIN_HOME_4_UNIX
+	if [ ! -e ANDROID_HOME ]; then
+		mkdir $ANDROID_HOME
+	fi
+	
+	changeDirectory $ANDROID_HOME
+	if [ ! -e $GRADLE_HOME ]; then
+		wget -c $GRADE_ZIP_LNK
+		if [ $? != 0 ] ; then
+			#rm *.zip*
+			wget -c $GRADE_ZIP_LNK
+		fi
+		#echo "$PWD"
+		#sleep 3
+		unzip "$GRADE_ZIP_FILE"
+	fi
+	
+	if [ -e  $GRADE_ZIP_FILE ]; then
+		rm $GRADE_ZIP_FILE
+	fi
+	#mkdir
+	#changeDirectory $ANDROID_SDK
+	if [ ! -e sdk ] ; then
+		wget -c $SDK_TOOLS_URL #getting sdk 
+		if [ $? != 0 ]; then 
+			wget -c $SDK_TOOLS_URL
+		fi
+		./installer_r24.0.2-windows.exe
+	fi
 
+	if [ ! -e ndk ]; then
+		wget  $NDK_URL
+		if [ $? != 0 ]; then 
+			wget -c $NDK_URL
+		fi
+	fi
+
+
+}
+
+winCallfromPS(){
+	echo "$*" > /tmp/pscommand.ps1
+	/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe Set-ExecutionPolicy Bypass
+	/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe  /tmp/pscommand.ps1
+}
+getWinEnvPaths(){
+	command='$env:'
+	comand=$comand$1
+	echo "$comand" > /tmp/pscommand.ps1
+	/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe Set-ExecutionPolicy Bypass
+	/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe  /tmp/pscommand.ps1
+}
+updateWinPATHS(){
+	cmd_paths='\ProgramData\chocolatey\bin\RefreshEnv'
+	winCallfromPS "$cmd_paths"
+	new_cmd_path='echo $PATH' 
+	echo "$new_cmd_path" > /tmp/update-win-path.sh
+	if [ $? !=  0 ]; then
+		echo "not write"
+		exit 1
+	fi
+	new_path=$(bash /tmp/update-win-path.sh)
+	echo "NEW_PATH=$new_path"
+	read 
+	export PATH=$new_path
+}
+
+#----------------------------------------------------------------------------------------------------------------------------
 checkForceLAMW4LinuxInstall(){
 	args=($*)
 	for((i=0;i<${#args[*]};i++))
@@ -116,23 +215,23 @@ checkForceLAMW4LinuxInstall(){
 }
 #setJRE8 as default
 setJava8asDefault(){
-	path_java=($(dpkg -L openjdk-8-jre))
-
-i=0
-found_path=""
-while [ $i -lt ${#path_java[@]} ]
-do
+	#path_java=($(dpkg -L openjdk-8-jre))
+	path_java=($(splitStr "$PATH" ":" ))
+	i=0
+	found_path=""
+	while [ $i -lt ${#path_java[@]} ]
+	do
 	wi=${path_java[$i]}
 	#printf "$wi\n"
 	case "$wi" in
-		*"jre"*)
+		*"jdk"*)
 		#printf "found: i=$i $wi\n"
 		#found_path=$w8asDefault
 		if [ -e $wi/bin/java ]; then
 			#printf "found: i=$i $wi\nStopping search ...\n"
 			found_path=$wi
 			export JAVA_PATH="$found_path/bin/java"
-			update-alternatives --set java $JAVA_PATH
+			#fJupdate-alternatives --set java $JAVA_PATH
 			break;
 		fi
 	esac
@@ -195,7 +294,7 @@ GenerateScapesStr(){
 	if [ "$1" = "" ] ; then
 		for ((i=0;i<tam;i++))
 		do
-			HOME_STR_SPLITTED=$HOME_STR_SPLITTED"\/"${HOME_USER_SPLITTED_ARRAY[i]}
+			HOME_STR_SPLITTED=$WIN_HOME_4_UNIX_STR_SPLITTED"\/"${HOME_USER_SPLITTED_ARRAY[i]}
 		#echo ${HOME_USER_SPLITTED_ARRAY[i]}
 		done
 	else
@@ -221,27 +320,17 @@ unistallJavaUnsupported(){
 	fi
 }
 installDependences(){
-	if [ $WINDOWS_CMD_WRAPPERS = 0 ]; then 
-		apt-get update;
-		if [ $FORCE_LAWM4INSTALL = 1 ]; then 
-			apt-get remove --purge  lazarus* -y
-			apt-get autoremove --purge -y
-		fi
-				#apt-get install fpc
-		apt-get install $libs_android $prog_tools  -y --allow-unauthenticated
-		if [ "$?" != "0" ]; then
-			apt-get install $libs_android $prog_tools  -y --allow-unauthenticated --fix-missing
-		fi
-	else
+	if [ $WINDOWS_CMD_WRAPPERS = 1 ]; then 
 
 		echo "trying get mingw ..."
-		sleep 2
-		changeDirectory $HOME
-		wget $MINGW_URL
-		./mingw-get-setup.exe 
-		/c/Mingw/bin/mingw-get.exe update
-		/c/Mingw/bin/mingw-get.exe install $MINGW_PACKAGES $MINGW_OPT
+		#sleep 2
+		changeDirectory $WIN_HOME_4_UNIX
+	#	wget $MINGW_URL
+		#./mingw-get-setup.exe 
+		#/c/Mingw/bin/mingw-get.exe update
+		#/c/Mingw/bin/mingw-get.exe install $MINGW_PACKAGES $MINGW_OPT
 		choco install $WIN_PROGR -y
+		updateWinPATHS
 	fi
 }
 
@@ -276,10 +365,10 @@ initParameters(){
 }
 #Get FPC Sources
 getFPCSources(){
-	changeDirectory $HOME
+	changeDirectory $WIN_HOME_4_UNIX
 	mkdir -p $LAMW4LINUX_HOME/fpcsrc
 	changeDirectory $LAMW4LINUX_HOME/fpcsrc
-	svn checkout $URL_FPC
+	svn checkout "$URL_FPC"
 	if [ $? != 0 ]; then
 		#rm $FPC_RELEASE/.svn -r
 		rm -r $FPC_RELEASE
@@ -323,99 +412,10 @@ getLAMWFramework(){
 			exit 1
 		fi
 	fi
-	ln -sf $ANDROID_HOME/lazandroidmodulewizard.git $ANDROID_HOME/lazandroidmodulewizard
+	ln - $ANDROID_HOME/lazandroidmodulewizard.git $ANDROID_HOME/lazandroidmodulewizard
 }
 
-#Get Gradle and SDK Tools
-getAnndroidSDKToolsW32(){
-	changeDirectory $HOME
-	if [ ! -e ANDROID_HOME ]; then
-		mkdir $ANDROID_HOME
-	fi
-	
-	changeDirectory $ANDROID_HOME
-	if [ ! -e $GRADLE_HOME ]; then
-		wget -c $GRADE_ZIP_LNK
-		if [ $? != 0 ] ; then
-			#rm *.zip*
-			wget -c $GRADE_ZIP_LNK
-		fi
-		unzip $GRADE_ZIP_FILE
-	fi
-	
-	if [ -e  $GRADE_ZIP_FILE ]; then
-		rm $GRADE_ZIP_FILE
-	fi
-	#mkdir
-	#changeDirectory $ANDROID_SDK
-	if [ ! -e sdk ] ; then
-		wget -c $SDK_TOOLS_URL #getting sdk 
-		if [ $? != 0 ]; then 
-			wget -c $SDK_TOOLS_URL
-		fi
-		./installer_r24.0.2-windows.exe
-	fi
 
-
-}
-getAndroidSDKTools(){
-	changeDirectory $HOME
-	if [ ! -e ANDROID_HOME ]; then
-		mkdir $ANDROID_HOME
-	fi
-	
-	changeDirectory $ANDROID_HOME
-	if [ ! -e $GRADLE_HOME ]; then
-		wget -c $GRADE_ZIP_LNK
-		if [ $? != 0 ] ; then
-			#rm *.zip*
-			wget -c $GRADE_ZIP_LNK
-		fi
-		unzip $GRADE_ZIP_FILE
-	fi
-	
-	if [ -e  $GRADE_ZIP_FILE ]; then
-		rm $GRADE_ZIP_FILE
-	fi
-	#mode OLD SDK (24 with ant support )
-	if [ $OLD_ANDROID_SDK = 0 ]; then
-		mkdir -p $ANDROID_SDK
-		changeDirectory $ANDROID_SDK
- 
-		if [ ! -e tools ] ; then
-			wget -c $SDK_TOOLS_URL #getting sdk 
-			if [ $? != 0 ]; then 
-				wget -c $SDK_TOOLS_URL
-			fi
-			unzip sdk-tools-linux-3859397.zip
-		fi
-	else
-		changeDirectory $ANDROID_HOME 
-		export SDK_TOOLS_URL="http://dl.google.com/android/android-sdk_r24.0.2-linux.tgz"
-		if [ ! -e sdk ]; then 
-			wget -c $SDK_TOOLS_URL
-			if [ $? != 0 ]; then
-				wget -c $SDK_TOOLS_URL
-			fi
-			tar -zxvf android-sdk_r24.0.2-linux.tgz 
-			mv android-sdk-linux sdk
-		fi
-
-
-		if [ ! -e ndk ] ; then 
-			wget -c $NDK_URL
-			if [ $? != 0 ]; then
-				wget -c $NDK_URL
-			fi
-			unzip android-ndk-r16b-linux-x86_64.zip
-			mv android-ndk-r16b ndk
-			rm unzip android-ndk-r16b-linux-x86_64.zip
-		fi
-	fi
-
-
-
-}
 
 getSDKAndroid(){
 	changeDirectory $ANDROID_SDK/tools/bin #change directory
@@ -467,33 +467,24 @@ CreateSDKSimbolicLinks(){
 #Addd sdk to .bashrc and .profile
 
 AddSDKPathstoProfile(){
-	aux=$(tail -1 $HOME/.profile)       #tail -1 mostra a última linha do arquivo 
+	aux=$(tail -1 $WIN_HOME_4_UNIX/.profile)       #tail -1 mostra a última linha do arquivo 
 	if [ "$aux" != "" ] ; then   # verifica se a última linha é vazia
-			sed  -i '$a\' $HOME/.profile #adiciona uma linha ao fim do arquivo
+			sed  -i '$a\' $WIN_HOME_4_UNIX/.profile #adiciona uma linha ao fim do arquivo
 	fi
 
 
-	profile_file=$HOME/.bashrc
+	profile_file=$WIN_HOME_4_UNIX/.bashrc
 	flag_profile_paths=0
 	profile_line_path='export PATH=$PATH:$GRADLE_HOME/1-bin'
-#	if [ -e $profile_file ];then 
-	#	profile_data=$(cat $profile_file)
-		#case "$profile_data" in 
-		#	*'export PATH=$PATH:$GRADLE_HOME'*)
-		#	flag_profile_paths=1
-			#exit 1
-		#	;;
-		#esac
-	#fi
 	searchLineinFile "$profile_file" "$profile_line_path"
 	flag_profile_paths=$?
 	if [ $flag_profile_paths = 0 ] ; then 
-		#echo 'export PATH=$PATH'"\":$ANDROID_HOME/ndk-toolchain\"" >> $HOME/.bashrc
-		#echo 'export PATH=$PATH'"\":$GRADLE_HOME/bin\"" >> $HOME/.bashrc
-		echo "export ANDROID_HOME=$ANDROID_HOME" >>  $HOME/.bashrc
-		echo "export GRADLE_HOME=$GRADLE_HOME" >> $HOME/.bashrc
-		echo 'export PATH=$PATH:$ANDROID_HOME/ndk-toolchain' >> $HOME/.bashrc
-		echo 'export PATH=$PATH:$GRADLE_HOME/bin' >> $HOME/.bashrc
+		#echo 'export PATH=$PATH'"\":$ANDROID_HOME/ndk-toolchain\"" >> $WIN_HOME_4_UNIX/.bashrc
+		#echo 'export PATH=$PATH'"\":$GRADLE_HOME/bin\"" >> $WIN_HOME_4_UNIX/.bashrc
+		echo "export ANDROID_HOME=$ANDROID_HOME" >>  $WIN_HOME_4_UNIX/.bashrc
+		echo "export GRADLE_HOME=$GRADLE_HOME" >> $WIN_HOME_4_UNIX/.bashrc
+		echo 'export PATH=$PATH:$ANDROID_HOME/ndk-toolchain' >> $WIN_HOME_4_UNIX/.bashrc
+		echo 'export PATH=$PATH:$GRADLE_HOME/bin' >> $WIN_HOME_4_UNIX/.bashrc
 	fi
 
 	export PATH=$PATH:$ANDROID_HOME/ndk-toolchain
@@ -541,9 +532,10 @@ BuildLazarusIDE(){
 		fi
 	done
 }
+#Esta função imprime o valor de uma váriavel de ambiente do MS Windows 
 #this  fuction create a INI file to config  all paths used in lamw framework 
 LAMW4LinuxPostConfig(){
-	old_lamw_workspace="$HOME/Dev/lamw_workspace"
+	old_lamw_workspace="$WIN_HOME_4_UNIX/Dev/lamw_workspace"
 	if [ ! -e $LAMW4_LINUX_PATH_CFG ] ; then
 		mkdir $LAMW4_LINUX_PATH_CFG
 	fi
@@ -555,31 +547,23 @@ LAMW4LinuxPostConfig(){
 		mkdir -p $LAMW_WORKSPACE_HOME
 	fi
 
-	java_versions=("/usr/lib/jvm/java-8-openjdk-amd64"  "/usr/lib/jvm/java-8-oracle"  "/usr/lib/jvm/java-8-openjdk-i386")
-	java_path=""
+	#java_versions=("/usr/lib/jvm/java-8-openjdk-amd64"  "/usr/lib/jvm/java-8-oracle"  "/usr/lib/jvm/java-8-openjdk-i386")
+	java_path=$(getWinEnvPaths "JAVA_HOME")
 	tam=${#java_versions[@]} #tam recebe o tamanho do vetor 
-	ant_path=$(which ant)
-	ant_path=${ant_path%/ant*} #
-	i=0 #Inicializando o contador 
-	for (( i = 0; i < tam ; i++ )) # Laço para percorrer o vetor 
-	do
-		if [ -e ${java_versions[i]} ]; then
-			java_path=${java_versions[i]}
-			break;
-		fi
-	done
+	ant_path=$(getWinEnvPaths "ANT_HOME")
+	letter_home_driver=$(getWinEnvPaths "HOMEDRIVE")
 
 
 # contem o arquivo de configuração do lamw
 	LAMW_init_str=(
 		"[NewProject]"
-		"PathToWorkspace=$LAMW_WORKSPACE_HOME"
-		"PathToJavaTemplates=$HOME/android/lazandroidmodulewizard/trunk/java"
+		"PathToWorkspace=$letter_home_driver$WIN_LAMW_WORKSPACE_HOME"
+		"PathToJavaTemplates=$letter_home_driver$WIN_HOME/android/lazandroidmodulewizard/trunk/java"
 		"PathToJavaJDK=$java_path"
-		"PathToAndroidNDK=$HOME/android/ndk"
-		"PathToAndroidSDK=$HOME/android/sdk"
+		"PathToAndroidNDK=$WIN_HOME\android\ndk"
+		"PathToAndroidSDK=$WIN_HOME\android\sdk"
 		"PathToAntBin=$ant_path"
-		"PathToGradle=$GRADLE_HOME"
+		"PathToGradle=$WIN_GRADLE_HOME"
 		"PrebuildOSYS=linux-x86_64"
 		"MainActivity=App"
 		"FullProjectName="
@@ -669,14 +653,14 @@ CleanOldCrossCompileBins(){
 }
 
 cleanPATHS(){
-	sed -i "/export ANDROID_HOME=*/d"  $HOME/.bashrc
-	sed -i "/export GRADLE_HOME=*/d" $HOME/.bashrc
-	sed -i '/export PATH=$PATH:$HOME\/android\/ndk-toolchain/d'  $HOME/.bashrc #\/ is scape of /
-	sed -i '/export PATH=$PATH:$HOME\/android\/gradle-4.1\/bin/d' $HOME/.bashrc
-	sed -i '/export PATH=$PATH:$HOME\/android\/ndk-toolchain/d'  $HOME/.profile
-	sed -i '/export PATH=$PATH:$HOME\/android\/gradle-4.1\/bin/d' $HOME/.profile	
-	sed -i '/export PATH=$PATH:$ANDROID_HOME\/ndk-toolchain/d'  $HOME/.bashrc
-	sed -i '/export PATH=$PATH:$GRADLE_HOME/d'  $HOME/.bashrc
+	sed -i "/export ANDROID_HOME=*/d"  $WIN_HOME_4_UNIX/.bashrc
+	sed -i "/export GRADLE_HOME=*/d" $WIN_HOME_4_UNIX/.bashrc
+	sed -i '/export PATH=$PATH:$WIN_HOME_4_UNIX\/android\/ndk-toolchain/d'  $WIN_HOME_4_UNIX/.bashrc #\/ is scape of /
+	sed -i '/export PATH=$PATH:$WIN_HOME_4_UNIX\/android\/gradle-4.1\/bin/d' $WIN_HOME_4_UNIX/.bashrc
+	sed -i '/export PATH=$PATH:$WIN_HOME_4_UNIX\/android\/ndk-toolchain/d'  $WIN_HOME_4_UNIX/.profile
+	sed -i '/export PATH=$PATH:$WIN_HOME_4_UNIX\/android\/gradle-4.1\/bin/d' $WIN_HOME_4_UNIX/.profile	
+	sed -i '/export PATH=$PATH:$ANDROID_HOME\/ndk-toolchain/d'  $WIN_HOME_4_UNIX/.bashrc
+	sed -i '/export PATH=$PATH:$GRADLE_HOME/d'  $WIN_HOME_4_UNIX/.bashrc
 }
 #this function remove old config of lamw4linux  
 CleanOldConfig(){
@@ -685,16 +669,16 @@ CleanOldConfig(){
 		if [ -e $ANDROID_HOME/sdk/unistall.exe ]; then
 			$ANDROID_HOME/sdk/unistall.exe
 		fi
-		if [ -e $HOME/mingw-get-setup.exe ]; then
-			rm $HOME/mingw-get-setup.exe
+		if [ -e $WIN_HOME_4_UNIX/mingw-get-setup.exe ]; then
+			rm $WIN_HOME_4_UNIX/mingw-get-setup.exe
 		fi
 	fi
 
-	if [ -e $HOME/laz4ndroid ]; then
-		rm  -r $HOME/laz4ndroid
+	if [ -e $WIN_HOME_4_UNIX/laz4ndroid ]; then
+		rm  -r $WIN_HOME_4_UNIX/laz4ndroid
 	fi
-	if [ -e $HOME/.laz4android ] ; then
-		rm -r $HOME/.laz4android
+	if [ -e $WIN_HOME_4_UNIX/.laz4android ] ; then
+		rm -r $WIN_HOME_4_UNIX/.laz4android
 	fi
 	if [ -e $LAMW4LINUX_HOME ] ; then
 		rm $LAMW4LINUX_HOME -r
@@ -707,8 +691,8 @@ CleanOldConfig(){
 	fi
 
 
-	if [ -e $HOME/.local/share/applications/laz4android.desktop ];then
-		rm $HOME/.local/share/applications/laz4android.desktop
+	if [ -e $WIN_HOME_4_UNIX/.local/share/applications/laz4android.desktop ];then
+		rm $WIN_HOME_4_UNIX/.local/share/applications/laz4android.desktop
 	fi
 
 	if [ -e $LAMW_MENU_ITEM_PATH ]; then
@@ -750,10 +734,10 @@ CleanOldConfig(){
 		rm "$work_home_desktop/lamw4linux.desktop"
 	fi
 	cleanPATHS
-	# sed -i '/export PATH=$PATH:$HOME\/android\/ndk-toolchain/d'  $HOME/.bashrc #\/ is scape of /
-	# sed -i '/export PATH=$PATH:$HOME\/android\/gradle-4.1\/bin/d' $HOME/.bashrc
-	# sed -i '/export PATH=$PATH:$HOME\/android\/ndk-toolchain/d'  $HOME/.profile
-	# sed -i '/export PATH=$PATH:$HOME\/android\/gradle-4.1\/bin/d' $HOME/.profile		
+	# sed -i '/export PATH=$PATH:$WIN_HOME_4_UNIX\/android\/ndk-toolchain/d'  $WIN_HOME_4_UNIX/.bashrc #\/ is scape of /
+	# sed -i '/export PATH=$PATH:$WIN_HOME_4_UNIX\/android\/gradle-4.1\/bin/d' $WIN_HOME_4_UNIX/.bashrc
+	# sed -i '/export PATH=$PATH:$WIN_HOME_4_UNIX\/android\/ndk-toolchain/d'  $WIN_HOME_4_UNIX/.profile
+	# sed -i '/export PATH=$PATH:$WIN_HOME_4_UNIX\/android\/gradle-4.1\/bin/d' $WIN_HOME_4_UNIX/.profile		
 }
 
 
@@ -762,14 +746,7 @@ SearchPackage(){
 	index=-1
 	#vetor que armazena informações sobre a intalação do pacote
 	if [ "$1" != "" ]  ; then
-		packs=( $(dpkg -l $1) )
-		
-		tam=${#packs[@]}
-		if  [ $tam = 0 ] ; then
-			apt-get install fpc -y
-			packs=( $(dpkg -l $1) )
-		fi
-
+		packs=($(choco list $1 --local-only))
 		for (( i = 0 ; i < ${#packs[*]};i++))
 		do
 			if [ "${packs[i]}" = "$1" ] ; then
@@ -848,12 +825,12 @@ configureFPC(){
 	if [ "$(whoami)" = "root" ];then
 		packs=()
 		ANDROID_HOME=$1
-		SearchPackage fpc
+		SearchPackage freepascal
 		index=$?
 		parseFPC ${packs[$index]}
 	fi
 	# parte do arquivo de configuração do fpc, 
-	SearchPackage fpc
+		SearchPackage freepascal
 		index=$?
 		parseFPC ${packs[$index]}
 		if [ ! -e $FPC_CFG_PATH ]; then
@@ -914,7 +891,7 @@ writeLAMWLogInstall(){
 	if [ "$NOTIFY_SEND_EXE" != "" ]; then
 		$NOTIFY_SEND_EXE  "Info:\nLAMW4Linux:$LAMW4LINUX_HOME\nLAMW workspace : $LAMW_WORKSPACE_HOME\nAndroid SDK:$ANDROID_HOME/sdk\nAndroid NDK:$ANDROID_HOME/ndk\nGradle:$GRADLE_HOME\nLOG:$LAMW4LINUX_HOME/lamw-install.log"
 	else
-		printf "Info:\nLAMW4Linux:$LAMW4LINUX_HOME\nLAMW workspace : $HOME/Dev/lamw_workspace\nAndroid SDK:$ANDROID_HOME/sdk\nAndroid NDK:$ANDROID_HOME/ndk\nGradle:$GRADLE_HOME\nLOG:$LAMW4LINUX_HOME/lamw-install.log"
+		printf "Info:\nLAMW4Linux:$LAMW4LINUX_HOME\nLAMW workspace : $WIN_HOME_4_UNIX/Dev/lamw_workspace\nAndroid SDK:$ANDROID_HOME/sdk\nAndroid NDK:$ANDROID_HOME/ndk\nGradle:$GRADLE_HOME\nLOG:$LAMW4LINUX_HOME/lamw-install.log"
 	fi		
 
 }
@@ -945,7 +922,7 @@ mainInstall(){
 	getLazarusSources
 	CreateSDKSimbolicLinks
 	AddSDKPathstoProfile
-	changeDirectory $HOME
+	changeDirectory $WIN_HOME_4_UNIX
 	CleanOldCrossCompileBins
 	changeDirectory $FPC_RELEASE
 	BuildCrossArm $FPC_ID_DEFAULT
