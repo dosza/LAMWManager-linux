@@ -28,11 +28,11 @@ if [  $WINDOWS_CMD_WRAPPERS  = 1 ]; then
 	export WIN_HOME='\Users\'
 	export WIN_HOME="$WIN_HOME$WIN_CURRENT_USER"
 	export HOME="/home/$WIN_CURRENT_USER"
-	echo "username=$WIN_HOME_4_UNIX"
-	sleep 2
+	#echo "username=$WIN_HOME_4_UNIX"
+	#sleep 2
 	#/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe  Get-ExecutionPolicy 
 	#/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe Set-ExecutionPolicy AllSigned
-	#/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe  -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))" && SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin"
+	#/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe  -NoProfile -InputFormat None -ExecutionPolicy Bypass -Command "iex ((New-Object System.Net.WebClient).DownloadString('http://chocolatey.org/install.ps1'))" && SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin"
 	
 	#unzip wrappers to windows 
 	unzip(){
@@ -51,11 +51,14 @@ LAMW_INSTALL_WELCOME=(
 export DEBIAN_FRONTEND="gnome"
 export URL_FPC=""
 export FPC_VERSION=""
-export FPC_CFG_PATH="$WIN_HOME_4_UNIX/.fpc.cfg"
+export FPC_CFG_PATH="/c/tools/freepascal/bin/i386-win32/fpc.cfg" #"$WIN_HOME_4_UNIX/.fpc.cfg"
+
+
 export PPC_CONFIG_PATH=$FPC_CFG_PATH
 export FPC_RELEASE=""
 export flag_new_ubuntu_lts=0
 export FPC_LIB_PATH=""
+
 export FPC_VERSION=""
 export FPC_MKCFG_EXE=""
 export FORCE_LAWM4INSTALL=0
@@ -64,17 +67,23 @@ ANDROID_HOME="$WIN_HOME_4_UNIX/android"
 ANDROID_SDK="$ANDROID_HOME/sdk"
 #ANDROID_HOME for $win 
 
-
+BARRA_INVERTIDA="\""
 #------------ PATHS translated for windows------------------------------
 WIN_ANDROID_HOME="$WIN_HOME\android"
 WIN_ANDROID_SDK="$WIN_ANDROID_HOME\sdk"
 WIN_LAMW4_LINUX_PATH_CFG="$WIN_HOME\.lamw4linux"
 WIN_LAMW4LINUX_HOME="$WIN_HOME\lamw4linux"
-WIN_LAMW_IDE_HOME="$WIN_LAMW4LINUX_HOME\lamw4linux" # path to link-simbolic to ide 
+WIN_LAMW_IDE_HOME="$WIN_LAMW4LINUX_HOME\lazarus_stable" # path to link-simbolic to ide 
+WIN_LAMW_IDE_HOME_REAL="$WIN_LAMW_IDE_HOME$BARRA_INVERTIDA$LAZARUS_STABLE"
+
 WIN_LAMW_WORKSPACE_HOME="$WIN_HOME\Dev\LAMWProjects"  #piath to lamw_workspacewin
 WIN_LAMW4LINUX_EXE_PATH="$WIN_LAMW_IDE_HOME\lamw4linux"
 WIN_LAMW_MENU_ITEM_PATH="\ProgramData\Microsoft\Windows\Start Menu\Programs\lamw4linux.lnk"
 WIN_GRADLE_HOME="$WIN_ANDROID_HOME\gradle-4.4.1"
+#export WIN_CFG_PATH=""
+export WIN_FPC_CFG_PATH="C:\tools\freepascal\bin\i386-win32\fpc.cfg"
+export WIN_FPC_LIB_PATH=""
+export WIN_PPC_CONFIG_PATH=$FPC_CFG_PATH
 
 #--------------------------------------------------------------------------
 CROSS_COMPILE_URL="http://github.com/newpascal/fpcupdeluxe/releases/tag/v1.6.1e"
@@ -84,7 +93,7 @@ export PORT_SERVER=3128
 PROXY_URL="http://$PROXY_SERVER:$PORT_SERVER"
 export USE_PROXY=0
 export JAVA_PATH=""
-export SDK_TOOLS_URL="http://dl.google.com/android/installer_r24.0.2-windows.exe"
+export SDK_TOOLS_URL="http://dl.google.com/android/repository/sdk-tools-windows-3859397.zip" 
 export NDK_URL="http://dl.google.com/android/repository/android-ndk-r16b-windows-x86_64.zip"
 SDK_VERSION="28"
 SDK_MANAGER_CMD_PARAMETERS=()
@@ -94,7 +103,7 @@ LAZARUS_STABLE_SRC_LNK="http://svn.freepascal.org/svn/lazarus/tags/lazarus_1_8_4
 LAMW_SRC_LNK="http://github.com/jmpessoa/lazandroidmodulewizard.git"
 LAMW4_LINUX_PATH_CFG="$WIN_HOME_4_UNIX/.lamw4linux"
 LAMW4LINUX_HOME="$WIN_HOME_4_UNIX/lamw4linux"
-LAMW_IDE_HOME="$LAMW4LINUX_HOME/lamw4linux" # path to link-simbolic to ide 
+LAMW_IDE_HOME="$LAMW4LINUX_HOME/lazarus_stable" # path to link-simbolic to ide 
 LAMW_WORKSPACE_HOME="$WIN_HOME_4_UNIX/Dev/LAMWProjects"  #piath to lamw_workspace
 LAMW4LINUX_EXE_PATH="$LAMW_IDE_HOME/lamw4linux"
 LAMW_MENU_ITEM_PATH="$WIN_HOME_4_UNIX/.local/share/applications/lamw4linux.desktop"
@@ -109,7 +118,7 @@ LAZARUS_STABLE="lazarus_1_8_4"
 
 FPC_ID_DEFAULT=0
 FPC_CROSS_ARM_DEFAULT_PARAMETERS=('clean crossall crossinstall  CPU_TARGET=arm OS_TARGET=android OPT="-dFPC_ARMHF" SUBARCH="armv7a" INSTALL_PREFIX=/usr')
-FPC_CROSS_ARM_MODE_FPCDELUXE=(clean crossall crossinstall  CPU_TARGET=arm OS_TARGET=android CROSSOPT="-CpARMV7A -CfVFPV3" INSTALL_PREFIX=/usr)
+FPC_CROSS_ARM_MODE_FPCDELUXE=(crossall crossinstall  CPU_TARGET=arm OPT="-dFPC_ARMEL" OS_TARGET=android CROSSOPT="-CpARMV7A -CfVFPV3" INSTALL_PREFIX=/usr)
 LAZBUILD_PARAMETERS=(
 	"--build-ide= --add-package $ANDROID_HOME/lazandroidmodulewizard/trunk/android_bridges/tfpandroidbridge_pack.lpk --primary-config-path=$LAMW4_LINUX_PATH_CFG  --lazarusdir=$LAMW_IDE_HOME"
 	"--build-ide= --add-package $ANDROID_HOME/lazandroidmodulewizard/trunk/android_wizard/lazandroidwizardpack.lpk --primary-config-path=$LAMW4_LINUX_PATH_CFG --lazarusdir=$LAMW_IDE_HOME"
@@ -130,8 +139,34 @@ packs=()
 #sleep 3
 export OLD_ANDROID_SDK=0
 #--------------Win32 functions-------------------------
-#Get Gradle and SDK Tools
-getAnndroidSDKToolsW32(){
+
+winMKLinkDir(){
+	if [ $# = 2 ]; then
+		#getWinEnvPaths "TEMP"
+		echo "LinkDir:target=$1 link=$2"
+		rm  /tmp/winMKLink.bat
+		win_temp_path=$(getWinEnvPaths "HOMEDRIVE")
+		win_temp_path="$win_temp_path/tools/msys64/tmp/winMKLink.bat"
+		echo "mklink /J $2 $1" > /tmp/winMKLink.bat 
+		winCallfromPS $win_temp_path
+		rm  /tmp/winMKLink.bat 
+	fi
+}
+winMKLink(){
+	if [ $# = 2 ]; then
+		echo "Link: target=$1 link=$2"
+		
+		win_temp_path=$(getWinEnvPaths "HOMEDRIVE")
+		win_temp_path="$win_temp_path/tools/msys64/tmp/winMKLink.bat"
+		aspas="\""
+		#echo   "s2=$aspas$2$aspas s1=$aspas$1$aspas"
+		echo "mklink  $aspas$2$aspas $aspas$1$aspas" > /tmp/winMKLink.bat 
+		#read
+		winCallfromPS $win_temp_path
+		rm  /tmp/winMKLink.bat
+	fi
+}
+getAndroidSDKToolsW32(){
 	changeDirectory $WIN_HOME_4_UNIX
 	if [ ! -e ANDROID_HOME ]; then
 		mkdir $ANDROID_HOME
@@ -155,6 +190,52 @@ getAnndroidSDKToolsW32(){
 	#mkdir
 	#changeDirectory $ANDROID_SDK
 	if [ ! -e sdk ] ; then
+		mkdir sdk
+	fi
+		changeDirectory sdk
+		if [ ! -e tools ]; then  
+			wget -c $SDK_TOOLS_URL #getting sdk 
+			if [ $? != 0 ]; then 
+				wget -c $SDK_TOOLS_URL
+			fi
+			unzip "sdk-tools-windows-3859397.zip"
+		fi
+		
+		#mv "sdk-tools-windows-3859397" "tools"
+
+		if [ -e  "sdk-tools-windows-3859397.zip" ]; then
+			rm  "sdk-tools-windows-3859397.zip"
+		fi
+	#fi
+}
+#Get Gradle and SDK Tools
+getOldAndroidSDKToolsW32(){
+	changeDirectory $WIN_HOME_4_UNIX
+	if [ ! -e ANDROID_HOME ]; then
+		mkdir $ANDROID_HOME
+	fi
+	
+	changeDirectory $ANDROID_HOME
+	if [ ! -e $GRADLE_HOME ]; then
+		wget -c $GRADE_ZIP_LNK
+		if [ $? != 0 ] ; then
+			#rm *.zip*
+			wget -c $GRADE_ZIP_LNK
+		fi
+		#echo "$PWD"
+		#sleep 3
+		unzip "$GRADE_ZIP_FILE"
+	fi
+	
+	if [ -e  $GRADE_ZIP_FILE ]; then
+		rm $GRADE_ZIP_FILE
+	fi
+	#mkdir
+	#changeDirectory $ANDROID_SDK
+	if [ ! -e sdk ] ; then
+		mkdir sdk
+		changeDirectory sdk
+		export SDK_TOOLS_URL="http://dl.google.com/android/installer_r24.0.2-windows.exe" 
 		wget -c $SDK_TOOLS_URL #getting sdk 
 		if [ $? != 0 ]; then 
 			wget -c $SDK_TOOLS_URL
@@ -163,24 +244,70 @@ getAnndroidSDKToolsW32(){
 	fi
 
 	if [ ! -e ndk ]; then
-		wget  $NDK_URL
+		wget -c $NDK_URL
 		if [ $? != 0 ]; then 
 			wget -c $NDK_URL
+		fi
+		unzip android-ndk-r16b-windows-x86_64.zip
+		mv android-ndk-r16b ndk
+		if [ -e android-ndk-r16b-windows-x86_64.zip ]; then
+			rm android-ndk-r16b-windows-x86_64.zip
 		fi
 	fi
 
 
 }
 
+makeFromPS(){
+	path_make="$1"
+	ps_make="$1\psmake.ps1"
+	bat_make="$1\batmake.bat"
+	args=($*)
+	printf "%s" "make " > $bat_make
+	#for((i=1;i<$#;i++))
+	#do
+	#	printf " \"%s\" " "${args[i]}" >> $bat_make
+#done
+	printf "%s\n" 'crossall crossinstall  CPU_TARGET=arm OPT="-dFPC_ARMEL" OS_TARGET=android CROSSOPT="-CpARMV7A -CfVFPV3" INSTALL_PREFIX=/usr' >> $bat_make
+	echo "cd $1" > $ps_make
+	echo "$bat_make" >> $ps_make
+
+	/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe Set-ExecutionPolicy Bypass
+	/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe  $ps_make
+	rm $ps_make $bat_make
+}
 winCallfromPS(){
 	echo "$*" > /tmp/pscommand.ps1
 	/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe Set-ExecutionPolicy Bypass
 	/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe  /tmp/pscommand.ps1
 }
+winCallfromPS1(){
+	args=($*)
+	installer_cmd="$ANDROID_SDK/tools/bin/sdk-install.bat"
+	win_installer_cmd="$WIN_ANDROID_SDK\tools\bin\sdk-install.bat"
+	rm /tmp/pscommand.ps1
+	rm $installer_cmd
+
+	#echo "cd $WIN_ANDROID_SDK\tools\bin" >> /tmp/sdk-install.sh
+	#echo "$*" > /tmp/pscommand.ps1
+
+	for((i=0;i<$#;i++));
+	do
+			#echo ${args[i]}
+			#printf ' "' >> /tmp/pscommand.ps1
+			printf " \"%s\" " "${args[i]}" >> $installer_cmd
+			#
+		
+			#printf '" ' >> /tmp/pscommand.ps1
+	done
+	winCallfromPS "$win_installer_cmd"
+	#/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe Set-ExecutionPolicy Bypass
+	#/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe  /tmp/pscommand.ps1
+}
 getWinEnvPaths(){
 	command='$env:'
-	comand=$comand$1
-	echo "$comand" > /tmp/pscommand.ps1
+	command="$command$1"
+	echo "$command" > /tmp/pscommand.ps1
 	/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe Set-ExecutionPolicy Bypass
 	/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe  /tmp/pscommand.ps1
 }
@@ -194,8 +321,8 @@ updateWinPATHS(){
 		exit 1
 	fi
 	new_path=$(bash /tmp/update-win-path.sh)
-	echo "NEW_PATH=$new_path"
-	read 
+	#echo "NEW_PATH=$new_path"
+	#read 
 	export PATH=$new_path
 }
 
@@ -207,7 +334,7 @@ checkForceLAMW4LinuxInstall(){
 		if [ "${args[i]}" = "--force" ]; then
 			#printf "Warning: This application theres power binary deb"
 			
-			sleep 2
+			#sleep 2
 			export FORCE_LAWM4INSTALL=1
 			break
 		fi
@@ -412,55 +539,81 @@ getLAMWFramework(){
 			exit 1
 		fi
 	fi
-	ln - $ANDROID_HOME/lazandroidmodulewizard.git $ANDROID_HOME/lazandroidmodulewizard
+	
 }
 
 
 
 getSDKAndroid(){
 	changeDirectory $ANDROID_SDK/tools/bin #change directory
-	yes | ./sdkmanager ${SDK_LICENSES_PARAMETERS[*]}
+	yes |  winCallfromPS1 "$WIN_ANDROID_SDK\tools\bin\sdkmanager.bat" ${SDK_LICENSES_PARAMETERS[*]}
 	if [ $? != 0 ]; then 
-		yes | ./sdkmanager ${SDK_LICENSES_PARAMETERS[*]}
+		yes | winCallfromPS1 "$WIN_ANDROID_SDK\tools\bin\sdkmanager.bat" ${SDK_LICENSES_PARAMETERS[*]}
 	fi
-	./sdkmanager ${SDK_MANAGER_CMD_PARAMETERS[*]}  # instala sdk sem intervenção humana  
+	winCallfromPS1 "$WIN_ANDROID_SDK\tools\bin\sdkmanager.bat" ${SDK_MANAGER_CMD_PARAMETERS[*]}  # instala sdk sem intervenção humana  
 
 	if [ $? != 0 ]; then 
-		./sdkmanager ${SDK_MANAGER_CMD_PARAMETERS[*]}
+		winCallfromPS1 "$WIN_ANDROID_SDK\tools\bin\sdkmanager.bat" ${SDK_MANAGER_CMD_PARAMETERS[*]}
+	fi
+	winCallfromPS1 "$WIN_ANDROID_SDK\tools\bin\sdkmanager.bat" "ndk-bundle"
+
+	if [ $? != 0 ]; then 
+		winCallfromPS1 "$WIN_ANDROID_SDK\tools\bin\sdkmanager.bat" "ndk-bundle"
 	fi
 
 }
 
 getOldAndroidSDK(){
-	if [ -e $ANDROID_SDK/tools/android  ]; then 
+
+	if [ -e $ANDROID_SDK/tools/android.bat  ]; then 
 		changeDirectory $ANDROID_SDK/tools
-		./android update sdk
+		winCallfromPS "$WIN_ANDROID_SDK\tools\android.bat" "update" "sdk "
+		#./android update sdk
 		echo "--> After update sdk tools to 24.1.1"
 		changeDirectory $ANDROID_SDK/tools
-		./android update sdk
+		#./android update sdk
+		winCallfromPS "$WIN_ANDROID_SDK\tools\android.bat" "update" "sdk"
+
+		#echo "please wait ..."
+		#read 
 	fi
 
 }
 #Create SDK simbolic links
 
 CreateSDKSimbolicLinks(){
+	letter_home_driver=$(getWinEnvPaths "HOMEDRIVE" )
+	echo "DRIVER ROOT : $letter_home_driver"
 	if [ $OLD_ANDROID_SDK = 0 ]; then 
-		ln -sf "$ANDROID_HOME/sdk/ndk-bundle" "$ANDROID_HOME/ndk"
+			winMKLinkDir "$letter_home_driver$WIN_ANDROID_HOME\sdk\ndk-bundle" "$letter_home_driver$WIN_ANDROID_HOME\ndk"
 	fi
-	ln -sf "$ANDROID_HOME/ndk/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin" "$ANDROID_HOME/ndk-toolchain"
-	ln -sf "$ANDROID_HOME/ndk-toolchain/arm-linux-androideabi-as" "$ANDROID_HOME/ndk-toolchain/arm-linux-as"
-	ln -sf "$ANDROID_HOME/ndk-toolchain/arm-linux-androideabi-ld" "$ANDROID_HOME/ndk-toolchain/arm-linux-ld"
 
-	ln -sf "$ANDROID_HOME/ndk-toolchain/arm-linux-androideabi-as" "/usr/bin/arm-linux-androideabi-as"
-	ln -sf "$ANDROID_HOME/ndk-toolchain/arm-linux-ld"  "/usr/bin/arm-linux-androideabi-ld"
-	ln -sf $FPC_LIB_PATH/ppcrossarm /usr/bin/ppcrossarm
-	ln -sf /usr/bin/ppcrossarm /usr/bin/ppcarm
+	letter_home_driver=$(getWinEnvPaths "HOMEDRIVE" )
+	winMKLinkDir "$letter_home_driver$WIN_ANDROID_HOME\ndk\toolchains\arm-linux-androideabi-4.9\prebuilt\windows-x86_64\bin" "$WIN_ANDROID_HOME\ndk-toolchain"
+	winMKLink "$letter_home_driver$WIN_ANDROID_HOME\ndk\toolchains\arm-linux-androideabi-4.9\prebuilt\windows-x86_64\bin\arm-linux-androideabi-as.exe" "$letter_home_driver$WIN_ANDROID_HOME\ndk-toolchain\arm-linux-as.exe"
+	winMKLink "$letter_home_driver$WIN_ANDROID_HOME\ndk\toolchains\arm-linux-androideabi-4.9\prebuilt\windows-x86_64\bin\arm-linux-androideabi-ld.exe" "$letter_home_driver$WIN_ANDROID_HOME\ndk-toolchain\arm-linux-ld.exe"
+
+	winMKLink "$letter_home_driver$WIN_ANDROID_HOME\ndk\toolchains\arm-linux-androideabi-4.9\prebuilt\windows-x86_64\bin\arm-linux-androideabi-as.exe" "C:\tools\msys64\usr\bin\arm-linux-androideabi-as"
+	winMKLink "$letter_home_driver$WIN_ANDROID_HOME\ndk\toolchains\arm-linux-androideabi-4.9\prebuilt\windows-x86_64\bin\arm-linux-ld.exe"  "C:\tools\msys64\usr\bin\arm-linux-androideabi-ld.exe" #"/usr/bin/arm-linux-androideabi-ld"
+	winMKLink "$letter_home_driver$WIN_FPC_LIB_PATH\ppcrossarm.exe" "C:\tools\msys64\usr\bin\ppcrossarm.exe"
+	winMKLink  "C:\tools\msys64\usr\bin\ppcrossarm.exe"   "C:\tools\msys64\usr\bin\ppcarm.exe"
 
 	if [ $OLD_ANDROID_SDK=0 ]; then 
 	#CORRIGE TEMPORARIAMENTE BUG GRADLE TO MIPSEL
-		ln -sf "$ANDROID_HOME/sdk/ndk-bundle/toolchains/arm-linux-androideabi-4.9" "$ANDROID_HOME/sdk/ndk-bundle/toolchains/mips64el-linux-android-4.9"
-		ln -sf "$ANDROID_HOME/sdk/ndk-bundle/toolchains/arm-linux-androideabi-4.9" "$ANDROID_HOME/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9"
+		winMKLink "$letter_home_driver$WIN_ANDROID_HOME\ndk\toolchains\arm-linux-androideabi-4.9\prebuilt\windows-x86_64\bin\arm-linux-androideabi-4.9.exe" "$letter_home_driver$WIN_ANDROID_HOME\sdk\ndk-bundle\toolchains\mips64el-linux-android-4.9.exe"
+		winMKLink "$letter_home_driver$WIN_ANDROID_HOME\ndk\toolchains\arm-linux-androideabi-4.9\prebuilt\windows-x86_64\bin\arm-linux-androideabi-4.9.exe" "$letter_home_driver$WIN_ANDROID_HOME\sdk\ndk-bundle\toolchains\mipsel-linux-android-4.9.exe"
 	fi
+
+	winMKLinkDir "$letter_home_driver$WIN_ANDROID_HOME\lazandroidmodulewizard.git" "$letter_home_driver$WIN_ANDROID_HOME\lazandroidmodulewizard"
+	bar='\'
+	aux_path="$WIN_LAMW4LINUX_HOME$bar$LAZARUS_STABLE"
+	echo "aux_path=$aux_path"
+	read
+	winMKLinkDir "$aux_path" "$WIN_LAMW_IDE_HOME"  # link to lamw4_home directory 
+	winMKLink "$WIN_LAMW_IDE_HOME\lazarus" "$WIN_LAMW4LINUX_EXE_PATH" #link  to lazarus executable
+
+#	echo "press enter to exit function \"CreateSDKSimbolicLinks\""
+#	read
 
 }
 
@@ -490,9 +643,24 @@ AddSDKPathstoProfile(){
 	export PATH=$PATH:$ANDROID_HOME/ndk-toolchain
 	export PATH=$PATH:$GRADLE_HOME/bin
 }
+
+
 WrappergetAndroidSDK(){
+	if [ $WINDOWS_CMD_WRAPPERS = 1 ]; then 
+		if [ $OLD_ANDROID_SDK =  0 ]; then
+			getSDKAndroid
+		else
+			getOldAndroidSDK
+		fi
+	fi
+}
+WrappergetAndroidSDKTools(){
 	if [ $WINDOWS_CMD_WRAPPERS = 1 ]; then
-		getAnndroidSDKToolsW32
+		if [ $OLD_ANDROID_SDK = 0 ]; then
+			getAndroidSDKToolsW32
+		else
+			getOldAndroidSDKToolsW32
+		fi
 	fi 
 	#if [ $OLD_ANDROID_SDK = 0 ]; then
 	#	getSDKAndroid
@@ -506,10 +674,19 @@ BuildCrossArm(){
 	if [ "$1" != "" ]; then #
 		changeDirectory $LAMW4LINUX_HOME/fpcsrc 
 		changeDirectory $FPC_RELEASE
+		bar='/'
 		case $1 in 
 			0 )
-				make clean 
-				make crossall crossinstall  CPU_TARGET=arm OPT="-dFPC_ARMEL" OS_TARGET=android CROSSOPT="-CpARMV7A -CfVFPV3" INSTALL_PREFIX=/usr
+				make clean
+			#	str="$WIN_LAMW4LINUX_HOME\fpcsrc"
+			#	bar='\'
+			#	str="$str$bar$FPC_RELEASE"
+			#	echo "str=$str"
+				#read
+			#	makeFromPS "$str" ${FPC_CROSS_ARM_MODE_FPCDELUXE[*]}
+				# 777  -Rv $LAMW4LINUX_HOME/fpcsrc$bar$FPC_RELEASE
+				make crossall crossinstall  CPU_TARGET=arm OPT="-dFPC_ARMEL" OS_TARGET=android CROSSOPT="-CpARMV7A -CfVFPV3" INSTALL_PREFIX=/c/tools/freepascal
+				#echo "press enter to exit BuildCrossArm" ; read
 			;;
 
 		esac
@@ -519,18 +696,32 @@ BuildCrossArm(){
 #Build lazarus ide
 
 BuildLazarusIDE(){
-	ln -sf $LAMW4LINUX_HOME/$LAZARUS_STABLE $LAMW_IDE_HOME  # link to lamw4_home directory 
-	ln -sf $LAMW_IDE_HOME/lazarus $LAMW4LINUX_EXE_PATH #link  to lazarus executable
+	
+	letter_home_driver=$(getWinEnvPaths "HOMEDRIVE" )
 	changeDirectory $LAMW_IDE_HOME
-	make clean all
+	build_win_cmd="generate-lazarus.bat"
+	bar='\'
+	WIN_LAZBUILD_PARAMETERS=(
+		"--build-ide= --add-package \"$letter_home_driver$WIN_ANDROID_HOME\lazandroidmodulewizard.git\trunk\android_bridges\tfpandroidbridge_pack.lpk\" --primary-config-path=$letter_home_driver$WIN_LAMW4_LINUX_PATH_CFG  --lazarusdir=$letter_home_driver$WIN_LAMW_IDE_HOME"
+		"--build-ide= --add-package \"$letter_home_driver$WIN_ANDROID_HOME\lazandroidmodulewizard.git\trunk\android_wizard\lazandroidwizardpack.lpk\" --primary-config-path=$letter_home_driver$WIN_LAMW4_LINUX_PATH_CFG --lazarusdir=$letter_home_driver$WIN_LAMW_IDE_HOME"
+		"--build-ide= --add-package \"$letter_home_driver$WIN_ANDROID_HOME\lazandroidmodulewizard.git\trunk\ide_tools\amw_ide_tools.lpk\" --primary-config-path=$letter_home_driver$WIN_LAMW4_LINUX_PATH_CFG --lazarusdir=$letter_home_driver$WIN_LAMW_IDE_HOME"
+	)
+	#make clean all
+	echo "cd $letter_home_driver$WIN_LAMW_IDE_HOME_REAL" > $build_win_cmd
+	echo "make clean all" >> $build_win_cmd
 		#build ide  with lamw framework 
-	for((i=0;i< ${#LAZBUILD_PARAMETERS[@]};i++))
+	for((i=0;i< ${#WIN_LAZBUILD_PARAMETERS[@]};i++))
 	do
-		./lazbuild ${LAZBUILD_PARAMETERS[i]}
-		if [ $? != 0 ]; then
-			./lazbuild ${LAZBUILD_PARAMETERS[i]}
-		fi
+		#./lazbuild ${LAZBUILD_PARAMETERS[i]}
+		echo "lazbuild ${WIN_LAZBUILD_PARAMETERS[i]}" >> $build_win_cmd
+		#echo "lazbuild $letter_home_driver${WIN_LAZBUILD_PARAMETERS[i]}" >> $build_win_cmd
+		#if [ $? != 0 ]; then
+		#	./lazbuild ${LAZBUILD_PARAMETERS[i]}
+	#	fi
 	done
+	winCallfromPS "$letter_home_driver$WIN_LAMW_IDE_HOME$bar$build_win_cmd"
+
+	echo  "lazarus --primary-config-path=$letter_home_driver$WIN_LAMW4_LINUX_PATH_CFG" > start_laz4lamw.bat
 }
 #Esta função imprime o valor de uma váriavel de ambiente do MS Windows 
 #this  fuction create a INI file to config  all paths used in lamw framework 
@@ -548,23 +739,23 @@ LAMW4LinuxPostConfig(){
 	fi
 
 	#java_versions=("/usr/lib/jvm/java-8-openjdk-amd64"  "/usr/lib/jvm/java-8-oracle"  "/usr/lib/jvm/java-8-openjdk-i386")
-	java_path=$(getWinEnvPaths "JAVA_HOME")
+	java_path=$(getWinEnvPaths "JAVA_HOME" )
 	tam=${#java_versions[@]} #tam recebe o tamanho do vetor 
-	ant_path=$(getWinEnvPaths "ANT_HOME")
-	letter_home_driver=$(getWinEnvPaths "HOMEDRIVE")
+	ant_path=$(getWinEnvPaths "ANT_HOME" )
+	letter_home_driver=$(getWinEnvPaths "HOMEDRIVE" )
 
 
 # contem o arquivo de configuração do lamw
 	LAMW_init_str=(
 		"[NewProject]"
 		"PathToWorkspace=$letter_home_driver$WIN_LAMW_WORKSPACE_HOME"
-		"PathToJavaTemplates=$letter_home_driver$WIN_HOME/android/lazandroidmodulewizard/trunk/java"
+		"PathToJavaTemplates=$letter_home_driver$WIN_HOME\android\lazandroidmodulewizard\trunk\java"
 		"PathToJavaJDK=$java_path"
-		"PathToAndroidNDK=$WIN_HOME\android\ndk"
-		"PathToAndroidSDK=$WIN_HOME\android\sdk"
+		"PathToAndroidNDK=$letter_home_driver$WIN_HOME\android\ndk"
+		"PathToAndroidSDK=$letter_home_driver$WIN_HOME\android\sdk"
 		"PathToAntBin=$ant_path"
-		"PathToGradle=$WIN_GRADLE_HOME"
-		"PrebuildOSYS=linux-x86_64"
+		"PathToGradle=$letter_home_driver$WIN_GRADLE_HOME"
+		"PrebuildOSYS=windows-x86_64"
 		"MainActivity=App"
 		"FullProjectName="
 		"InstructionSet=2"
@@ -573,6 +764,7 @@ LAMW4LinuxPostConfig(){
 		"AntBuildMode=debug"
 		"NDK=5"
 	)
+	echo "${LAMW_init_str[*]}"
 	for ((i=0;i<${#LAMW_init_str[@]};i++))
 	do
 		if [ $i = 0 ]; then 
@@ -582,6 +774,8 @@ LAMW4LinuxPostConfig(){
 		fi
 	done
 	AddLAMWtoStartMenu
+
+
 }
 #Add LAMW4Linux to menu 
 AddLAMWtoStartMenu(){
@@ -673,6 +867,12 @@ CleanOldConfig(){
 			rm $WIN_HOME_4_UNIX/mingw-get-setup.exe
 		fi
 	fi
+	if [ -e /usr/bin/arm-linux-androideabi-as.exe ]; then
+		rm /usr/bin/arm-linux-androideabi-as.exe
+	fi
+	if [ -e /usr/bin/arm-linux-ld.exe ] ; then 
+		rm /usr/bin/arm-linux-ld.exe
+	fi
 
 	if [ -e $WIN_HOME_4_UNIX/laz4ndroid ]; then
 		rm  -r $WIN_HOME_4_UNIX/laz4ndroid
@@ -681,13 +881,13 @@ CleanOldConfig(){
 		rm -r $WIN_HOME_4_UNIX/.laz4android
 	fi
 	if [ -e $LAMW4LINUX_HOME ] ; then
-		rm $LAMW4LINUX_HOME -r
+		rm $LAMW4LINUX_HOME -rv
 	fi
 
 	if [ -e $LAMW4_LINUX_PATH_CFG ]; then  rm -r $LAMW4_LINUX_PATH_CFG; fi
 
 	if [ -e $ANDROID_HOME ] ; then
-		rm $ANDROID_HOME  -r
+		rm -r $ANDROID_HOME  
 	fi
 
 
@@ -717,14 +917,6 @@ CleanOldConfig(){
 	fi
 	if [ -e /usr/lib/fpc/$FPC_VERSION/fpmkinst/arm-android ]; then
 		rm -r /usr/lib/fpc/$FPC_VERSION/fpmkinst/arm-android
-	fi
-
-
-	if [ -e /usr/bin/arm-linux-androideabi-as ]; then
-		rm /usr/bin/arm-linux-androideabi-as
-	fi
-	if [ -e /usr/bin/arm-linux-ld ] ; then 
-		rm /usr/bin/arm-linux-ld
 	fi
 
 	if [ -e $FPC_CFG_PATH ]; then #remove local ppc config
@@ -764,57 +956,38 @@ SearchPackage(){
 parseFPC(){ 
 
 	
-	dist_file=$(cat /etc/issue.net)
-	case "$dist_file" in 
-		*"Ubuntu 18."*)
-			export flag_new_ubuntu_lts=1
-		;;
-		*"Linux Mint 19"*)
-			export flag_new_ubuntu_lts=1
-		;;
-	esac
+	# dist_file=$(cat /etc/issue.net)
+	# case "$dist_file" in 
+	# 	*"Ubuntu 18."*)
+	# 		export flag_new_ubuntu_lts=1
+	# 	;;
+	# 	*"Linux Mint 19"*)
+	# 		export flag_new_ubuntu_lts=1
+	# 	;;
+	# esac
 
 	case "$1" in 
 		*"3.0.0"*)
 			export URL_FPC="http://svn.freepascal.org/svn/fpc/tags/release_3_0_0"
-			export FPC_LIB_PATH="/usr/lib/fpc"
+			#export FPC_LIB_PATH="/usr/lib/fpc"
 			#export FPC_CFG_PATH="/etc/fpc-3.0.0.cfg"
 			export FPC_RELEASE="release_3_0_0"
 			export FPC_VERSION="3.0.0"
-			export FPC_LIB_PATH="/usr/lib/fpc/$FPC_VERSION"
+			#export FPC_LIB_PATH="/usr/lib/fpc/$FPC_VERSION"
 		;;
 		*"3.0.4"*)
 			export URL_FPC="http://svn.freepascal.org/svn/fpc/tags/release_3_0_4"
 			export FPC_RELEASE="release_3_0_4"
 			export FPC_VERSION="3.0.4"
-			
-			#export FPC_CFG_PATH="/etc/fpc-3.0.4.cfg"
-			#if [ $flag_new_ubuntu_lts = 0 ] ; then
-			#	if [ -e /usr/lib/fpc/$FPC_VERSION ]; then
-			#	#	export FPC_LIB_PATH="/usr/lib/fpc/$FPC_VERSION"
-				#fi
-
-			#else
-			
-			if [ -e /usr/lib/x86_64-linux-gnu/fpc/$FPC_VERSION ]; then #case new location fpc directory 
-				if [   -e /usr/lib/fpc  ]; then #para estar versão do fpc, obrigatóriamente /usr/lib/fpc dever ser um link simbólico
-					 rm -r /usr/lib/fpc
-				fi
-				ln -s /usr/lib/x86_64-linux-gnu/fpc /usr/lib/fpc
-				export FPC_LIB_PATH="/usr/lib/fpc/$FPC_VERSION"
-			else
-				if [ -e /usr/lib/fpc/$FPC_VERSION ]; then
-					export FPC_LIB_PATH="/usr/lib/fpc/$FPC_VERSION"
-				fi
-			fi
-
-		
 		;;
 	esac
-	export FPC_MKCFG_EXE=$(which fpcmkcfg-$FPC_VERSION)
-	if [ "$FPC_MKCFG_EXE" = "" ]; then
-		export FPC_MKCFG_EXE=$(which x86_64-linux-gnu-fpcmkcfg-$FPC_VERSION)
-	fi
+
+
+	#export FPC_MKCFG_EXE=$(which fpcmkcfg-$FPC_VERSION)
+	export FPC_LIB_PATH="/c/tools/freepascal"
+	export WIN_FPC_LIB_PATH='\tools\freepascal'
+	export FPC_MKCFG_EXE=$(which fpcmkcfg.exe)
+	
 }
 
 enableADBtoUdev(){
@@ -833,8 +1006,11 @@ configureFPC(){
 		SearchPackage freepascal
 		index=$?
 		parseFPC ${packs[$index]}
-		if [ ! -e $FPC_CFG_PATH ]; then
-			$FPC_MKCFG_EXE -d basepath=/usr/lib/fpc/$FPC_VERSION -o $FPC_CFG_PATH
+		
+}
+enableCrossCompile(){
+if [ ! -e $FPC_CFG_PATH ]; then
+		$FPC_MKCFG_EXE -d basepath=/c/tools/freepascal -o $FPC_CFG_PATH
 		fi
 
 		#this config enable to crosscompile in fpc 
@@ -845,12 +1021,12 @@ configureFPC(){
 			"-CfVFPV3"
 			"-Xd"
 			"-XParm-linux-androideabi-"
-			"-Fl$ANDROID_HOME/ndk/platforms/android-$SDK_VERSION/arch-arm/usr/lib"
+			"-Fl$WIN_ANDROID_HOME\ndk\platforms\android-$SDK_VERSION\arch-arm\usr\lib"
 			"-FLlibdl.so"
-			"-FD$ANDROID_HOME/ndk/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin"
-			'-Fu/usr/lib/fpc/$fpcversion/units/$fpctarget'
-			'-Fu/usr/lib/fpc/$fpcversion/units/$fpctarget/*'
-			'-Fu/usr/lib/fpc/$fpcversion/units/$fpctarget/rtl'
+			"-FD$WIN_ANDROID_HOME\ndk\toolchains\arm-linux-androideabi-4.9\prebuilt\linux-x86_64\bin"
+			'-FuC:\tools\freepascal\units\$fpctarget' #-Fu/usr/lib/fpc/$fpcversion/units/$fpctarget
+			'-FuC:\tools\freepascal\units\$fpctarget*' #'-Fu/usr/lib/fpc/$fpcversion/units/$fpctarget*'
+			'-FuC:\tools\freepascal\units\$fpctarget\rtl' #'-Fu/usr/lib/fpc/$fpcversion/units/$fpctarget/rtl'
 			"#ENDIF"
 			"#ENDIF"
 		)
@@ -907,30 +1083,35 @@ mainInstall(){
 
 	
 
-
+	#getWinEnvPaths "TEMP"
+	#sleep 5
 	installDependences
 	checkProxyStatus
 	configureFPC
-	getAndroidSDKTools
+	#getAndroidSDKToolsW32
+	WrappergetAndroidSDKTools
 	changeDirectory $ANDROID_SDK/tools/bin #change directory
 	#unistallJavaUnsupported
-	setJava8asDefault
+	#setJava8asDefault
 	#getSDKAndroid
 	WrappergetAndroidSDK
 	getFPCSources
 	getLAMWFramework
 	getLazarusSources
 	CreateSDKSimbolicLinks
+	#read
 	AddSDKPathstoProfile
 	changeDirectory $WIN_HOME_4_UNIX
 	CleanOldCrossCompileBins
 	changeDirectory $FPC_RELEASE
 	BuildCrossArm $FPC_ID_DEFAULT
+	enableCrossCompile
 	BuildLazarusIDE
 	changeDirectory $ANDROID_HOME
 	LAMW4LinuxPostConfig
 	enableADBtoUdev
 	writeLAMWLogInstall
+	rm /tmp/*.bat
 }
 
 if  [  "$(whoami)" = "root" ] #impede que o script seja executado pelo root 
@@ -949,7 +1130,7 @@ fi
 	else
 		echo "This application not  is compatible with lazarus (debian package)"
 		echo "use --force parameter remove anywhere lazarus (debian package)"
-		sleep 1
+		#sleep 1
 	fi
 	#configure parameters sdk before init download and build
 
@@ -1002,11 +1183,20 @@ case "$1" in
 		checkProxyStatus;
 		echo "Updating LAMW";
 		getLAMWFramework;
-		sleep 1;
+		#sleep 1;
 		BuildLazarusIDE;
+	;;
+
+	"mkcrossarm")
+		configureFPC 
+		changeDirectory $FPC_RELEASE
+		BuildCrossArm $FPC_ID_DEFAULT
 	;;
 	"delete_paths")
 		cleanPATHS
+	;;
+	"update-config")
+		LAMW4LinuxPostConfig
 	;;
 	*)
 		lamw_opts=(
@@ -1027,5 +1217,7 @@ case "$1" in
 			)
 		printf "${lamw_opts[*]}"
 	;;
+	
 esac
 #fi
+#/c/tools/freepascal/bin/i386-Win32/fpcmkcfg.exe

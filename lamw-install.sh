@@ -505,6 +505,7 @@ LAMW4LinuxPostConfig(){
 	done
 
 
+
 # contem o arquivo de configuração do lamw
 	LAMW_init_str=(
 		"[NewProject]"
@@ -532,6 +533,12 @@ LAMW4LinuxPostConfig(){
 			echo "${LAMW_init_str[i]}" >> $LAMW4_LINUX_PATH_CFG/JNIAndroidProject.ini
 		fi
 	done
+
+	echo  "$LAMW4LINUX_EXE_PATH --primary-config-path=$LAMW4_LINUX_PATH_CFG" > $LAMW_IDE_HOME/start_laz4lamw.sh
+	if [ -e  $LAMW_IDE_HOME/start_laz4lamw.sh ]; then
+		chmod +x $LAMW_IDE_HOME/start_laz4lamw.sh
+	fi
+
 	AddLAMWtoStartMenu
 }
 #Add LAMW4Linux to menu 
