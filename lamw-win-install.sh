@@ -291,15 +291,15 @@ winCallfromPS1(){
 	#echo "cd $WIN_ANDROID_SDK\tools\bin" >> /tmp/sdk-install.sh
 	#echo "$*" > /tmp/pscommand.ps1
 
-	for((i=0;i<$#;i++));
-	do
+	#for((i=0;i < $#;i++));
+	#do
 			#echo ${args[i]}
 			#printf ' "' >> /tmp/pscommand.ps1
-			printf " \"%s\" " "${args[i]}" >> $installer_cmd
+			printf " \"%s\" \"%s\""  "${args[0]}"  "${args[1]}" >> $installer_cmd
 			#
 		
 			#printf '" ' >> /tmp/pscommand.ps1
-	done
+	#done
 	winCallfromPS "$win_installer_cmd"
 	#/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe Set-ExecutionPolicy Bypass
 	#/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe  /tmp/pscommand.ps1
@@ -546,20 +546,27 @@ getLAMWFramework(){
 
 getSDKAndroid(){
 	changeDirectory $ANDROID_SDK/tools/bin #change directory
-	yes |  winCallfromPS1 "$WIN_ANDROID_SDK\tools\bin\sdkmanager.bat" ${SDK_LICENSES_PARAMETERS[*]}
+	letter_home_driver=$(getWinEnvPaths "HOMEDRIVE" )
+	yes |  winCallfromPS1 "$letter_home_driver$WIN_ANDROID_SDK\tools\bin\sdkmanager.bat" ${SDK_LICENSES_PARAMETERS[*]}
 	if [ $? != 0 ]; then 
-		yes | winCallfromPS1 "$WIN_ANDROID_SDK\tools\bin\sdkmanager.bat" ${SDK_LICENSES_PARAMETERS[*]}
+			yes | winCallfromPS1 "$letter_home_driver$WIN_ANDROID_SDK\tools\bin\sdkmanager.bat" ${SDK_LICENSES_PARAMETERS[i]}
 	fi
-	winCallfromPS1 "$WIN_ANDROID_SDK\tools\bin\sdkmanager.bat" ${SDK_MANAGER_CMD_PARAMETERS[*]}  # instala sdk sem intervenção humana  
 
-	if [ $? != 0 ]; then 
-		winCallfromPS1 "$WIN_ANDROID_SDK\tools\bin\sdkmanager.bat" ${SDK_MANAGER_CMD_PARAMETERS[*]}
-	fi
-	winCallfromPS1 "$WIN_ANDROID_SDK\tools\bin\sdkmanager.bat" "ndk-bundle"
+	for((i=0;i<${#SDK_MANAGER_CMD_PARAMETERS[*]};i++))
+	do
+		
+		winCallfromPS1 "$letter_home_driver$WIN_ANDROID_SDK\tools\bin\sdkmanager.bat" ${SDK_MANAGER_CMD_PARAMETERS[i]}  # instala sdk sem intervenção humana  
 
-	if [ $? != 0 ]; then 
-		winCallfromPS1 "$WIN_ANDROID_SDK\tools\bin\sdkmanager.bat" "ndk-bundle"
-	fi
+		if [ $? != 0 ]; then 
+			winCallfromPS1 "$letter_home_driver$WIN_ANDROID_SDK\tools\bin\sdkmanager.bat" ${SDK_MANAGER_CMD_PARAMETERS[i]}
+		fi
+		#winCallfromPS1 "$letter_home_driver$WIN_ANDROID_SDK\tools\bin\sdkmanager.bat" "ndk-bundle"
+
+		#if [ $? != 0 ]; then 
+		#	winCallfromPS1 "$letter_home_driver$WIN_ANDROID_SDK\tools\bin\sdkmanager.bat" "ndk-bundle"
+		#fi
+
+	done
 
 }
 
@@ -600,15 +607,17 @@ CreateSDKSimbolicLinks(){
 
 	if [ $OLD_ANDROID_SDK=0 ]; then 
 	#CORRIGE TEMPORARIAMENTE BUG GRADLE TO MIPSEL
-		winMKLink "$letter_home_driver$WIN_ANDROID_HOME\ndk\toolchains\arm-linux-androideabi-4.9\prebuilt\windows-x86_64\bin\arm-linux-androideabi-4.9.exe" "$letter_home_driver$WIN_ANDROID_HOME\sdk\ndk-bundle\toolchains\mips64el-linux-android-4.9.exe"
-		winMKLink "$letter_home_driver$WIN_ANDROID_HOME\ndk\toolchains\arm-linux-androideabi-4.9\prebuilt\windows-x86_64\bin\arm-linux-androideabi-4.9.exe" "$letter_home_driver$WIN_ANDROID_HOME\sdk\ndk-bundle\toolchains\mipsel-linux-android-4.9.exe"
+		winMKLink "$letter_home_driver$WIN_ANDROID_HOME\ndk\toolchains\arm-linux-androideabi-4.9\prebuilt\windows-x86_64\bin\arm-linux-androideabi-4.9.exe" "$letter_home_driver$WIN_ANDROID_HOME\ndk\toolchains\arm-linux-androideabi-4.9\prebuilt\windows-x86_64\bin\mips64el-linux-android-4.9.exe"
+		winMKLink "$letter_home_driver$WIN_ANDROID_HOME\ndk\toolchains\arm-linux-androideabi-4.9\prebuilt\windows-x86_64\bin\arm-linux-androideabi-4.9.exe" "$letter_home_driver$WIN_ANDROID_HOME\ndk\toolchains\arm-linux-androideabi-4.9\prebuilt\windows-x86_64\bin\mipsel-linux-android-4.9.exe"
+		winMKLinkDir "$letter_home_driver$WIN_ANDROID_HOME\ndk\toolchains\arm-linux-androideabi-4.9" "$letter_home_driver$WIN_ANDROID_HOME\ndk\toolchains\mipsel-linux-android-4.9"
+		winMKLinkDir "$letter_home_driver$WIN_ANDROID_HOME\ndk\toolchains\arm-linux-androideabi-4.9" "$letter_home_driver$WIN_ANDROID_HOME\ndk\toolchains\mips64el-linux-android-4.9"
 	fi
 
 	winMKLinkDir "$letter_home_driver$WIN_ANDROID_HOME\lazandroidmodulewizard.git" "$letter_home_driver$WIN_ANDROID_HOME\lazandroidmodulewizard"
 	bar='\'
 	aux_path="$WIN_LAMW4LINUX_HOME$bar$LAZARUS_STABLE"
 	echo "aux_path=$aux_path"
-	read
+	#read
 	winMKLinkDir "$aux_path" "$WIN_LAMW_IDE_HOME"  # link to lamw4_home directory 
 	winMKLink "$WIN_LAMW_IDE_HOME\lazarus" "$WIN_LAMW4LINUX_EXE_PATH" #link  to lazarus executable
 
@@ -782,19 +791,25 @@ AddLAMWtoStartMenu(){
 	if [ ! -e ~/.local/share/applications ] ; then #create a directory of local apps launcher, if not exists 
 		mkdir -p ~/.local/share/applications
 	fi
-
-	echo "[Desktop Entry]" > $LAMW_MENU_ITEM_PATH
-	echo "Name=LAMW4Linux" >>  $LAMW_MENU_ITEM_PATH
-	echo "Exec=$LAMW4LINUX_EXE_PATH --primary-config-path=$LAMW4_LINUX_PATH_CFG" >>$LAMW_MENU_ITEM_PATH
-	echo "Icon=$LAMW_IDE_HOME/images/icons/lazarus_orange.ico" >>$LAMW_MENU_ITEM_PATH
-	echo "Type=Application" >> $LAMW_MENU_ITEM_PATH
-	echo "Categories=Development;IDE;" >> $LAMW_MENU_ITEM_PATH
-	chmod +x $LAMW_MENU_ITEM_PATH
-	cp $LAMW_MENU_ITEM_PATH "$work_home_desktop"
+	letter_home_driver=$(getWinEnvPaths "HOMEDRIVE" )
+	# echo "[Desktop Entry]" > $LAMW_MENU_ITEM_PATH
+	# echo "Name=LAMW4Linux" >>  $LAMW_MENU_ITEM_PATH
+	# echo "Exec=$LAMW4LINUX_EXE_PATH --primary-config-path=$LAMW4_LINUX_PATH_CFG" >>$LAMW_MENU_ITEM_PATH
+	# echo "Icon=$LAMW_IDE_HOME/images/icons/lazarus_orange.ico" >>$LAMW_MENU_ITEM_PATH
+	# echo "Type=Application" >> $LAMW_MENU_ITEM_PATH
+	# echo "Categories=Development;IDE;" >> $LAMW_MENU_ITEM_PATH
+	# chmod +x $LAMW_MENU_ITEM_PATH
+	# cp $LAMW_MENU_ITEM_PATH "$work_home_desktop"
 	#LAMW4LinuxPostConfig
 	#add support the usb debug  on linux for anywhere android device 
 	
-	update-menus
+#	update-menus
+
+	#lamw_shortcut_target="$letter_home_driver$WIN_LAMW4LINUX_EXE_PATH"
+	#lamw_shortcut_link="$letter_home_driver$BARRA_INVERTIDA$WIN_LAMW_IDE_HOME/start_laz4LAMW"
+	#short_cmd_args=()
+	#shortcut -f -t "$lamw_shortcut_target" -n "$lamw_shortcut_link"
+	#lamw_shortcut_link="%userprofile%"\start menu\programs\"
 }
 #cd not a native command, is a systemcall used to exec, read more in exec man 
 changeDirectory(){
@@ -1197,6 +1212,9 @@ case "$1" in
 	;;
 	"update-config")
 		LAMW4LinuxPostConfig
+	;;
+	"update-links")
+		CreateSDKSimbolicLinks
 	;;
 	*)
 		lamw_opts=(
