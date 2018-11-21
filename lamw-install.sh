@@ -534,7 +534,7 @@ LAMW4LinuxPostConfig(){
 		fi
 	done
 
-	echo  "$LAMW4LINUX_EXE_PATH --primary-config-path=$LAMW4_LINUX_PATH_CFG" > $LAMW_IDE_HOME/start_laz4lamw.sh
+	echo  "$LAMW4LINUX_EXE_PATH --primary-config-path=$LAMW4_LINUX_PATH_CFG" > "$LAMW_IDE_HOME/start_laz4lamw.sh"
 	if [ -e  $LAMW_IDE_HOME/start_laz4lamw.sh ]; then
 		chmod +x $LAMW_IDE_HOME/start_laz4lamw.sh
 	fi
