@@ -296,7 +296,7 @@ getLAMWFramework(){
 #Get Gradle and SDK Tools 
 getAndroidSDKTools(){
 	changeDirectory $HOME
-	if [ ! -e ANDROID_HOME ]; then
+	if [ ! -e $ANDROID_HOME ]; then
 		mkdir $ANDROID_HOME
 	fi
 	
