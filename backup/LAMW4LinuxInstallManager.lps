@@ -8,7 +8,7 @@
         <Filename Value="LAMW4LinuxInstallManager.lpr"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="1"/>
-        <UsageCount Value="96"/>
+        <UsageCount Value="105"/>
         <Loaded Value="True"/>
       </Unit0>
       <Unit1>
@@ -17,9 +17,10 @@
         <ComponentName Value="Fmain"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <TopLine Value="26"/>
-        <CursorPos X="6" Y="37"/>
-        <UsageCount Value="96"/>
+        <IsVisibleTab Value="True"/>
+        <TopLine Value="106"/>
+        <CursorPos X="7" Y="116"/>
+        <UsageCount Value="105"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit1>
@@ -28,7 +29,7 @@
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="4"/>
         <CursorPos X="46" Y="17"/>
-        <UsageCount Value="56"/>
+        <UsageCount Value="65"/>
         <Loaded Value="True"/>
       </Unit2>
       <Unit3>
@@ -37,11 +38,10 @@
         <ComponentName Value="FormProxy"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="3"/>
         <TopLine Value="67"/>
         <CursorPos X="16" Y="84"/>
-        <UsageCount Value="37"/>
+        <UsageCount Value="46"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit3>
@@ -50,130 +50,130 @@
         <EditorIndex Value="2"/>
         <TopLine Value="3"/>
         <CursorPos X="42" Y="31"/>
-        <UsageCount Value="29"/>
+        <UsageCount Value="34"/>
         <Loaded Value="True"/>
       </Unit4>
     </Units>
     <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
         <Filename Value="umain.pas"/>
-        <Caret Line="128" Column="22" TopLine="104"/>
+        <Caret Line="83" Column="12" TopLine="72"/>
       </Position1>
       <Position2>
         <Filename Value="umain.pas"/>
-        <Caret Line="130" Column="22" TopLine="106"/>
+        <Caret Line="127" Column="22" TopLine="119"/>
       </Position2>
       <Position3>
         <Filename Value="umain.pas"/>
-        <Caret Line="3" Column="20"/>
+        <Caret Line="126" Column="20" TopLine="113"/>
       </Position3>
       <Position4>
         <Filename Value="umain.pas"/>
-        <Caret Line="84" Column="3" TopLine="82"/>
+        <Caret Line="127" Column="16" TopLine="113"/>
       </Position4>
       <Position5>
-        <Filename Value="icons/uproxy.pas"/>
-        <Caret Line="59" Column="3" TopLine="3"/>
+        <Filename Value="umain.pas"/>
+        <Caret Line="126" Column="3" TopLine="122"/>
       </Position5>
       <Position6>
         <Filename Value="umain.pas"/>
-        <Caret Line="168" Column="10" TopLine="144"/>
+        <Caret Line="128" Column="3" TopLine="124"/>
       </Position6>
       <Position7>
         <Filename Value="umain.pas"/>
-        <Caret Line="169" Column="23" TopLine="144"/>
+        <Caret Line="202" Column="3" TopLine="181"/>
       </Position7>
       <Position8>
         <Filename Value="umain.pas"/>
-        <Caret Line="92" Column="3" TopLine="84"/>
+        <Caret Line="201" Column="3" TopLine="180"/>
       </Position8>
       <Position9>
-        <Filename Value="icons/uproxy.pas"/>
-        <Caret Line="85" Column="16" TopLine="74"/>
+        <Filename Value="umain.pas"/>
+        <Caret Line="208" Column="3" TopLine="187"/>
       </Position9>
       <Position10>
         <Filename Value="umain.pas"/>
-        <Caret Line="103" Column="7" TopLine="91"/>
+        <Caret Line="108" Column="11" TopLine="108"/>
       </Position10>
       <Position11>
-        <Filename Value="icons/uproxy.pas"/>
-        <Caret Line="59" Column="3" TopLine="57"/>
+        <Filename Value="umain.pas"/>
+        <Caret Line="148" TopLine="97"/>
       </Position11>
       <Position12>
-        <Filename Value="icons/uproxy.pas"/>
-        <Caret Line="90" Column="3" TopLine="75"/>
+        <Filename Value="umain.pas"/>
+        <Caret Line="109" Column="41" TopLine="96"/>
       </Position12>
       <Position13>
-        <Filename Value="icons/uproxy.pas"/>
-        <Caret Line="85" Column="14" TopLine="80"/>
+        <Filename Value="umain.pas"/>
+        <Caret Line="100" Column="100" TopLine="96"/>
       </Position13>
       <Position14>
         <Filename Value="umain.pas"/>
-        <Caret Line="170" Column="16" TopLine="146"/>
+        <Caret Line="137" Column="3" TopLine="97"/>
       </Position14>
       <Position15>
-        <Filename Value="icons/uproxy.pas"/>
-        <Caret Line="86" Column="12" TopLine="81"/>
+        <Filename Value="umain.pas"/>
+        <Caret Line="111" Column="15" TopLine="107"/>
       </Position15>
       <Position16>
-        <Filename Value="icons/uproxy.pas"/>
-        <Caret Line="85" Column="3"/>
+        <Filename Value="umain.pas"/>
+        <Caret Line="112" Column="69" TopLine="99"/>
       </Position16>
       <Position17>
-        <Filename Value="icons/uproxy.pas"/>
-        <Caret Line="60" Column="22" TopLine="58"/>
+        <Filename Value="umain.pas"/>
+        <Caret Line="111" Column="91" TopLine="99"/>
       </Position17>
       <Position18>
-        <Filename Value="icons/uproxy.pas"/>
-        <Caret Line="66" Column="3" TopLine="64"/>
+        <Filename Value="umain.pas"/>
+        <Caret Line="112" Column="58" TopLine="99"/>
       </Position18>
       <Position19>
-        <Filename Value="icons/uproxy.pas"/>
-        <Caret Line="61" Column="3" TopLine="59"/>
+        <Filename Value="umain.pas"/>
+        <Caret Line="93" Column="25" TopLine="80"/>
       </Position19>
       <Position20>
-        <Filename Value="icons/uproxy.pas"/>
-        <Caret Line="60" Column="3" TopLine="58"/>
+        <Filename Value="umain.pas"/>
+        <Caret Line="94" Column="25" TopLine="80"/>
       </Position20>
       <Position21>
-        <Filename Value="icons/uproxy.pas"/>
-        <Caret Line="59" Column="3" TopLine="57"/>
+        <Filename Value="umain.pas"/>
+        <Caret Line="112" Column="31" TopLine="80"/>
       </Position21>
       <Position22>
-        <Filename Value="icons/uproxy.pas"/>
-        <Caret Line="61" Column="3" TopLine="59"/>
+        <Filename Value="umain.pas"/>
+        <Caret Line="137" Column="3" TopLine="133"/>
       </Position22>
       <Position23>
         <Filename Value="umain.pas"/>
-        <Caret Line="174" Column="9" TopLine="151"/>
+        <Caret Line="94" Column="25" TopLine="107"/>
       </Position23>
       <Position24>
         <Filename Value="umain.pas"/>
-        <Caret Line="172" Column="7" TopLine="157"/>
+        <Caret Line="138" Column="3" TopLine="134"/>
       </Position24>
       <Position25>
         <Filename Value="umain.pas"/>
-        <Caret Line="171" Column="7" TopLine="156"/>
+        <Caret Line="114" Column="31" TopLine="101"/>
       </Position25>
       <Position26>
         <Filename Value="umain.pas"/>
-        <Caret Line="172" Column="7" TopLine="157"/>
+        <Caret Line="112" Column="57" TopLine="101"/>
       </Position26>
       <Position27>
         <Filename Value="umain.pas"/>
-        <Caret Line="173" Column="7" TopLine="158"/>
+        <Caret Line="113" Column="50" TopLine="101"/>
       </Position27>
       <Position28>
         <Filename Value="umain.pas"/>
-        <Caret Line="181" Column="29" TopLine="159"/>
+        <Caret Line="123" Column="11" TopLine="100"/>
       </Position28>
       <Position29>
-        <Filename Value="icons/uproxy.pas"/>
-        <Caret Line="81" Column="13" TopLine="62"/>
+        <Filename Value="umain.pas"/>
+        <Caret Line="121" Column="9" TopLine="109"/>
       </Position29>
       <Position30>
-        <Filename Value="icons/uproxy.pas"/>
-        <Caret Line="37" Column="15" TopLine="23"/>
+        <Filename Value="umain.pas"/>
+        <Caret Line="122" Column="20" TopLine="110"/>
       </Position30>
     </JumpHistory>
   </ProjectSession>
