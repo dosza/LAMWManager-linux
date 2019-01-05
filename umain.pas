@@ -13,6 +13,7 @@ type
   { TFmain }
 
   TFmain = class(TForm)
+    Button1: TButton;
     CheckBox1: TCheckBox;
     Image1: TImage;
     Image2: TImage;
@@ -33,6 +34,7 @@ type
     MenuItem9: TMenuItem;
     Panel1: TPanel;
     Panel2: TPanel;
+    procedure Button1Click(Sender: TObject);
     procedure CheckBox1Change(Sender: TObject);
    // procedure CheckBox2Change(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -50,9 +52,11 @@ type
     procedure MenuItem8Click(Sender: TObject);
     procedure MenuItem9Click(Sender: TObject);
     procedure Panel1Click(Sender: TObject);
+    procedure ToggleBox1Change(Sender: TObject);
   private
     cmd_args : TstringList;
     proc : RunnableScripts;
+    count_img: integer;
   public
 
   end;
@@ -86,7 +90,9 @@ end;
 
 procedure TFmain.FormCreate(Sender: TObject);
 begin
-
+     image3.Width:=2205;
+     image3.Height:=1654;
+     self.count_img:= 0;
 end;
 
 procedure TFmain.CheckBox1Change(Sender: TObject);
@@ -96,6 +102,28 @@ begin
            uglobal.CLEAN_INSTALL_FLAG:= true
        else
           uglobal.CLEAN_INSTALL_FLAG:=false;
+end;
+
+procedure TFmain.Button1Click(Sender: TObject);
+var aux: TImage;
+  rect : TRect;
+begin
+   if  ( self.count_img = imagelist1.Count ) then
+       self.count_img:= 0;
+   aux := TImage.Create(nil);
+    imagelist1.GetBitmap(self.count_img,image3.Picture.Bitmap);
+    //image3.Proportional:=true;
+    //aux.canvas.Draw(661,496,image3.Picture.Bitmap);
+
+    //image3.Picture.Bitmap.SetSize(661,496);
+    //image3.Stretch:=true;
+    rect.Bottom:=50;
+    rect.top:=50 ;
+    rect.Right:=10;
+    rect.Left:=10;
+    aux.Canvas.StretchDraw(rect,image3.Picture.Bitmap);
+    Self.count_img:=  Self.count_img +1;
+    aux.Destroy;
 end;
 
 
@@ -116,7 +144,17 @@ begin
 end;
 
 procedure TFmain.Image3Click(Sender: TObject);
+var
+  i : integer;
 begin
+  i:=0;
+  //while ( i < imagelist1.Count ) do
+  //begin
+
+
+  //end;
+
+
 
 end;
 
@@ -180,6 +218,11 @@ begin
 end;
 
 procedure TFmain.Panel1Click(Sender: TObject);
+begin
+
+end;
+
+procedure TFmain.ToggleBox1Change(Sender: TObject);
 begin
 
 end;

@@ -3,11 +3,12 @@
 #Universidade federal de Mato Grosso
 #Curso ciencia da computação
 #AUTOR: Daniel Oliveira Souza <oliveira.daniel@gmail.com>
-#Versao LAMW-INSTALL: 0.2.0
+#Versao LAMW-INSTALL: 0.2.1
 #Descrição: Este script configura o ambiente de desenvolvimento para o LAMW
+#Version:0.2.1 add supporte a MIME 
 
 
-LAMW_INSTALL_VERSION="0.2.0"
+LAMW_INSTALL_VERSION="0.2.1"
 LAMW_INSTALL_WELCOME=(
 	"\t\tWelcome LAMW4Linux Installer  version: $LAMW_INSTALL_VERSION\n"
 	"\t\tPowerd by DanielTimelord\n"
@@ -52,8 +53,8 @@ LAMW_MENU_ITEM_PATH="$HOME/.local/share/applications/lamw4linux.desktop"
 GRADLE_HOME="$ANDROID_HOME/gradle-4.4.1"
 
 GRADLE_CFG_HOME="$HOME/.gradle"
-GRADE_ZIP_LNK="https://services.gradle.org/distributions/gradle-4.4.1-bin.zip"
-GRADE_ZIP_FILE="gradle-4.4.1-bin.zip"
+GRADLE_ZIP_LNK="https://services.gradle.org/distributions/gradle-4.4.1-bin.zip"
+GRADLE_ZIP_FILE="gradle-4.4.1-bin.zip"
 FPC_STABLE=""
 LAZARUS_STABLE="lazarus_1_8_4"
 
@@ -302,16 +303,16 @@ getAndroidSDKTools(){
 	
 	changeDirectory $ANDROID_HOME
 	if [ ! -e $GRADLE_HOME ]; then
-		wget -c $GRADE_ZIP_LNK
+		wget -c $GRADLE_ZIP_LNK
 		if [ $? != 0 ] ; then
 			#rm *.zip*
-			wget -c $GRADE_ZIP_LNK
+			wget -c $GRADLE_ZIP_LNK
 		fi
-		unzip $GRADE_ZIP_FILE
+		unzip $GRADLE_ZIP_FILE
 	fi
 	
-	if [ -e  $GRADE_ZIP_FILE ]; then
-		rm $GRADE_ZIP_FILE
+	if [ -e  $GRADLE_ZIP_FILE ]; then
+		rm $GRADLE_ZIP_FILE
 	fi
 	#mode OLD SDK (24 with ant support )
 	if [ $OLD_ANDROID_SDK = 0 ]; then
@@ -413,16 +414,8 @@ AddSDKPathstoProfile(){
 
 	profile_file=$HOME/.bashrc
 	flag_profile_paths=0
-	profile_line_path='export PATH=$PATH:$GRADLE_HOME/1-bin'
-#	if [ -e $profile_file ];then 
-	#	profile_data=$(cat $profile_file)
-		#case "$profile_data" in 
-		#	*'export PATH=$PATH:$GRADLE_HOME'*)
-		#	flag_profile_paths=1
-			#exit 1
-		#	;;
-		#esac
-	#fi
+	profile_line_path='export PATH=$PATH:$GRADLE_HOME/bin'
+
 	searchLineinFile "$profile_file" "$profile_line_path"
 	flag_profile_paths=$?
 	if [ $flag_profile_paths = 0 ] ; then 
@@ -546,18 +539,40 @@ AddLAMWtoStartMenu(){
 	if [ ! -e ~/.local/share/applications ] ; then #create a directory of local apps launcher, if not exists 
 		mkdir -p ~/.local/share/applications
 	fi
-
-	echo "[Desktop Entry]" > $LAMW_MENU_ITEM_PATH
-	echo "Name=LAMW4Linux" >>  $LAMW_MENU_ITEM_PATH
-	echo "Exec=$LAMW4LINUX_EXE_PATH --primary-config-path=$LAMW4_LINUX_PATH_CFG" >>$LAMW_MENU_ITEM_PATH
-	echo "Icon=$LAMW_IDE_HOME/images/icons/lazarus_orange.ico" >>$LAMW_MENU_ITEM_PATH
-	echo "Type=Application" >> $LAMW_MENU_ITEM_PATH
-	echo "Categories=Development;IDE;" >> $LAMW_MENU_ITEM_PATH
+	if [ ! -e ~/.local/share/mime/packages ]; then
+		mkdir -p ~/.local/share/mime/packages
+	fi
+	
+	lamw_desktop_file_str=(
+		"[Desktop Entry]"  
+		"Name=LAMW4Linux"   
+		"Exec=$LAMW4LINUX_EXE_PATH --primary-config-path=$LAMW4_LINUX_PATH_CFG" 
+		"Icon=$LAMW_IDE_HOME/images/icons/lazarus_orange.ico" 
+		"Type=Application"  
+		"Categories=Development;IDE;"  
+		"Categories=Application;IDE;Development;GTK;GUIDesigner;"
+		"StartupWMClass=LAMW4Linux"
+		"MimeType=text/x-pascal;text/lazarus-project-source;text/lazarus-project-information;text/lazarus-form;text/lazarus-resource;text/lazarus-package;text/lazarus-package-link;text/lazarus-code-inlay;"
+		"Keywords=editor;Pascal;IDE;FreePascal;fpc;Design;Designer;"
+		"[Property::X-KDE-NativeExtension]"
+		"Type=QString"
+		"Value=.pas"
+		"X-Ubuntu-Gettext-Domain=desktop_kdelibs"
+	)
+	for ((i=0;i<${#lamw_desktop_file_str[*]};i++))
+	do
+		if [ $i = 0 ]; then
+			echo ${lamw_desktop_file_str[i]} > $LAMW_MENU_ITEM_PATH
+		else
+			echo ${lamw_desktop_file_str[i]} >> $LAMW_MENU_ITEM_PATH
+		fi
+	done
 	chmod +x $LAMW_MENU_ITEM_PATH
 	cp $LAMW_MENU_ITEM_PATH "$work_home_desktop"
-	#LAMW4LinuxPostConfig
-	#add support the usb debug  on linux for anywhere android device 
-	
+	#mime association: ref https://help.gnome.org/admin/system-admin-guide/stable/mime-types-custom-user.html.en
+	cp $LAMW_IDE_HOME/install/lazarus-mime.xml ~/.local/share/mime/packages
+	update-mime-database   ~/.local/share/mime/
+	update-desktop-database ~/.local/share/applications
 	update-menus
 }
 #cd not a native command, is a systemcall used to exec, read more in exec man 
@@ -681,11 +696,13 @@ CleanOldConfig(){
 	if [ -e "$work_home_desktop/lamw4linux.desktop" ]; then
 		rm "$work_home_desktop/lamw4linux.desktop"
 	fi
+	if [ -e ~/.local/share/mime/packages/lazarus-mime.xml ]; then
+		rm ~/.local/share/mime/packages/lazarus-mime.xml
+		update-mime-database   ~/.local/share/mime/
+		update-desktop-database ~/.local/share/applications
+		update-menus
+	fi
 	cleanPATHS
-	# sed -i '/export PATH=$PATH:$HOME\/android\/ndk-toolchain/d'  $HOME/.bashrc #\/ is scape of /
-	# sed -i '/export PATH=$PATH:$HOME\/android\/gradle-4.1\/bin/d' $HOME/.bashrc
-	# sed -i '/export PATH=$PATH:$HOME\/android\/ndk-toolchain/d'  $HOME/.profile
-	# sed -i '/export PATH=$PATH:$HOME\/android\/gradle-4.1\/bin/d' $HOME/.profile		
 }
 
 
@@ -742,15 +759,7 @@ parseFPC(){
 			export URL_FPC="https://svn.freepascal.org/svn/fpc/tags/release_3_0_4"
 			export FPC_RELEASE="release_3_0_4"
 			export FPC_VERSION="3.0.4"
-			
-			#export FPC_CFG_PATH="/etc/fpc-3.0.4.cfg"
-			#if [ $flag_new_ubuntu_lts = 0 ] ; then
-			#	if [ -e /usr/lib/fpc/$FPC_VERSION ]; then
-			#	#	export FPC_LIB_PATH="/usr/lib/fpc/$FPC_VERSION"
-				#fi
 
-			#else
-			
 			if [ -e /usr/lib/x86_64-linux-gnu/fpc/$FPC_VERSION ]; then #case new location fpc directory 
 				if [   -e /usr/lib/fpc  ]; then #para estar versão do fpc, obrigatóriamente /usr/lib/fpc dever ser um link simbólico
 					 sudo rm -r /usr/lib/fpc
@@ -762,10 +771,9 @@ parseFPC(){
 					export FPC_LIB_PATH="/usr/lib/fpc/$FPC_VERSION"
 				fi
 			fi
-
-		
 		;;
 	esac
+
 	export FPC_MKCFG_EXE=$(which fpcmkcfg-$FPC_VERSION)
 	if [ "$FPC_MKCFG_EXE" = "" ]; then
 		export FPC_MKCFG_EXE=$(which x86_64-linux-gnu-fpcmkcfg-$FPC_VERSION)
@@ -811,20 +819,12 @@ configureFPC(){
 		)
 
 		if [ -e $FPC_CFG_PATH ] ; then  # se exiir /etc/fpc.cfg
-			#fpc_cfg_teste=$(cat $FPC_CFG_PATH) # abre /etc/fpc.cfg
-			#flag_fpc_cfg=0 # flag da sub string de configuração"
-			#case "$fpc_cfg_teste" in 
-			#	*"#IFDEF ANDROID"*)
-			#	flag_fpc_cfg=1
-			#	;;
-			#esac
 			searchLineinFile $FPC_CFG_PATH  "${fpc_cfg_str[0]}"
 			flag_fpc_cfg=$?
 
 			if [ $flag_fpc_cfg != 1 ]; then # caso o arquvo ainda não esteja configurado
 				for ((i = 0 ; i<${#fpc_cfg_str[@]};i++)) 
 				do
-					#echo ${fpc_cfg_str[i]}
 					echo "${fpc_cfg_str[i]}" | tee -a  $FPC_CFG_PATH
 				done	
 			fi
@@ -907,7 +907,7 @@ fi
 	#Checa se necessario habilitar remocao forcada
 	checkForceLAMW4LinuxInstall $*
 #else
-	echo "LAMW4LinuxInstall  manager recomen"
+
 	if [ $# = 6 ] || [ $# = 7 ]; then
 		if [ "$2" = "--use_proxy" ] ;then 
 			if [ "$3" = "--server" ]; then
@@ -947,6 +947,15 @@ case "$1" in
 		CleanOldConfig
 		mainInstall
 	;;
+	"clean-install=sdk24")
+		printf "Please wait ...\n"
+		sleep 2
+		CleanOldConfig
+		printf "Mode SDKTOOLS=24 with ant support "
+		export OLD_ANDROID_SDK=1
+
+		mainInstall
+	;;
 
 	"update-lamw")
 		
@@ -963,6 +972,7 @@ case "$1" in
 		lamw_opts=(
 			"Usage:\n\tbash lamw-install.sh [Options]\n"
 			"\tbash lamw-install.sh clean\n"
+			"\tbash lamw-install.sh clean-install=sdk24\n"
 			"\tbash lamw-install.sh install\n"
 			"\tbash lawmw-install.sh install --force"
 			"\tbash lamw-install.sh install --use_proxy\n"
