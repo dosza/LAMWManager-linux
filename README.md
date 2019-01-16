@@ -1,3 +1,4 @@
+LAMW4Linux Install Manager
 Este repositorio contem um script de auto instalação para 
 LAMW4 Linux Lazarus Module Wizard Android for Linux 
 This repository have a script auto-instalation for Lazarus Module Wizard
