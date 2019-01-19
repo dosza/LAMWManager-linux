@@ -14,6 +14,7 @@ var
   USE_PROXY: boolean = false;
   TRANSPARENT_PROXY_FLAG : boolean  = false;
   ALTERNATIVE_PROXY_SET_FLAG : boolean = false;
+  AUTENTICATION_PROXY_FLAG : boolean = false;
 
 
 implementation

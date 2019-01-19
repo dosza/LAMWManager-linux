@@ -1,0 +1,1038 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"Fpr",
+				"FProjPath"
+			],
+			[
+				"FP",
+				"FProjPath"
+			],
+			[
+				"ANDROID",
+				"ANDROID_HOME"
+			],
+			[
+				"cha",
+				"changeDirectory"
+			],
+			[
+				"AND",
+				"ANDROID_SDK"
+			],
+			[
+				"Change",
+				"changeDirectory"
+			],
+			[
+				"SDK_TO",
+				"SDK_TOOLS_VERSION"
+			],
+			[
+				"SDK",
+				"SDK_MANAGER_CMD_PARAMETERS"
+			],
+			[
+				"VE",
+				"VERMELHO_SUBLINHADO"
+			],
+			[
+				"reins",
+				"reinstall"
+			],
+			[
+				"reinsta",
+				"reinstall-oldsdk"
+			],
+			[
+				"fil",
+				"filename"
+			],
+			[
+				"FIL",
+				"_FILES"
+			],
+			[
+				"file",
+				"file_path"
+			],
+			[
+				"TCC",
+				"TCC_CCOMP_HOME"
+			],
+			[
+				"ora",
+				"oracle_java_source_list_str"
+			],
+			[
+				"sou",
+				"sources_list_oficial_str"
+			],
+			[
+				"un",
+				"ubuntu_compatible"
+			],
+			[
+				"ubuntu",
+				"ubuntu_compatible"
+			],
+			[
+				"debian",
+				"debian_version"
+			],
+			[
+				"linux",
+				"linux_version"
+			],
+			[
+				"str",
+				"stretch-backports"
+			],
+			[
+				"debi",
+				"debian_version"
+			],
+			[
+				"sdk",
+				"sdk-tools-linux-3859397"
+			],
+			[
+				"lamw",
+				"lamw_desktop_file_str"
+			],
+			[
+				"lam",
+				"lamw_desktop_file_str"
+			],
+			[
+				"LAMW_L",
+				"LAMW4LINUX_EXE_PATH"
+			],
+			[
+				"OLD",
+				"OLD_ANDROID_SDK"
+			],
+			[
+				"Cha",
+				"changeDirectory"
+			],
+			[
+				"NDK",
+				"NDK_URL"
+			],
+			[
+				"getAn",
+				"getSDKAndroid"
+			],
+			[
+				"WR",
+				"WrappergetAndroidSDK"
+			],
+			[
+				"check",
+				"checkForceLAMW4LinuxInstall"
+			],
+			[
+				"set",
+				"setJava8asDefault"
+			],
+			[
+				"Cre",
+				"CreateOverrideProxySettings"
+			],
+			[
+				"PRO",
+				"PROXY_URL"
+			],
+			[
+				"Ini",
+				"initParameters"
+			],
+			[
+				"OVE",
+				"OVERRIDE_FILE_PATH"
+			],
+			[
+				"SD",
+				"SDK_MANAGER_CMD_PARAMETERS"
+			],
+			[
+				"max",
+				"max_val"
+			],
+			[
+				"searc",
+				"searchLineinFile"
+			],
+			[
+				"fpc_c",
+				"fpc_cfg_teste"
+			],
+			[
+				"flag",
+				"flag_profile_paths"
+			],
+			[
+				"profil",
+				"profile_line_path"
+			],
+			[
+				"sear",
+				"searchLineinFile"
+			],
+			[
+				"Ge",
+				"GenerateScapesStr"
+			],
+			[
+				"WR_",
+				"WR_GRADLE_HOME"
+			],
+			[
+				"G",
+				"GenerateScapesStr"
+			],
+			[
+				"gener",
+				"GenerateScapesStr"
+			],
+			[
+				"HOME",
+				"HOME"
+			],
+			[
+				"HOM",
+				"HOME_USER_SPLITTED_ARRAY"
+			],
+			[
+				"HO",
+				"HOME_USER_SPLITTED_ARRAY"
+			],
+			[
+				"GRAD",
+				"GRADLE_HOME"
+			],
+			[
+				"GRA",
+				"GRADLE_HOME"
+			],
+			[
+				"clen",
+				"cleanPATHS"
+			],
+			[
+				"CL",
+				"cleanPATHS"
+			],
+			[
+				"B",
+				"BuildLazarusIDE"
+			],
+			[
+				"get",
+				"getLAMWFramework"
+			],
+			[
+				"LAMW",
+				"LAMW_INSTALL_VERSION"
+			],
+			[
+				"ty",
+				"TypePeople"
+			],
+			[
+				"build",
+				"build-tools"
+			],
+			[
+				"andro",
+				"android-25"
+			],
+			[
+				"not",
+				"notify-send"
+			],
+			[
+				"che",
+				"checkProxyStatus"
+			],
+			[
+				"ol",
+				"old_lamw_workspace"
+			],
+			[
+				"en",
+				"enableADBtoUdev"
+			],
+			[
+				"writ",
+				"writeLAMWLogInstall"
+			],
+			[
+				"unis",
+				"unistallJavaUnsupported"
+			],
+			[
+				"Clea",
+				"CleanOldCrossCompileBins"
+			],
+			[
+				"APT_LOC",
+				"APT_LOCK_TWO"
+			],
+			[
+				"gl",
+				"global-proxy"
+			],
+			[
+				"Ad",
+				"AddSDKPathstoProfile"
+			],
+			[
+				"cRE",
+				"CreateSDKSimbolicLinks"
+			],
+			[
+				"CRE",
+				"CreateSDKSimbolicLinks"
+			],
+			[
+				"install",
+				"installDependences"
+			],
+			[
+				"ADD",
+				"AddLAMWtoStartMenu"
+			],
+			[
+				"CHAN",
+				"changeDirectory"
+			],
+			[
+				"FPC_C",
+				"FPC_MKCFG_EXE"
+			],
+			[
+				"wp",
+				"work_home_desktop"
+			],
+			[
+				"FPC_",
+				"FPC_CROSS_ARM_MODE_FPCDELUXE"
+			],
+			[
+				"VER",
+				"LAMW_INSTALL_VERSION"
+			],
+			[
+				"cel",
+				"cleanup"
+			],
+			[
+				"clea",
+				"cleanup"
+			],
+			[
+				"F",
+				"FPC_RELEASE"
+			],
+			[
+				"LA",
+				"LAZARUS_STABLE"
+			],
+			[
+				"GET",
+				"GSETTINGS_KEY_PROXY"
+			],
+			[
+				"gs",
+				"GSETTINGS_KEY_PROXY"
+			],
+			[
+				"M",
+				"middle_tam_array"
+			],
+			[
+				"LAZAR",
+				"LAZARUS_STABLE"
+			],
+			[
+				"LAMW_IT",
+				"LAMW_MENU_ITEM_PATH"
+			],
+			[
+				"LAM",
+				"LAMW_IDE_HOME"
+			],
+			[
+				"LAMW4",
+				"LAMW4_LINUX_PATH_CFG"
+			],
+			[
+				"LAMW_",
+				"LAMW4_LINUX_PATH_CFG"
+			],
+			[
+				"Insta",
+				"mainInstall"
+			],
+			[
+				"Mai",
+				"mainInstall"
+			],
+			[
+				"LAZ",
+				"LAZANDROID_HOME"
+			],
+			[
+				"laz4and",
+				"laz4android"
+			],
+			[
+				"gralde",
+				"gradle-4"
+			],
+			[
+				"L",
+				"LAZANDROID_HOME"
+			],
+			[
+				"La",
+				"LazarusAndroid"
+			],
+			[
+				"and",
+				"android"
+			],
+			[
+				"la",
+				"lamw_workspace"
+			],
+			[
+				"ant",
+				"ant_path"
+			],
+			[
+				"CHA",
+				"changeDirectory"
+			],
+			[
+				"ne",
+				"flag_new_ubuntu_lts"
+			],
+			[
+				"m",
+				"PST_MODULES"
+			],
+			[
+				"Ps",
+				"PST_HOME"
+			],
+			[
+				"bash",
+				"bashrc_str"
+			],
+			[
+				"bas",
+				"local_bashrc"
+			],
+			[
+				"loca",
+				"local_profile"
+			],
+			[
+				"IN",
+				"InsertUniqueBlankLine"
+			],
+			[
+				"lO",
+				"local_bashrc"
+			],
+			[
+				"lo",
+				"local_bashrc"
+			],
+			[
+				"loc",
+				"local_bashrc"
+			],
+			[
+				"PST",
+				"PST_HOME"
+			],
+			[
+				"PS",
+				"PST_HOME"
+			],
+			[
+				"ex",
+				"executable"
+			],
+			[
+				"ser",
+				"server"
+			],
+			[
+				"pst",
+				"init_pst_extras"
+			],
+			[
+				"ext",
+				"init_pst_extras"
+			],
+			[
+				"p",
+				"PASSWORD_SERVER0"
+			],
+			[
+				"in",
+				"init_pst_extras"
+			],
+			[
+				"ps",
+				"password"
+			],
+			[
+				"pas",
+				"PASSWORD_SERVER0"
+			],
+			[
+				"APT",
+				"APT_CONF_ALT"
+			],
+			[
+				"x",
+				"x86_64-linux-gnu"
+			],
+			[
+				"open",
+				"openjdk-8-jdk"
+			],
+			[
+				"java",
+				"java_pack"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "bridge-root.sh",
+			"settings":
+			{
+				"buffer_size": 372,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "lamw-install.sh",
+			"settings":
+			{
+				"buffer_size": 30927,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"menu",
+				"View: Toggle Menu"
+			],
+			[
+				"",
+				"About"
+			]
+		],
+		"width": 0.0
+	},
+	"console":
+	{
+		"height": 157.0,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/home/danny/Dev/LAMW-tweak-tools/lamw-manager",
+		"/home/danny/scripts/pst/ver-2.0-rc10/main-pst.sh",
+		"/home/danny/Dev/LAMW-tweak-tools/lamw-manager-headers.sh",
+		"/home/danny/Dev/LAMW-tweak-tools/lamw-manager.sh",
+		"/home/danny/proxy.html",
+		"/home/danny/Dev/LinuxPostInstall/postinstall.sh",
+		"/var/www/html/index.php",
+		"/home/danny/Downloads/index.php",
+		"/home/danny/Dev/LAMW-tweak-tools/help.txt",
+		"/home/danny/Downloads/cli.php",
+		"/home/danny/.bashrc",
+		"/home/danny/analises-rep.txt",
+		"/home/danny/LAMW/lazandroidmodulewizard/trunk/android_wizard/uformandroidproject.pas",
+		"/home/danny/LAMW/lazandroidmodulewizard/trunk/ide_tools/apkbuild.pas",
+		"/home/danny/Dev/LAMW-tweak-tools/lamw-install.sh",
+		"/home/danny/LAMW/lazandroidmodulewizard/trunk/ide_tools/amw_ide_tools.pas",
+		"/tmp/out.pas",
+		"/home/danny/LAMW/lazandroidmodulewizard/trunk/ide_tools/lazandroidtoolsexpert.pas",
+		"/home/danny/LAMW/lazandroidmodulewizard/trunk/ide_tools/androidprojoptions.pas",
+		"/home/danny/PLOA/1_PL_2019.mdb",
+		"/home/danny/Dev/LAMWProjects/AppLAMWProject4/src/org/lamw/applamwproject4/App.java",
+		"/home/danny/Dev/LAMW-tweak-tools/README.md",
+		"/var/www/html/cli.php",
+		"/var/www/html/index.html",
+		"/home/danny/Documentos/Estudante/Universitario/UFMT/CC/8_sem/TCC/.bashrc",
+		"/home/danny/Documentos/Estudante/Universitario/UFMT/CC/5_sem/SO/trabalhos/trabalho1/versao-final/run.sh",
+		"/home/danny/scripts/pst/ver-2.0-rc10/global-proxy.sh",
+		"/home/danny/scripts/pst/ver-2.0-rc10/pst.sh",
+		"/home/danny/comands.sh",
+		"/home/danny/dados.py",
+		"/home/danny/Dev/LAMW-tweak-tools/lamw-win-install.sh",
+		"/home/danny/Documentos/Estudante/Universitario/UFMT/CC/5_sem/SO/trabalhos/trabalho1/versao-final/makefile",
+		"/home/danny/scripts/pst/ver-2.0-rc10/bridge-root.sh",
+		"/home/danny/scripts/py/plot-f.py",
+		"/home/danny/Dev/LAMWProjects/LamwGUIProject32/install.sh",
+		"/home/danny/Dev/LAMWProjects/LamwGUIProject32/AndroidManifest.xml",
+		"/home/danny/Downloads/fpcupdeluxe-1.6.1e/crosstoolsbuildscripts/chainarmandroid.sh",
+		"/home/danny/Documentos/Estudante/Universitario/UFMT/CC/5_sem/LFA/2016/TRABALHOS/TRABALHO1/listdouble.c",
+		"/home/danny/cmpline.sh",
+		"/home/danny/Documentos/Estudante/Universitario/UFMT/CC/5_sem/LFA/2016/TRABALHOS/TRABALHO1/main-lexico.c",
+		"/home/danny/class.c",
+		"/home/danny/Documentos/Estudante/Universitario/UFMT/CC/5_sem/SO/trabalhos/trabalho1/versao-final/include/libshell.h",
+		"/home/danny/scripts/postinstall.sh",
+		"/home/danny/.local/share/applications/lazarus.desktop",
+		"/home/danny/lamw4linux/lamw4linux/install/lazarus-mime.xml",
+		"/usr/share/mime/application/wps-office.doc.xml",
+		"/usr/share/mime/packages/geogebra.xml",
+		"/usr/share/mime/packages/lazarus-mime.xml",
+		"/home/danny/lamw4linux/lazarus_1_8_4/install/lazarus-mime.xml",
+		"/usr/share/mime/packages/libreoffice.xml",
+		"/home/danny/lazarus/Makefile",
+		"/home/danny/lamw4linux/lazarus_1_8_4/startlazarus.app/Contents/Info.plist",
+		"/home/danny/Dev/LAMW-tweak-tools/LAMW4LinuxInstallManager.lpi",
+		"/home/danny/Dev/LazC/LazCLibrary01/lazclibrary01.pp",
+		"/home/danny/Downloads/config.img",
+		"/home/danny/Downloads/Kross_8696X_v1.00.07/Kross_8696X_v1.00.07_upgrade.img",
+		"/home/danny/.lamw4linux/LazCWizard.ini",
+		"/home/danny/lamw4linux/lamw4linux/start_laz4lamw.sh",
+		"/home/danny/images/run.sh",
+		"/home/danny/images/restore-grub.sh",
+		"/home/danny/.cache/.fr-qPUZoW/bash-5.0-beta/array.h",
+		"/home/danny/.cache/.fr-msnL6Q/bash-5.0-beta/alias.c",
+		"/home/danny/.cache/.fr-sdNm8c/bash-5.0-beta/arrayfunc.c",
+		"/home/danny/.cache/.fr-AU10Pi/bash-5.0-beta/stringlib.c",
+		"/home/danny/.cache/.fr-KnfIiH/bash-5.0-beta/shell.h",
+		"/home/danny/.cache/.fr-8h3D3K/bash-5.0-beta/variables.c",
+		"/home/danny/.cache/.fr-4TIQmR/bash-5.0-beta/y.tab.c",
+		"/home/danny/Documentos/Estudante/Universitario/UFMT/CC/5_sem/LFA/2016/TRABALHOS/TRABALHO1/exemplo-analizador-c.c",
+		"/home/danny/Dev/LAMW-tweak-tools/preinstall.bat",
+		"/media/danny/3E3C-0E14/simple-lamw-install.sh",
+		"/home/danny/.config/sublime-text-3/Local/Session.sublime_session",
+		"/home/danny/Dev/LAMWProjects/LamwGUIProject38/install.sh",
+		"/home/danny/Downloads/fpcupdeluxe-1.6.1e/crosstoolsbuildscripts/chainx86_64linux.sh",
+		"/home/danny/.cache/.fr-qiu9Ui/mslink_v1.0/mslink.c",
+		"/home/danny/Documentos/Estudante/Universitario/UFMT/extra-curricular/ESTAGIO/split.sh",
+		"/tmp/mozilla_danny0/mslink.sh",
+		"/home/danny/Downloads/fpcupdeluxe-1.6.1e/m_win32_to_linuxmips.pas",
+		"/home/danny/Downloads/fpcupdeluxe-1.6.1e/crosstoolsbuildscripts/chainarmlinuxeabi.sh",
+		"/home/danny/Downloads/fpcupdeluxe-1.6.1e/crosstoolsbuildscripts/chainarmlinux.sh",
+		"/home/danny/sample.sh",
+		"/home/danny/Dev/LAMWProjects/LamwGUIProject32/build-debug.sh",
+		"/home/danny/.lamw4linux/JNIAndroidProject.ini",
+		"/home/danny/tools/bin/sdkmanager",
+		"/home/danny/android/lazandroidmodulewizard/trunk/android_wizard/uformworkspace.pas",
+		"/home/danny/Dev/LAMW-tweak-tools/LAMW4LinuxInstallManager.lps",
+		"/home/danny/Dev/IDES/Lazarus/ProxyTweakTool/unistall.pas",
+		"/home/danny/scripts/pst/ver-2.0-rc10/subrotina.sh",
+		"/home/danny/scripts/pst/ver-2.0-rc10/Leia-me",
+		"/home/danny/Downloads/compra/compra.php",
+		"/home/danny/Downloads/settings.ini",
+		"/home/danny/Dev/LAMW-tweak-tools/uprocessos.pas",
+		"/home/danny/Dev/IDES/Lazarus/ProxyTweakTool/uglobal.pas",
+		"/home/danny/Dev/IDES/Lazarus/ProxyTweakTool/uprocessos.pas",
+		"/home/danny/Downloads/simpson.py",
+		"/home/danny/scripts/py/secantes.py",
+		"/home/danny/Downloads/.bashrc",
+		"/media/danny/HANNYMIDY/AUTORUN.INF",
+		"/media/danny/HANNYMIDY/autorun.inf",
+		"/media/danny/HANNYMIDY/autorun.in",
+		"/home/danny/.gitconfig",
+		"/home/danny/scripts/py/integracao.py",
+		"/home/danny/scripts/py/newton2.py",
+		"/home/danny/scripts/pst/experimental/teste/GUI-PROXY.sh",
+		"/home/danny/.profile",
+		"/home/danny/scripts/py/newton2-final.py",
+		"/home/danny/scripts/py/bic.py",
+		"/home/danny/Downloads/metodo da secante.c",
+		"/home/danny/Transf/lamw-install.sh",
+		"/home/danny/scripts/py/newton.py",
+		"/home/danny/scripts/py/api-pytho.py",
+		"/home/danny/scripts/py/code.py",
+		"/home/danny/scripts/py/emails.py",
+		"/home/danny/scripts/py/para.py",
+		"/home/danny/scripts/py/sample.tk.py",
+		"/home/danny/scripts/guilherme.py",
+		"/home/danny/Downloads/fpcupdeluxe-1.6.1e/crosstoolsbuildscripts/chainarmlinuxhf.sh",
+		"/home/danny/Transf/libglad-installer/cg.sh",
+		"/home/danny/Documentos/Estudante/Universitario/UFMT/CC/2º sem/ED-I/2014-02/Extra/liblistgen.h",
+		"/home/danny/Documentos/Estudante/Universitario/UFMT/CC/2º sem/ED-I/2014-02/Extra/liblistgen.c",
+		"/home/danny/ver-2.0-rc10/pst.sh",
+		"/home/danny/scripts/pst/ver-2.0-rc10/setup.sh",
+		"/home/danny/Dev/lamw_workspace/DebianMaterialD/res/values/styles.xml",
+		"/home/danny/Documentos/Estudante/Universitario/UFMT/CC/6_sem/IA/2017/TRABALHOS/TRABALHO2/runnable.sh",
+		"/home/danny/Downloads/fpcupdeluxe-1.6.1e/installeruniversal.pas",
+		"/home/danny/Downloads/fpcupdeluxe-1.6.1e/patchlazarus/darwinqt5hack.patch",
+		"/home/danny/scripts/exemplo_hash.sh",
+		"/home/danny/lamw4linux/fpcsrc/release_3_0_0/Makefile",
+		"/home/danny/.bash_history"
+	],
+	"find":
+	{
+		"height": 27.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"PST_MODULES",
+			"main-pst.sh",
+			"PST_HOME",
+			"project",
+			"ant-instal",
+			".sh",
+			"RunByAdb",
+			"byant",
+			"ShowMessage(",
+			"byant",
+			"project",
+			"showmess",
+			"buildbyant",
+			"ant",
+			"darwin",
+			"ifdef darw",
+			"BuildByAnt",
+			" BuildByAnt",
+			" BuildAPK",
+			"build",
+			"ant",
+			"$HOME",
+			"~/",
+			"--force",
+			"$GRADLE",
+			"dl.google.com",
+			"sdk:host-os",
+			"dk:host-os",
+			"sdk-",
+			"url:",
+			"tools",
+			"mv ",
+			"before",
+			"r24",
+			"\"\n",
+			"do",
+			"SDK_MANAGER_CMD_PARAMETERS",
+			"GRADLE_HOME=",
+			"$HOME/android",
+			"$HOME/",
+			"sdk-tools",
+			"${VERMELHO}",
+			" ${VERMELHO}",
+			"apt-get",
+			"CleanOldCon",
+			"CleanOldc",
+			".android",
+			"lazarus-mime",
+			"clean",
+			"Add",
+			"echo \"",
+			"cleanPATHS",
+			"GRADE",
+			"GRAD",
+			"GRADE",
+			"mime",
+			"Lazarus",
+			"lazarus",
+			"DHCP",
+			"con",
+			"lazbuild",
+			"mkdir $AND",
+			"mkdir $and",
+			"versao=",
+			"rc10",
+			"2.0.10",
+			"rc10",
+			"rc10-",
+			"bashrc_path=",
+			"bashrc_path",
+			"platforms",
+			"getAndroidSDKTools",
+			"write",
+			"menu",
+			"/home/danny/android/sdk/platform-tools/adb",
+			"/home/danny/android/lazandroidmodulewizard.git/trunk/java",
+			" ANDROID_SDK",
+			" $ANDROID_SDK",
+			"SDK_TOOLS_URL",
+			"getAndroidSDKTools",
+			"getOldAndroidSdk",
+			"SDK_MANAGER_CMD_P",
+			"PARAMETERS_",
+			"getAndroid",
+			"Wrap",
+			"SDK_MANAGER_CMD_PAR",
+			"initPara",
+			"input name",
+			"input",
+			"force",
+			"getLAMWF",
+			"initPara",
+			"Active",
+			"  ",
+			"anterior",
+			"initParameters",
+			"PARAMETERS=(",
+			"PARAMETES=(",
+			"getSDKAndroid",
+			"PARAMETERS=(",
+			"PARAMETER",
+			"))\n",
+			"uglobal",
+			"ck",
+			" \n",
+			"clean",
+			"Add",
+			"add",
+			"AddP",
+			"\\\"*/",
+			"AddPa",
+			"echo 'export PATH",
+			"echo \"export PATH",
+			"done",
+			"//\\//",
+			"PATHS",
+			"clean",
+			"old",
+			"apt-get remove",
+			"checkProxyStatus",
+			"fi",
+			"FPC",
+			"APT_LOCK",
+			"s",
+			"Lazarus",
+			"INSTALL_PREFIX",
+			"3",
+			"FPC_CFG_PATH"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"LAMW_MGR_MODULES",
+			"lamw-manager",
+			"LAMW_MANAGER_HOME",
+			"${VERDE}",
+			"GRADLE",
+			"LAMW4linux",
+			"lamw4linux",
+			"adb",
+			"$LAMW_MENU_ITEM_PATH",
+			"LAMW4LINUX_HOME",
+			"LAMW4LinuxPostConfig",
+			"profile_data",
+			"profile_file",
+			"--allow-unauthenticated "
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 1,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "bridge-root.sh",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 372,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								310,
+								310
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/ShellScript/Bash.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "lamw-install.sh",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 30927,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								16196,
+								16196
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/ShellScript/Bash.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 5501.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 27.0
+	},
+	"input":
+	{
+		"height": 121.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 126.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"output.unsaved_changes":
+	{
+		"height": 126.0
+	},
+	"pinned_build_system": "",
+	"project": "lamw-manager.sublime-project",
+	"replace":
+	{
+		"height": 50.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 230.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
