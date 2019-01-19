@@ -39,11 +39,11 @@ lamw_manager **[actions]**
 
 **usage:**
 <p>
-	*install* 				install lamw with *Android SDK Tools r26.1.1*
-	*reinstall*				clean and reinstall *LAMW IDE with Android SDK Tools r26.1.1*
-	*install-oldsdk*		install lamw with Android SDK Tools r25.2.5 
-	*reinstall-oldsdk*		clean and reinstall lamw with *Android SDK Tools r25.2.5*
-	*update-lamw*			update LAMW sources and rebuild Lazarus IDE
+	<em>install</em> 				install lamw with <em>Android SDK Tools r26.1.1</em>
+	<em>reinstall</em>				clean and reinstall <em>LAMW IDE with Android SDK Tools r26.1.1</em>
+	<em>install-oldsdk</em>			install lamw with <em>Android SDK Tools r25.2.5</em>
+	<em>reinstall-oldsdk</em>		clean and reinstall <em>lamw with *Android SDK Tools r25.2.5</em>
+	<em>update-lamw</em>			update LAMW sources and rebuild Lazarus IDE
 </p>
 
 **proxy options:**
