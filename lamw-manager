@@ -1,0 +1,19 @@
+#!/bin/bash
+#!This script is a wraper to lamw-install.sh
+if  [  "$(whoami)" = "root" ] #impede que o script seja executado pelo root 
+then
+	echo "Error: this version  of LAMW4Linux was designed  to run without root priveleges" >&2 # >&2 is a file descriptor to /dev/stderror
+	echo "Exiting ..."
+	exit 1
+fi
+echo "$USER" > /tmp/lamw-overrides.conf
+if [ -e $PWD/lamw-install.sh ]; then 
+	pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY bash $PWD/lamw-install.sh $*
+else
+	true;
+fi
+
+if [ -e /tmp/lamw-overrides.conf ]
+then
+	rm /tmp/lamw-overrides.conf
+fi
