@@ -5,7 +5,7 @@ unit uprocessos;
 interface
 
 uses
-  Classes, SysUtils, Process,Math,uglobal;
+  Classes, SysUtils, Process,Math,uglobal,FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls;
 type
     {Class RunnableScripts }
 
@@ -26,7 +26,7 @@ type
 
       public
           strOut: TStringList;
-         // ref_memo: TMemo;
+         //ref_memo: TMemo;
          procedure RunProcess();
          procedure RunProcessAsConsole();
          procedure RunProcessAsRoot();

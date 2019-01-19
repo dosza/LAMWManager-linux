@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  StdCtrls, Menus,uprocessos,uglobal,uproxy;
+  StdCtrls, Menus,uprocessos,uglobal,uproxy,Process;
 
 type
 
@@ -60,6 +60,23 @@ type
   public
 
   end;
+  GUIThread = class(TThread)
+  private
+    str_msg: string;
+    //    proc : RunnableScripts;
+
+    ref_outproc: Tmemo;
+    //ref_progressbar: TProgressBar;
+    ref_proc: TProcess;
+    args: TStringList;
+    StrTemp: string;
+  public
+    constructor Create(mymemo: tmemo; cargs: TStringList);
+      reintroduce;
+    procedure Sincronize();
+    procedure SinFim();
+    procedure Execute; override;
+  end;
 
 var
   Fmain: TFmain;
@@ -68,6 +85,110 @@ implementation
 
 {$R *.lfm}
 
+{GUI TREAD}
+procedure GUIThread.Execute;
+var
+  i, exitCode, exitStatus, ReadCount: integer;
+  debug: boolean;
+  CharBuffer: array [0..511] of char;
+begin
+  i := 0;
+  //   inherited;
+  if (flag_stop) then;         //a thread cria um processo em grava o output em uma string
+  begin
+    ref_proc.Executable := '/bin/bash';
+  //  ref_proc.Parameters.Add(uglobal.BRIDGE_ROOT); //caminho do script bridge
+    ref_proc.Parameters.Add(uglobal.LAMW_MAIN_SCRIPT );
+    while (i < (args.Count)) do
+    begin
+      Write(args[i] + ' ');
+      ref_proc.Parameters.Add(args[i]);
+      i := i + 1;
+    end;
+    writeln('');
+    ref_proc.Options := ref_proc.Options + [poUsePipes, poNoConsole];
+    // poNewConsole  é para terminais
+    ref_proc.Execute;         // Execute o comando
+    exitCode := ref_proc.ExitCode;
+    exitStatus := ref_proc.ExitStatus;
+    while (ref_proc.Running) or (ref_proc.Output.NumBytesAvailable > 0) do
+    begin
+      if (ref_proc.Output.NumBytesAvailable > 0) then
+        // while (ref_proc.Output.NumBytesAvailable > 0 ) do
+      begin
+        ReadCount := Min(512, ref_proc.Output.NumBytesAvailable);
+        //Read up to buffer, not more
+        ref_proc.Output.Read(CharBuffer, ReadCount);
+        strTemp := Copy(CharBuffer, 0, ReadCount);
+        //strTemp:= StrTemp.Replace(sLineBreak);
+        Write(strTemp);
+        Sleep(2);
+        Self.Synchronize(@Self.Sincronize);
+        // sincroniza com a thread principal o estado de memo
+        // Memo1.Lines.Add(strTemp);
+        // progressbar1.Smooth:=true;
+
+      end;
+    end;
+    if (ref_proc.Running = False) then        //verifica se o processo acabou
+      {e inicia os procedimentos para encerrar  a thread }
+    begin
+      ref_proc.Free;
+      // StrTemp:='fim de execução';
+      // OnTerminate:=Self.Synchronize(@Self.Sincronize);
+      StrTemp := '----------------------------------------------------' +
+        sLineBreak + ' ... ... ... ... ... Fim da execução ... ... ... ... ... ' +
+        sLineBreak + '---------------------------------------------------';
+      Self.Synchronize(@Self.SinFim);
+      //sincroniza  a msg de fim de execução com a thread principal
+      //Sleep(1000);
+      //owMessage('Feito!');
+
+      flag_stop := False;
+      Self.Synchronize(@ref_outproc.Lines.Clear);  //sincroniza a limpeza do tmemo
+      Sleep(1000);     //dorme 1 segundo para o usuário perceber que o progressbar1 parou
+      FInstall.Close;
+      exit;
+    end;
+  end;
+end;
+
+
+constructor GUIThread.Create(mymemo: tmemo; cargs: TStringList; loadbar: TProgressBar);
+begin
+  inherited Create(True);
+  Self.FreeOnTerminate := True;
+  self.ref_outproc := mymemo;
+  self.args := cargs;
+  self.StrTemp := '';
+  self.ref_progressbar := loadbar;
+  ref_proc := TProcess.Create(nil);
+end;
+
+  {
+  Procedimento da thread sincronizada com thread principal para  atualizar o tipo de progress bar
+  e atualizar o tmemo
+  }
+procedure GUIThread.Sincronize();
+begin
+  //if (self.ref_progressbar.Visible = False) then
+ //   self.ref_progressbar.Visible := True;
+  //if (self.ref_progressbar.Style = pbstNormal) then
+  //self.ref_progressbar.Style := pbstMarquee;
+
+  Self.ref_outproc.Lines.Add(self.StrTemp);
+end;
+
+{
+Essa função faz a sincronização final, escreve a última linha no tmemo e muda o tipo de progress bar
+}
+procedure GUIThread.SinFim();
+begin
+  ref_outproc.Lines.Add(StrTemp);
+  //if (self.ref_progressbar.Style = pbstMarquee) then
+    //self.ref_progressbar.Style := pbstNormal;
+  Sleep(1000);
+end;
 { TFmain }
 
 procedure TFmain.Image1Click(Sender: TObject);
@@ -76,7 +197,7 @@ begin
       self.cmd_args.add(uglobal.LAMW_MAIN_SCRIPT);
       if (uglobal.CLEAN_INSTALL_FLAG = true)
       then
-         self.cmd_args.add('clean-install')
+         self.cmd_args.add('reinstall')
       else
          self.cmd_args.add('install');
       if (  uglobal.USE_PROXY ) then
