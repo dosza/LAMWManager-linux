@@ -6,11 +6,11 @@ to distro linux like *GNU/debian*<br>
 <br>
 **Linux Distro Supported:**<br>
 <ol>
-	<li>GNU/Debian 9 <\li>
-	<li>Ubuntu 16.04 LTS<\li>
-	<li>Ubuntu 18.04 LTS<\li>
-	<li>Linux Mint 18 *Cinnamon*<\li>
-	<li>Linux Mint 19 *Cinnamon*<\li>
+	<li>GNU/Debian 9</li>
+	<li>Ubuntu 16.04 LTS</li>
+	<li>Ubuntu 18.04 LTS</li>
+	<li>Linux Mint 18 *Cinnamon*</li>
+	<li>Linux Mint 19 *Cinnamon*</li>
 </ol>		
 <br>
 **This tool make:**<br>
@@ -35,13 +35,13 @@ to distro linux like *GNU/debian*<br>
 <br>
 *Note: you need run this tool without root privileges!*<br>
 lamw_manager **[actions]**<br>
-**usage:**<br>
-	*install* 			install lamw with *Android SDK Tools r26.1.1*<br>
-	*reinstall*			clean and reinstall *LAMW IDE with Android SDK Tools r26.1.1*<br>
+**usage:**<p>
+	*install* 				install lamw with *Android SDK Tools r26.1.1*<br>
+	*reinstall*				clean and reinstall *LAMW IDE with Android SDK Tools r26.1.1*<br>
 	*install-oldsdk*		install lamw with Android SDK Tools r25.2.5 <br>
-	*reinstall-oldsdk*	clean and reinstall lamw with *Android SDK Tools r25.2.5*<br>
+	*reinstall-oldsdk*		clean and reinstall lamw with *Android SDK Tools r25.2.5*<br>
 	*update-lamw*			update LAMW sources and rebuild Lazarus IDE<br>
-<br>
+</p>
 **proxy options:**<br>
 	*actions* **--use-proxy** [*proxy options*]<br>
 	*install* **--use_proxy** **--server** [HOST] **--port** [NUMBER]<br>
