@@ -4,8 +4,9 @@ program LAMW4LinuxInstallManager;
 
 uses
   {$IFDEF UNIX}{$IFDEF UseCThreads}
-  cthreads,
-  {$ENDIF}{$ENDIF}
+    cthreads,
+    cmem, // the c memory manager is on some systems much faster for multi-threading
+    {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
   Forms, umain, uglobal, uproxy
   { you can add units after this };
@@ -16,7 +17,7 @@ begin
   RequireDerivedFormResource:=True;
   Application.Initialize;
   Application.CreateForm(TFmain, Fmain);
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TFormProxy, FormProxy);
   Application.Run;
 end.
 

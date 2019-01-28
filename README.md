@@ -1,4 +1,4 @@
-**LAMW Install Manager v0.2.1**
+# **LAMW Install Manager v0.2.1**
 
 LAMW Install Manager is  **"APT"** to LAMW framework
 LAMW Install Manager is powerfull   command line tool like *APT* to install, configure and Update LAMW Framework IDE
@@ -23,7 +23,7 @@ to distro linux like *GNU/debian*
 	<li>Get Android SDK</li>
 	<li>Get OpenJDK</li>
 	<li>Get LAMW framework</li>
-	<li>Build Freepascal Cross-compile to arm-android*</li>
+	<li>Build Freepascal Cross-compile to <strong>arm-android</strong></li>
 	<li>Build Lazarus IDE</li>
 	<li>Install LAMW framework</li>
 	<li>Create launcher to menu</li>
@@ -52,14 +52,14 @@ lamw_manager **[actions]**
 	*install* <strong>--use-proxy --server</strong>  [HOST] <strong>--port</strong> [NUMBER]
 </p>
 
-**sample:** lamw_manager install **--use-proxy** --server 10.0.16.1 --port 3128
+**sample:** lamw_manager install **--use-proxy** **--server** 10.0.16.1 **--port** 3128
 
 **Forced installation:**
 
 <p>
 	if the default installation fails!
-	Possibly caused by a lazarus package (.deb) in *bad condition*, **action** recommends uninstalling any lazarus 
-	(.deb) for this use: **--force** as the last parameter.
+	Possibly caused by a lazarus package (.deb) in <em>bad condition</em>, <strong>action</strong> recommends uninstalling any lazarus 
+	(.deb) for this use: <strong>--force</strong> as the last parameter.
 </p>
 
 <p>

@@ -5,8 +5,8 @@ unit uproxy;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Buttons, uglobal;
+  Classes, SysUtils, FileUtil, UTF8Process, Forms, Controls, Graphics, Dialogs,
+  StdCtrls, Buttons, uglobal, process;
 
 type
 
