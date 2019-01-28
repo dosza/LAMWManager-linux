@@ -9,10 +9,10 @@ object FormProxy: TFormProxy
   OnClose = FormClose
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '1.8.2.0'
+  LCLVersion = '1.8.4.0'
   object CheckBox1: TCheckBox
     Left = 93
-    Height = 23
+    Height = 24
     Top = 66
     Width = 128
     Caption = 'Transparent Proxy'
@@ -29,7 +29,7 @@ object FormProxy: TFormProxy
   end
   object Label1: TLabel
     Left = 97
-    Height = 17
+    Height = 14
     Top = 114
     Width = 40
     Caption = 'Server:'
@@ -44,7 +44,7 @@ object FormProxy: TFormProxy
   end
   object Label2: TLabel
     Left = 93
-    Height = 17
+    Height = 14
     Top = 170
     Width = 26
     Caption = 'Port:'
@@ -61,16 +61,16 @@ object FormProxy: TFormProxy
   end
   object CheckBox2: TCheckBox
     Left = 93
-    Height = 23
+    Height = 24
     Top = 218
-    Width = 137
+    Width = 136
     Caption = 'Proxy Autentication '
     OnChange = CheckBox2Change
     TabOrder = 4
   end
   object Label3: TLabel
     Left = 97
-    Height = 17
+    Height = 14
     Top = 258
     Width = 30
     Caption = 'User:'
@@ -86,7 +86,7 @@ object FormProxy: TFormProxy
   end
   object Label4: TLabel
     Left = 93
-    Height = 17
+    Height = 14
     Top = 330
     Width = 57
     Caption = 'Password:'
@@ -94,9 +94,9 @@ object FormProxy: TFormProxy
   end
   object CheckBox3: TCheckBox
     Left = 93
-    Height = 23
+    Height = 24
     Top = 32
-    Width = 82
+    Width = 81
     Caption = 'Use Proxy'
     OnChange = CheckBox3Change
     TabOrder = 6

@@ -6,9 +6,33 @@ then
 	echo "Exiting ..."
 	exit 1
 fi
+export DEBUG=0
+args=($*)
+args_str=()
+for((i=0;i<${#args[*]};i++))
+do
+	if [ "${args[i]}" = "DEBUG=1" ]; then
+		export DEBUG=1
+	fi
+done
+if [ $DEBUG = 1 ]; then
+	limite=${#args[*]}
+	((limite--))
+	current=-1
+	for((i=0;i<$limite;i++))
+	do
+		#current=${#args_str[*]}
+		args_str[i]=${args[i]}
+	done
+fi
+
 echo "$USER" > /tmp/lamw-overrides.conf
-if [ -e $PWD/lamw-install.sh ]; then 
-	pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY bash $PWD/lamw-install.sh $*
+if [ -e $PWD/lamw-install.sh ]; then
+	if [ $DEBUG = 1 ]; then  
+		pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY bash -x $PWD/lamw-install.sh ${args_str[*]}
+	else
+		pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY bash $PWD/lamw-install.sh $*
+	fi
 else
 	true;
 fi
