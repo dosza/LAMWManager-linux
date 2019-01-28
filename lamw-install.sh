@@ -32,7 +32,7 @@ ANDROID_HOME=$LAMW_USER_HOME/LAMW
 ANDROID_SDK="$ROOT_LAMW/sdk"
 #--------------------------------------------------------------------------------------
 export XDG_DATA_DIRS="/usr/share:/usr/local/share:$LAMW_USER_HOME/.local/share"
-LAMW_INSTALL_VERSION="0.2.1"
+LAMW_INSTALL_VERSION="0.3.0"
 LAMW_INSTALL_WELCOME=(
 	"${NEGRITO}\t\tWelcome LAMW Manager version: $LAMW_INSTALL_VERSION${NORMAL}\n"
 	"\t\tPowerd by DanielTimelord\n"
