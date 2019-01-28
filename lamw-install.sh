@@ -1,4 +1,5 @@
 
+#!/bin/bash
 #Universidade federal de Mato Grosso
 #Curso ciencia da computação
 #AUTOR: Daniel Oliveira Souza <oliveira.daniel@gmail.com>
@@ -6,12 +7,9 @@
 #Descrição: Este script configura o ambiente de desenvolvimento para o LAMW
 #Version:0.2.1 add supporte a MIME 
 
-LAMW_USER=$(cat /tmp/lamw-overrides.conf)
-LAMW_USER_HOME=$(eval echo "~$LAMW_USER")
-ROOT_LAMW="$LAMW_USER_HOME/LAMW" #RAIZ DO AMBIENTE LAMW 
-ANDROID_HOME=$LAMW_USER_HOME/LAMW
+
 #zenity --info --text "ANDROID_HOME=$ROOT_LAMW"
-ANDROID_SDK="$ROOT_LAMW/sdk"
+
 #----ColorTerm
 export VERDE=$'\e[1;32m'
 export AMARELO=$'\e[01;33m'
@@ -22,11 +20,21 @@ export VERMELHO_SUBLINHADO=$'\e[1;4;31m'
 export AZUL=$'\e[1;34m'
 export NORMAL=$'\e[0m'
 
+if [ ! -e /tmp/lamw-overrides.conf ]
+then
+	printf "${VERMELHO}Error: you need run lamw-manager or lamw_manager first! ${NORMAL}\n"
+	exit 1
+fi
+LAMW_USER=$(cat /tmp/lamw-overrides.conf)
+LAMW_USER_HOME=$(eval echo "~$LAMW_USER")
+ROOT_LAMW="$LAMW_USER_HOME/LAMW" #RAIZ DO AMBIENTE LAMW 
+ANDROID_HOME=$LAMW_USER_HOME/LAMW
+ANDROID_SDK="$ROOT_LAMW/sdk"
 #--------------------------------------------------------------------------------------
 export XDG_DATA_DIRS="/usr/share:/usr/local/share:$LAMW_USER_HOME/.local/share"
 LAMW_INSTALL_VERSION="0.2.1"
 LAMW_INSTALL_WELCOME=(
-	"${NEGRITO}\t\tWelcome LAMW4Linux Installer  version: $LAMW_INSTALL_VERSION${NORMAL}\n"
+	"${NEGRITO}\t\tWelcome LAMW Manager version: $LAMW_INSTALL_VERSION${NORMAL}\n"
 	"\t\tPowerd by DanielTimelord\n"
 	"\t\t<oliveira.daniel109@gmail.com>\n"
 )
@@ -35,8 +43,6 @@ LAMW_INSTALL_WELCOME=(
 export DEBIAN_FRONTEND="gnome"
 export URL_FPC=""
 export FPC_VERSION=""
-export FPC_CFG_PATH="$LAMW_USER_HOME/.fpc.cfg"
-export PPC_CONFIG_PATH=$FPC_CFG_PATH
 export FPC_RELEASE=""
 export flag_new_ubuntu_lts=0
 export FPC_LIB_PATH=""
@@ -58,6 +64,7 @@ SDK_TOOLS_VERSION="r26.1.1"
 SDK_VERSION="28"
 SDK_MANAGER_CMD_PARAMETERS=()
 SDK_MANAGER_CMD_PARAMETERS2=()
+SDK_MANAGER_CMD_PARAMETERS2_PROXY=()
 SDK_LICENSES_PARAMETERS=()
 LAZARUS_STABLE_SRC_LNK="https://svn.freepascal.org/svn/lazarus/tags/lazarus_1_8_4"
 LAMW_SRC_LNK="https://github.com/jmpessoa/lazandroidmodulewizard.git"
@@ -76,6 +83,8 @@ GRADLE_ZIP_LNK="https://services.gradle.org/distributions/gradle-4.4.1-bin.zip"
 GRADLE_ZIP_FILE="gradle-4.4.1-bin.zip"
 FPC_STABLE=""
 LAZARUS_STABLE="lazarus_1_8_4"
+FPC_CFG_PATH="$LAMW_USER_HOME/.fpc.cfg"
+PPC_CONFIG_PATH=$FPC_CFG_PATH
 
 FPC_ID_DEFAULT=0
 FPC_CROSS_ARM_DEFAULT_PARAMETERS=('clean crossall crossinstall  CPU_TARGET=arm OS_TARGET=android OPT="-dFPC_ARMHF" SUBARCH="armv7a" INSTALL_PREFIX=/usr')
@@ -95,41 +104,67 @@ HOME_STR_SPLITTED=""
 libs_android="libx11-dev libgtk2.0-dev libgdk-pixbuf2.0-dev libcairo2-dev libpango1.0-dev libxtst-dev libatk1.0-dev libghc-x11-dev freeglut3 freeglut3-dev "
 prog_tools="menu fpc git subversion make build-essential zip unzip unrar android-tools-adb openjdk-8-jdk "
 packs=()
+
 #[[]
 
 export OLD_ANDROID_SDK=0
-
+export NO_GUI_OLD_SDK=0
 #Esta funcao altera todos o dono de todos arquivos e  pastas do ambiente LAMW de root para o $LAMW_USER_HOME
 #Ou seja para o usuario que invocou o lamw_manager (bootstrap)
 changeOwnerAllLAMW(){
-	if [ -e $ROOT_LAMW ]; then
-		chown  -R $LAMW_USER:$LAMW_USER $ROOT_LAMW 
-	fi
-	if  [ -e $FPC_CFG_PATH ]; then 
-		chown $LAMW_USER:$LAMW_USER $FPC_CFG_PATH
-	fi
-	if [ -e $LAMW_USER_HOME/.profile ];then
-		chown $LAMW_USER:$LAMW_USER $LAMW_USER_HOME/.profile
-	fi
-	if [ -e $LAMW_USER_HOME/.bashrc ]; then
-		chown $LAMW_USER:$LAMW_USER $LAMW_USER_HOME/.bashrc
-	fi
-	if [ -e $LAMW_USER_HOME/.android ]; then
-		chown $LAMW_USER:$LAMW_USER $LAMW_USER_HOME/.android
-	fi
-	if [ -e $LAMW_USER_HOME ]; then
-		chown $LAMW_USER:$LAMW_USER -R $LAMW_USER_HOME/.local/share
-	fi
-	if [ -e $LAMW4_LINUX_PATH_CFG ]; then
-		chown $LAMW_USER:$LAMW_USER -R $LAMW4_LINUX_PATH_CFG
-	fi
+	#case only update-lamw
+	if [ $# = 1 ]; then
+		echo "restoring directorys ..."
+		sleep 2
+		if [ -e $LAMW4_LINUX_PATH_CFG ]; then
+			chown $LAMW_USER:$LAMW_USER -R $LAMW4_LINUX_PATH_CFG
+		fi
 
-
+		if [ -e $LAMW_USER_HOME/lazandroidmodulewizard ]; then 
+			chown $LAMW_USER:$LAMW_USER -R $LAMW_USER_HOME/lazandroidmodulewizard
+		fi
+		if [ -e $LAMW_IDE_HOME ];then
+			chown $LAMW_USER:$LAMW_USER -R $LAMW4LINUX_HOME/$LAZARUS_STABLE
+		fi
+	else
+		if [ -e $ROOT_LAMW ]; then
+			chown  -R $LAMW_USER:$LAMW_USER $ROOT_LAMW 
+		fi
+		if  [ -e $FPC_CFG_PATH ]; then 
+			chown $LAMW_USER:$LAMW_USER $FPC_CFG_PATH
+		fi
+		if [ -e $LAMW_USER_HOME/.profile ];then
+			chown $LAMW_USER:$LAMW_USER $LAMW_USER_HOME/.profile
+		fi
+		if [ -e $LAMW_USER_HOME/.bashrc ]; then
+			chown $LAMW_USER:$LAMW_USER $LAMW_USER_HOME/.bashrc
+		fi
+		if [ -e $LAMW_USER_HOME/.android ]; then
+			chown $LAMW_USER:$LAMW_USER $LAMW_USER_HOME/.android
+		fi
+		if [ -e $LAMW_USER_HOME ]; then
+			chown $LAMW_USER:$LAMW_USER -R $LAMW_USER_HOME/.local/share
+		fi
+		if [ -e $LAMW4_LINUX_PATH_CFG ]; then
+			chown $LAMW_USER:$LAMW_USER -R $LAMW4_LINUX_PATH_CFG
+		fi
+		if [ -e $LAMW_USER_HOME/Dev ]; then
+			chown $LAMW_USER:$LAMW_USER -R  $LAMW_USER_HOME/Dev
+		fi
+	fi
+}
+getStatusInstalation(){
+	if [  -e $LAMW4LINUX_HOME/lamw-install.log ]; then
+		cat $LAMW4LINUX_HOME/lamw-install.log
+	else 
+		echo "not installed" >&2
+	fi
 }
 checkForceLAMW4LinuxInstall(){
 	args=($*)
 	for((i=0;i<${#args[*]};i++))
 	do
+		#printf "${VERMELHO} ${args[i]} ${NORMAL}\n"
 		if [ "${args[i]}" = "--force" ]; then
 			#printf "Warning: This application theres power binary deb"
 			
@@ -261,11 +296,7 @@ installDependences(){
 
 #iniciandoparametros
 initParameters(){
-	if [ $# = 1 ]; then  
-		if [ "$1" = "--use_proxy" ] ;then
-					USE_PROXY=1
-		fi
-	else
+	if [ $# = 3 ] ; then 
 		if [ "$1" = "--use_proxy" ]; then 
 			export USE_PROXY=1
 			export PROXY_SERVER=$2
@@ -287,7 +318,22 @@ initParameters(){
 			--proxy_host=$PROXY_SERVER 
 			--proxy_port=$PORT_SERVER 
 		)
-		SDK_MANAGER_CMD_PARAMETERS2=("ndk-bundle" "extras;android;m2repository" --no_https --proxy=http --proxy_host=$PROXY_SERVER --proxy_port=$PORT_SERVER )
+		SDK_MANAGER_CMD_PARAMETERS2=(
+			 "android-26"
+			"platform-tools"
+			"build-tools-26.0.2" 
+			"extra-google-google_play_services"
+			"extra-android-m2repository"
+			"extra-google-m2repository"
+			"extra-google-market_licensing"
+			"extra-google-market_apk_expansion"
+		)
+		SDK_MANAGER_CMD_PARAMETERS2_PROXY=(
+			--no_https 
+			#--proxy=http 
+			--proxy-host=$PROXY_SERVER 
+			--proxy-port=$PORT_SERVER 
+		)
 		SDK_LICENSES_PARAMETERS=( --licenses --no_https --proxy=http --proxy_host=$PROXY_SERVER --proxy_port=$PORT_SERVER )
 		export http_proxy=$PROXY_URL
 		export https_proxy=$PROXY_URL
@@ -301,7 +347,16 @@ initParameters(){
 			"ndk-bundle" 
 			"extras;android;m2repository"
 		)			#ActiveProxy 0
-		SDK_MANAGER_CMD_PARAMETERS2=("ndk-bundle" "extras;android;m2repository")
+		SDK_MANAGER_CMD_PARAMETERS2=(
+			"android-26"
+			"platform-tools"
+			"build-tools-26.0.2" 
+			"extra-google-google_play_services"
+			"extra-android-m2repository"
+			"extra-google-m2repository"
+			"extra-google-market_licensing"
+			"extra-google-market_apk_expansion"
+			)
 		SDK_LICENSES_PARAMETERS=(--licenses )
 	fi
 }
@@ -353,7 +408,7 @@ getLAMWFramework(){
 	if [ $? != 0 ]; then #case fails last command , try svn chekout
 		
 		export git_param=("clone" "$LAMW_SRC_LNK")
-		cd $ROOT_LAMW
+		changeDirectory $ROOT_LAMW
 		chmod 777 -Rv lazandroidmodulewizard
 		rm -r lazandroidmodulewizard
 		git ${git_param[*]}
@@ -386,7 +441,7 @@ getAnt(){
 		wget -c $ANT_TAR_URL
 		if [ $? != 0 ] ; then
 			#rm *.zip*
-			ANT_TAR_URL="https://www-eu.apache.org/dist//ant/binaries/apache-ant-1.10.5-bin.tar.xz"
+			ANT_TAR_URL="https://www-eu.apache.org/dist/ant/binaries/apache-ant-1.10.5-bin.tar.xz"
 			wget -c $ANT_TAR_URL
 		fi
 		#echo "$PWD"
@@ -494,14 +549,18 @@ getSDKAndroid(){
 	fi
 	for((i=0;i<${#SDK_MANAGER_CMD_PARAMETERS[*]};i++))
 	do
-		echo "getting ${SDK_MANAGER_CMD_PARAMETERS[i]}"
+		echo "Please wait, downloading \" ${SDK_MANAGER_CMD_PARAMETERS[i]}\"..."
 		if [ $i = 0 ]; then 
-			yes | ./sdkmanager ${SDK_MANAGER_CMD_PARAMETERS[i]}  # instala sdk sem intervenção humana  
-		fi
-		./sdkmanager ${SDK_MANAGER_CMD_PARAMETERS[i]}
-
-		if [ $? != 0 ]; then 
+			yes | ./sdkmanager ${SDK_MANAGER_CMD_PARAMETERS[i]}  # instala sdk sem intervenção humana 
+			if [ $? != 0 ]; then 
+				yes | ./sdkmanager ${SDK_MANAGER_CMD_PARAMETERS[i]}
+			fi 
+		else
 			./sdkmanager ${SDK_MANAGER_CMD_PARAMETERS[i]}
+
+			if [ $? != 0 ]; then 
+				./sdkmanager ${SDK_MANAGER_CMD_PARAMETERS[i]}
+			fi
 		fi
 	done
 
@@ -510,8 +569,27 @@ getSDKAndroid(){
 getOldAndroidSDK(){
 	if [ -e $ANDROID_SDK/tools/android  ]; then 
 		changeDirectory $ANDROID_SDK/tools
-		echo "before update-sdk"
-		./android update sdk
+		if [ $NO_GUI_OLD_SDK = 0 ]; then
+			echo "before update-sdk"
+			./android update sdk
+		else
+			#echo "yes" | ./android update sdk --no-ui
+			#if [ $? != 0 ]; then 
+				#echo "yes" | ./android update sdk --no-ui
+			#fi
+			#./android list sdk --extended > /tmp/old-sdk-packages.txt 
+			for((i=0;i<${#SDK_MANAGER_CMD_PARAMETERS2[*]};i++))
+			do
+				echo "${SDK_MANAGER_CMD_PARAMETERS2[i]}"
+				#read;
+				echo "y" |   ./android update sdk --all --no-ui --filter ${SDK_MANAGER_CMD_PARAMETERS2[i]} ${SDK_MANAGER_CMD_PARAMETERS2_PROXY[*]}
+				if [ $? != 0 ]; then
+					echo "y" |   ./android update sdk --all --no-ui --filter ${SDK_MANAGER_CMD_PARAMETERS2[i]} ${SDK_MANAGER_CMD_PARAMETERS2_PROXY[*]}
+				fi	
+			done 
+
+
+		fi
 		#echo "--> After update sdk tools to 25.2.5"
 		#changeDirectory $ANDROID_SDK/tools
 		#./android update sdk
@@ -553,15 +631,15 @@ AddSDKPathstoProfile(){
 	profile_file=$LAMW_USER_HOME/.bashrc
 	flag_profile_paths=0
 	profile_line_path='export PATH=$PATH:$GRADLE_HOME/bin'
-
+	cleanPATHS
 	searchLineinFile "$profile_file" "$profile_line_path"
 	flag_profile_paths=$?
 	if [ $flag_profile_paths = 0 ] ; then 
 		#echo 'export PATH=$PATH'"\":$ROOT_LAMW/ndk-toolchain\"" >> $HOME/.bashrc
 		#echo 'export PATH=$PATH'"\":$GRADLE_HOME/bin\"" >> $HOME/.bashrc
-		echo "export ANDROID_HOME=$ROOT_LAMW" >>  $LAMW_USER_HOME/.bashrc
+		echo "export ANDROID_HOME=$ANDROID_HOME" >>  $LAMW_USER_HOME/.bashrc
 		echo "export GRADLE_HOME=$GRADLE_HOME" >> $LAMW_USER_HOME/.bashrc
-		echo 'export PATH=$PATH:$ROOT_LAMW/ndk-toolchain' >> $LAMW_USER_HOME/.bashrc
+		echo 'export PATH=$PATH:$ANDROID_HOME/ndk-toolchain' >> $LAMW_USER_HOME/.bashrc
 		echo 'export PATH=$PATH:$GRADLE_HOME/bin' >> $LAMW_USER_HOME/.bashrc
 	fi
 
@@ -597,10 +675,16 @@ BuildLazarusIDE(){
 	ln -sf $LAMW4LINUX_HOME/$LAZARUS_STABLE $LAMW_IDE_HOME  # link to lamw4_home directory 
 	ln -sf $LAMW_IDE_HOME/lazarus $LAMW4LINUX_EXE_PATH #link  to lazarus executable
 	changeDirectory $LAMW_IDE_HOME
-	make clean all
+	if [ $# = 0 ]; then 
+		make clean all
+	else 
+		printf "${Azul}Building LAMW packages ${NORMAL}"
+		sleep 2
+	fi
 		#build ide  with lamw framework 
 	for((i=0;i< ${#LAZBUILD_PARAMETERS[@]};i++))
 	do
+		printf "running:${VERDE}${LAZBUILD_PARAMETERS[i]}\n${NORMAL}"
 		./lazbuild ${LAZBUILD_PARAMETERS[i]}
 		if [ $? != 0 ]; then
 			./lazbuild ${LAZBUILD_PARAMETERS[i]}
@@ -641,7 +725,7 @@ LAMW4LinuxPostConfig(){
 	LAMW_init_str=(
 		"[NewProject]"
 		"PathToWorkspace=$LAMW_WORKSPACE_HOME"
-		"PathToJavaTemplates=$ROOT_LAMW/lazandroidmodulewizard/java"
+		"PathToJavaTemplates=$ROOT_LAMW/lazandroidmodulewizard/android_wizard/smartdesigner/java"
 		"PathToJavaJDK=$java_path"
 		"PathToAndroidNDK=$ROOT_LAMW/ndk"
 		"PathToAndroidSDK=$ROOT_LAMW/sdk"
@@ -655,19 +739,23 @@ LAMW4LinuxPostConfig(){
 		"AndroidPlatform=0"
 		"AntBuildMode=debug"
 		"NDK=5"
+		"PathToSmartDesigner=$ROOT_LAMW/lazandroidmodulewizard/android_wizard/smartdesigner"
+
 	)
 	for ((i=0;i<${#LAMW_init_str[@]};i++))
 	do
 		if [ $i = 0 ]; then 
-			echo "${LAMW_init_str[i]}" > $LAMW4_LINUX_PATH_CFG/JNIAndroidProject.ini 
+			echo "${LAMW_init_str[i]}" > $LAMW4_LINUX_PATH_CFG/LAMW.ini 
 		else
-			echo "${LAMW_init_str[i]}" >> $LAMW4_LINUX_PATH_CFG/JNIAndroidProject.ini
+			echo "${LAMW_init_str[i]}" >> $LAMW4_LINUX_PATH_CFG/LAMW.ini
 		fi
 	done
 
-	echo  "$LAMW4LINUX_EXE_PATH --primary-config-path=$LAMW4_LINUX_PATH_CFG" > "$LAMW_IDE_HOME/start_laz4lamw.sh"
-	if [ -e  $LAMW_IDE_HOME/start_laz4lamw.sh ]; then
-		chmod +x $LAMW_IDE_HOME/start_laz4lamw.sh
+	echo '#!/bin/bash' > "$LAMW_IDE_HOME/startlamw4linux"
+	echo "export PPC_CONFIG_PATH=$PPC_CONFIG_PATH" >> "$LAMW_IDE_HOME/startlamw4linux"
+	echo  "$LAMW4LINUX_EXE_PATH --primary-config-path=$LAMW4_LINUX_PATH_CFG" >> "$LAMW_IDE_HOME/startlamw4linux"
+	if [ -e  $LAMW_IDE_HOME/startlamw4linux ]; then
+		chmod +x $LAMW_IDE_HOME/startlamw4linux
 	fi
 
 	AddLAMWtoStartMenu
@@ -684,8 +772,10 @@ AddLAMWtoStartMenu(){
 	lamw_desktop_file_str=(
 		"[Desktop Entry]"  
 		"Name=LAMW4Linux"   
-		"Exec=$LAMW4LINUX_EXE_PATH --primary-config-path=$LAMW4_LINUX_PATH_CFG" 
-		"Icon=$LAMW_IDE_HOME/images/icons/lazarus_orange.ico" 
+		#Exec=$LAMW4LINUX_EXE_PATH --primary-config-path=$LAMW4_LINUX_PATH_CFG" 
+		"Exec=$LAMW_IDE_HOME/startlamw4linux"
+		"Icon=$LAMW_IDE_HOME/images/icons/lazarus_orange.ico"
+		"Terminal=false"
 		"Type=Application"  
 		"Categories=Development;IDE;"  
 		"Categories=Application;IDE;Development;GTK;GUIDesigner;"
@@ -766,11 +856,11 @@ CleanOldCrossCompileBins(){
 cleanPATHS(){
 	sed -i "/export ANDROID_HOME=*/d"  $LAMW_USER_HOME/.bashrc
 	sed -i "/export GRADLE_HOME=*/d" $LAMW_USER_HOME/.bashrc
-	sed -i '/export PATH=$PATH:$LAMW_USER_HOME\/android\/ndk-toolchain/d'  $LAMW_USER_HOME/.bashrc #\/ is scape of /
-	sed -i '/export PATH=$PATH:$LAMW_USER_HOME\/android\/gradle-4.1\/bin/d' $LAMW_USER_HOME/.bashrc
-	sed -i '/export PATH=$PATH:$LAMW_USER_HOME\/android\/ndk-toolchain/d'  $LAMW_USER_HOME/.profile
-	sed -i '/export PATH=$PATH:$LAMW_USER_HOME\/android\/gradle-4.1\/bin/d' $LAMW_USER_HOME/.profile	
-	sed -i '/export PATH=$PATH:$ROOT_LAMW\/ndk-toolchain/d'  $LAMW_USER_HOME/.bashrc
+	sed -i '/export PATH=$PATH:$ANDROID_HOME\/android\/ndk-toolchain/d'  $LAMW_USER_HOME/.bashrc #\/ is scape of /
+	sed -i '/export PATH=$PATH:$ANDROID_HOME\/android\/gradle-4.1\/bin/d' $LAMW_USER_HOME/.bashrc
+	sed -i '/export PATH=$PATH:$ANDROID_HOME\/android\/ndk-toolchain/d'  $LAMW_USER_HOME/.profile
+	sed -i '/export PATH=$PATH:$ANDROID_HOME\/android\/gradle-4.1\/bin/d' $LAMW_USER_HOME/.profile	
+	sed -i '/export PATH=$PATH:$ANDROID_HOME\/ndk-toolchain/d'  $LAMW_USER_HOME/.bashrc
 	sed -i '/export PATH=$PATH:$GRADLE_HOME/d'  $LAMW_USER_HOME/.bashrc
 }
 #this function remove old config of lamw4linux  
@@ -975,6 +1065,8 @@ writeLAMWLogInstall(){
 		"$LAMW_WORKSPACE_HOME\nAndroid SDK:$ROOT_LAMW/sdk\n" 
 		"Android NDK:$ROOT_LAMW/ndk\nGradle:$GRADLE_HOME\n"
 		"OLD_ANDROID_SDK=$OLD_ANDROID_SDK\n"
+		"SDK_TOOLS_VERSION=$SDK_TOOLS_VERSION\n"
+		"Install-date:$(date)"
 		)
 
 	NOTIFY_SEND_EXE=$(which notify-send)
@@ -1033,22 +1125,23 @@ mainInstall(){
 # 	echo "Exiting ..."
 # 	exit 1
 # fi
+	checkForceLAMW4LinuxInstall $*
 	echo "----------------------------------------------------------------------"
 	printf "${LAMW_INSTALL_WELCOME[*]}"
 	echo "----------------------------------------------------------------------"
-	echo "LAMW-Install (Linux supported Debian 9, Ubuntu 16.04 LTS, Linux Mint 18)
+	echo "LAMW Manager (Linux supported Debian 9, Ubuntu 16.04 LTS, Linux Mint 18)
 	Generate LAMW4Linux to android-sdk=$SDK_VERSION"
 	if [ $FORCE_LAWM4INSTALL = 1 ]; then
 		echo "${NEGRITO}Warning: Earlier versions of Lazarus (debian package) will be removed!${NORMAL}"
 	else
-		echo "${NEGRITO}Warning:${NORMAL}${NEGRITO}This application not  is compatible with lazarus (debian package)${NORMAL}"
+		echo "${NEGRITO}Warning:${NORMAL}${NEGRITO}This application not  is compatible with ${VERMELHO}lazarus-project${NORMAL} (debian package)${NORMAL}"
 		echo "use ${NEGRITO}--force${NORMAL} parameter remove anywhere lazarus (debian package)"
 		sleep 1
 	fi
 	#configure parameters sdk before init download and build
 
 	#Checa se necessario habilitar remocao forcada
-	checkForceLAMW4LinuxInstall $*
+	
 #else
 
 	if [ $# = 6 ] || [ $# = 7 ]; then
@@ -1060,8 +1153,9 @@ mainInstall(){
 			fi
 		fi
 	else
-		initParameters $2
+		initParameters
 	fi
+	 
 	GenerateScapesStr
 	
 
@@ -1072,10 +1166,12 @@ case "$1" in
 	;;
 	"uninstall")
 		CleanOldConfig
+		changeOwnerAllLAMW
 	;;
 	"install")
 		
 		mainInstall
+		changeOwnerAllLAMW
 	;;
 
 	"install-oldsdk")
@@ -1083,12 +1179,21 @@ case "$1" in
 		export OLD_ANDROID_SDK=1
 
 		mainInstall
+		changeOwnerAllLAMW
 	;;
+	"install_old_sdk")
+		printf "${NEGRITO}Mode SDKTOOLS=24(auto) with ant support${NORMAL}\n"
+		export OLD_ANDROID_SDK=1
+		export NO_GUI_OLD_SDK=1
+		mainInstall
+		changeOwnerAllLAMW
+		;;
 
 	"reinstall")
 		#initParameters $2
 		CleanOldConfig
 		mainInstall
+		changeOwnerAllLAMW
 	;;
 	"reinstall-oldsdk")
 		printf "Please wait ...\n"
@@ -1098,6 +1203,7 @@ case "$1" in
 		export OLD_ANDROID_SDK=1
 
 		mainInstall
+		changeOwnerAllLAMW
 	;;
 
 	"update-lamw")
@@ -1106,33 +1212,38 @@ case "$1" in
 		echo "Updating LAMW";
 		getLAMWFramework;
 		sleep 1;
-		BuildLazarusIDE;
+		BuildLazarusIDE "1";
+		changeOwnerAllLAMW "1";
 	;;
 	"delete_paths")
 		cleanPATHS
 	;;
+	"get-status")
+		getStatusInstalation
+	;;
 	*)
 		lamw_opts=(
-			"Usage:\n\tbash lamw-install.sh ${VERDE}[Options]${NORMAL}\n"
-			"\tbash lamw-install.sh ${VERDE}uninstall${NORMAL}\n"
-			"\tbash lamw-install.sh ${VERDE}reinstall-oldsdk${NORMAL}\n"
-			"\tbash lamw-install.sh ${VERDE}install${NORMAL}\n"
-			"\tbash laww-install.sh ${VERDE}install${NORMAL} --force\n"
-			"\tbash lamw-install.sh ${VERDE}install${NORMAL} --use_proxy\n"
-			"\tbash laww-install.sh ${VERDE}install-oldsdk${NORMAL}\n"
+			"Usage:\n"
+			"\t./lamw_manager ${VERDE}[Options]${NORMAL}\n"
+			"\t./lamw_manager ${VERDE}uninstall${NORMAL}\n"
+			"\t./lamw_manager ${VERDE}reinstall-oldsdk${NORMAL}\n"
+			"\t./lamw_manager ${VERDE}install${NORMAL}\n"
+			"\t./lamw_manager ${VERDE}install${NORMAL} --force\n"
+			"\t./lamw_manager ${VERDE}install${NORMAL} --use_proxy\n"
+			"\t./lamw_manager ${VERDE}install-oldsdk${NORMAL}\n"
 			"----------------------------------------------\n"
 			"${NEGRITO}\tProxy Options:${NORMAL}\n"
-			"\tbash lamw-install.sh install --use_proxy --server ${NEGRITO}[HOST]${NORMAL} --port ${NEGRITO}[NUMBER]${NORMAL}\n"
-			"sample:\n\tbash lamw-install.sh install --use_proxy --server 10.0.16.1 --port 3128\n"
+			"\tlamw_manager install --use_proxy --server ${NEGRITO}[HOST]${NORMAL} --port ${NEGRITO}[NUMBER]${NORMAL}\n"
+			"sample:\n\t./lamw_manager install --use_proxy --server 10.0.16.1 --port 3128\n"
 			"-----------------------------------------------\n"
-			"\tbash lamw-install.sh ${VERDE}reinstall${NORMAL}\n"
-			"\tbash lamw-install.sh ${VERDE}reinstall${NORMAL} --force\n"
-			"\tbash lamw-install.sh ${VERDE}reinstall${NORMAL} --use_proxy\n"
-			"\tbash lamw-install.sh ${VERDE}update-lamw${NORMAL}\n"
+			"\t./lamw_manager ${VERDE}reinstall${NORMAL}\n"
+			"\t./lamw_manager ${VERDE}reinstall${NORMAL} --force\n"
+			"\t./lamw_manager ${VERDE}reinstall${NORMAL} --use_proxy\n"
+			"\t./lamw_manager ${VERDE}update-lamw${NORMAL}\n"
 			)
 		printf "${lamw_opts[*]}"
 	;;
+
 esac
-changeOwnerAllLAMW
 #fi
 #printf "Finish!!\n"
