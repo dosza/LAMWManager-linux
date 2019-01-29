@@ -53,7 +53,7 @@ Make sure there is the <strong>openjdk-8-jdk</strong> package!
 	<strong>install</strong>                                 Install lamw with <em>Android SDK Tools r26.1.1</em>
 	<strong>reinstall</strong>                               Clean and reinstall <em>LAMW IDE with Android SDK Tools r26.1.1</em>
 	<strong>install-oldsdk</strong>                          Install lamw with <em>Android SDK Tools r25.2.5 GUI¹</em>
-	<strong>install_old_sdk</strong>                         Auto Install lamw with <strong><em>Android SDK Tools r25.2.5 CLI¹</em></strong>
+	<strong>install_old_sdk</strong>                         Auto Install lamw with <strong><em>Android SDK Tools r25.2.5 CLI</em></strong>
 	<strong>reinstall-oldsdk</strong>                        Clean and reinstall lamw with <em>Android SDK Tools r25.2.5</em>
 	<strong>update-lamw</strong>                             Update LAMW sources and rebuild Lazarus IDE
 </pre>
@@ -78,8 +78,8 @@ Make sure there is the <strong>openjdk-8-jdk</strong> package!
 **proxy options:**
 <p>
 	<pre>
-	<em>actions</em>	<strong>--use-proxy</strong> 	[*proxy options*]
-	*install* 	<strong>--use-proxy --server</strong>	[HOST] <strong>--port</strong> 	[NUMBER]
+	<em>actions</em>    <strong>--use-proxy</strong>  [<em>proxy options</em>]
+	<em>install</em>    <strong>--use-proxy --server</strong>	[HOST] <strong>--port</strong> 	[NUMBER]
 </pre>
 </p>
 
