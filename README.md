@@ -52,15 +52,18 @@ Make sure there is the <strong>openjdk-8-jdk</strong> package!
 
 
 **Usage:**
-./lamw_manager
+
 <p>
+./lamw_manager
 	<pre>
-			<strong>install</strong>                                 Install lamw with <em>Android SDK Tools r26.1.1</em>
-			<strong>reinstall</strong>                               Clean and reinstall <em>LAMW IDE with Android SDK Tools r26.1.1</em>
-			<strong>install-oldsdk</strong>                          Install lamw with <em>Android SDK Tools r25.2.5 GUI²</em>
-			<strong>install_old_sdk</strong>                         Auto Install lamw with <strong><em>Android SDK Tools r25.2.5 CLI</em></strong>
-			<strong>reinstall-oldsdk</strong>                        Clean and reinstall lamw with <em>Android SDK Tools r25.2.5</em>
-			<strong>update-lamw</strong>                             Update LAMW sources and rebuild Lazarus IDE
+		<strong>[action]</strong>                                <em>Description</em>
+		<strong>install</strong>                                 Install lamw with <em>Android SDK Tools r26.1.1</em>
+		<strong>uninstall</strong>                               Uninstall LAMW completely and erase all settings.
+		<strong>reinstall</strong>                               Clean and reinstall <em>LAMW IDE with Android SDK Tools r26.1.1</em>
+		<strong>install-oldsdk</strong>                          Install lamw with <em>Android SDK Tools r25.2.5 GUI²</em>
+		<strong>install_old_sdk</strong>                         Auto Install lamw with <strong><em>Android SDK Tools r25.2.5 CLI</em></strong>
+		<strong>reinstall-oldsdk</strong>                        Clean and reinstall lamw with <em>Android SDK Tools r25.2.5</em>
+		<strong>update-lamw</strong>                             Update LAMW sources and rebuild Lazarus IDE
 </pre>
 </p>
 
