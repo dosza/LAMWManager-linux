@@ -1,19 +1,10 @@
 # **LAMW Manager v0.3.0**
 
-LAMW Install Manager is  **"APT"** to LAMW framework
-LAMW Install Manager is powerfull   command line tool like *APT* to install, configure and Update LAMW Framework IDE
+LAMW Manager is  **"APT"** to LAMW framework
+LAMW Manager is powerfull   command line tool like *APT* to install, configure and Update LAMW Framework IDE
 to distro linux like *GNU/debian*
 
 **Linux Distro Supported:**
-<p>
-	Note: For use in other debian-based distributions (but are not officially supported by LAMW Manager)
-Make sure there is the <strong>openjdk-8-jdk</strong> package!
-<br>For licensing issues, we recommend only using openjdk instead of Oracle Java!</br>
-<br>The stable Freepascal Compiler package (3.0.0 or 3.0.4) <strong>MUST be available in official repositories</strong> of your linux distribution (APT)!
-<br><strong>Warning: We do not recommend fpc packages compiled by third parties!</strong></br>
-<br>FPC Trunk is not supported!</br>
-
-</p>
 
 <ul>
 	<li>Debian/GNU Linux 9</li>
@@ -22,6 +13,17 @@ Make sure there is the <strong>openjdk-8-jdk</strong> package!
 	<li>Linux Mint 18 <strong>Cinnamon</strong></li>
 	<li>Linux Mint 19 <strong>Cinnamon</strong></li>
 </ul>		
+
+<p>
+	<strong>Note:</strong>For use in other debian-based distributions (but are not officially supported by LAMW Manager)
+Make sure there is the <strong>openjdk-8-jdk</strong> package!
+<br>For licensing issues, we recommend only using openjdk instead of Oracle Java!</br>
+<br>The stable Freepascal Compiler package (3.0.0 or 3.0.4) <strong>MUST be available in official repositories</strong> of your linux distribution (APT)!
+<br><strong>Warning: We do not recommend fpc packages compiled by third parties!</strong></br>
+<br>FPC Trunk is not supported!</br>
+
+</p>
+
 
 **This tool make:**
 <ul>
@@ -44,22 +46,28 @@ Make sure there is the <strong>openjdk-8-jdk</strong> package!
 	lamw_manager** (this tool *invokes* root as sudo) 
 
 *Note: you need run this tool without root privileges!*
-<pre>lamw_manager 	<strong>[actions]</strong> </pre>
+
+<pre>					<Strong>Syntax:</Strong>
+./lamw_manager¹ 	<strong>[actions]</strong>    [options]</pre>
 
 
-**usage:**
+**Usage:**
+./lamw_manager
 <p>
 	<pre>
-	<strong>install</strong>                                 Install lamw with <em>Android SDK Tools r26.1.1</em>
-	<strong>reinstall</strong>                               Clean and reinstall <em>LAMW IDE with Android SDK Tools r26.1.1</em>
-	<strong>install-oldsdk</strong>                          Install lamw with <em>Android SDK Tools r25.2.5 GUI¹</em>
-	<strong>install_old_sdk</strong>                         Auto Install lamw with <strong><em>Android SDK Tools r25.2.5 CLI</em></strong>
-	<strong>reinstall-oldsdk</strong>                        Clean and reinstall lamw with <em>Android SDK Tools r25.2.5</em>
-	<strong>update-lamw</strong>                             Update LAMW sources and rebuild Lazarus IDE
+			<strong>install</strong>                                 Install lamw with <em>Android SDK Tools r26.1.1</em>
+			<strong>reinstall</strong>                               Clean and reinstall <em>LAMW IDE with Android SDK Tools r26.1.1</em>
+			<strong>install-oldsdk</strong>                          Install lamw with <em>Android SDK Tools r25.2.5 GUI²</em>
+			<strong>install_old_sdk</strong>                         Auto Install lamw with <strong><em>Android SDK Tools r25.2.5 CLI</em></strong>
+			<strong>reinstall-oldsdk</strong>                        Clean and reinstall lamw with <em>Android SDK Tools r25.2.5</em>
+			<strong>update-lamw</strong>                             Update LAMW sources and rebuild Lazarus IDE
 </pre>
 </p>
 
-**¹ You need in Android SDK Tools Installer:**
+
+*¹An installable LAMW Manager package will be available in the future and the command lamw_manager can be called independent of the current directory $PWD*
+
+**² You need in Android SDK Tools Installer:**
 <p>
 <ul>
 <li>check "Android SDK Tools"</li>
@@ -69,8 +77,7 @@ Make sure there is the <strong>openjdk-8-jdk</strong> package!
 <li>go to "Extras" and check:</li> 
 <li>		"Android Support Repository"</li>				
 <li>		"Android Support Library"</li>				
-<li>		"Google USB Drive"	//windows only...</li>
-<li>		Google Repository"</li>
+<li>		"Google Repository"</li>
 <li>		"Google Play Services" </li>
 </ul>
 </p>
@@ -78,12 +85,12 @@ Make sure there is the <strong>openjdk-8-jdk</strong> package!
 **proxy options:**
 <p>
 	<pre>
-	<em>actions</em>    <strong>--use-proxy</strong>  [<em>proxy options</em>]
-	<em>install</em>    <strong>--use-proxy --server</strong>	[HOST] <strong>--port</strong> 	[NUMBER]
+	<em>actions</em>    <strong>--use-proxy</strong> 		<em>[proxy options]</em>
+	<em>install</em>    <strong>--use-proxy --server</strong>	<em>[HOST]</em> <strong>--port</strong> 	<em>[NUMBER]</em>
 </pre>
 </p>
 
-<pre> <strong>sample:</strong>	lamw_manager install	<strong>--use-proxy	--server</strong> 10.0.16.1	<strong>--port</strong>	3128 </pre>
+<pre> <strong>sample:</strong>	lamw_manager install	<strong>--use-proxy	--server</strong> <em>10.0.16.1</em>	<strong>--port</strong>	<em>3128</em> </pre>
 
 **Forced installation:**
 
@@ -94,8 +101,11 @@ Make sure there is the <strong>openjdk-8-jdk</strong> package!
 </p>
 
 <p>
-	[actions] [other options] ... <strong>--force</strong><br>
-	<strong>sample:</strong> lamw_manger <em>install</em> <strong>--force</strong></br><br>
-	<strong>sample:</strong> lamw_manager <em>install</em> --use-proxy --server 10.0.16.1 --port 3128 <strong>--force</strong></br><br>
-</br>
+	<pre>
+					<strong>Syntax:</strong>
+	./lamw_manager 			<em>[actions]</em>       <strong>--force</strong>
+<strong>Examples:</strong>					 
+	./lamw_manager                 <em>install</em>         <strong>--force</strong>
+	./lamw_manager                 <em>install</em>        <em>--use-proxy --server 10.0.16.1 --port 3128</em> <strong>--force</strong>
+</pre>
 </p>
