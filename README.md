@@ -79,6 +79,9 @@ Make sure there is the <strong>openjdk-8-jdk</strong> package!
 <pre> 
 To install LAMW completely the <strong>first time</strong> with <strong><em>default option</em></strong>:
 	<strong>./lamw_manager</strong>
+			or:
+	<strong>./lamw_manager</strong>        <em>install_default</em>
+
 <br>To install LAMW completely the <strong>first time</strong> with <strong><em>Android SDK Tools r26.1.1:</em></strong></br>
 	<strong>./lamw_manager</strong>       <em>install</em>
 <br>To fully update LAMW <strong>after</strong> the <em>first installation</em>:</br>
@@ -127,7 +130,7 @@ Implied action</strong>:
 
 <p>
 	<em>²An installable LAMW Manager package will be available in the future and the command lamw_manager can be called independent of the current directory $PWD</em>
-	<strong>³You need in Android SDK Tools Installer:</strong>
+	<br><strong>³You need in Android SDK Tools Installer:</strong></br>
 	<ul>
 	<li>check "Android SDK Tools"</li>
 	<li>check "Android SDK Platform-Tools"</li>			
