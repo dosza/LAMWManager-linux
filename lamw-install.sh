@@ -111,6 +111,26 @@ export OLD_ANDROID_SDK=0
 export NO_GUI_OLD_SDK=0
 export LAMW_INSTALL_STATUS=0
 export LAMW_IMPLICIT_ACTION_MODE=0
+#help of lamw 
+lamw_opts=(
+	"Usage:\n"
+	"\t./lamw_manager ${VERDE}[Options]${NORMAL}\n"
+	"\t./lamw_manager ${VERDE}uninstall${NORMAL}\n"
+	"\t./lamw_manager ${VERDE}reinstall-oldsdk${NORMAL}\n"
+	"\t./lamw_manager ${VERDE}install${NORMAL}\n"
+	"\t./lamw_manager ${VERDE}install${NORMAL} --force\n"
+	"\t./lamw_manager ${VERDE}install${NORMAL} --use_proxy\n"
+	"\t./lamw_manager ${VERDE}install-oldsdk${NORMAL}\n"
+	"----------------------------------------------\n"
+	"${NEGRITO}\tProxy Options:${NORMAL}\n"
+	"\tlamw_manager install --use_proxy --server ${NEGRITO}[HOST]${NORMAL} --port ${NEGRITO}[NUMBER]${NORMAL}\n"
+	"sample:\n\t./lamw_manager install --use_proxy --server 10.0.16.1 --port 3128\n"
+	"-----------------------------------------------\n"
+	"\t./lamw_manager ${VERDE}reinstall${NORMAL}\n"
+	"\t./lamw_manager ${VERDE}reinstall${NORMAL} --force\n"
+	"\t./lamw_manager ${VERDE}reinstall${NORMAL} --use_proxy\n"
+	"\t./lamw_manager ${VERDE}update-lamw${NORMAL}\n"
+)
 #Esta funcao altera todos o dono de todos arquivos e  pastas do ambiente LAMW de root para o $LAMW_USER_HOME
 #Ou seja para o usuario que invocou o lamw_manager (bootstrap)
 changeOwnerAllLAMW(){
@@ -451,21 +471,7 @@ getLAMWFramework(){
 	fi
 	
 }
-# getLAMWFramework(){
-# 	changeDirectory $ROOT_LAMW
-# 	svn co $LAMW_SRC_LNK
-# 	if [ $? != 0 ]; then #case fails last command , try svn chekout
-# 		 rm -r lazandroidmodulewizard.git
-# 		svn co $LAMW_SRC_LNK
-# 		if [ $? != 0 ]; then 
-# 			 rm -r lazandroidmodulewizard.git
-# 			echo "possible network instability! Try later!"
-# 			exit 1
-# 		fi
-# 	fi
-# 	ln -sf $ROOT_LAMW/lazandroidmodulewizard.git $ROOT_LAMW/lazandroidmodulewizard
-# }
-
+#this function get ant 
 getAnt(){
 	changeDirectory $ROOT_LAMW 
 	if [ ! -e $ANT_HOME ]; then
@@ -488,8 +494,6 @@ getAnt(){
 #Get Gradle and SDK Tools 
 getAndroidSDKTools(){
 	changeDirectory $LAMW_USER_HOME
-	#zenity --info --text "LAMW_USER_HOME=$LAMW_USER_HOME"
-	#fix warming to sdkmanager 
 	if  [ ! -e $LAMW_USER_HOME/.android ]; then
 		mkdir $LAMW_USER_HOME/.android 
 		#mkdir -p $HOME/.android 
@@ -501,11 +505,6 @@ getAndroidSDKTools(){
 	#zenity --info --text "ANDROID_HOME=====>$ROOT_LAMW"
 	if [ ! -e $ROOT_LAMW ]; then
 		mkdir $ROOT_LAMW
-		#zenity --info --text "ANDROID_HOME$ROOT_LAMW"
-		#if [ $? = 0 ]; then
-		#	notify-send "criei a pasta $ROOT_LAMW"
-		#fi
-		#mkdir $ROOT_LAMW
 	fi
 	
 	changeDirectory $ROOT_LAMW
@@ -621,9 +620,6 @@ getOldAndroidSDK(){
 
 
 		fi
-		#echo "--> After update sdk tools to 25.2.5"
-		#changeDirectory $ANDROID_SDK/tools
-		#./android update sdk
 	fi
 
 }
@@ -666,8 +662,6 @@ AddSDKPathstoProfile(){
 	searchLineinFile "$profile_file" "$profile_line_path"
 	flag_profile_paths=$?
 	if [ $flag_profile_paths = 0 ] ; then 
-		#echo 'export PATH=$PATH'"\":$ROOT_LAMW/ndk-toolchain\"" >> $HOME/.bashrc
-		#echo 'export PATH=$PATH'"\":$GRADLE_HOME/bin\"" >> $HOME/.bashrc
 		echo "export ANDROID_HOME=$ANDROID_HOME" >>  $LAMW_USER_HOME/.bashrc
 		echo "export GRADLE_HOME=$GRADLE_HOME" >> $LAMW_USER_HOME/.bashrc
 		echo 'export PATH=$PATH:$ANDROID_HOME/ndk-toolchain' >> $LAMW_USER_HOME/.bashrc
@@ -1276,30 +1270,8 @@ case "$1" in
 	"get-status")
 		getStatusInstalation
 	;;
-	"--help")
-		lamw_opts=(
-			"Usage:\n"
-			"\t./lamw_manager ${VERDE}[Options]${NORMAL}\n"
-			"\t./lamw_manager ${VERDE}uninstall${NORMAL}\n"
-			"\t./lamw_manager ${VERDE}reinstall-oldsdk${NORMAL}\n"
-			"\t./lamw_manager ${VERDE}install${NORMAL}\n"
-			"\t./lamw_manager ${VERDE}install${NORMAL} --force\n"
-			"\t./lamw_manager ${VERDE}install${NORMAL} --use_proxy\n"
-			"\t./lamw_manager ${VERDE}install-oldsdk${NORMAL}\n"
-			"----------------------------------------------\n"
-			"${NEGRITO}\tProxy Options:${NORMAL}\n"
-			"\tlamw_manager install --use_proxy --server ${NEGRITO}[HOST]${NORMAL} --port ${NEGRITO}[NUMBER]${NORMAL}\n"
-			"sample:\n\t./lamw_manager install --use_proxy --server 10.0.16.1 --port 3128\n"
-			"-----------------------------------------------\n"
-			"\t./lamw_manager ${VERDE}reinstall${NORMAL}\n"
-			"\t./lamw_manager ${VERDE}reinstall${NORMAL} --force\n"
-			"\t./lamw_manager ${VERDE}reinstall${NORMAL} --use_proxy\n"
-			"\t./lamw_manager ${VERDE}update-lamw${NORMAL}\n"
-			)
-		printf "${lamw_opts[*]}"
-	;;
-	*)
-		#printf "${NEGRITO} Mode Implicit Action  Mode ..."
+	
+	"")
 		getImplicitInstall
 		if [ $LAMW_IMPLICIT_ACTION_MODE = 0 ]; then
 			echo "Please wait..."
@@ -1320,11 +1292,11 @@ case "$1" in
 		#	sleep 1;
 			BuildLazarusIDE "1";
 			changeOwnerAllLAMW "1";
-		fi
-			
-		
+		fi					
+	;;
+
+	*)
+		printf "${lamw_opts[*]}"
 	;;
 
 esac
-#fi
-#printf "Finish!!\n"
