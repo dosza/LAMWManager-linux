@@ -109,6 +109,8 @@ packs=()
 
 export OLD_ANDROID_SDK=0
 export NO_GUI_OLD_SDK=0
+export LAMW_INSTALL_STATUS=0
+export LAMW_IMPLICIT_ACTION_MODE=0
 #Esta funcao altera todos o dono de todos arquivos e  pastas do ambiente LAMW de root para o $LAMW_USER_HOME
 #Ou seja para o usuario que invocou o lamw_manager (bootstrap)
 changeOwnerAllLAMW(){
@@ -156,10 +158,39 @@ changeOwnerAllLAMW(){
 getStatusInstalation(){
 	if [  -e $LAMW4LINUX_HOME/lamw-install.log ]; then
 		cat $LAMW4LINUX_HOME/lamw-install.log
+		export LAMW_INSTALL_STATUS=1
+
 	else 
 		echo "not installed" >&2
+		export OLD_ANDROID_SDK=1
+		export NO_GUI_OLD_SDK=1
 	fi
 }
+
+getImplicitInstall(){
+	if [  -e $LAMW4LINUX_HOME/lamw-install.log ]; then
+		printf "Checking the Android SDK version installed :"
+		cat $LAMW4LINUX_HOME/lamw-install.log |  grep "OLD_ANDROID_SDK=0"
+		if [ $? = 0 ]; then
+			export OLD_ANDROID_SDK=0
+		else 
+			export OLD_ANDROID_SDK=1
+		fi
+		printf "Checking the LAMW Manager version :"
+		cat $LAMW4LINUX_HOME/lamw-install.log |  grep "Generate LAMW_INSTALL_VERSION=$LAMW_INSTALL_VERSION"
+		if [ $? = 0 ]; then  
+			echo "Only Update LAMW"
+			export LAMW_IMPLICIT_ACTION_MODE=1 #apenas atualiza o lamw 
+		else
+			echo "You need upgrade your LAMW4Linux!"
+			export LAMW_IMPLICIT_ACTION_MODE=0
+		fi
+	else
+		export OLD_ANDROID_SDK=1 #obetem por padrão o old sdk 
+		export NO_GUI_OLD_SDK=1
+	fi
+}
+
 checkForceLAMW4LinuxInstall(){
 	args=($*)
 	for((i=0;i<${#args[*]};i++))
@@ -1164,6 +1195,7 @@ case "$1" in
 	"version")
 	echo "LAMW4Linux  version $LAMW_INSTALL_VERSION"
 	;;
+
 	"uninstall")
 		CleanOldConfig
 		changeOwnerAllLAMW
@@ -1172,6 +1204,29 @@ case "$1" in
 		
 		mainInstall
 		changeOwnerAllLAMW
+	;;
+	"install_default")
+		getImplicitInstall
+		if [ $LAMW_IMPLICIT_ACTION_MODE = 0 ]; then
+			echo "Please wait..."
+			printf "${NEGRITO}Implicit installation of LAMW starting in 10 seconds  ... ${NORMAL}\n"
+			printf "Press control+c to exit ...\n"
+			sleep 10
+
+			mainInstall
+			changeOwnerAllLAMW;
+		else
+			echo "Please wait ..."
+			printf "${NEGRITO}Implicit LAMW Framework update starting in 10 seconds ... ${NORMAL}...\n"
+			printf "Press control+c to exit ...\n"
+			sleep 10 
+			checkProxyStatus;
+			echo "Updating LAMW";
+			getLAMWFramework;
+		#	sleep 1;
+			BuildLazarusIDE "1";
+			changeOwnerAllLAMW "1";
+		fi
 	;;
 
 	"install-oldsdk")
@@ -1221,7 +1276,7 @@ case "$1" in
 	"get-status")
 		getStatusInstalation
 	;;
-	*)
+	"--help")
 		lamw_opts=(
 			"Usage:\n"
 			"\t./lamw_manager ${VERDE}[Options]${NORMAL}\n"
@@ -1242,6 +1297,32 @@ case "$1" in
 			"\t./lamw_manager ${VERDE}update-lamw${NORMAL}\n"
 			)
 		printf "${lamw_opts[*]}"
+	;;
+	*)
+		#printf "${NEGRITO} Mode Implicit Action  Mode ..."
+		getImplicitInstall
+		if [ $LAMW_IMPLICIT_ACTION_MODE = 0 ]; then
+			echo "Please wait..."
+			printf "${NEGRITO}Implicit installation of LAMW starting in 10 seconds  ... ${NORMAL}\n"
+			printf "Press control+c to exit ...\n"
+			sleep 10
+
+			mainInstall
+			changeOwnerAllLAMW;
+		else
+			echo "Please wait ..."
+			printf "${NEGRITO}Implicit LAMW Framework update starting in 10 seconds ... ${NORMAL}...\n"
+			printf "Press control+c to exit ...\n"
+			sleep 10 
+			checkProxyStatus;
+			echo "Updating LAMW";
+			getLAMWFramework;
+		#	sleep 1;
+			BuildLazarusIDE "1";
+			changeOwnerAllLAMW "1";
+		fi
+			
+		
 	;;
 
 esac
