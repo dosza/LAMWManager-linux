@@ -42,105 +42,24 @@ Make sure there is the <strong>openjdk-8-jdk</strong> package!
 	<li>Register <strong>MIME</strong> </li>
 </ul>
 
-**commands:**
-	lamw_manager** (this tool *invokes* root as sudo) 
 
-*Note: you need run this tool without root privileges!*
-
-
-<p>
-<pre>					<Strong>Syntax:</Strong>
-./lamw_manager¹
-./lamw_manager² 	<strong>[actions]</strong>    [options]
-</pre>
-</p>
-
-
-**Usage:**
-
-<p>
-./lamw_manager
-	<pre>
-	<strong>[action]</strong>                            <em>Description</em>
-	<strong>install</strong>                             Install lamw with <em>Android SDK Tools r26.1.1</em>
-	<strong>install_default</strong>                     The first time, install LAMW with <strong>default option</strong>, in other cases only install updates.                                                   
-	<strong>uninstall</strong>                           Uninstall LAMW completely and erase all settings.
-	<strong>reinstall</strong>                           Clean and reinstall <em>LAMW IDE with Android SDK Tools r26.1.1</em>
-	<strong>install-oldsdk</strong>                      Install lamw with <em>Android SDK Tools r25.2.5³ GUI</em>
-	<strong>install_old_sdk</strong>                     Auto Install lamw with <strong><em>Android SDK Tools r25.2.5 CLI</em></strong>
-	<strong>reinstall-oldsdk</strong>                    Clean and reinstall lamw with <em>Android SDK Tools r25.2.5</em>
-	<strong>update-lamw</strong>                         Update LAMW sources and rebuild Lazarus IDE
-	</pre>
-	<strong>Note:</strong>The <em>default option</em> is <strong><em>Android SDK Tools r25.2.5</em></strong>
-</p>
 
 
 <strong>Example of installation:</strong>
 <pre> 
-To install LAMW completely the <strong>first time</strong> with <strong><em>default option</em></strong>:
+To install LAMW and dependencies:
 	<strong>./lamw_manager</strong>
-			or:
-	<strong>./lamw_manager</strong>        <em>install_default</em>
-
-<br>To install LAMW completely the <strong>first time</strong> with <strong><em>Android SDK Tools r26.1.1:</em></strong></br>
-	<strong>./lamw_manager</strong>       <em>install</em>
-<br>To fully update LAMW <strong>after</strong> the <em>first installation</em>:</br>
-	<strong>./lamw_manager</strong>
+	<br>To install LAMW and dependencies and Run <strong>Android  GUI SDK Manager¹</br>
+	<strong>./lamw_manager</strong>        <em>--sdkmanager</em>
 <br>To just upgrade <strong>LAMW framework</strong> <em>(with the latest version available in git)</em></br>
-	<strong>./lamw_manager</strong>        <em>update_lamw</em>
-
+	<strong>./lamw_manager</strong>        <em>--update_lamw</em>
+<br>Install with proxy:</br>
+	<strong>./lamw_manager        --use-proxy	--server</strong> <em>10.0.16.1</em>	<strong>--port</strong>	<em>3128</em> </pre>
 </pre>
 </p>
 
 
 
 
-**proxy options:**
-<p>
-	<pre>
-	<em>actions</em>    <strong>--use-proxy</strong> 		<em>[proxy options]</em>
-	<em>install</em>    <strong>--use-proxy --server</strong>	<em>[HOST]</em> <strong>--port</strong> 	<em>[NUMBER]</em>
-</pre>
-</p>
-
-<pre> <strong>sample:</strong>	lamw_manager install	<strong>--use-proxy	--server</strong> <em>10.0.16.1</em>	<strong>--port</strong>	<em>3128</em> </pre>
-
-**Forced installation:**
-
-<p>
-	if the default installation fails!
-	Possibly caused by a lazarus package (.deb) in <em>bad condition</em>, <strong>action</strong> recommends uninstalling any lazarus 
-	(.deb) for this use: <strong>--force</strong> as the last parameter.
-</p>
-
-<p>
-	<pre>
-					<strong>Syntax:</strong>
-	./lamw_manager 			<em>[actions]</em>       <strong>--force</strong>
-<strong>Examples:</strong>					 
-	./lamw_manager                 <em>install</em>         <strong>--force</strong>
-	./lamw_manager                 <em>install</em>        <em>--use-proxy --server 10.0.16.1 --port 3128</em> <strong>--force</strong>
-</pre>
-</p>
-
-¹<strong>New!
-Implied action</strong>:
-<em>When using the <strong>./lamw_manager</strong> command <strong>without parameters the first time</strong>, LAMW Manager installs the default LAMW environment (Android SDK Tools r25.2.5), in other cases LAMW Manager <strong>only</strong> installs updates.</em>
-
-
-<p>
-	<em>²An installable LAMW Manager package will be available in the future and the command lamw_manager can be called independent of the current directory $PWD</em>
-	<br><strong>³You need in Android SDK Tools Installer:</strong></br>
-	<ul>
-	<li>check "Android SDK Tools"</li>
-	<li>check "Android SDK Platform-Tools"</li>			
-	<li>check "Android SDK Build-Tools 26.0.2"</li>  	
-	<li>go to "Android 8.0.0 (API 26)" and check only "SDK Platform"</li>
-	<li>go to "Extras" and check:</li> 
-	<li>		"Android Support Repository"</li>				
-	<li>		"Android Support Library"</li>				
-	<li>		"Google Repository"</li>
-	<li>		"Google Play Services" </li>
-	</ul>																
-</p>
-
+<br><br>
+¹  If it is already installed, just run the Android SDK Tools</a>: </br></br>
