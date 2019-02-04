@@ -107,37 +107,34 @@ packs=()
 
 #[[]
 
-export OLD_ANDROID_SDK=0
+export OLD_ANDROID_SDK=1
 export NO_GUI_OLD_SDK=0
 export LAMW_INSTALL_STATUS=0
 export LAMW_IMPLICIT_ACTION_MODE=0
 #help of lamw 
 lamw_opts=(
+	"synatax:\n"
+	"./lamw_manager or ./lamw_manger\t${VERDE}[options]${NORMAL}\n"
 	"Usage:\n"
-	"\t./lamw_manager ${VERDE}[Options]${NORMAL}\n"
-	"\t./lamw_manager ${VERDE}uninstall${NORMAL}\n"
-	"\t./lamw_manager ${VERDE}reinstall-oldsdk${NORMAL}\n"
-	"\t./lamw_manager ${VERDE}install${NORMAL}\n"
-	"\t./lamw_manager ${VERDE}install${NORMAL} --force\n"
-	"\t./lamw_manager ${VERDE}install${NORMAL} --use_proxy\n"
-	"\t./lamw_manager ${VERDE}install-oldsdk${NORMAL}\n"
+	"\t./lamw_manager                      Install LAMW and dependecies\n"
+	"\t./lamw_manager\t${VERDE}--sdkmanager${NORMAL}        Install LAMW and Run Android SDK Manager¹\n"
+	"\t./lamw_manager\t${VERDE}--update-lamw${NORMAL}       To just upgrade LAMW framework (with the latest version available in git)\n"
+	"\t./lamw_manager\t${VERDE}uninstall${NORMAL}           To uninstall LAMW :(\n"
 	"----------------------------------------------\n"
 	"${NEGRITO}\tProxy Options:${NORMAL}\n"
 	"\tlamw_manager install --use_proxy --server ${NEGRITO}[HOST]${NORMAL} --port ${NEGRITO}[NUMBER]${NORMAL}\n"
 	"sample:\n\t./lamw_manager install --use_proxy --server 10.0.16.1 --port 3128\n"
+	"\n\n${NEGRITO}Note:¹If it is already installed, just run the Android SDK Tools${NORMAL}\n"
 	"-----------------------------------------------\n"
-	"\t./lamw_manager ${VERDE}reinstall${NORMAL}\n"
-	"\t./lamw_manager ${VERDE}reinstall${NORMAL} --force\n"
-	"\t./lamw_manager ${VERDE}reinstall${NORMAL} --use_proxy\n"
-	"\t./lamw_manager ${VERDE}update-lamw${NORMAL}\n"
+	
 )
 #Esta funcao altera todos o dono de todos arquivos e  pastas do ambiente LAMW de root para o $LAMW_USER_HOME
 #Ou seja para o usuario que invocou o lamw_manager (bootstrap)
 changeOwnerAllLAMW(){
 	#case only update-lamw
 	if [ $# = 1 ]; then
-		echo "restoring directorys ..."
-		sleep 2
+		echo "Restoring directories ..."
+		#sleep 2
 		if [ -e $LAMW4_LINUX_PATH_CFG ]; then
 			chown $LAMW_USER:$LAMW_USER -R $LAMW4_LINUX_PATH_CFG
 		fi
@@ -177,13 +174,15 @@ changeOwnerAllLAMW(){
 }
 getStatusInstalation(){
 	if [  -e $LAMW4LINUX_HOME/lamw-install.log ]; then
-		cat $LAMW4LINUX_HOME/lamw-install.log
+		#cat $LAMW4LINUX_HOME/lamw-install.log
 		export LAMW_INSTALL_STATUS=1
+		return 1
 
 	else 
-		echo "not installed" >&2
+		#echo "not installed" >&2
 		export OLD_ANDROID_SDK=1
 		export NO_GUI_OLD_SDK=1
+		return 0;
 	fi
 }
 
@@ -1194,76 +1193,96 @@ case "$1" in
 		CleanOldConfig
 		changeOwnerAllLAMW
 	;;
-	"install")
-		
-		mainInstall
-		changeOwnerAllLAMW
-	;;
-	"install_default")
-		getImplicitInstall
-		if [ $LAMW_IMPLICIT_ACTION_MODE = 0 ]; then
-			echo "Please wait..."
-			printf "${NEGRITO}Implicit installation of LAMW starting in 10 seconds  ... ${NORMAL}\n"
-			printf "Press control+c to exit ...\n"
-			sleep 10
 
+	"--sdkmanager")
+	getStatusInstalation;
+	if [ $LAMW_INSTALL_STATUS = 1 ];then
+		$ANDROID_SDK/tools/android update sdk
+		changeOwnerAllLAMW 
+
+	else
+		mainInstall
+		$ANDROID_SDK/tools/android update sdk
+		changeOwnerAllLAMW
+	fi 	
+	;;
+	"--update-lamw")
+		getStatusInstalation
+		if [ $LAMW_INSTALL_STATUS  = 0 ]; then
 			mainInstall
-			changeOwnerAllLAMW;
+			changeOwnerAllLAMW
+
 		else
-			echo "Please wait ..."
-			printf "${NEGRITO}Implicit LAMW Framework update starting in 10 seconds ... ${NORMAL}...\n"
-			printf "Press control+c to exit ...\n"
-			sleep 10 
 			checkProxyStatus;
 			echo "Updating LAMW";
 			getLAMWFramework;
-		#	sleep 1;
+			sleep 1;
 			BuildLazarusIDE "1";
 			changeOwnerAllLAMW "1";
 		fi
 	;;
-
-	"install-oldsdk")
-		printf "${NEGRITO}Mode SDKTOOLS=24 with ant support${NORMAL}\n"
-		export OLD_ANDROID_SDK=1
-
-		mainInstall
-		changeOwnerAllLAMW
-	;;
-	"install_old_sdk")
-		printf "${NEGRITO}Mode SDKTOOLS=24(auto) with ant support${NORMAL}\n"
-		export OLD_ANDROID_SDK=1
-		export NO_GUI_OLD_SDK=1
-		mainInstall
-		changeOwnerAllLAMW
-		;;
-
-	"reinstall")
-		#initParameters $2
-		CleanOldConfig
-		mainInstall
-		changeOwnerAllLAMW
-	;;
-	"reinstall-oldsdk")
-		printf "Please wait ...\n"
-		sleep 2
-		CleanOldConfig
-		printf "Mode SDKTOOLS=24 with ant support "
-		export OLD_ANDROID_SDK=1
-
-		mainInstall
-		changeOwnerAllLAMW
-	;;
-
-	"update-lamw")
+	# "install")
 		
-		checkProxyStatus;
-		echo "Updating LAMW";
-		getLAMWFramework;
-		sleep 1;
-		BuildLazarusIDE "1";
-		changeOwnerAllLAMW "1";
-	;;
+	# 	mainInstall
+	# 	changeOwnerAllLAMW
+	# ;;
+	# "install_default")
+	# 	getImplicitInstall
+	# 	if [ $LAMW_IMPLICIT_ACTION_MODE = 0 ]; then
+	# 		echo "Please wait..."
+	# 		printf "${NEGRITO}Implicit installation of LAMW starting in 10 seconds  ... ${NORMAL}\n"
+	# 		printf "Press control+c to exit ...\n"
+	# 		sleep 10
+
+	# 		mainInstall
+	# 		changeOwnerAllLAMW;
+	# 	else
+	# 		echo "Please wait ..."
+	# 		printf "${NEGRITO}Implicit LAMW Framework update starting in 10 seconds ... ${NORMAL}...\n"
+	# 		printf "Press control+c to exit ...\n"
+	# 		sleep 10 
+	# 		checkProxyStatus;
+	# 		echo "Updating LAMW";
+	# 		getLAMWFramework;
+	# 	#	sleep 1;
+	# 		BuildLazarusIDE "1";
+	# 		changeOwnerAllLAMW "1";
+	# 	fi
+	# ;;
+
+	# "install-oldsdk")
+	# 	printf "${NEGRITO}Mode SDKTOOLS=24 with ant support${NORMAL}\n"
+	# 	export OLD_ANDROID_SDK=1
+
+	# 	mainInstall
+	# 	changeOwnerAllLAMW
+	# ;;
+	# "install_old_sdk")
+	# 	printf "${NEGRITO}Mode SDKTOOLS=24(auto) with ant support${NORMAL}\n"
+	# 	export OLD_ANDROID_SDK=1
+	# 	export NO_GUI_OLD_SDK=1
+	# 	mainInstall
+	# 	changeOwnerAllLAMW
+	# ;;
+
+	# "reinstall")
+	# 	#initParameters $2
+	# 	CleanOldConfig
+	# 	mainInstall
+	# 	changeOwnerAllLAMW
+	# ;;
+	# "reinstall-oldsdk")
+	# 	printf "Please wait ...\n"
+	# 	sleep 2
+	# 	CleanOldConfig
+	# 	printf "Mode SDKTOOLS=24 with ant support "
+	# 	export OLD_ANDROID_SDK=1
+
+	# 	mainInstall
+	# 	changeOwnerAllLAMW
+	# ;;
+
+	
 	"delete_paths")
 		cleanPATHS
 	;;
@@ -1293,6 +1312,29 @@ case "$1" in
 			BuildLazarusIDE "1";
 			changeOwnerAllLAMW "1";
 		fi					
+	;;
+	"--use_proxy")
+		getImplicitInstall
+		if [ $LAMW_IMPLICIT_ACTION_MODE = 0 ]; then
+			echo "Please wait..."
+			printf "${NEGRITO}Implicit installation of LAMW starting in 10 seconds  ... ${NORMAL}\n"
+			printf "Press control+c to exit ...\n"
+			sleep 10
+
+			mainInstall
+			changeOwnerAllLAMW;
+		else
+			echo "Please wait ..."
+			printf "${NEGRITO}Implicit LAMW Framework update starting in 10 seconds ... ${NORMAL}...\n"
+			printf "Press control+c to exit ...\n"
+			sleep 10 
+			checkProxyStatus;
+			echo "Updating LAMW";
+			getLAMWFramework;
+		#	sleep 1;
+			BuildLazarusIDE "1";
+			changeOwnerAllLAMW "1";
+		fi
 	;;
 
 	*)
