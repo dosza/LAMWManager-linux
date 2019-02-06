@@ -113,19 +113,20 @@ export LAMW_INSTALL_STATUS=0
 export LAMW_IMPLICIT_ACTION_MODE=0
 #help of lamw 
 lamw_opts=(
-	"synatax:\n"
-	"./lamw_manager or ./lamw_manger\t${VERDE}[options]${NORMAL}\n"
-	"Usage:\n"
-	"\t./lamw_manager                      Install LAMW and dependecies\n"
-	"\t./lamw_manager\t${VERDE}--sdkmanager${NORMAL}        Install LAMW and Run Android SDK Manager¹\n"
-	"\t./lamw_manager\t${VERDE}--update-lamw${NORMAL}       To just upgrade LAMW framework (with the latest version available in git)\n"
-	"\t./lamw_manager\t${VERDE}uninstall${NORMAL}           To uninstall LAMW :(\n"
-	"----------------------------------------------\n"
-	"${NEGRITO}\tProxy Options:${NORMAL}\n"
-	"\tlamw_manager install --use_proxy --server ${NEGRITO}[HOST]${NORMAL} --port ${NEGRITO}[NUMBER]${NORMAL}\n"
-	"sample:\n\t./lamw_manager install --use_proxy --server 10.0.16.1 --port 3128\n"
-	"\n\n${NEGRITO}Note:¹If it is already installed, just run the Android SDK Tools${NORMAL}\n"
-	"-----------------------------------------------\n"
+	"syntax:\n"
+	"./lamw_manager\tor\t./lamw_manger\t${VERDE}[actions] [options]${NORMAL}\n"
+	"${NEGRITO}Usage${NORMAL}:\n"
+	"\t./lamw_manager                              Install LAMW and dependecies\n"
+	"\t./lamw_manager\t${VERDE}--sdkmanager${NORMAL}                Install LAMW and Run Android SDK Manager¹\n"
+	"\t./lamw_manager\t${VERDE}--update-lamw${NORMAL}               To just upgrade LAMW framework (with the latest version available in git)\n"
+	"\t./lamw_manager\t${VERDE}uninstall${NORMAL}                   To uninstall LAMW :(\n"
+	"\t./lamw_manager\t${VERDE}--help${NORMAL}                      Show help\n"                 
+	"\n"
+	"${NEGRITO}Proxy Options:${NORMAL}\n"
+	"\t./lamw_manager ${VERDE}[action]${NORMAL}  --use_proxy --server ${NEGRITO}[HOST]${NORMAL} --port ${NEGRITO}[NUMBER]${NORMAL}\n"
+	"sample:\n\t./lamw_manager --update-lamw --use_proxy --server 10.0.16.1 --port 3128\n"
+	"\n\n${NEGRITO}Note:¹${NORMAL}If it is already installed, just run the Android SDK Tools\n"
+	"\n"
 	
 )
 #Esta funcao altera todos o dono de todos arquivos e  pastas do ambiente LAMW de root para o $LAMW_USER_HOME
