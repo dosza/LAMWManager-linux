@@ -1,8 +1,11 @@
 # **LAMW Manager v0.3.0**
 
-LAMW Manager is  **"APT"** to LAMW framework
-LAMW Manager is powerfull   command line tool like *APT* to install, configure and Update LAMW Framework IDE
-to distro linux like *GNU/debian*
+LAMW Manager is a command line tool to automate the <strong>installation</strong>, <strong>configuration</strong> and <strong>upgrade</strong>  the framework LAMW - <a href="https://github.com/jmpessoa/lazandroidmodulewizard">Lazarus Android Module Wizard</a>
+
+<p> 
+	Linux user, please,  get here <em><a href="https://github.com/DanielTimelord/Laz4LAMW-win-installer"> LAMW Manager for Windows users </a></em>
+</p>
+
 
 **Linux Distro Supported:**
 
@@ -25,19 +28,18 @@ Make sure there is the <strong>openjdk-8-jdk</strong> package!
 </p>
 
 
-**This tool make:**
+**LAMW Manager install the following [dependencies] tools:**
 <ul>
-	<li>Get Apache Ant</li>
-	<li>Get Gradle</li>
-	<li>Get Freepascal Compiler</li>
-	<li>Get Lazarus IDE Sources</li>
-	<li>Get Android NDK</li>
-	<li>Get Android SDK</li>
-	<li>Get OpenJDK</li>
-	<li>Get LAMW framework</li>
+	<li>Apache Ant</li>
+	<li>Gradle</li>
+	<li>Freepascal Compiler</li>
+	<li>Lazarus IDE Sources</li>
+	<li>Android NDK</li>
+	<li>Android SDK</li>
+	<li>OpenJDK</li>
 	<li>Build Freepascal Cross-compile to <strong>arm-android</strong></li>
 	<li>Build Lazarus IDE</li>
-	<li>Install LAMW framework</li>
+	<li>LAMW framework</li>
 	<li>Create launcher to menu</li>
 	<li>Register <strong>MIME</strong> </li>
 </ul>
