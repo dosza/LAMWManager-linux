@@ -1,4 +1,4 @@
-**LAMW Manager v0.3.0 Manual**
+
 
 **commands:**
 	lamw_manager** (this tool *invokes* root as sudo) 

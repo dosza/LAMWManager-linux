@@ -3,7 +3,7 @@
 LAMW Manager is a command line tool to automate the <strong>installation</strong>, <strong>configuration</strong> and <strong>upgrade</strong>  the framework LAMW - <a href="https://github.com/jmpessoa/lazandroidmodulewizard">Lazarus Android Module Wizard</a>
 
 <p> 
-	Linux user, please,  get here <em><a href="https://github.com/DanielTimelord/Laz4LAMW-win-installer"> LAMW Manager for Windows users </a></em>
+	Windows user, please,  get here <em><a href="https://github.com/DanielTimelord/Laz4LAMW-win-installer"> LAMW Manager for Windows</a></em>
 </p>
 
 
@@ -15,17 +15,9 @@ LAMW Manager is a command line tool to automate the <strong>installation</strong
 	<li>Ubuntu 18.04 LTS</li>
 	<li>Linux Mint 18 <strong>Cinnamon</strong></li>
 	<li>Linux Mint 19 <strong>Cinnamon</strong></li>
+	<li><strong>Others requerements</strong></li>
 </ul>		
 
-<p>
-	<strong>Note:</strong>For use in other debian-based distributions (but are not officially supported by LAMW Manager)
-Make sure there is the <strong>openjdk-8-jdk</strong> package!
-<br>For licensing issues, we recommend only using openjdk instead of Oracle Java!</br>
-<br>The stable Freepascal Compiler package (3.0.0 or 3.0.4) <strong>MUST be available in official repositories</strong> of your linux distribution (APT)!
-<br><strong>Warning: We do not recommend fpc packages compiled by third parties!</strong></br>
-<br>FPC Trunk is not supported!</br>
-
-</p>
 
 
 **LAMW Manager install the following [dependencies] tools:**
@@ -43,8 +35,6 @@ Make sure there is the <strong>openjdk-8-jdk</strong> package!
 	<li>Create launcher to menu</li>
 	<li>Register <strong>MIME</strong> </li>
 </ul>
-
-
 
 
 <strong>Example of installation:</strong>
