@@ -15,7 +15,7 @@ LAMW Manager is a command line tool to automate the <strong>installation</strong
 	<li>Ubuntu 18.04 LTS</li>
 	<li>Linux Mint 18 <strong>Cinnamon</strong></li>
 	<li>Linux Mint 19 <strong>Cinnamon</strong></li>
-	<li><strong>Others requerements</strong></li>
+	<li><a href="https://github.com/DanielTimelord/LAMWAutoRunScripts/blob/master/lamw_manager/docs/other-distros-info.md"><strong>Requirements for other linux distributions</strong></a></li>
 </ul>		
 
 
@@ -57,5 +57,5 @@ To install LAMW and dependencies:
 ¹  If it is already installed, just run the Android SDK Tools</a>: </br></br>
 
 <p>
-	For more info read <a href="https://github.com/DanielTimelord/Laz4LAMW-win-installer/blob/master/LAMWAutoRunScripts-master/docs/man.md"><strong>LAMW Manager v0.3.0  Manual</strong></a>
+	For more info read <a href="https://github.com/DanielTimelord/LAMWAutoRunScripts/blob/master/lamw_manager/docs/man.md"><strong>LAMW Manager v0.3.0  Manual</strong></a>
 </p>
