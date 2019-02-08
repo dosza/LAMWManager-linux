@@ -55,3 +55,7 @@ To install LAMW and dependencies:
 
 <br><br>
 ¹  If it is already installed, just run the Android SDK Tools</a>: </br></br>
+
+<p>
+	For more info read <a href="https://github.com/DanielTimelord/Laz4LAMW-win-installer/blob/master/LAMWAutoRunScripts-master/docs/man.md"><strong>LAMW Manager v0.3.0  Manual</strong></a>
+</p>
