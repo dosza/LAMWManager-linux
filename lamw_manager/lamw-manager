@@ -34,10 +34,21 @@ if [ -e $PWD/lamw-install.sh ]; then
 		pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY bash $PWD/lamw-install.sh $*
 	fi
 else
+	AUX_PATH=$0
+	AUX_PATH=${AUX_PATH%/lamw-manager*} #expansão de variavel que remove  cg.sh restando a path
+	if [ $DEBUG = 1 ]; then
+		#echo "args_str=[*]=${args_str[*]}"
+		#read
+		pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY -x bash $AUX_PATH/lamw-install.sh ${args_str[*]}
+	else
+		pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY bash $AUX_PATH/lamw-install.sh $*
+	fi
 	true;
+	echo "$AUX_PATH"
 fi
 
 if [ -e /tmp/lamw-overrides.conf ]
 then
 	rm /tmp/lamw-overrides.conf
 fi
+echo "press enter to exit ...";read
