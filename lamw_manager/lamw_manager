@@ -41,6 +41,15 @@ if [ -e $PWD/lamw-install.sh ]; then
 		sudo -i bash  $PWD/lamw-install.sh $*
 	fi
 else
+	AUX_PATH=$0
+	AUX_PATH=${AUX_PATH%/lamw_manager*} #expansão de variavel que remove  cg.sh restando a path
+	if [ $DEBUG = 1 ]; then
+		#echo "args_str=[*]=${args_str[*]}"
+		#read
+		sudo -i bash  -x $AUX_PATH/lamw-install.sh ${args_str[*]}
+	else
+		sudo -i bash  $AUX_PATH/lamw-install.sh $*
+	fi
 	true;
 fi
 

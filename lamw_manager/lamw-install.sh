@@ -1132,8 +1132,8 @@ mainInstall(){
 	#getSDKAndroid
 	WrappergetAndroidSDK
 	getFPCSources
-	getLAMWFramework
 	getLazarusSources
+	getLAMWFramework
 	CreateSDKSimbolicLinks
 	AddSDKPathstoProfile
 	changeDirectory $LAMW_USER_HOME
