@@ -1,0 +1,9 @@
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Name=LAMW Manager Setup
+Exec=bash -c '"$(dirname "$1")"/lamw-manager' dummy %k
+Terminal=true
+Icon=/usr/share/icons/gnome/256x256/apps/system-software-install.png
+#Icon=icon/muondiscover.png
+Type=Application
+Categories=Development;IDE;

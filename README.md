@@ -1,6 +1,13 @@
 # **LAMW Manager v0.3.0**
 
-LAMW Manager is a command line tool to automate the <strong>installation</strong>, <strong>configuration</strong> and <strong>upgrade</strong>  the framework LAMW - <a href="https://github.com/jmpessoa/lazandroidmodulewizard">Lazarus Android Module Wizard</a>
+LAMW Manager is a command line tool,like *APT*, to automate the <strong>installation</strong>, <strong>configuration</strong> and <strong>upgrade</strong>  the framework  <a href="https://github.com/jmpessoa/lazandroidmodulewizard"><strong>LAMW - Lazarus Android Module Wizard</strong></a>
+
+
+**What do you get?** 
+
+<p>
+	A <strong><a href="http://www.lazarus-ide.org/">Lazarus  IDE </a></strong>ready to develop applications for Android !!
+</p>
 
 <p> 
 	Windows user, please,  get here <em><a href="https://github.com/DanielTimelord/Laz4LAMW-win-installer"> LAMW Manager for Windows</a></em>
@@ -41,20 +48,22 @@ LAMW Manager is a command line tool to automate the <strong>installation</strong
 <pre> 
 To install LAMW and dependencies:
 	<strong>./lamw_manager</strong>
-	<br>To install LAMW and dependencies and Run <strong>Android  GUI SDK Manager¹</br>
+	<br>To install LAMW and dependencies and Run <strong>Android  GUI SDK Manager<sup>1</sup></br>
 	<strong>./lamw_manager</strong>        <em>--sdkmanager</em>
 <br>To just upgrade <strong>LAMW framework</strong> <em>(with the latest version available in git)</em></br>
 	<strong>./lamw_manager</strong>        <em>--update_lamw</em>
 <br>Install with proxy:</br>
 	<strong>./lamw_manager        --use-proxy	--server</strong> <em>10.0.16.1</em>	<strong>--port</strong>	<em>3128</em> </pre>
 </pre>
+	<sup>1</sup>  If it is already installed, just run the Android SDK Tools
 </p>
 
-
-
-
-<br><br>
-¹  If it is already installed, just run the Android SDK Tools</a>: </br></br>
+<br></br>
+**Congratulations!!**
+<p>
+	You are now a Lazarus for Android developer!
+	<br><a href="https://https://raw.githubusercontent.com/DanielTimelordLAMWAutoRunScripts/master/lamw_manager/docs/UserGuideSample.pdf">Building Android application with <strong>LAMW</strong> is <strong>RAD</strong>!</a></br>
+</p>
 
 <p>
 	For more info read <a href="https://github.com/DanielTimelord/LAMWAutoRunScripts/blob/master/lamw_manager/docs/man.md"><strong>LAMW Manager v0.3.0  Manual</strong></a>
