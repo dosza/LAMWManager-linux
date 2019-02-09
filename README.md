@@ -62,7 +62,7 @@ To install LAMW and dependencies:
 **Congratulations!!**
 <p>
 	You are now a Lazarus for Android developer!
-	<br><a href="https://https://raw.githubusercontent.com/DanielTimelordLAMWAutoRunScripts/master/lamw_manager/docs/UserGuideSample.pdf">Building Android application with <strong>LAMW</strong> is <strong>RAD</strong>!</a></br>
+	<br><a href="https://raw.githubusercontent.com/DanielTimelordLAMWAutoRunScripts/master/lamw_manager/docs/UserGuideSample.pdf">Building Android application with <strong>LAMW</strong> is <strong>RAD</strong>!</a></br>
 </p>
 
 <p>
