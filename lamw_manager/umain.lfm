@@ -765,15 +765,13 @@ object Fmain: TFmain
         Caption = 'Use Proxy'
         OnClick = MenuItem9Click
       end
-      object MenuItem13: TMenuItem
-        Caption = 'Use Old Android SDK'
-        OnClick = MenuItem13Click
-      end
     end
     object MenuItem10: TMenuItem
       Caption = 'Help'
+      OnClick = MenuItem10Click
       object MenuItem11: TMenuItem
         Caption = 'Help and Docs ...'
+        OnClick = MenuItem11Click
       end
       object MenuItem12: TMenuItem
         Caption = 'About ...'

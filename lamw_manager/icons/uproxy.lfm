@@ -81,8 +81,8 @@ object FormProxy: TFormProxy
     Height = 29
     Top = 322
     Width = 176
+    OnChange = Edit4Change
     TabOrder = 5
-    Text = 'Edit4'
   end
   object Label4: TLabel
     Left = 93

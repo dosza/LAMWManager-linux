@@ -22,7 +22,8 @@ var
   LAMW_PACKAGE_SCRIPT:string = 'lamw-package';
   CLEAN_INSTALL_FLAG : boolean = false;
   INSTALL_STATE : boolean = False;
-  USE_OLD_SDK : boolean = false;
+  USE_OLD_SDK : boolean = true;
+  LAMW_MGR_VERSION: string = 'LAMW Manager v0.3.0-testing'+sLineBreak+sLineBreak+'LAMW Manager is a command line tool,like APT, to automate the installation, configuration and upgrade the framework LAMW - Lazarus Android Module Wizard'+ sLineBreak + sLineBreak + 'Created by Daniel Oliveira'+sLineBreak + '2018-2019';
 
   // PROXY SETTINGS
   PROXY_SERVER : string  = '';
