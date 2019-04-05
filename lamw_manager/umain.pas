@@ -25,7 +25,6 @@ uses
     MenuItem10: TMenuItem;
     MenuItem11: TMenuItem;
     MenuItem12: TMenuItem;
-    MenuItem13: TMenuItem;
     MenuItem2: TMenuItem;
     MenuItem3: TMenuItem;
     MenuItem4: TMenuItem;
@@ -51,8 +50,10 @@ uses
     procedure Label4Click(Sender: TObject);
     procedure Label5Click(Sender: TObject);
     procedure Label7Click(Sender: TObject);
+    procedure MenuItem10Click(Sender: TObject);
+    procedure MenuItem11Click(Sender: TObject);
     procedure MenuItem12Click(Sender: TObject);
-    procedure MenuItem13Click(Sender: TObject);
+  //  procedure MenuItem13Click(Sender: TObject);
     procedure MenuItem1Click(Sender: TObject);
     procedure MenuItem2Click(Sender: TObject);
     procedure MenuItem4Click(Sender: TObject);
@@ -100,15 +101,11 @@ begin
      if ( uglobal.CLEAN_INSTALL_FLAG ) then
      begin
 //           WriteLn('');
-           str_action:='reinstall';
-           if (uglobal.USE_OLD_SDK ) then
-              str_action:= str_action + '-oldsdk'
+           str_action:='--reset';
      end
      else begin
             //WriteLn('');
-            str_action := 'install';
-            if (uglobal.USE_OLD_SDK ) then
-              str_action:= str_action + '-oldsdk'
+            str_action := '';
      end;
 
 
@@ -141,6 +138,7 @@ begin
      cmd_args.Add(uglobal.LAMW_PACKAGE_SCRIPT);
      self.proc:=RunnableScripts.Create(cmd_args);
      self.proc.RunProcess();
+     //Self.MenuItem13.Checked := True;
      if (proc.getExitStatus() = 0 ) then
         self.MenuItem7.Caption:='Uninstall'
      else self.MenuItem7.Caption:='Install';
@@ -185,7 +183,7 @@ begin
  // ShowMessage('Cliquei no botão de atualizar');
   self.cmd_args := TStringList.Create;
   self.cmd_args.add(uglobal.LAMW_MAIN_SCRIPT);
-  self.cmd_args.add('update-lamw');
+  self.cmd_args.add('--update-lamw');
   //mthread := TThread.Create(True);
   //mthread.ExecuteInThread(fmain.showLAMWtutorial);
   //TThreadExecuteCallBack(Self.showLAMWtutorial);
@@ -264,23 +262,33 @@ begin
 
 end;
 
-
-procedure TFmain.MenuItem12Click(Sender: TObject);
+procedure TFmain.MenuItem10Click(Sender: TObject);
 begin
 
 end;
 
+procedure TFmain.MenuItem11Click(Sender: TObject);
+begin
+        ShowMessage('This feature is still in development!!' +  sLineBreak);
+end;
+
+
+procedure TFmain.MenuItem12Click(Sender: TObject);
+begin
+        showMessage(uglobal.LAMW_MGR_VERSION);
+end;
+{
 procedure TFmain.MenuItem13Click(Sender: TObject);
 begin
-        Self.MenuItem13.Checked := not(self.MenuItem13.Checked);
+        Self.MenuItem13.Checked := True;
         uglobal.USE_OLD_SDK:= self.MenuItem13.Checked;
         if (uglobal.USE_OLD_SDK = true) then
-           ShowMessage('You choose to install Android SDK Tools with Apache Ant® and Gradle® Support!')
+           ShowMessage('Android SDK Tools with  always Support Apache Ant® and Gradle!')
         else
             ShowMessage('You have chosen to install Android SDK Tools for Gradle only') ;
 
 end;
-
+      }
 procedure TFmain.MenuItem1Click(Sender: TObject);
 begin
 
@@ -293,17 +301,77 @@ end;
 
 procedure TFmain.MenuItem4Click(Sender: TObject);
 begin
+        //just update-lamw
+  self.cmd_args := TStringList.Create;
+  self.cmd_args.add(uglobal.LAMW_MAIN_SCRIPT);
+  self.cmd_args.add('--update-lamw');
+  //mthread := TThread.Create(True);
+  //mthread.ExecuteInThread(fmain.showLAMWtutorial);
+  //TThreadExecuteCallBack(Self.showLAMWtutorial);
 
+
+
+  //ShowMessage(self.cmd_args.GetText);
+  self.proc := RunnableScripts.Create(cmd_args);
+  self.proc.RunProcessAsConsole();
+  self.proc.Free;
+  self.cmd_args.Free;
 end;
 
 procedure TFmain.MenuItem6Click(Sender: TObject);
-begin
+var str_action: string;
+begin    //clean and install
+         self.cmd_args := TStringList.Create;
+         //self.CheckBox1.Checked=true;
+         uglobal.CLEAN_INSTALL_FLAG:=true;
+      self.cmd_args.Add(uglobal.LAMW_MAIN_SCRIPT);
+     if ( uglobal.CLEAN_INSTALL_FLAG ) then
+     begin
+//           WriteLn('');
+           str_action:='--reset';
+     end
+     else begin
+            //WriteLn('');
+            str_action := '';
+     end;
+
+
+     self.cmd_args.Add(str_action);
+     if ( uglobal.USE_PROXY) then
+        self.cmd_args.Add('--use-proxy');
+
+      self.proc := RunnableScripts.Create(cmd_args);
+      self.proc.RunProcessAsConsole();
+      self.proc.Free;
+      self.cmd_args.Free;
 
 end;
 
 procedure TFmain.MenuItem7Click(Sender: TObject);
+var str_action :string;
 begin
+     uglobal.CLEAN_INSTALL_FLAG:=false;
+        self.cmd_args := TStringList.Create;
+      self.cmd_args.Add(uglobal.LAMW_MAIN_SCRIPT);
+     if ( uglobal.CLEAN_INSTALL_FLAG ) then
+     begin
+//           WriteLn('');
+           str_action:='--reset';
+     end
+     else begin
+            //WriteLn('');
+            str_action := '';
+     end;
 
+
+     self.cmd_args.Add(str_action);
+     if ( uglobal.USE_PROXY) then
+        self.cmd_args.Add('--use-proxy');
+
+      self.proc := RunnableScripts.Create(cmd_args);
+      self.proc.RunProcessAsConsole();
+      self.proc.Free;
+      self.cmd_args.Free;
 end;
 
 procedure TFmain.MenuItem8Click(Sender: TObject);
