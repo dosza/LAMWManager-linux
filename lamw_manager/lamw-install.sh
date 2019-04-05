@@ -3,9 +3,9 @@
 #Universidade federal de Mato Grosso
 #Curso ciencia da computação
 #AUTOR: Daniel Oliveira Souza <oliveira.daniel@gmail.com>
-#Versao LAMW-INSTALL: 0.2.1
+#Versao LAMW-INSTALL: 0.3.0
 #Descrição: Este script configura o ambiente de desenvolvimento para o LAMW
-#Version:0.2.1 add supporte a MIME 
+#Version:0.3.0 add supporte a MIME 
 
 
 #zenity --info --text "ANDROID_HOME=$ROOT_LAMW"
@@ -61,6 +61,7 @@ export JAVA_PATH=""
 export SDK_TOOLS_URL="https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip"
 export NDK_URL="https://dl.google.com/android/repository/android-ndk-r18b-linux-x86_64.zip"
 SDK_TOOLS_VERSION="r26.1.1"
+SDK_TOOLS_ZIP="sdk-tools-linux-4333796.zip"
 SDK_VERSION="28"
 SDK_MANAGER_CMD_PARAMETERS=()
 SDK_MANAGER_CMD_PARAMETERS2=()
@@ -88,7 +89,10 @@ PPC_CONFIG_PATH=$FPC_CFG_PATH
 
 FPC_ID_DEFAULT=0
 FPC_CROSS_ARM_DEFAULT_PARAMETERS=('clean crossall crossinstall  CPU_TARGET=arm OS_TARGET=android OPT="-dFPC_ARMHF" SUBARCH="armv7a" INSTALL_PREFIX=/usr')
+#FPC_CROSS_ARM_DEFAULT_PARAMETERS=(clean crossall crossinstall  CPU_TARGET=aarch64 OS_TARGET=android OPT="-dFPC_ARMHF"  INSTALL_PREFIX=/usr')
 FPC_CROSS_ARM_MODE_FPCDELUXE=(clean crossall crossinstall  CPU_TARGET=arm OS_TARGET=android CROSSOPT="-CpARMV7A -CfVFPV3" INSTALL_PREFIX=/usr)
+#FPC_CROSS_ARM_MODE_FPCDELUXE=(clean crossall crossinstall  CPU_TARGET=aarch64 OS_TARGET=android INSTALL_PREFIX=/usr)
+
 LAZBUILD_PARAMETERS=(
 	"--build-ide= --add-package $ROOT_LAMW/lazandroidmodulewizard/android_bridges/tfpandroidbridge_pack.lpk --primary-config-path=$LAMW4_LINUX_PATH_CFG  --lazarusdir=$LAMW_IDE_HOME"
 	"--build-ide= --add-package $ROOT_LAMW/lazandroidmodulewizard/android_wizard/lazandroidwizardpack.lpk --primary-config-path=$LAMW4_LINUX_PATH_CFG --lazarusdir=$LAMW_IDE_HOME"
@@ -102,7 +106,7 @@ WR_ANDROID_HOME=""
 HOME_USER_SPLITTED_ARRAY=(${HOME//\// })
 HOME_STR_SPLITTED=""
 libs_android="libx11-dev libgtk2.0-dev libgdk-pixbuf2.0-dev libcairo2-dev libpango1.0-dev libxtst-dev libatk1.0-dev libghc-x11-dev freeglut3 freeglut3-dev "
-prog_tools="menu fpc git subversion make build-essential zip unzip unrar android-tools-adb openjdk-8-jdk "
+prog_tools="menu fpc git subversion make build-essential zip unzip unrar android-tools-adb openjdk-8-jdk  gdb"
 packs=()
 
 #[[]
@@ -119,7 +123,7 @@ lamw_opts=(
 	"\t${NEGRITO}./lamw_manager${NORMAL}                              Install LAMW and dependecies¹\n"
 	"\t./lamw_manager\t${VERDE}--sdkmanager${NORMAL}                Install LAMW and Run Android SDK Manager²\n"
 	"\t./lamw_manager\t${VERDE}--update-lamw${NORMAL}               To just upgrade LAMW framework (with the latest version available in git)\n"
-	"\t./lamw_manager\t${VERDE}--reset${NORMAL}                     To clean and reinstall\n"
+	"\t./lamw_manager\t${VERDE}--reset${NORMAL}                     To clean and reinstall LAMW\n"
 	"\t./lamw_manager\t${NEGRITO}uninstall${NORMAL}                   To uninstall LAMW :(\n"
 	"\t./lamw_manager\t${VERDE}--help${NORMAL}                      Show help\n"                 
 	"\n"
@@ -132,6 +136,32 @@ lamw_opts=(
 	"\n"
 	
 )
+magicTrapIndex=-1
+#_------------ OS function t
+
+TrapControlC(){
+	sdk_tools_zip=$ANDROID_SDK
+
+	magic_trap=(
+		"$ANT_TAR_FILE" #0 
+		"$ANT_HOME"		#1
+		"$GRADLE_ZIP_FILE" #2
+		"$ANT_HOME"   #3
+		"$sdk_tools_zip"
+		"$ANDROID_SDK" #4
+		"$android-ndk-r18b-linux-x86_64.zip" #5
+		"android-ndk-r18b"
+	)
+	
+	if [ "$magicTrapIndex" != "-1" ]; then
+		file_deleted="${magic_trap[magicTrapIndex]}"
+		if [ -e "$file_deleted" ]; then
+			echo "deleting... $file_deleted"
+			rm  -rv $file_deleted
+		fi
+	fi
+	exit 2
+}
 #Esta funcao altera todos o dono de todos arquivos e  pastas do ambiente LAMW de root para o $LAMW_USER_HOME
 #Ou seja para o usuario que invocou o lamw_manager (bootstrap)
 changeOwnerAllLAMW(){
@@ -477,7 +507,10 @@ getLAMWFramework(){
 #this function get ant 
 getAnt(){
 	changeDirectory $ROOT_LAMW 
+	
 	if [ ! -e $ANT_HOME ]; then
+		magicTrapIndex=0 # preperando o indice do arquivo/diretório a ser removido
+		trap TrapControlC  2
 		wget -c $ANT_TAR_URL
 		if [ $? != 0 ] ; then
 			#rm *.zip*
@@ -486,6 +519,8 @@ getAnt(){
 		fi
 		#echo "$PWD"
 		#sleep 3
+		magictrapIndex=1
+		trap TrapControlC 2
 		tar -xvf "$ANT_TAR_FILE"
 
 	fi
@@ -512,12 +547,17 @@ getAndroidSDKTools(){
 	
 	changeDirectory $ROOT_LAMW
 	getAnt
+	
 	if [ ! -e $GRADLE_HOME ]; then
+		magicTrapIndex=2 # Set arquivo a ser removido
+		trap TrapControlC  2 # set armadilha para o signal2 (siginterrupt)
 		wget -c $GRADLE_ZIP_LNK
 		if [ $? != 0 ] ; then
 			#rm *.zip*
 			wget -c $GRADLE_ZIP_LNK
 		fi
+		magictrapIndex=3
+		trap TrapControlC 2
 		unzip $GRADLE_ZIP_FILE
 	fi
 	
@@ -530,10 +570,14 @@ getAndroidSDKTools(){
 		changeDirectory $ANDROID_SDK
  
 		if [ ! -e tools ] ; then
+			magicTrapIndex=4
+			trap TrapControlC  2
 			wget -c $SDK_TOOLS_URL #getting sdk 
 			if [ $? != 0 ]; then 
 				wget -c $SDK_TOOLS_URL
 			fi
+			magicTrapIndex=5
+			trap TrapControlC 2
 			unzip sdk-tools-linux-4333796.zip
 			rm sdk-tools-linux-4333796.zip
 		fi
@@ -542,31 +586,44 @@ getAndroidSDKTools(){
 		getAnt
 		export SDK_TOOLS_VERSION="r25.2.5"
 		export SDK_TOOLS_URL="https://dl.google.com/android/repository/tools_r25.2.5-linux.zip"
+		export SDK_TOOLS_ZIP="tools_r25.2.5-linux.zip"
 		if [ ! -e sdk ]; then 
+			magicTrapIndex=4
+			trap TrapControlC  2
 			mkdir $ANDROID_SDK
 			changeDirectory $ANDROID_SDK
 			wget -c $SDK_TOOLS_URL
 			if [ $? != 0 ]; then
 				wget -c $SDK_TOOLS_URL
 			fi
-			#tar -zxvf android-sdk_r24.4.1-linux.tgz 
-			unzip tools_r25.2.5-linux.zip
-			rm tools_r25.2.5-linux.zip
+			#tar -zxvf android-sdk_r24.4.1-linux.
+			magicTrapIndex=5
+			trap TrapControlC 2 
+			unzip $SDK_TOOLS_ZIP
+			rm $SDK_TOOLS_ZIP
 		fi
 
 		changeDirectory $ANDROID_SDK
-		if [ ! -e ndk-bundle ] ; then 
+		if [ ! -e ndk-bundle ] ; then
+			magictrapIndex=6
+			trap TrapControlC 2 
 			wget -c $NDK_URL
 			if [ $? != 0 ]; then
 				wget -c $NDK_URL
 			fi
+			magictrapIndex=7
+			trap TrapControlC 2
 			unzip android-ndk-r18b-linux-x86_64.zip
+			trap - SIGINT  #removendo a traps
+			magicTrapIndex=-1
 			mv android-ndk-r18b ndk-bundle
 			if [ -e android-ndk-r18b-linux-x86_64.zip ]; then 
 				rm android-ndk-r18b-linux-x86_64.zip
 			fi
 		fi
 	fi
+	trap - SIGINT  #removendo a traps
+	magicTrapIndex=-1
 
 
 
@@ -633,13 +690,19 @@ CreateSDKSimbolicLinks(){
 	ln -sf "$ROOT_LAMW/sdk/ndk-bundle" "$ROOT_LAMW/ndk"
 	#fi
 	ln -sf "$ROOT_LAMW/ndk/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin" "$ROOT_LAMW/ndk-toolchain"
+	#ln -sf "$ROOT_LAMW/ndk/toolchains/aarch64-linux-android-4.9/prebuilt/linux-x86_64/bin" "$ROOT_LAMW/ndk-toolchain"
 	ln -sf "$ROOT_LAMW/ndk-toolchain/arm-linux-androideabi-as" "$ROOT_LAMW/ndk-toolchain/arm-linux-as"
 	ln -sf "$ROOT_LAMW/ndk-toolchain/arm-linux-androideabi-ld" "$ROOT_LAMW/ndk-toolchain/arm-linux-ld"
+	#ln -sf "$ROOT_LAMW/ndk-toolchain/aarch64-linux-android-as" "$ROOT_LAMW/ndk-toolchain/aarch64-linux-as"
+	#ln -sf "$ROOT_LAMW/ndk-toolchain/aarch64-linux-android-ld" "$ROOT_LAMW/ndk-toolchain/aarch64-linux-ld"
 
 	 ln -sf "$ROOT_LAMW/ndk-toolchain/arm-linux-androideabi-as" "/usr/bin/arm-linux-androideabi-as"
 	 ln -sf "$ROOT_LAMW/ndk-toolchain/arm-linux-ld"  "/usr/bin/arm-linux-androideabi-ld"
-	 ln -sf $FPC_LIB_PATH/ppcrossarm /usr/bin/ppcrossarm
+	  ln -sf "$ROOT_LAMW/ndk-toolchain/arm-linux-androideabi-as" "/usr/bin/arm-linux-androideabi-as"
+	 #ln -sf "$ROOT_LAMW/ndk-toolchain/aarch64-linux-ld"  "/usr/bin/aarch64-linux-androideabi-ld"
+	 #ln -sf $FPC_LIB_PATH/ppcrossarm /usr/bin/ppcrossarm
 	 ln -sf /usr/bin/ppcrossarm /usr/bin/ppcarm
+	 #ln -sf /usr/bin/ppcrossa64 /usr/bin/ppca64
 
 	#if [ $OLD_ANDROID_SDK=0 ]; then 
 	#CORRIGE TEMPORARIAMENTE BUG GRADLE TO MIPSEL
@@ -706,8 +769,8 @@ BuildLazarusIDE(){
 	if [ $# = 0 ]; then 
 		make clean all
 	else 
-		printf "${Azul}Building LAMW packages ${NORMAL}"
-		sleep 2
+		printf "${AZUL}Building LAMW packages ${NORMAL}"
+		#sleep 2
 	fi
 		#build ide  with lamw framework 
 	for((i=0;i< ${#LAZBUILD_PARAMETERS[@]};i++))
@@ -1063,12 +1126,20 @@ configureFPC(){
 			"-XParm-linux-androideabi-"
 			"-Fl$ROOT_LAMW/ndk/platforms/android-$SDK_VERSION/arch-arm/usr/lib"
 			"-FLlibdl.so"
+			
 			"-FD$ROOT_LAMW/ndk/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin"
 			'-Fu/usr/lib/fpc/$fpcversion/units/$fpctarget'
 			'-Fu/usr/lib/fpc/$fpcversion/units/$fpctarget/*'
 			'-Fu/usr/lib/fpc/$fpcversion/units/$fpctarget/rtl'
 			"#ENDIF"
 			"#ENDIF"
+			#"IFDEF CPUAARCH64"
+			#"-Xd"
+			#"-XPaarch64-linux-android-"
+			#"-Fl$ROOT_LAMW/ndk/platforms/android-$SDK_VERSION/arch-arm64/usr/lib"
+			#"-FLlibdl.so"
+			#"-FD$ROOT_LAMW/ndk/toolchains/aarch64-linux-android-4.9/prebuilt/linux-x86_64/bin"
+			#"#ENDIF"
 		)
 
 		if [ -e $FPC_CFG_PATH ] ; then  # se exiir /etc/fpc.cfg

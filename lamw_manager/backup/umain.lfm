@@ -3,7 +3,7 @@ object Fmain: TFmain
   Height = 740
   Top = 0
   Width = 1366
-  Caption = 'LAMW4Linux Install Manager'
+  Caption = 'LAMW Manager'
   ClientHeight = 717
   ClientWidth = 1366
   Menu = MainMenu1
@@ -765,15 +765,13 @@ object Fmain: TFmain
         Caption = 'Use Proxy'
         OnClick = MenuItem9Click
       end
-      object MenuItem13: TMenuItem
-        Caption = 'Use Old Android SDK'
-        OnClick = MenuItem13Click
-      end
     end
     object MenuItem10: TMenuItem
       Caption = 'Help'
+      OnClick = MenuItem10Click
       object MenuItem11: TMenuItem
         Caption = 'Help and Docs ...'
+        OnClick = MenuItem11Click
       end
       object MenuItem12: TMenuItem
         Caption = 'About ...'

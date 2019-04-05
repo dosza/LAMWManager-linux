@@ -31,6 +31,7 @@ type
     procedure CheckBox2Change(Sender: TObject);
     procedure Edit1Change(Sender: TObject);
     procedure Edit3Change(Sender: TObject);
+    procedure Edit4Change(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure Label2Click(Sender: TObject);
@@ -96,6 +97,11 @@ end;
 
 procedure TFormProxy.Edit3Change(Sender: TObject);
 begin
+end;
+
+procedure TFormProxy.Edit4Change(Sender: TObject);
+begin
+
 end;
 
 procedure TFormProxy.FormClose(Sender: TObject; var CloseAction: TCloseAction);
