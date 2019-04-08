@@ -173,8 +173,8 @@ changeOwnerAllLAMW(){
 			chown $LAMW_USER:$LAMW_USER -R $LAMW4_LINUX_PATH_CFG
 		fi
 
-		if [ -e $LAMW_USER_HOME/lazandroidmodulewizard ]; then 
-			chown $LAMW_USER:$LAMW_USER -R $LAMW_USER_HOME/lazandroidmodulewizard
+		if [ -e $ROOT_LAMW/lazandroidmodulewizard ]; then 
+			chown $LAMW_USER:$LAMW_USER -R $ROOT_LAMW/lazandroidmodulewizard
 		fi
 		if [ -e $LAMW_IDE_HOME ];then
 			chown $LAMW_USER:$LAMW_USER -R $LAMW4LINUX_HOME/$LAZARUS_STABLE
@@ -493,11 +493,15 @@ getLAMWFramework(){
 		
 		export git_param=("clone" "$LAMW_SRC_LNK")
 		changeDirectory $ROOT_LAMW
-		chmod 777 -Rv lazandroidmodulewizard
-		rm -r lazandroidmodulewizard
+		#chmod 777 -Rv lazandroidmodulewizard
+		if [ -e $ROOT_LAMW/lazandroidmodulewizard ]; then 
+			rm -rf $ROOT_LAMW/lazandroidmodulewizard
+		fi
 		git ${git_param[*]}
 		if [ $? != 0 ]; then 
-			rm -r lazandroidmodulewizard
+			if [ -e $ROOT_LAMW/lazandroidmodulewizard ]; then 
+				rm -rf $ROOT_LAMW/lazandroidmodulewizard
+			fi
 			echo "possible network instability! Try later!"
 			exit 1
 		fi
