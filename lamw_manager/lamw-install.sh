@@ -704,7 +704,7 @@ CreateSDKSimbolicLinks(){
 	 ln -sf "$ROOT_LAMW/ndk-toolchain/arm-linux-ld"  "/usr/bin/arm-linux-androideabi-ld"
 	  ln -sf "$ROOT_LAMW/ndk-toolchain/arm-linux-androideabi-as" "/usr/bin/arm-linux-androideabi-as"
 	 #ln -sf "$ROOT_LAMW/ndk-toolchain/aarch64-linux-ld"  "/usr/bin/aarch64-linux-androideabi-ld"
-	 #ln -sf $FPC_LIB_PATH/ppcrossarm /usr/bin/ppcrossarm
+	 ln -sf $FPC_LIB_PATH/ppcrossarm /usr/bin/ppcrossarm
 	 ln -sf /usr/bin/ppcrossarm /usr/bin/ppcarm
 	 #ln -sf /usr/bin/ppcrossa64 /usr/bin/ppca64
 
