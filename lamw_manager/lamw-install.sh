@@ -936,6 +936,7 @@ ActiveProxy(){
 	fi
 }
 CleanOldCrossCompileBins(){
+	echo "$FPC_LIB_PATH";read;
 	if [ -e $FPC_LIB_PATH/ppcrossarm ]; then
 		 rm $FPC_LIB_PATH/ppcrossarm
 	fi
@@ -960,6 +961,7 @@ cleanPATHS(){
 }
 #this function remove old config of lamw4linux  
 CleanOldConfig(){
+	configureFPC
 	echo "Uninstall LAMW4Linux IDE ..."
 	if [ -e $LAMW_USER_HOME/laz4ndroid ]; then
 		 rm  -r $LAMW_USER_HOME/laz4ndroid
@@ -997,7 +999,7 @@ CleanOldConfig(){
 		  rm /usr/bin/arm-linux-androideabi-ld
 	fi
 	if [ -e /usr/bin/arm-embedded-ld  ]; then
-		 /usr/bin/arm-embedded-ld           
+		rm /usr/bin/arm-embedded-ld           
 	fi 
 	if [ -e /usr/bin/arm-linux-as ] ; then 
 	 	 rm  /usr/bin/arm-linux-as
@@ -1030,6 +1032,7 @@ CleanOldConfig(){
 		rm -r  $LAMW_USER_HOME/.android 
 	fi 
 	cleanPATHS
+	CleanOldCrossCompileBins
 }
 
 
