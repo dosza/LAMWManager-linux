@@ -936,7 +936,7 @@ ActiveProxy(){
 	fi
 }
 CleanOldCrossCompileBins(){
-	echo "$FPC_LIB_PATH";read;
+	#echo "$FPC_LIB_PATH";read;
 	if [ -e $FPC_LIB_PATH/ppcrossarm ]; then
 		 rm $FPC_LIB_PATH/ppcrossarm
 	fi
