@@ -60,6 +60,7 @@ export USE_PROXY=0
 export JAVA_PATH=""
 export SDK_TOOLS_URL="https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip"
 export NDK_URL="https://dl.google.com/android/repository/android-ndk-r18b-linux-x86_64.zip"
+export NDK_VERSION="r18b"
 SDK_TOOLS_VERSION="r26.1.1"
 SDK_TOOLS_ZIP="sdk-tools-linux-4333796.zip"
 SDK_VERSION="28"
@@ -76,7 +77,9 @@ LAMW_WORKSPACE_HOME="$LAMW_USER_HOME/Dev/LAMWProjects"  #path to lamw_workspace
 LAMW4LINUX_EXE_PATH="$LAMW_IDE_HOME/lamw4linux"
 LAMW_MENU_ITEM_PATH="$LAMW_USER_HOME/.local/share/applications/lamw4linux.desktop"
 GRADLE_HOME="$ROOT_LAMW/gradle-4.4.1"
+GRADLE_VERSION="4.4.1"
 ANT_HOME="$ROOT_LAMW/apache-ant-1.10.5"
+ANT_VERSION="1.10.5"
 ANT_TAR_URL="http://ftp.unicamp.br/pub/apache/ant/binaries/apache-ant-1.10.5-bin.tar.xz"
 ANT_TAR_FILE="apache-ant-1.10.5-bin.tar.xz"
 GRADLE_CFG_HOME="$LAMW_USER_HOME/.gradle"
@@ -108,7 +111,11 @@ HOME_STR_SPLITTED=""
 libs_android="libx11-dev libgtk2.0-dev libgdk-pixbuf2.0-dev libcairo2-dev libpango1.0-dev libxtst-dev libatk1.0-dev libghc-x11-dev freeglut3 freeglut3-dev "
 prog_tools="menu fpc git subversion make build-essential zip unzip unrar android-tools-adb openjdk-8-jdk  gdb"
 packs=()
-
+fpc_debian_backports=(
+	"# debian backports"  
+	"deb http://deb.debian.org/debian stretch-backports main contrib non-free" 
+	"deb-src http://deb.debian.org/debian stretch-backports main contrib non-free" 
+)
 #[[]
 
 export OLD_ANDROID_SDK=1
@@ -134,23 +141,61 @@ lamw_opts=(
 	"\t¹ By default the installation waives the use of parameters, if LAMW is installed, it will only be updated!\n"
 	"\t² If it is already installed, just run the Android SDK Tools\n"
 	"\n"
-	
 )
+
+
 magicTrapIndex=-1
+export NEED_UPGRADE_FPC=0
+
+CheckFPCSupport(){
+	apt show fpc | grep 'Version: 3.0.0'
+	if [ $? = 0 ]; then
+		export NEED_UPGRADE_FPC=1
+	fi
+}
+
+enableUpgradeFPC(){
+	cat  /etc/apt/sources.list | grep "${fpc_debian_backports[1]}"
+	if [ $? != 0 ]; then
+		for((i=0;i<${#fpc_debian_backports[*]};i++))
+		do
+			if [ $i = 0 ]; then
+				echo ${fpc_debian_backports[i]} > /etc/apt/sources.list.d/fpc-backports.list
+			else
+				echo ${fpc_debian_backports[i]} >> /etc/apt/sources.list.d/fpc-backports.list
+			fi
+		done
+		apt-get update
+		if [ $? != 0 ] ; then
+			apt-get update
+			if [ $? != 0 ]; then
+				echo "possible network instability! Try later!"
+				exit 1
+			fi
+		fi
+	fi
+}
+disableUpgradeFPC(){
+	if [ -e /etc/apt/sources.list.d/fpc-backports.list ]; then
+		rm /etc/apt/sources.list.d/fpc-backports.list
+		rm  /var/lib/apt/lists/deb.debian.org_debian_dists_stretch-backports_*
+	fi
+}
+
 #_------------ OS function t
 
 TrapControlC(){
 	sdk_tools_zip=$ANDROID_SDK
-
+	#echo "magicTrapIndex=$magicTrapIndex";read
 	magic_trap=(
 		"$ANT_TAR_FILE" #0 
 		"$ANT_HOME"		#1
 		"$GRADLE_ZIP_FILE" #2
-		"$ANT_HOME"   #3
-		"$sdk_tools_zip"
-		"$ANDROID_SDK" #4
-		"$android-ndk-r18b-linux-x86_64.zip" #5
-		"android-ndk-r18b"
+		"$GRADLE_HOME"   #3
+		"$sdk_tools_zip" #4
+		"$ANDROID_SDK" #5
+		"android-ndk-r18b-linux-x86_64.zip" #6
+		"android-ndk-r18b" #7
 	)
 	
 	if [ "$magicTrapIndex" != "-1" ]; then
@@ -180,6 +225,7 @@ changeOwnerAllLAMW(){
 			chown $LAMW_USER:$LAMW_USER -R $LAMW4LINUX_HOME/$LAZARUS_STABLE
 		fi
 	else
+		echo "Restoring directories ..."
 		if [ -e $ROOT_LAMW ]; then
 			chown  -R $LAMW_USER:$LAMW_USER $ROOT_LAMW 
 		fi
@@ -193,7 +239,7 @@ changeOwnerAllLAMW(){
 			chown $LAMW_USER:$LAMW_USER $LAMW_USER_HOME/.bashrc
 		fi
 		if [ -e $LAMW_USER_HOME/.android ]; then
-			chown $LAMW_USER:$LAMW_USER $LAMW_USER_HOME/.android
+			chown $LAMW_USER:$LAMW_USER  -R $LAMW_USER_HOME/.android
 		fi
 		if [ -e $LAMW_USER_HOME ]; then
 			chown $LAMW_USER:$LAMW_USER -R $LAMW_USER_HOME/.local/share
@@ -372,9 +418,26 @@ installDependences(){
 		 apt-get autoremove --purge -y
 	fi
 			# apt-get install fpc
-	 apt-get install $libs_android $prog_tools  -y --allow-unauthenticated
+	CheckFPCSupport
+	if [ $NEED_UPGRADE_FPC = 1 ]; then
+		enableUpgradeFPC
+		apt-get install  fpc/stretch-backports  -y --allow-unauthenticated
+		if [ $? != 0 ]; then 
+			apt-get install  fpc/stretch-backports  -y --allow-unauthenticated  --fix-missing
+			if [ $? != 0 ]; then
+				echo "possible network instability! Try later!"
+				exit 1
+			fi
+		fi
+		disableUpgradeFPC
+	fi
+	apt-get install $libs_android $prog_tools  -y --allow-unauthenticated
 	if [ "$?" != "0" ]; then
-		 apt-get install $libs_android $prog_tools  -y --allow-unauthenticated --fix-missing
+		apt-get install $libs_android $prog_tools  -y --allow-unauthenticated --fix-missing
+		if [ $? != 0 ]; then
+			echo "possible network instability! Try later!"
+			exit 1
+		fi
 	fi
 }
 
@@ -452,10 +515,10 @@ getFPCSources(){
 	svn checkout $URL_FPC
 	if [ $? != 0 ]; then
 		# rm $FPC_RELEASE/.svn -r
-		 rm -r $FPC_RELEASE
+		 rm -rf $FPC_RELEASE
 		svn checkout $URL_FPC
 		if [ $? != 0 ]; then 
-			 rm -r $FPC_RELEASE
+			 rm -rf $FPC_RELEASE
 			echo "possible network instability! Try later!"
 			exit 1
 		fi
@@ -466,12 +529,12 @@ getLazarusSources(){
 	changeDirectory $LAMW4LINUX_HOME
 	svn co $LAZARUS_STABLE_SRC_LNK
 	if [ $? != 0 ]; then  #case fails last command , try svn chekout 
-		 rm -r $LAZARUS_STABLE
+		 rm -rf $LAZARUS_STABLE
 		#svn cleanup
 		#changeDirectory $LAMW4LINUX_HOME
 		svn co $LAZARUS_STABLE_SRC_LNK
 		if [ $? != 0 ]; then 
-			 rm -r $LAZARUS_STABLE
+			rm -rf $LAZARUS_STABLE
 			echo "possible network instability! Try later!"
 			exit 1
 		fi
@@ -513,17 +576,21 @@ getAnt(){
 	changeDirectory $ROOT_LAMW 
 	
 	if [ ! -e $ANT_HOME ]; then
-		magicTrapIndex=0 # preperando o indice do arquivo/diretório a ser removido
+		magicTrapIndex=-1 # preperando o indice do arquivo/diretório a ser removido
 		trap TrapControlC  2
 		wget -c $ANT_TAR_URL
 		if [ $? != 0 ] ; then
 			#rm *.zip*
 			ANT_TAR_URL="https://www-eu.apache.org/dist/ant/binaries/apache-ant-1.10.5-bin.tar.xz"
 			wget -c $ANT_TAR_URL
+			if [ $? != 0 ]; then
+				echo "possible network instability! Try later!"
+				exit 1
+			fi
 		fi
 		#echo "$PWD"
 		#sleep 3
-		magictrapIndex=1
+		magicTrapIndex=1
 		trap TrapControlC 2
 		tar -xvf "$ANT_TAR_FILE"
 
@@ -538,7 +605,7 @@ getAndroidSDKTools(){
 	changeDirectory $LAMW_USER_HOME
 	if  [ ! -e $LAMW_USER_HOME/.android ]; then
 		mkdir $LAMW_USER_HOME/.android 
-		#mkdir -p $HOME/.android 
+		mkdir -p $HOME/.android 
 		echo "create file"
 		echo "" > $LAMW_USER_HOME/.android/repositories.cfg
 		echo "" > $HOME/.android/repositories.cfg
@@ -553,14 +620,14 @@ getAndroidSDKTools(){
 	getAnt
 	
 	if [ ! -e $GRADLE_HOME ]; then
-		magicTrapIndex=2 # Set arquivo a ser removido
+		magicTrapIndex=-1 # Set arquivo a ser removido
 		trap TrapControlC  2 # set armadilha para o signal2 (siginterrupt)
 		wget -c $GRADLE_ZIP_LNK
 		if [ $? != 0 ] ; then
 			#rm *.zip*
 			wget -c $GRADLE_ZIP_LNK
 		fi
-		magictrapIndex=3
+		magicTrapIndex=3
 		trap TrapControlC 2
 		unzip $GRADLE_ZIP_FILE
 	fi
@@ -592,14 +659,22 @@ getAndroidSDKTools(){
 		export SDK_TOOLS_URL="https://dl.google.com/android/repository/tools_r25.2.5-linux.zip"
 		export SDK_TOOLS_ZIP="tools_r25.2.5-linux.zip"
 		if [ ! -e sdk ]; then 
-			magicTrapIndex=4
-			trap TrapControlC  2
 			mkdir $ANDROID_SDK
-			changeDirectory $ANDROID_SDK
+		fi
+		changeDirectory $ANDROID_SDK
+		if [ ! -e tools ];then
+			magicTrapIndex=-1
+			trap TrapControlC  2
 			wget -c $SDK_TOOLS_URL
 			if [ $? != 0 ]; then
 				wget -c $SDK_TOOLS_URL
+				if [ $? != 0 ]; then
+					echo "possible network instability! Try later!"
+					#rm -rf $ANDROID_SDK
+					exit 1
+				fi
 			fi
+		
 			#tar -zxvf android-sdk_r24.4.1-linux.
 			magicTrapIndex=5
 			trap TrapControlC 2 
@@ -609,13 +684,18 @@ getAndroidSDKTools(){
 
 		changeDirectory $ANDROID_SDK
 		if [ ! -e ndk-bundle ] ; then
-			magictrapIndex=6
+			magicTrapIndex=-1
+			#echo "${magic[$magicTrapIndex]}";read
 			trap TrapControlC 2 
 			wget -c $NDK_URL
 			if [ $? != 0 ]; then
 				wget -c $NDK_URL
+				if [ $? != 0 ]; then
+					echo "possible network instability! Try later!"
+					exit 1
+				fi
 			fi
-			magictrapIndex=7
+			magicTrapIndex=7
 			trap TrapControlC 2
 			unzip android-ndk-r18b-linux-x86_64.zip
 			trap - SIGINT  #removendo a traps
@@ -640,6 +720,10 @@ getSDKAndroid(){
 	#fi
 	if [ $? != 0 ]; then 
 		yes | ./sdkmanager ${SDK_LICENSES_PARAMETERS[*]}
+		if [ $? != 0 ]; then
+			echo "possible network instability! Try later!"
+			exit 1
+		fi
 	fi
 	for((i=0;i<${#SDK_MANAGER_CMD_PARAMETERS[*]};i++))
 	do
@@ -648,12 +732,20 @@ getSDKAndroid(){
 			yes | ./sdkmanager ${SDK_MANAGER_CMD_PARAMETERS[i]}  # instala sdk sem intervenção humana 
 			if [ $? != 0 ]; then 
 				yes | ./sdkmanager ${SDK_MANAGER_CMD_PARAMETERS[i]}
+				if [ $? != 0 ]; then
+					echo "possible network instability! Try later!"
+					exit 1
+				fi
 			fi 
 		else
 			./sdkmanager ${SDK_MANAGER_CMD_PARAMETERS[i]}
 
 			if [ $? != 0 ]; then 
 				./sdkmanager ${SDK_MANAGER_CMD_PARAMETERS[i]}
+				if [ $? != 0 ]; then
+					echo "possible network instability! Try later!"
+					exit 1
+				fi
 			fi
 		fi
 	done
@@ -679,6 +771,10 @@ getOldAndroidSDK(){
 				echo "y" |   ./android update sdk --all --no-ui --filter ${SDK_MANAGER_CMD_PARAMETERS2[i]} ${SDK_MANAGER_CMD_PARAMETERS2_PROXY[*]}
 				if [ $? != 0 ]; then
 					echo "y" |   ./android update sdk --all --no-ui --filter ${SDK_MANAGER_CMD_PARAMETERS2[i]} ${SDK_MANAGER_CMD_PARAMETERS2_PROXY[*]}
+					if [ $? != 0 ]; then
+						echo "possible network instability! Try later!"
+						exit 1
+					fi
 				fi	
 			done 
 
@@ -936,6 +1032,9 @@ ActiveProxy(){
 	fi
 }
 CleanOldCrossCompileBins(){
+	SearchPackage fpc
+	index=$?
+	parseFPC ${packs[$index]}
 	#echo "$FPC_LIB_PATH";read;
 	if [ -e $FPC_LIB_PATH/ppcrossarm ]; then
 		 rm $FPC_LIB_PATH/ppcrossarm
@@ -961,28 +1060,20 @@ cleanPATHS(){
 }
 #this function remove old config of lamw4linux  
 CleanOldConfig(){
-	configureFPC
+	SearchPackage fpc
+	index=$?
+	parseFPC ${packs[$index]}
 	echo "Uninstall LAMW4Linux IDE ..."
-	if [ -e $LAMW_USER_HOME/laz4ndroid ]; then
-		 rm  -r $LAMW_USER_HOME/laz4ndroid
-	fi
-	if [ -e $LAMW_USER_HOME/.laz4android ] ; then
-		rm -r $LAMW_USER_HOME/.laz4android
-	fi
 	if [ -e $LAMW4LINUX_HOME ] ; then
-		 rm $LAMW4LINUX_HOME -r
+		 rm $LAMW4LINUX_HOME -rf
 	fi
 
 	if [ -e $LAMW4_LINUX_PATH_CFG ]; then  rm -r $LAMW4_LINUX_PATH_CFG; fi
 
 	if [ -e $ROOT_LAMW ] ; then
-		 rm $ROOT_LAMW  -r
+		 rm $ROOT_LAMW  -rf
 	fi
 
-
-	if [ -e $LAMW_USER_HOME/.local/share/applications/laz4android.desktop ];then
-		rm $LAMW_USER_HOME/.local/share/applications/laz4android.desktop
-	fi
 
 	if [ -e $LAMW_MENU_ITEM_PATH ]; then
 		rm $LAMW_MENU_ITEM_PATH
@@ -1119,9 +1210,9 @@ configureFPC(){
 	SearchPackage fpc
 		index=$?
 		parseFPC ${packs[$index]}
-		if [ ! -e $FPC_CFG_PATH ]; then
+	#	if [ ! -e $FPC_CFG_PATH ]; then
 			$FPC_MKCFG_EXE -d basepath=/usr/lib/fpc/$FPC_VERSION -o $FPC_CFG_PATH
-		fi
+		#fi
 
 		#this config enable to crosscompile in fpc 
 		fpc_cfg_str=(
@@ -1167,12 +1258,17 @@ writeLAMWLogInstall(){
 
 	lamw_log_str=(
 		"Generate LAMW_INSTALL_VERSION=$LAMW_INSTALL_VERSION\n" 
-		"Info:\nLAMW4Linux:$LAMW4LINUX_HOME\nLAMW workspace:"  
+		"Info:\nLAMW4Linux:$LAMW4LINUX_HOME\nLAMW workspace:" 	
 		"$LAMW_WORKSPACE_HOME\nAndroid SDK:$ROOT_LAMW/sdk\n" 
 		"Android NDK:$ROOT_LAMW/ndk\nGradle:$GRADLE_HOME\n"
 		"OLD_ANDROID_SDK=$OLD_ANDROID_SDK\n"
+		"ANT_VERSION=$ANT_VERSION\n"
+		"GRADLE_VERSION=$GRADLE_VERSION\n"
 		"SDK_TOOLS_VERSION=$SDK_TOOLS_VERSION\n"
-		"Install-date:$(date)"
+		"NDK_VERSION=$NDK_VERSION\n"
+		"FPC_VERSION=$FPC_VERSION\n"
+		"LAZARUS_VERSION=$LAZARUS_VERSION\n" 
+		"Install-date:$(date)\n"
 		)
 
 	NOTIFY_SEND_EXE=$(which notify-send)
@@ -1196,6 +1292,87 @@ checkProxyStatus(){
 		ActiveProxy 1
 	else
 		ActiveProxy 0
+	fi
+}
+#this function repair fpc, caso este tenha sido desinstalado ou atualizado
+Repair(){
+	flag_need_repair=0 # flag de reparo 
+	getStatusInstalation 
+	if [ $LAMW_INSTALL_STATUS = 1 ]; then # só executa essa funcao se o lamw tiver instalado
+		flag_old_fpc=""
+		fpc_exe=$(which fpc) #verifica se existe o executavel para o fpc
+		fpc_arm=$(which ppcarm )
+		if [ "$fpc_exe" = "" ]; then
+			flag_need_repair=1
+			installDependences # caso não exista -reinstale
+			setJava8asDefault
+		fi
+		CheckFPCSupport
+		if [ $NEED_UPGRADE_FPC = 1 ]; then
+			installDependences
+			flag_need_repair=1
+			configureFPC
+		fi
+		if [ "$fpc_arm" = "" ]; then
+			flag_need_repair=1  # caso o  crosscompile para arm nao exista,  sinaliza reparo
+		fi
+		#searchLineinFile "$LAMW4LINUX_HOME/lamw-install.log" "FPC_VERSION=$FPC_VERSION
+		#configureFPC
+		SearchPackage fpc
+		index=$?
+		parseFPC ${packs[$index]}
+		# verifica se  a versao do codigo fonte do fpc casa com a versão do sistema
+		ls $LAMW4LINUX_HOME/fpcsrc | grep $FPC_RELEASE   
+		flag_old_fpc=$?
+		#echo "flag_old_fpc=$flag_old_fpc";read
+		aux_path=""
+		if [ $flag_old_fpc != 0 ] ; then # caso o código fonte do fpc do LAMW4Linux não match com o do sistema, verifica se necessita fazer downgrade ou upgrade
+			if [ "$FPC_RELEASE" = "release_3_0_0" ]; then #caso a versão do fpc no sistema seja 3.0.0  
+				aux_path="$LAMW4LINUX_HOME/fpcsrc/release_3_0_4"  #faz downgrade
+			configureFPC
+				if [ -e $aux_path ]; then 
+					rm -rf $aux_path
+					flag_need_repair=1
+					getFPCSources
+				fi
+			else
+				configureFPC
+				aux_path="$LAMW4LINUX_HOME/fpcsrc/release_3_0_0" #caso a versão do fpc do sistema seja mais nova que a do LAMW4LINUX
+				ls "$aux_path"
+			#	echo "$aux_path";read
+				if [  -e $aux_path ]; then # prepara o upgrade
+					rm -rf $aux_path
+					flag_need_repair=1
+					getFPCSources
+				fi
+			fi
+		fi
+
+		expected_fpc_src_path="${LAMW4LINUX_HOME}/fpcsrc/"
+		expected_fpc_src_path="${expected_fpc_src_path}${FPC_RELEASE}"
+		#echo "$expected_fpc_src_path";read
+		if [ ! -e $expected_fpc_src_path ]; then
+		#	echo "expected_fpc_src_path does not exits"; read
+			getFPCSources
+			flag_need_repair=1
+		fi
+			
+		if [ $flag_need_repair = 1 ]; then
+			
+			CleanOldCrossCompileBins
+			BuildCrossArm $FPC_ID_DEFAULT
+			BuildLazarusIDE
+			CreateSDKSimbolicLinks
+			enableADBtoUdev
+			writeLAMWLogInstall
+			changeOwnerAllLAMW
+			#chown $LAMW_USER:$LAMW_USER -R $LAMW4LINUX_HOME
+		fi
+		
+		if  [ -e $FPC_CFG_PATH ]; then 
+			chown $LAMW_USER:$LAMW_USER $FPC_CFG_PATH
+			
+		fi
 	fi
 }
 mainInstall(){
@@ -1295,6 +1472,7 @@ case "$1" in
 			changeOwnerAllLAMW
 
 		else
+			Repair
 			checkProxyStatus;
 			echo "Updating LAMW";
 			getLAMWFramework;
@@ -1302,6 +1480,12 @@ case "$1" in
 			BuildLazarusIDE "1";
 			changeOwnerAllLAMW "1";
 		fi
+	;;
+	"install")
+		export OLD_ANDROID_SDK=1
+		export NO_GUI_OLD_SDK=1
+		mainInstall
+		changeOwnerAllLAMW
 	;;
 	# "install")
 		
@@ -1387,6 +1571,7 @@ case "$1" in
 			printf "${NEGRITO}Implicit LAMW Framework update starting in 10 seconds ... ${NORMAL}...\n"
 			printf "Press control+c to exit ...\n"
 			sleep 10 
+			Repair
 			checkProxyStatus;
 			echo "Updating LAMW";
 			getLAMWFramework;
