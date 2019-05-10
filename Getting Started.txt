@@ -1,0 +1,8 @@
+How to use LAMW Manager:
+	1 Open Direcgtory lamw_manager
+
+	To install LAMW, Run command:
+		./lamw_manager
+
+	To update LAWM Run comand:
+		./lamw_manager
