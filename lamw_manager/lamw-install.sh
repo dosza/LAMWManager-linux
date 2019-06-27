@@ -3,7 +3,7 @@
 #Universidade federal de Mato Grosso
 #Curso ciencia da computação
 #AUTOR: Daniel Oliveira Souza <oliveira.daniel@gmail.com>
-#Versao LAMW-INSTALL: 0.3.0
+#Versao LAMW-INSTALL: 0.3.1
 #Descrição: Este script configura o ambiente de desenvolvimento para o LAMW
 #Version:0.3.0 add supporte a MIME 
 
@@ -32,7 +32,7 @@ ANDROID_HOME=$LAMW_USER_HOME/LAMW
 ANDROID_SDK="$ROOT_LAMW/sdk"
 #--------------------------------------------------------------------------------------
 export XDG_DATA_DIRS="/usr/share:/usr/local/share:$LAMW_USER_HOME/.local/share"
-LAMW_INSTALL_VERSION="0.3.0"
+LAMW_INSTALL_VERSION="0.3.1"
 LAMW_INSTALL_WELCOME=(
 	"${NEGRITO}\t\tWelcome LAMW Manager version: $LAMW_INSTALL_VERSION${NORMAL}\n"
 	"\t\tPowerd by DanielTimelord\n"
@@ -777,10 +777,41 @@ getOldAndroidSDK(){
 					fi
 				fi	
 			done 
-
-
 		fi
 	fi
+
+}
+
+RepairOldSDKAndroid(){
+	SDK_MANAGER_FAILS=(
+		"platforms"
+		"platform-tools"
+		"build-tools"
+		"extras"
+	)
+	echo "${VERMELHO}Warning:${NORMAL} All Android API'S will  be unistalled!"
+	echo "Only the default APIs will be reinstalled!"
+	for ((i=0;i<${#SDK_MANAGER_FAILS[*]};i++))
+	do
+		current_sdk_path="${ANDROID_SDK}/${SDK_MANAGER_FAILS[i]}"
+		if [ -e $current_sdk_path ]; then
+			#echo "Deleting $current_sdk_path..."
+			rm -rf $current_sdk_path
+			#$ANDROID_SDK/tools/android
+		fi
+	done
+	#ls -lah "$ANDROID_SDK";read
+	#$ANDROID_SDK/tools/android
+	getOldAndroidSDK
+	for ((i=0;i<${#SDK_MANAGER_FAILS[*]};i++))
+	do
+		current_sdk_path="${ANDROID_SDK}/${SDK_MANAGER_FAILS[i]}"
+		if [ -e $current_sdk_path ]; then
+			#echo "Setting  $current_sdk_path..."
+			chown $LAMW_USER:$LAMW_USER -R $current_sdk_path
+		fi
+		chown $LAMW_USER:$LAMW_USER -R $LAMW_USER_HOME/.android
+	done
 
 }
 #Create SDK simbolic links
@@ -1546,6 +1577,19 @@ case "$1" in
 		export NO_GUI_OLD_SDK=1
 		mainInstall
 		changeOwnerAllLAMW
+	;;
+	"--reset-aapis")
+		getStatusInstalation
+		if [ $LAMW_INSTALL_STATUS = 1 ]
+		then
+			export OLD_ANDROID_SDK=1
+			export NO_GUI_OLD_SDK=1
+			RepairOldSDKAndroid
+		else
+			export OLD_ANDROID_SDK=1
+			export NO_GUI_OLD_SDK=1
+			mainInstall
+		fi
 	;;
 
 	
