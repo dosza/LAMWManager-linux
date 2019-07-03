@@ -53,11 +53,12 @@ To install LAMW and dependencies:
 <br>To just upgrade <strong>LAMW framework</strong> <em>(with the latest version available in git)</em></br>
 	<strong>./lamw_manager</strong>        <em>--update_lamw</em>
 <br>Install with proxy:</br>
-	<strong>./lamw_manager        --use-proxy	--server</strong> <em>10.0.16.1</em>	<strong>--port</strong>	<em>3128</em> </pre>
+	<strong>./lamw_manager        --use-proxy	--server</strong> <em>10.0.16.1</em>	<strong>--port</strong>	<em>3128</em> 
 <br>To clean and reinstall LAMW</br>
 	<strong>./lamw_manager</strong>        <em>--reset</em>
+<sup>1</sup>  If it is already installed, just run the Android SDK Tools
 </pre>
-	<sup>1</sup>  If it is already installed, just run the Android SDK Tools
+
 </p>
 
 <br></br>
