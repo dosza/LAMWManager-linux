@@ -2,10 +2,9 @@
 #!/bin/bash
 #Universidade federal de Mato Grosso
 #Curso ciencia da computação
-#AUTOR: Daniel Oliveira Souza <oliveira.daniel@gmail.com>
-#Versao LAMW-INSTALL: 0.3.1
+#Versao  0.3.1
 #Descrição: Este script configura o ambiente de desenvolvimento para o LAMW
-#Version:0.3.0 add supporte a MIME 
+#V
 
 
 #zenity --info --text "ANDROID_HOME=$ROOT_LAMW"
@@ -34,9 +33,9 @@ ANDROID_SDK="$ROOT_LAMW/sdk"
 export XDG_DATA_DIRS="/usr/share:/usr/local/share:$LAMW_USER_HOME/.local/share"
 LAMW_INSTALL_VERSION="0.3.1"
 LAMW_INSTALL_WELCOME=(
-	"${NEGRITO}\t\tWelcome LAMW Manager version: $LAMW_INSTALL_VERSION${NORMAL}\n"
-	"\t\tPowerd by DanielTimelord\n"
-	"\t\t<oliveira.daniel109@gmail.com>\n"
+	"${NEGRITO}\t\tWelcome LAMW Manager - version: $LAMW_INSTALL_VERSION${NORMAL}\n"
+	"\t\tPowerd by Daniel Oliveira Souza\n"
+	
 )
 
 
@@ -87,6 +86,7 @@ GRADLE_ZIP_LNK="https://services.gradle.org/distributions/gradle-4.4.1-bin.zip"
 GRADLE_ZIP_FILE="gradle-4.4.1-bin.zip"
 FPC_STABLE=""
 LAZARUS_STABLE="lazarus_1_8_4"
+LAZARUS_STABLE_VERSION="1.8.4"
 FPC_CFG_PATH="$LAMW_USER_HOME/.fpc.cfg"
 PPC_CONFIG_PATH=$FPC_CFG_PATH
 
@@ -268,17 +268,17 @@ getStatusInstalation(){
 
 getImplicitInstall(){
 	if [  -e $LAMW4LINUX_HOME/lamw-install.log ]; then
-		printf "Checking the Android SDK version installed :"
-		cat $LAMW4LINUX_HOME/lamw-install.log |  grep "OLD_ANDROID_SDK=0"
+		#printf "Checking the Android SDK version installed :" > /dev/null
+		cat $LAMW4LINUX_HOME/lamw-install.log |  grep "OLD_ANDROID_SDK=0" > /dev/null
 		if [ $? = 0 ]; then
 			export OLD_ANDROID_SDK=0
 		else 
 			export OLD_ANDROID_SDK=1
 		fi
-		printf "Checking the LAMW Manager version :"
-		cat $LAMW4LINUX_HOME/lamw-install.log |  grep "Generate LAMW_INSTALL_VERSION=$LAMW_INSTALL_VERSION"
+		#printf "Checking the LAMW Manager version :"
+		cat $LAMW4LINUX_HOME/lamw-install.log |  grep "Generate LAMW_INSTALL_VERSION=$LAMW_INSTALL_VERSION" > /dev/null
 		if [ $? = 0 ]; then  
-			echo "Only Update LAMW"
+			echo "Only Update LAMW" > /dev/null
 			export LAMW_IMPLICIT_ACTION_MODE=1 #apenas atualiza o lamw 
 		else
 			echo "You need upgrade your LAMW4Linux!"
@@ -1298,7 +1298,7 @@ writeLAMWLogInstall(){
 		"SDK_TOOLS_VERSION=$SDK_TOOLS_VERSION\n"
 		"NDK_VERSION=$NDK_VERSION\n"
 		"FPC_VERSION=$FPC_VERSION\n"
-		"LAZARUS_VERSION=$LAZARUS_VERSION\n" 
+		"LAZARUS_VERSION=$LAZARUS_STABLE_VERSION\n" 
 		"Install-date:$(date)\n"
 		)
 
@@ -1443,8 +1443,8 @@ mainInstall(){
 	echo "----------------------------------------------------------------------"
 	printf "${LAMW_INSTALL_WELCOME[*]}"
 	echo "----------------------------------------------------------------------"
-	echo "LAMW Manager (Linux supported Debian 9, Ubuntu 16.04 LTS, Linux Mint 18)
-	Generate LAMW4Linux to android-sdk=$SDK_VERSION"
+	#echo "LAMW Manager (Linux supported Debian 9, Ubuntu 16.04 LTS, Linux Mint 18)
+	#Generate LAMW4Linux to android-sdk=$SDK_VERSION"
 	if [ $FORCE_LAWM4INSTALL = 1 ]; then
 		echo "${NEGRITO}Warning: Earlier versions of Lazarus (debian package) will be removed!${NORMAL}"
 	else
@@ -1518,56 +1518,7 @@ case "$1" in
 		mainInstall
 		changeOwnerAllLAMW
 	;;
-	# "install")
-		
-	# 	mainInstall
-	# 	changeOwnerAllLAMW
-	# ;;
-	# "install_default")
-	# 	getImplicitInstall
-	# 	if [ $LAMW_IMPLICIT_ACTION_MODE = 0 ]; then
-	# 		echo "Please wait..."
-	# 		printf "${NEGRITO}Implicit installation of LAMW starting in 10 seconds  ... ${NORMAL}\n"
-	# 		printf "Press control+c to exit ...\n"
-	# 		sleep 10
 
-	# 		mainInstall
-	# 		changeOwnerAllLAMW;
-	# 	else
-	# 		echo "Please wait ..."
-	# 		printf "${NEGRITO}Implicit LAMW Framework update starting in 10 seconds ... ${NORMAL}...\n"
-	# 		printf "Press control+c to exit ...\n"
-	# 		sleep 10 
-	# 		checkProxyStatus;
-	# 		echo "Updating LAMW";
-	# 		getLAMWFramework;
-	# 	#	sleep 1;
-	# 		BuildLazarusIDE "1";
-	# 		changeOwnerAllLAMW "1";
-	# 	fi
-	# ;;
-
-	# "install-oldsdk")
-	# 	printf "${NEGRITO}Mode SDKTOOLS=24 with ant support${NORMAL}\n"
-	# 	export OLD_ANDROID_SDK=1
-
-	# 	mainInstall
-	# 	changeOwnerAllLAMW
-	# ;;
-	# "install_old_sdk")
-	# 	printf "${NEGRITO}Mode SDKTOOLS=24(auto) with ant support${NORMAL}\n"
-	# 	export OLD_ANDROID_SDK=1
-	# 	export NO_GUI_OLD_SDK=1
-	# 	mainInstall
-	# 	changeOwnerAllLAMW
-	# ;;
-
-	# "reinstall")
-	# 	#initParameters $2
-	# 	CleanOldConfig
-	# 	mainInstall
-	# 	changeOwnerAllLAMW
-	# ;;
 	"--reset")
 		printf "Please wait ...\n"
 		sleep 2
