@@ -122,6 +122,7 @@ export OLD_ANDROID_SDK=1
 export NO_GUI_OLD_SDK=0
 export LAMW_INSTALL_STATUS=0
 export LAMW_IMPLICIT_ACTION_MODE=0
+TIME_WAIT=2
 #help of lamw 
 lamw_opts=(
 	"syntax:\n"
@@ -131,6 +132,7 @@ lamw_opts=(
 	"\t./lamw_manager\t${VERDE}--sdkmanager${NORMAL}                Install LAMW and Run Android SDK Manager²\n"
 	"\t./lamw_manager\t${VERDE}--update-lamw${NORMAL}               To just upgrade LAMW framework (with the latest version available in git)\n"
 	"\t./lamw_manager\t${VERDE}--reset${NORMAL}                     To clean and reinstall LAMW\n"
+	"\t./lamw_manager\t${VERDE}--reset-aapis${NORMAL}               Reset Android API's to default\n"
 	"\t./lamw_manager\t${NEGRITO}uninstall${NORMAL}                   To uninstall LAMW :(\n"
 	"\t./lamw_manager\t${VERDE}--help${NORMAL}                      Show help\n"                 
 	"\n"
@@ -148,7 +150,7 @@ magicTrapIndex=-1
 export NEED_UPGRADE_FPC=0
 
 CheckFPCSupport(){
-	apt show fpc | grep 'Version: 3.0.0'
+	apt show fpc | grep 'Version: 3.0.0' 
 	if [ $? = 0 ]; then
 		export NEED_UPGRADE_FPC=1
 	fi
@@ -766,7 +768,7 @@ getOldAndroidSDK(){
 			#./android list sdk --extended > /tmp/old-sdk-packages.txt 
 			for((i=0;i<${#SDK_MANAGER_CMD_PARAMETERS2[*]};i++))
 			do
-				echo "${SDK_MANAGER_CMD_PARAMETERS2[i]}"
+				echo "Getting \"${SDK_MANAGER_CMD_PARAMETERS2[i]}\" ..."
 				#read;
 				echo "y" |   ./android update sdk --all --no-ui --filter ${SDK_MANAGER_CMD_PARAMETERS2[i]} ${SDK_MANAGER_CMD_PARAMETERS2_PROXY[*]}
 				if [ $? != 0 ]; then
@@ -899,14 +901,14 @@ BuildLazarusIDE(){
 	changeDirectory $LAMW_IDE_HOME
 	if [ $# = 0 ]; then 
 		make clean all
-	else 
-		printf "${AZUL}Building LAMW packages ${NORMAL}"
+#	else 
+		#printf "${AZUL}Building LAMW packages ${NORMAL}"
 		#sleep 2
 	fi
 		#build ide  with lamw framework 
 	for((i=0;i< ${#LAZBUILD_PARAMETERS[@]};i++))
 	do
-		printf "running:${VERDE}${LAZBUILD_PARAMETERS[i]}\n${NORMAL}"
+		#printf "running:${VERDE}${LAZBUILD_PARAMETERS[i]}\n${NORMAL}"
 		./lazbuild ${LAZBUILD_PARAMETERS[i]}
 		if [ $? != 0 ]; then
 			./lazbuild ${LAZBUILD_PARAMETERS[i]}
@@ -1177,7 +1179,7 @@ SearchPackage(){
 				((index=i))
 				((index++))
 				FPC_VERSION=${packs[index]}
-				echo "${packs[index]}"
+				#echo "${packs[index]}"
 				break
 			fi
 		done
@@ -1353,7 +1355,7 @@ Repair(){
 		index=$?
 		parseFPC ${packs[$index]}
 		# verifica se  a versao do codigo fonte do fpc casa com a versão do sistema
-		ls $LAMW4LINUX_HOME/fpcsrc | grep $FPC_RELEASE   
+		ls $LAMW4LINUX_HOME/fpcsrc | grep $FPC_RELEASE   > /dev/null
 		flag_old_fpc=$?
 		#echo "flag_old_fpc=$flag_old_fpc";read
 		aux_path=""
@@ -1440,9 +1442,9 @@ mainInstall(){
 # 	exit 1
 # fi
 	checkForceLAMW4LinuxInstall $*
-	echo "----------------------------------------------------------------------"
-	printf "${LAMW_INSTALL_WELCOME[*]}"
-	echo "----------------------------------------------------------------------"
+	# echo "----------------------------------------------------------------------"
+	# printf "${LAMW_INSTALL_WELCOME[*]}"
+	# echo "----------------------------------------------------------------------"
 	#echo "LAMW Manager (Linux supported Debian 9, Ubuntu 16.04 LTS, Linux Mint 18)
 	#Generate LAMW4Linux to android-sdk=$SDK_VERSION"
 	if [ $FORCE_LAWM4INSTALL = 1 ]; then
@@ -1552,20 +1554,21 @@ case "$1" in
 	;;
 	
 	"")
+		
 		getImplicitInstall
 		if [ $LAMW_IMPLICIT_ACTION_MODE = 0 ]; then
 			echo "Please wait..."
-			printf "${NEGRITO}Implicit installation of LAMW starting in 10 seconds  ... ${NORMAL}\n"
+			printf "${NEGRITO}Implicit installation of LAMW starting in $TIME_WAIT seconds  ... ${NORMAL}\n"
 			printf "Press control+c to exit ...\n"
-			sleep 10
+			sleep $TIME_WAIT
 
 			mainInstall
 			changeOwnerAllLAMW;
 		else
 			echo "Please wait ..."
-			printf "${NEGRITO}Implicit LAMW Framework update starting in 10 seconds ... ${NORMAL}...\n"
+			printf "${NEGRITO}Implicit LAMW Framework update starting in $TIME_WAIT seconds ... ${NORMAL}...\n"
 			printf "Press control+c to exit ...\n"
-			sleep 10 
+			sleep $TIME_WAIT 
 			Repair
 			checkProxyStatus;
 			echo "Updating LAMW";
@@ -1579,17 +1582,17 @@ case "$1" in
 		getImplicitInstall
 		if [ $LAMW_IMPLICIT_ACTION_MODE = 0 ]; then
 			echo "Please wait..."
-			printf "${NEGRITO}Implicit installation of LAMW starting in 10 seconds  ... ${NORMAL}\n"
+			printf "${NEGRITO}Implicit installation of LAMW starting in $TIME_WAIT seconds  ... ${NORMAL}\n"
 			printf "Press control+c to exit ...\n"
-			sleep 10
+			sleep $TIME_WAIT
 
 			mainInstall
 			changeOwnerAllLAMW;
 		else
 			echo "Please wait ..."
-			printf "${NEGRITO}Implicit LAMW Framework update starting in 10 seconds ... ${NORMAL}...\n"
+			printf "${NEGRITO}Implicit LAMW Framework update starting in $TIME_WAIT seconds ... ${NORMAL}...\n"
 			printf "Press control+c to exit ...\n"
-			sleep 10 
+			sleep $TIME_WAIT 
 			checkProxyStatus;
 			echo "Updating LAMW";
 			getLAMWFramework;
