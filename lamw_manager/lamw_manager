@@ -1,5 +1,4 @@
 #!/bin/bash
-#!/bin/bash
 #!This script is a wraper to lamw-install.sh
 if  [  "$(whoami)" = "root" ] #impede que o script seja executado pelo root 
 then
