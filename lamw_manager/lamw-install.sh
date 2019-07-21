@@ -9,6 +9,8 @@
 
 #zenity --info --text "ANDROID_HOME=$ROOT_LAMW"
 
+
+
 #----ColorTerm
 export VERDE=$'\e[1;32m'
 export AMARELO=$'\e[01;33m'
@@ -92,7 +94,7 @@ PPC_CONFIG_PATH=$FPC_CFG_PATH
 
 FPC_ID_DEFAULT=0
 FPC_CROSS_ARM_DEFAULT_PARAMETERS=('clean crossall crossinstall  CPU_TARGET=arm OS_TARGET=android OPT="-dFPC_ARMHF" SUBARCH="armv7a" INSTALL_PREFIX=/usr')
-#FPC_CROSS_ARM_DEFAULT_PARAMETERS=(clean crossall crossinstall  CPU_TARGET=aarch64 OS_TARGET=android OPT="-dFPC_ARMHF"  INSTALL_PREFIX=/usr')
+#FPC_CROSS_AARCH_DEFAULT_PARAMETERS=(clean crossall crossinstall  CPU_TARGET=aarch64 OS_TARGET=android OPT="-dFPC_ARMHF"  INSTALL_PREFIX=/usr')
 FPC_CROSS_ARM_MODE_FPCDELUXE=(clean crossall crossinstall  CPU_TARGET=arm OS_TARGET=android CROSSOPT="-CpARMV7A -CfVFPV3" INSTALL_PREFIX=/usr)
 #FPC_CROSS_ARM_MODE_FPCDELUXE=(clean crossall crossinstall  CPU_TARGET=aarch64 OS_TARGET=android INSTALL_PREFIX=/usr)
 
@@ -468,7 +470,7 @@ initParameters(){
 			--proxy_port=$PORT_SERVER 
 		)
 		SDK_MANAGER_CMD_PARAMETERS2=(
-			 "android-26"
+			"android-26"
 			"platform-tools"
 			"build-tools-26.0.2" 
 			"extra-google-google_play_services"
@@ -852,8 +854,10 @@ AddSDKPathstoProfile(){
 	if [ "$aux" != "" ] ; then   # verifica se a última linha é vazia
 			sed  -i '$a\' $LAMW_USER_HOME/.profile #adiciona uma linha ao fim do arquivo
 	fi
-
-
+	aux=$(tail -1 $LAMW_USER_HOME/.bashrc)       #tail -1 mostra a última linha do arquivo 
+	if [ "$aux" != "" ] ; then   # verifica se a última linha é vazia
+			sed  -i '$a\' $LAMW_USER_HOME/.bashrc #adiciona uma linha ao fim do arquivo
+	fi
 	profile_file=$LAMW_USER_HOME/.bashrc
 	flag_profile_paths=0
 	profile_line_path='export PATH=$PATH:$GRADLE_HOME/bin'
