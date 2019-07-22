@@ -1,58 +1,38 @@
 #!/bin/bash
 #!This script is a wraper to lamw-install.sh
-if  [  "$(whoami)" = "root" ] #impede que o script seja executado pelo root 
-then
+export DEBUG=0
+export ARGS="$*"
+if  [  "$(whoami)" = "root" ];then #impede que o script seja executado pelo root 
+
 	echo "Error: this version  of LAMW4Linux was designed  to run without root priveleges" >&2 # >&2 is a file descriptor to /dev/stderror
 	echo "Exiting ..."
 	exit 1
 fi
 
-export DEBUG=0
-args=($*)
-args_str=()
-for((i=0;i<${#args[*]};i++))
-do
-	if [ "${args[i]}" = "DEBUG=1" ]; then
-		export DEBUG=1
-	fi
-done
-if [ $DEBUG = 1 ]; then
-	limite=${#args[*]}
-	((limite--))
-	current=-1
-	for((i=0;i<$limite;i++))
-	do
-		#current=${#args_str[*]}
-		args_str[i]=${args[i]}
-	done
+
+echo "$ARGS" | grep DEBUG=1 > /dev/null 
+if [ $? = 0 ]; then
+	export DEBUG=1;
+	export ARGS=${ARGS//DEBUG=1/} # remove todas as ocorrencias de DEBUG=1
 fi
 
-#echo '#!/bin/bash' > /tmp/lamw-overrides.sh
 echo "$USER" > /tmp/lamw-overrides.conf
-#echo "$HOME" >>/tmp/lamw-overrides.sh
-#chmod +x /tmp/lamw-overrides.sh
 if [ -e $PWD/lamw-install.sh ]; then
 	if [ $DEBUG = 1 ]; then
-		#echo "args_str=[*]=${args_str[*]}"
-		#read
-		sudo -i bash  -x $PWD/lamw-install.sh ${args_str[*]}
+		sudo -i bash  -x "$PWD/lamw-install.sh" $ARGS
 	else
-		sudo -i bash  $PWD/lamw-install.sh $*
+		sudo -i bash  "$PWD/lamw-install.sh" $*
 	fi
 else
-	AUX_PATH=$0
-	AUX_PATH=${AUX_PATH%/lamw_manager*} #expansão de variavel que remove  cg.sh restando a path
+	export AUX_PATH=$0
+	export AUX_PATH=${AUX_PATH%/lamw_manager*} #expansão de variavel que remove  lamw_manager (do final da string) restando a path
 	if [ $DEBUG = 1 ]; then
-		#echo "args_str=[*]=${args_str[*]}"
-		#read
-		sudo -i bash  -x $AUX_PATH/lamw-install.sh ${args_str[*]}
+		sudo -i bash  -x "$AUX_PATH/lamw-install.sh" $ARGS
 	else
-		sudo -i bash  $AUX_PATH/lamw-install.sh $*
+		sudo -i bash  "$AUX_PATH/lamw-install.sh" $*
 	fi
-	true;
 fi
 
-if [ -e /tmp/lamw-overrides.conf ]
-then
+if [ -e /tmp/lamw-overrides.conf ];then
 	rm /tmp/lamw-overrides.conf
 fi

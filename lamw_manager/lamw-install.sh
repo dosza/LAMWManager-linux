@@ -258,12 +258,9 @@ changeOwnerAllLAMW(){
 }
 getStatusInstalation(){
 	if [  -e $LAMW4LINUX_HOME/lamw-install.log ]; then
-		#cat $LAMW4LINUX_HOME/lamw-install.log
 		export LAMW_INSTALL_STATUS=1
 		return 1
-
 	else 
-		#echo "not installed" >&2
 		export OLD_ANDROID_SDK=1
 		export NO_GUI_OLD_SDK=1
 		return 0;
@@ -272,17 +269,14 @@ getStatusInstalation(){
 
 getImplicitInstall(){
 	if [  -e $LAMW4LINUX_HOME/lamw-install.log ]; then
-		#printf "Checking the Android SDK version installed :" > /dev/null
 		cat $LAMW4LINUX_HOME/lamw-install.log |  grep "OLD_ANDROID_SDK=0" > /dev/null
 		if [ $? = 0 ]; then
 			export OLD_ANDROID_SDK=0
 		else 
 			export OLD_ANDROID_SDK=1
 		fi
-		#printf "Checking the LAMW Manager version :"
 		cat $LAMW4LINUX_HOME/lamw-install.log |  grep "Generate LAMW_INSTALL_VERSION=$LAMW_INSTALL_VERSION" > /dev/null
 		if [ $? = 0 ]; then  
-			echo "Only Update LAMW" > /dev/null
 			export LAMW_IMPLICIT_ACTION_MODE=1 #apenas atualiza o lamw 
 		else
 			echo "You need upgrade your LAMW4Linux!"
@@ -300,9 +294,6 @@ checkForceLAMW4LinuxInstall(){
 	do
 		#printf "${VERMELHO} ${args[i]} ${NORMAL}\n"
 		if [ "${args[i]}" = "--force" ]; then
-			#printf "Warning: This application theres power binary deb"
-			
-			sleep 2
 			export FORCE_LAWM4INSTALL=1
 			break
 		fi
@@ -311,29 +302,21 @@ checkForceLAMW4LinuxInstall(){
 #setJRE8 as default
 setJava8asDefault(){
 	path_java=($(dpkg -L openjdk-8-jre))
-
-i=0
-found_path=""
-while [ $i -lt ${#path_java[@]} ]
-do
-	wi=${path_java[$i]}
-	#printf "$wi\n"
-	case "$wi" in
-		*"jre"*)
-		#printf "found: i=$i $wi\n"
-		#found_path=$w8asDefault
-		if [ -e $wi/bin/java ]; then
-			#printf "found: i=$i $wi\nStopping search ...\n"
-			found_path=$wi
-			export JAVA_PATH="$found_path/bin/java"
-			update-alternatives --set java $JAVA_PATH
-			break;
-		fi
-	esac
-	((i++))
-done
-
-
+	found_path=""
+	for((i = 0; i < ${#path_java[@]} ; i++ )); do
+		wi=${path_java[$i]}
+		case "$wi" in
+			*"jre"*)
+				if [ -e $wi/bin/java ]; then
+					#printf "found: i=$i $wi\nStopping search ...\n"
+					found_path=$wi
+					export JAVA_PATH="$found_path/bin/java"
+					update-alternatives --set java $JAVA_PATH
+					break;
+				fi
+			;;
+		esac
+	done
 }
 # searchLineinFile(FILE *fp, char * str )
 #$1 is File Path
@@ -385,7 +368,6 @@ splitStr(){
 GenerateScapesStr(){
 	tam=${#HOME_USER_SPLITTED_ARRAY[@]}
 	str_scapes=""
-	#echo "tam=$tam"
 	if [ "$1" = "" ] ; then
 		for ((i=0;i<tam;i++))
 		do
@@ -393,10 +375,7 @@ GenerateScapesStr(){
 		#echo ${HOME_USER_SPLITTED_ARRAY[i]}
 		done
 	else
-		echo $1
-		#str_scapes=""
 		str_array=($(splitStr "$1" "/"))
-		#echo ${str_array[@]}
 		tam=${#str_array[@]}
 		for ((i=0;i<tam;i++))
 		do
@@ -408,8 +387,7 @@ GenerateScapesStr(){
 
 #unistall java not supported
 unistallJavaUnsupported(){
-	if [ $flag_new_ubuntu_lts = 1 ]
-	then
+	if [ $flag_new_ubuntu_lts = 1 ]; then
 		 apt-get remove --purge openjdk-9-* -y 
 		 apt-get remove --purge openjdk-11* -y
 	fi
@@ -421,8 +399,8 @@ installDependences(){
 		 apt-get remove --purge  lazarus* -y
 		 apt-get autoremove --purge -y
 	fi
-			# apt-get install fpc
 	CheckFPCSupport
+
 	if [ $NEED_UPGRADE_FPC = 1 ]; then
 		enableUpgradeFPC
 		apt-get install  fpc/stretch-backports  -y --allow-unauthenticated
@@ -534,15 +512,12 @@ getLazarusSources(){
 	svn co $LAZARUS_STABLE_SRC_LNK
 	if [ $? != 0 ]; then  #case fails last command , try svn chekout 
 		 rm -rf $LAZARUS_STABLE
-		#svn cleanup
-		#changeDirectory $LAMW4LINUX_HOME
 		svn co $LAZARUS_STABLE_SRC_LNK
 		if [ $? != 0 ]; then 
 			rm -rf $LAZARUS_STABLE
 			echo "possible network instability! Try later!"
 			exit 1
 		fi
-		#svn revert -R  $LAMW_SRC_LNK
 	fi
 }
 
@@ -584,7 +559,6 @@ getAnt(){
 		trap TrapControlC  2
 		wget -c $ANT_TAR_URL
 		if [ $? != 0 ] ; then
-			#rm *.zip*
 			ANT_TAR_URL="https://www-eu.apache.org/dist/ant/binaries/apache-ant-1.10.5-bin.tar.xz"
 			wget -c $ANT_TAR_URL
 			if [ $? != 0 ]; then
@@ -592,12 +566,9 @@ getAnt(){
 				exit 1
 			fi
 		fi
-		#echo "$PWD"
-		#sleep 3
 		magicTrapIndex=1
 		trap TrapControlC 2
 		tar -xvf "$ANT_TAR_FILE"
-
 	fi
 
 	if [ -e  $ANT_TAR_FILE ]; then
@@ -615,7 +586,6 @@ getAndroidSDKTools(){
 		echo "" > $HOME/.android/repositories.cfg
 	fi 
 
-	#zenity --info --text "ANDROID_HOME=====>$ROOT_LAMW"
 	if [ ! -e $ROOT_LAMW ]; then
 		mkdir $ROOT_LAMW
 	fi
@@ -628,7 +598,6 @@ getAndroidSDKTools(){
 		trap TrapControlC  2 # set armadilha para o signal2 (siginterrupt)
 		wget -c $GRADLE_ZIP_LNK
 		if [ $? != 0 ] ; then
-			#rm *.zip*
 			wget -c $GRADLE_ZIP_LNK
 		fi
 		magicTrapIndex=3
@@ -674,12 +643,9 @@ getAndroidSDKTools(){
 				wget -c $SDK_TOOLS_URL
 				if [ $? != 0 ]; then
 					echo "possible network instability! Try later!"
-					#rm -rf $ANDROID_SDK
 					exit 1
 				fi
 			fi
-		
-			#tar -zxvf android-sdk_r24.4.1-linux.
 			magicTrapIndex=5
 			trap TrapControlC 2 
 			unzip $SDK_TOOLS_ZIP
@@ -689,7 +655,6 @@ getAndroidSDKTools(){
 		changeDirectory $ANDROID_SDK
 		if [ ! -e ndk-bundle ] ; then
 			magicTrapIndex=-1
-			#echo "${magic[$magicTrapIndex]}";read
 			trap TrapControlC 2 
 			wget -c $NDK_URL
 			if [ $? != 0 ]; then
@@ -712,16 +677,11 @@ getAndroidSDKTools(){
 	fi
 	trap - SIGINT  #removendo a traps
 	magicTrapIndex=-1
-
-
-
 }
 
 getSDKAndroid(){
 	changeDirectory $ANDROID_SDK/tools/bin #change directory
-	#if [ $i = 0 ]; then  #fix bug of new licenses 
 	yes | ./sdkmanager ${SDK_LICENSES_PARAMETERS[*]}
-	#fi
 	if [ $? != 0 ]; then 
 		yes | ./sdkmanager ${SDK_LICENSES_PARAMETERS[*]}
 		if [ $? != 0 ]; then
@@ -762,12 +722,7 @@ getOldAndroidSDK(){
 		if [ $NO_GUI_OLD_SDK = 0 ]; then
 			echo "before update-sdk"
 			./android update sdk
-		else
-			#echo "yes" | ./android update sdk --no-ui
-			#if [ $? != 0 ]; then 
-				#echo "yes" | ./android update sdk --no-ui
-			#fi
-			#./android list sdk --extended > /tmp/old-sdk-packages.txt 
+		else 
 			for((i=0;i<${#SDK_MANAGER_CMD_PARAMETERS2[*]};i++))
 			do
 				echo "Getting \"${SDK_MANAGER_CMD_PARAMETERS2[i]}\" ..."
@@ -799,27 +754,22 @@ RepairOldSDKAndroid(){
 	do
 		current_sdk_path="${ANDROID_SDK}/${SDK_MANAGER_FAILS[i]}"
 		if [ -e $current_sdk_path ]; then
-			#echo "Deleting $current_sdk_path..."
 			rm -rf $current_sdk_path
-			#$ANDROID_SDK/tools/android
 		fi
 	done
-	#ls -lah "$ANDROID_SDK";read
-	#$ANDROID_SDK/tools/android
 	getOldAndroidSDK
 	for ((i=0;i<${#SDK_MANAGER_FAILS[*]};i++))
 	do
 		current_sdk_path="${ANDROID_SDK}/${SDK_MANAGER_FAILS[i]}"
 		if [ -e $current_sdk_path ]; then
-			#echo "Setting  $current_sdk_path..."
 			chown $LAMW_USER:$LAMW_USER -R $current_sdk_path
 		fi
 		chown $LAMW_USER:$LAMW_USER -R $LAMW_USER_HOME/.android
 	done
 
 }
-#Create SDK simbolic links
 
+#Create SDK simbolic links
 CreateSDKSimbolicLinks(){
 	#if [ $OLD_ANDROID_SDK = 0 ]; then 
 	ln -sf "$ROOT_LAMW/sdk/ndk-bundle" "$ROOT_LAMW/ndk"
@@ -884,35 +834,23 @@ WrappergetAndroidSDK(){
 }
 #to build
 BuildCrossArm(){
-	if [ "$1" != "" ]; then #
-		changeDirectory $LAMW4LINUX_HOME/fpcsrc 
-		changeDirectory $FPC_RELEASE
-		case $1 in 
-			0 )
-				 make clean 
-				 make crossall crossinstall  CPU_TARGET=arm OPT="-dFPC_ARMEL" OS_TARGET=android CROSSOPT="-CpARMV7A -CfVFPV3" INSTALL_PREFIX=/usr
-			;;
-
-		esac
-	fi					
+	changeDirectory $LAMW4LINUX_HOME/fpcsrc 
+	changeDirectory $FPC_RELEASE
+	make clean 
+	make crossall crossinstall  CPU_TARGET=arm OPT="-dFPC_ARMEL" OS_TARGET=android CROSSOPT="-CpARMV7A -CfVFPV3" INSTALL_PREFIX=/usr		
 }
 
 #Build lazarus ide
-
 BuildLazarusIDE(){
 	ln -sf $LAMW4LINUX_HOME/$LAZARUS_STABLE $LAMW_IDE_HOME  # link to lamw4_home directory 
 	ln -sf $LAMW_IDE_HOME/lazarus $LAMW4LINUX_EXE_PATH #link  to lazarus executable
 	changeDirectory $LAMW_IDE_HOME
 	if [ $# = 0 ]; then 
 		make clean all
-#	else 
-		#printf "${AZUL}Building LAMW packages ${NORMAL}"
-		#sleep 2
 	fi
 		#build ide  with lamw framework 
 	for((i=0;i< ${#LAZBUILD_PARAMETERS[@]};i++))
 	do
-		#printf "running:${VERDE}${LAZBUILD_PARAMETERS[i]}\n${NORMAL}"
 		./lazbuild ${LAZBUILD_PARAMETERS[i]}
 		if [ $? != 0 ]; then
 			./lazbuild ${LAZBUILD_PARAMETERS[i]}
@@ -938,7 +876,6 @@ LAMW4LinuxPostConfig(){
 	tam=${#java_versions[@]} #tam recebe o tamanho do vetor 
 	ant_path=$ANT_HOME/bin
 	ant_path=${ant_path%/ant*} #
-	i=0 #Inicializando o contador 
 	for (( i = 0; i < tam ; i++ )) # Laço para percorrer o vetor 
 	do
 		if [ -e ${java_versions[i]} ]; then
@@ -1072,7 +1009,6 @@ CleanOldCrossCompileBins(){
 	SearchPackage fpc
 	index=$?
 	parseFPC ${packs[$index]}
-	#echo "$FPC_LIB_PATH";read;
 	if [ -e $FPC_LIB_PATH/ppcrossarm ]; then
 		 rm $FPC_LIB_PATH/ppcrossarm
 	fi
@@ -1353,15 +1289,12 @@ Repair(){
 		if [ "$fpc_arm" = "" ]; then
 			flag_need_repair=1  # caso o  crosscompile para arm nao exista,  sinaliza reparo
 		fi
-		#searchLineinFile "$LAMW4LINUX_HOME/lamw-install.log" "FPC_VERSION=$FPC_VERSION
-		#configureFPC
 		SearchPackage fpc
 		index=$?
 		parseFPC ${packs[$index]}
 		# verifica se  a versao do codigo fonte do fpc casa com a versão do sistema
 		ls $LAMW4LINUX_HOME/fpcsrc | grep $FPC_RELEASE   > /dev/null
 		flag_old_fpc=$?
-		#echo "flag_old_fpc=$flag_old_fpc";read
 		aux_path=""
 		if [ $flag_old_fpc != 0 ] ; then # caso o código fonte do fpc do LAMW4Linux não match com o do sistema, verifica se necessita fazer downgrade ou upgrade
 			if [ "$FPC_RELEASE" = "release_3_0_0" ]; then #caso a versão do fpc no sistema seja 3.0.0  
@@ -1376,7 +1309,7 @@ Repair(){
 				configureFPC
 				aux_path="$LAMW4LINUX_HOME/fpcsrc/release_3_0_0" #caso a versão do fpc do sistema seja mais nova que a do LAMW4LINUX
 				ls "$aux_path"
-			#	echo "$aux_path";read
+
 				if [  -e $aux_path ]; then # prepara o upgrade
 					rm -rf $aux_path
 					flag_need_repair=1
@@ -1387,9 +1320,7 @@ Repair(){
 
 		expected_fpc_src_path="${LAMW4LINUX_HOME}/fpcsrc/"
 		expected_fpc_src_path="${expected_fpc_src_path}${FPC_RELEASE}"
-		#echo "$expected_fpc_src_path";read
 		if [ ! -e $expected_fpc_src_path ]; then
-		#	echo "expected_fpc_src_path does not exits"; read
 			getFPCSources
 			flag_need_repair=1
 		fi
@@ -1403,7 +1334,6 @@ Repair(){
 			enableADBtoUdev
 			writeLAMWLogInstall
 			changeOwnerAllLAMW
-			#chown $LAMW_USER:$LAMW_USER -R $LAMW4LINUX_HOME
 		fi
 		
 		if  [ -e $FPC_CFG_PATH ]; then 
@@ -1431,7 +1361,7 @@ mainInstall(){
 	changeDirectory $LAMW_USER_HOME
 	CleanOldCrossCompileBins
 	changeDirectory $FPC_RELEASE
-	BuildCrossArm $FPC_ID_DEFAULT
+	BuildCrossArm 
 	BuildLazarusIDE
 	changeDirectory $ROOT_LAMW
 	LAMW4LinuxPostConfig
@@ -1439,15 +1369,9 @@ mainInstall(){
 	writeLAMWLogInstall
 }
 
-# if  [  "$(whoami)" = "root" ] #impede que o script seja executado pelo root 
-# then
-# 	echo "Error: this version  of LAMW4Linux was designed  to run without root priveleges" >&2 # >&2 is a file descriptor to /dev/stderror
-# 	echo "Exiting ..."
-# 	exit 1
-# fi
 	checkForceLAMW4LinuxInstall $*
 	# echo "----------------------------------------------------------------------"
-	# printf "${LAMW_INSTALL_WELCOME[*]}"
+	 printf "${LAMW_INSTALL_WELCOME[*]}"
 	# echo "----------------------------------------------------------------------"
 	#echo "LAMW Manager (Linux supported Debian 9, Ubuntu 16.04 LTS, Linux Mint 18)
 	#Generate LAMW4Linux to android-sdk=$SDK_VERSION"
@@ -1458,11 +1382,6 @@ mainInstall(){
 		echo "use ${NEGRITO}--force${NORMAL} parameter remove anywhere lazarus (debian package)"
 		sleep 1
 	fi
-	#configure parameters sdk before init download and build
-
-	#Checa se necessario habilitar remocao forcada
-	
-#else
 
 	if [ $# = 6 ] || [ $# = 7 ]; then
 		if [ "$2" = "--use_proxy" ] ;then 
@@ -1527,7 +1446,6 @@ case "$1" in
 
 	"--reset")
 		printf "Please wait ...\n"
-		sleep 2
 		CleanOldConfig
 		printf "Mode SDKTOOLS=24 with ant support "
 		export OLD_ANDROID_SDK=1
@@ -1536,20 +1454,15 @@ case "$1" in
 		changeOwnerAllLAMW
 	;;
 	"--reset-aapis")
+		export OLD_ANDROID_SDK=1
+		export NO_GUI_OLD_SDK=1
 		getStatusInstalation
-		if [ $LAMW_INSTALL_STATUS = 1 ]
-		then
-			export OLD_ANDROID_SDK=1
-			export NO_GUI_OLD_SDK=1
+		if [ $LAMW_INSTALL_STATUS = 1 ]; then
 			RepairOldSDKAndroid
 		else
-			export OLD_ANDROID_SDK=1
-			export NO_GUI_OLD_SDK=1
 			mainInstall
 		fi
 	;;
-
-	
 	"delete_paths")
 		cleanPATHS
 	;;
@@ -1565,7 +1478,6 @@ case "$1" in
 			printf "${NEGRITO}Implicit installation of LAMW starting in $TIME_WAIT seconds  ... ${NORMAL}\n"
 			printf "Press control+c to exit ...\n"
 			sleep $TIME_WAIT
-
 			mainInstall
 			changeOwnerAllLAMW;
 		else
@@ -1577,7 +1489,6 @@ case "$1" in
 			checkProxyStatus;
 			echo "Updating LAMW";
 			getLAMWFramework;
-		#	sleep 1;
 			BuildLazarusIDE "1";
 			changeOwnerAllLAMW "1";
 		fi					
@@ -1589,7 +1500,6 @@ case "$1" in
 			printf "${NEGRITO}Implicit installation of LAMW starting in $TIME_WAIT seconds  ... ${NORMAL}\n"
 			printf "Press control+c to exit ...\n"
 			sleep $TIME_WAIT
-
 			mainInstall
 			changeOwnerAllLAMW;
 		else
@@ -1600,7 +1510,6 @@ case "$1" in
 			checkProxyStatus;
 			echo "Updating LAMW";
 			getLAMWFramework;
-		#	sleep 1;
 			BuildLazarusIDE "1";
 			changeOwnerAllLAMW "1";
 		fi
