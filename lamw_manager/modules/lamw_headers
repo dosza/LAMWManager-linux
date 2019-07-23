@@ -1,0 +1,155 @@
+#!/bin/bash
+#----ColorTerm
+export VERDE=$'\e[1;32m'
+export AMARELO=$'\e[01;33m'
+export SUBLINHADO='4'
+export NEGRITO=$'\e[1m'
+export VERMELHO=$'\e[1;31m'
+export VERMELHO_SUBLINHADO=$'\e[1;4;31m'
+export AZUL=$'\e[1;34m'
+export NORMAL=$'\e[0m'
+
+if [ ! -e /tmp/lamw-overrides.conf ]
+then
+	printf "${VERMELHO}Error: you need run lamw-manager or lamw_manager first! ${NORMAL}\n"
+	exit 1
+fi
+LAMW_USER=$(cat /tmp/lamw-overrides.conf)
+LAMW_USER_HOME=$(eval echo "~$LAMW_USER")
+ROOT_LAMW="$LAMW_USER_HOME/LAMW" #RAIZ DO AMBIENTE LAMW 
+ANDROID_HOME=$LAMW_USER_HOME/LAMW
+ANDROID_SDK="$ROOT_LAMW/sdk"
+#--------------------------------------------------------------------------------------
+export XDG_DATA_DIRS="/usr/share:/usr/local/share:$LAMW_USER_HOME/.local/share"
+LAMW_INSTALL_VERSION="0.3.1"
+LAMW_INSTALL_WELCOME=(
+	"${NEGRITO}\t\tWelcome LAMW Manager - version: $LAMW_INSTALL_VERSION${NORMAL}\n"
+	"\t\tPowerd by Daniel Oliveira Souza\n"
+	
+)
+
+
+export DEBIAN_FRONTEND="gnome"
+export URL_FPC=""
+export FPC_VERSION=""
+export FPC_RELEASE=""
+export flag_new_ubuntu_lts=0
+export FPC_LIB_PATH=""
+export FPC_VERSION=""
+export FPC_MKCFG_EXE=""
+export FORCE_LAWM4INSTALL=0
+work_home_desktop=$(xdg-user-dir DESKTOP)
+
+CROSS_COMPILE_URL="https://github.com/newpascal/fpcupdeluxe/releases/tag/v1.6.1e"
+APT_OPT=""
+export PROXY_SERVER="internet.cua.ufmt.br"
+export PORT_SERVER=3128
+PROXY_URL="http://$PROXY_SERVER:$PORT_SERVER"
+export USE_PROXY=0
+export JAVA_PATH=""
+export SDK_TOOLS_URL="https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip"
+export NDK_URL="https://dl.google.com/android/repository/android-ndk-r18b-linux-x86_64.zip"
+export NDK_VERSION="r18b"
+SDK_TOOLS_VERSION="r26.1.1"
+SDK_TOOLS_ZIP="sdk-tools-linux-4333796.zip"
+SDK_VERSION="28"
+SDK_MANAGER_CMD_PARAMETERS=()
+SDK_MANAGER_CMD_PARAMETERS2=()
+SDK_MANAGER_CMD_PARAMETERS2_PROXY=()
+SDK_LICENSES_PARAMETERS=()
+LAZARUS_STABLE_SRC_LNK="https://svn.freepascal.org/svn/lazarus/tags/lazarus_1_8_4"
+LAMW_SRC_LNK="https://github.com/jmpessoa/lazandroidmodulewizard.git"
+LAMW4_LINUX_PATH_CFG="$LAMW_USER_HOME/.lamw4linux"
+LAMW4LINUX_HOME="$ROOT_LAMW/lamw4linux"
+LAMW_IDE_HOME="$LAMW4LINUX_HOME/lamw4linux" # path to link-simbolic to ide 
+LAMW_WORKSPACE_HOME="$LAMW_USER_HOME/Dev/LAMWProjects"  #path to lamw_workspace
+LAMW4LINUX_EXE_PATH="$LAMW_IDE_HOME/lamw4linux"
+LAMW_MENU_ITEM_PATH="$LAMW_USER_HOME/.local/share/applications/lamw4linux.desktop"
+GRADLE_HOME="$ROOT_LAMW/gradle-4.4.1"
+GRADLE_VERSION="4.4.1"
+ANT_HOME="$ROOT_LAMW/apache-ant-1.10.5"
+ANT_VERSION="1.10.5"
+ANT_TAR_URL="http://ftp.unicamp.br/pub/apache/ant/binaries/apache-ant-1.10.5-bin.tar.xz"
+ANT_TAR_FILE="apache-ant-1.10.5-bin.tar.xz"
+GRADLE_CFG_HOME="$LAMW_USER_HOME/.gradle"
+GRADLE_ZIP_LNK="https://services.gradle.org/distributions/gradle-4.4.1-bin.zip"
+GRADLE_ZIP_FILE="gradle-4.4.1-bin.zip"
+FPC_STABLE=""
+LAZARUS_STABLE="lazarus_1_8_4"
+LAZARUS_STABLE_VERSION="1.8.4"
+FPC_CFG_PATH="$LAMW_USER_HOME/.fpc.cfg"
+PPC_CONFIG_PATH=$FPC_CFG_PATH
+
+FPC_ID_DEFAULT=0
+FPC_CROSS_ARM_DEFAULT_PARAMETERS=('clean crossall crossinstall  CPU_TARGET=arm OS_TARGET=android OPT="-dFPC_ARMHF" SUBARCH="armv7a" INSTALL_PREFIX=/usr')
+#FPC_CROSS_AARCH_DEFAULT_PARAMETERS=(clean crossall crossinstall  CPU_TARGET=aarch64 OS_TARGET=android OPT="-dFPC_ARMHF"  INSTALL_PREFIX=/usr')
+FPC_CROSS_ARM_MODE_FPCDELUXE=(clean crossall crossinstall  CPU_TARGET=arm OS_TARGET=android CROSSOPT="-CpARMV7A -CfVFPV3" INSTALL_PREFIX=/usr)
+#FPC_CROSS_ARM_MODE_FPCDELUXE=(clean crossall crossinstall  CPU_TARGET=aarch64 OS_TARGET=android INSTALL_PREFIX=/usr)
+
+LAZBUILD_PARAMETERS=(
+	"--build-ide= --add-package $ROOT_LAMW/lazandroidmodulewizard/android_bridges/tfpandroidbridge_pack.lpk --primary-config-path=$LAMW4_LINUX_PATH_CFG  --lazarusdir=$LAMW_IDE_HOME"
+	"--build-ide= --add-package $ROOT_LAMW/lazandroidmodulewizard/android_wizard/lazandroidwizardpack.lpk --primary-config-path=$LAMW4_LINUX_PATH_CFG --lazarusdir=$LAMW_IDE_HOME"
+	"--build-ide= --add-package $ROOT_LAMW/lazandroidmodulewizard/ide_tools/amw_ide_tools.lpk --primary-config-path=$LAMW4_LINUX_PATH_CFG --lazarusdir=$LAMW_IDE_HOME"
+)
+
+#REGEX VARIABLES
+
+WR_GRADLE_HOME=""
+WR_ANDROID_HOME=""
+HOME_USER_SPLITTED_ARRAY=(${HOME//\// })
+HOME_STR_SPLITTED=""
+libs_android="libx11-dev libgtk2.0-dev libgdk-pixbuf2.0-dev libcairo2-dev libpango1.0-dev libxtst-dev libatk1.0-dev libghc-x11-dev freeglut3 freeglut3-dev "
+prog_tools="menu fpc git subversion make build-essential zip unzip unrar android-tools-adb openjdk-8-jdk  gdb"
+packs=()
+fpc_debian_backports=(
+	"# debian backports"  
+	"deb http://deb.debian.org/debian stretch-backports main contrib non-free" 
+	"deb-src http://deb.debian.org/debian stretch-backports main contrib non-free" 
+)
+#[[]
+
+export OLD_ANDROID_SDK=1
+export NO_GUI_OLD_SDK=0
+export LAMW_INSTALL_STATUS=0
+export LAMW_IMPLICIT_ACTION_MODE=0
+TIME_WAIT=2
+
+
+#help of lamw 
+
+lamw_opts=(
+	"syntax:\n"
+	"./lamw_manager\tor\t./lamw_manger\t${NEGRITO}[actions]${NORMAL} ${VERDE}[options]${NORMAL}\n"
+	"${NEGRITO}Usage${NORMAL}:\n"
+	"\t${NEGRITO}./lamw_manager${NORMAL}                              Install LAMW and dependecies¹\n"
+	"\t./lamw_manager\t${VERDE}--sdkmanager${NORMAL}                Install LAMW and Run Android SDK Manager²\n"
+	"\t./lamw_manager\t${VERDE}--update-lamw${NORMAL}               To just upgrade LAMW framework (with the latest version available in git)\n"
+	"\t./lamw_manager\t${VERDE}--reset${NORMAL}                     To clean and reinstall LAMW\n"
+	"\t./lamw_manager\t${VERDE}--reset-aapis${NORMAL}               Reset Android API's to default\n"
+	"\t./lamw_manager\t${NEGRITO}uninstall${NORMAL}                   To uninstall LAMW :(\n"
+	"\t./lamw_manager\t${VERDE}--help${NORMAL}                      Show help\n"                 
+	"\n"
+	"${NEGRITO}Proxy Options:${NORMAL}\n"
+	"\t./lamw_manager ${NEGRITO}[action]${NORMAL}  --use_proxy --server ${VERDE}[HOST]${NORMAL} --port ${VERDE}[NUMBER]${NORMAL}\n"
+	"sample:\n\t./lamw_manager --update-lamw --use_proxy --server 10.0.16.1 --port 3128\n"
+	"\n\n${NEGRITO}Note:\n${NORMAL}"
+	"\t¹ By default the installation waives the use of parameters, if LAMW is installed, it will only be updated!\n"
+	"\t² If it is already installed, just run the Android SDK Tools\n"
+	"\n"
+)
+
+
+magicTrapIndex=-1
+export NEED_UPGRADE_FPC=0
+
+#-------------------- AARCH64 SUPPORT HEADERS-------------------------------------------------------------
+export AARCH64_ANDROID_TOOLS="$ROOT_LAMW/sdk/ndk-bundle/toolchains/aarch64-linux-android-4.9/prebuilt/linux-x86_64/bin"
+export FPC_CROSS_AARCH_DEFAULT_PARAMETERS=('clean crossall crossinstall  CPU_TARGET=aarch64 OS_TARGET=android OPT="-dFPC_ARMHF"  INSTALL_PREFIX=/usr')
+export PATH=$PATH:$AARCH64_ANDROID_TOOLS
+export FLAG_FORCE_ANDROID_AARCH64=1
+export FPC_TRUNK_RELEASE=""
+export FPC_TRUNK_URL="https://svn.freepascal.org/svn/fpc/trunk"
+export FPC_TRUNK_VERSION=""
+export FPC_TRUNK_LIB_PATH=""
+export FPC_TRUNK_EXEC_PATH=""
+#---------------------------------------------------------------------------------------------------------------------
