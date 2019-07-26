@@ -125,6 +125,7 @@ wrapperBuildFPCCross(){
 }
 wrapperParseFPC(){
 	if [ $FLAG_FORCE_ANDROID_AARCH64 = 1 ]; then
+		parseFPC
 		parseFPCTrunk
 	else
 		parseFPC

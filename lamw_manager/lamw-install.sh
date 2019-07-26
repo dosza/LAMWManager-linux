@@ -61,24 +61,24 @@ checkForceLAMW4LinuxInstall(){
 
 #Build lazarus ide
 BuildLazarusIDE(){
-
-	#export PPC_CONFIG_PATH=$LAMW_USER_HOME/.fpc.cfg
-	cp $PPC_CONFIG_PATH /root
-	opt=''
+	
+	make_opts=()
 
 	if [ $FLAG_FORCE_ANDROID_AARCH64 = 1 ]; then
 		if [ -e "/usr/local/bin/fpc" ]; then
+			cp $PPC_CONFIG_PATH /root
 			export PATH=/usr/local/bin:$PATH
-			opt="PP="
-			opt="$opt${FPC_TRUNK_LIB_PATH}/ppcx64"
+			make_opts=(
+				"PP=$opt${FPC_TRUNK_LIB_PATH}/ppcx64"
+				"FPC_VERSION=$FPC_TRUNK_VERSION"
+			)
 		fi
 	fi
-	#which fpc;read
 	ln -sf $LAMW4LINUX_HOME/$LAZARUS_STABLE $LAMW_IDE_HOME  # link to lamw4_home directory 
 	ln -sf $LAMW_IDE_HOME/lazarus $LAMW4LINUX_EXE_PATH #link  to lazarus executable
 	changeDirectory $LAMW_IDE_HOME
 	if [ $# = 0 ]; then 
-		make clean all  $opt FPC_VERSION=$FPC_TRUNK_VERSION
+		make clean all  ${make_opts[*]}
 	fi
 		#build ide  with lamw framework 
 	for((i=0;i< ${#LAZBUILD_PARAMETERS[@]};i++))
@@ -88,6 +88,10 @@ BuildLazarusIDE(){
 			./lazbuild ${LAZBUILD_PARAMETERS[i]}
 		fi
 	done
+
+	if [ -e /root/.fpc.cfg ]; then
+		rm /root/.fpc.cfg
+	fi
 }
 
 #cd not a native command, is a systemcall used to exec, read more in exec man 
