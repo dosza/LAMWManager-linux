@@ -57,7 +57,7 @@ SDK_MANAGER_CMD_PARAMETERS=()
 SDK_MANAGER_CMD_PARAMETERS2=()
 SDK_MANAGER_CMD_PARAMETERS2_PROXY=()
 SDK_LICENSES_PARAMETERS=()
-LAZARUS_STABLE_SRC_LNK="https://svn.freepascal.org/svn/lazarus/tags/lazarus_1_8_4"
+LAZARUS_STABLE_SRC_LNK="https://svn.freepascal.org/svn/lazarus/tags/lazarus_2_0_2"
 LAMW_SRC_LNK="https://github.com/jmpessoa/lazandroidmodulewizard.git"
 LAMW4_LINUX_PATH_CFG="$LAMW_USER_HOME/.lamw4linux"
 LAMW4LINUX_HOME="$ROOT_LAMW/lamw4linux"
@@ -75,10 +75,17 @@ GRADLE_CFG_HOME="$LAMW_USER_HOME/.gradle"
 GRADLE_ZIP_LNK="https://services.gradle.org/distributions/gradle-4.4.1-bin.zip"
 GRADLE_ZIP_FILE="gradle-4.4.1-bin.zip"
 FPC_STABLE=""
-LAZARUS_STABLE="lazarus_1_8_4"
-LAZARUS_STABLE_VERSION="1.8.4"
+LAZARUS_STABLE="lazarus_2_0_2"
+LAZARUS_STABLE_VERSION="2.0.2"
 FPC_CFG_PATH="$LAMW_USER_HOME/.fpc.cfg"
 PPC_CONFIG_PATH=$FPC_CFG_PATH
+
+LAZARUS_OLD_STABLE=(
+	lazarus_1_8_4
+)
+LAZARUS_OLD_STABLE_VERSION=(
+	"1.8.4"
+)
 
 FPC_ID_DEFAULT=0
 FPC_CROSS_ARM_DEFAULT_PARAMETERS=('clean crossall crossinstall  CPU_TARGET=arm OS_TARGET=android OPT="-dFPC_ARMHF" SUBARCH="armv7a" INSTALL_PREFIX=/usr')
@@ -142,6 +149,7 @@ lamw_opts=(
 magicTrapIndex=-1
 export NEED_UPGRADE_FPC=0
 
+export ARM_ANDROID_TOOLS="$ROOT_LAMW/sdk/ndk-bundle/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin"
 #-------------------- AARCH64 SUPPORT HEADERS-------------------------------------------------------------
 export AARCH64_ANDROID_TOOLS="$ROOT_LAMW/sdk/ndk-bundle/toolchains/aarch64-linux-android-4.9/prebuilt/linux-x86_64/bin"
 export FPC_CROSS_AARCH_DEFAULT_PARAMETERS=('clean crossall crossinstall  CPU_TARGET=aarch64 OS_TARGET=android OPT="-dFPC_ARMHF"  INSTALL_PREFIX=/usr')
@@ -152,4 +160,5 @@ export FPC_TRUNK_URL="https://svn.freepascal.org/svn/fpc/trunk"
 export FPC_TRUNK_VERSION=""
 export FPC_TRUNK_LIB_PATH=""
 export FPC_TRUNK_EXEC_PATH=""
+export FPC_TRUNK_SOURCE_PATH="$LAMW4LINUX_HOME/usr/share/fpcsrc"
 #---------------------------------------------------------------------------------------------------------------------
