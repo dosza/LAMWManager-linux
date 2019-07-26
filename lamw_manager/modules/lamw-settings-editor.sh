@@ -421,11 +421,11 @@ CleanOldConfig(){
 	cleanPATHS
 
 	if [ -e $FPC_TRUNK_LIB_PATH ]; then
-		rm $FPC_TRUNK_LIB_PATH
+		rm -rf $FPC_TRUNK_LIB_PATH
 	fi
 
 	if [ -e $FPC_TRUNK_EXEC_PATH ]; then
-		rm $FPC_TRUNK_EXEC_PATH/fpc*
+		rm $FPC_TRUNK_EXEC_PATH/fpc* 
 	fi
 
 	if [ -e /root/.fpc.cfg ]; then
@@ -537,10 +537,12 @@ CreateFPCTrunkBootStrap(){
 	fpc_trunk_boostrap_path="$FPC_TRUNK_EXEC_PATH/fpc"
 	fpc_bootstrap_str=(
 		'#!/bin/bash'
+		"#Bootsrap(to FPC Trunk) generate by LAMW Manager"
+		"#### THIS FILE IS AUTOMATICALLY CONFIGURED"
 		#"export LAMW_ENV=$LAMW4LINUX_HOME/usr/bin"
-		'export PATH=$LAMW_ENV:$PATH'
+		#'export PATH=$LAMW_ENV:$PATH'
 		"export FPC_TRUNK_LIB_PATH=$FPC_TRUNK_LIB_PATH"
-		'export LD_LIBRARY=$LAMW_ENV/usr/lib:$LD_LIBRARY'
+		#'export LD_LIBRARY=$LAMW_ENV/usr/lib:$LD_LIBRARY'
 		#sudo ldconfig
 		'export FPC_ARGS=($*)'
 		'export FPC_EXEC="ppcx64"'
@@ -554,24 +556,24 @@ CreateFPCTrunkBootStrap(){
 
 		'		case "${FPC_ARGS[i]}" in'
 		'			"-Parm")'
-		'				echo "$(date) arm detected" >> ~/fpc-detected.txt'
-		'				echo "cmd-line:$FPC_ARGS" >> ~/fpc-detected.txt'
-		'				echo "" >> ~/fpc-detected.txt'
+		# '				echo "$(date) arm detected" >> ~/fpc-detected.txt'
+		# '				echo "cmd-line:$FPC_ARGS" >> ~/fpc-detected.txt'
+		# '				echo "" >> ~/fpc-detected.txt'
 		'				export FPC_EXEC="ppcarm"'
 		'				break'
 		'			;;'
 
 		'			"-Paarch64")'
-		'				echo "$(date) aarch64 detected" >> ~/fpc-detected.txt'
-		'				echo "cmd-line:$FPC_ARGS" >> ~/fpc-detected.txt'
-		'				echo "" >> ~/fpc-detected.txt'
+		# '				echo "$(date) aarch64 detected" >> ~/fpc-detected.txt'
+		# '				echo "cmd-line:$FPC_ARGS" >> ~/fpc-detected.txt'
+		# '				echo "" >> ~/fpc-detected.txt'
 		'				export FPC_EXEC="ppca64"'
 		'				break'
 		'			;;'
 		'		esac'
 		'done'
 
-		'echo "$FPC_EXEC" >> ~/void-ptr.txt'
+		#'echo "$FPC_EXEC" >> ~/void-ptr.txt'
 		'$FPC_EXEC ${FPC_ARGS[@]}'
 	)
 
