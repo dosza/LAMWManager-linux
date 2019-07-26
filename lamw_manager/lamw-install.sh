@@ -61,11 +61,20 @@ checkForceLAMW4LinuxInstall(){
 
 #Build lazarus ide
 BuildLazarusIDE(){
+	opt=''
+	if [ $FLAG_FORCE_ANDROID_AARCH64 = 1 ]; then
+		if [ -e "/usr/local/bin/fpc" ]; then
+			export PATH=/usr/local/bin:$PATH
+			opt="PP="
+			opt="$opt${FPC_TRUNK_LIB_PATH}/ppcx64"
+		fi
+	fi
+	#which fpc;read
 	ln -sf $LAMW4LINUX_HOME/$LAZARUS_STABLE $LAMW_IDE_HOME  # link to lamw4_home directory 
 	ln -sf $LAMW_IDE_HOME/lazarus $LAMW4LINUX_EXE_PATH #link  to lazarus executable
 	changeDirectory $LAMW_IDE_HOME
 	if [ $# = 0 ]; then 
-		make clean all
+		make clean all  $opt FPC_VERSION=$FPC_TRUNK_VERSION
 	fi
 		#build ide  with lamw framework 
 	for((i=0;i< ${#LAZBUILD_PARAMETERS[@]};i++))
