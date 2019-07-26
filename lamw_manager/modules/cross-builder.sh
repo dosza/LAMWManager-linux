@@ -2,6 +2,7 @@
 
 
 #detecta a versão do fpc instalada no PC  seta as váriavies de ambiente
+
 parseFPC(){ 	
 	dist_file=$(cat /etc/issue.net)
 	case "$dist_file" in 
@@ -48,7 +49,7 @@ parseFPC(){
 }
 
 
-#this function build fpc mode trunk
+#this function build fpc mode	 trunk
 
 
 
@@ -61,10 +62,11 @@ parseFPCTrunk(){
 	else
 		export FPC_TRUNK_VERSION="3.3.1"
 	fi
-	export FPC_INSTALL_TRUNK_ZIP="$LAMW4LINUX_HOME/fpcsrc/trunk/fpc-${FPC_TRUNK_VERSION}.x86_64-linux.tar.gz"
-	export FPC_TRUNK_LIB_PATH=$ROOT_LAMW/lamw4linux/usr/lib/fpc/${FPC_TRUNK_VERSION}
-	export FPC_TRUNK_EXEC_PATH="$ROOT_LAMW/lamw4linux/usr/bin"
-	export PATH=$FPC_TRUNK_EXEC_PATH:$PATH
+	export FPC_INSTALL_TRUNK_ZIP="$LAMW4LINUX_HOME/usr/share/fpcsrc/trunk/fpc-${FPC_TRUNK_VERSION}.x86_64-linux.tar.gz"
+	export FPC_TRUNK_LIB_PATH=/usr/local/lib/fpc/${FPC_TRUNK_VERSION}
+	export FPC_TRUNK_EXEC_PATH="/usr/local/bin"
+	#export PATH=$FPC_TRUNK_EXEC_PATH:$PATH
+
 	#export FPC_MKCFG_EXE=$FPC_TRUNK_EXEC_PATH/fpcmkcfg
 
 }
@@ -80,26 +82,27 @@ BuildCrossArm(){
 }
 
 buildFPCTrunk(){
-	if [ -e "$LAMW4LINUX_HOME/fpcsrc/trunk" ]; then
-		changeDirectory "$LAMW4LINUX_HOME/fpcsrc"
-		changeDirectory "trunk"
+	if [ -e "$FPC_TRUNK_SOURCE_PATH" ]; then
+		changeDirectory "$FPC_TRUNK_SOURCE_PATH/trunk"
+
 		#export FPC_TRUNK_VERSION=$(cat MakeFile.fpc | grep version | sed 's/version=//g') #descover trunk versin
 		make clean
 		make all zipinstall
-		changeDirectory "$ROOT_LAMW/lamw4linux"
-		mkdir -p "$ROOT_LAMW/lamw4linux/usr/"
-		changeDirectory "$ROOT_LAMW/lamw4linux/usr"
+		
+		changeDirectory "/usr/local"
 		echo "$FPC_INSTALL_TRUNK_ZIP";
 		tar -zxvf "$FPC_INSTALL_TRUNK_ZIP" 
+		
 	fi
 }
 
 BuildCrossAArch64(){
-	changeDirectory "$LAMW4LINUX_HOME/fpcsrc/trunk"
+	changeDirectory "$LAMW4LINUX_HOME/usr/share/fpcsrc/trunk"
 	make clean 
-	make clean crossall crossinstall  CPU_TARGET=aarch64 OS_TARGET=android OPT="-dFPC_ARMHF"  INSTALL_PREFIX=$ROOT_LAMW/lamw4linux/usr
+	make clean crossall crossinstall  CPU_TARGET=aarch64 OS_TARGET=android OPT="-dFPC_ARMHF"  INSTALL_PREFIX=/usr/local
 	make clean
-	make crossall crossinstall CPU_TARGET=arm OPT="-dFPC_ARMEL" OS_TARGET=android CROSSOPT="-CpARMV7A -CfVFPV3" INSTALL_PREFIX=$ROOT_LAMW/lamw4linux/usr		
+	make crossall crossinstall CPU_TARGET=arm OPT="-dFPC_ARMEL" OS_TARGET=android CROSSOPT="-CpARMV7A -CfVFPV3" INSTALL_PREFIX=/usr/local
+	CreateFPCTrunkBootStrap
 }
 
 wrapperConfigureFPC(){

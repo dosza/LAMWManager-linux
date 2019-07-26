@@ -218,8 +218,8 @@ getFPCSources(){
 
 getFPCSourcesTrunk(){
 	changeDirectory $LAMW_USER_HOME
-	mkdir -p $LAMW4LINUX_HOME/fpcsrc
-	changeDirectory $LAMW4LINUX_HOME/fpcsrc
+	mkdir -p $FPC_TRUNK_SOURCE_PATH
+	changeDirectory $FPC_TRUNK_SOURCE_PATH
 	svn checkout $FPC_TRUNK_URL
 	if [ $? != 0 ]; then
 		rm -rf trunk

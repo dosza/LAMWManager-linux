@@ -95,7 +95,7 @@ changeOwnerAllLAMW(){
 		fi
 		if [ -e $LAMW_IDE_HOME ];then
 			chown $LAMW_USER:$LAMW_USER -R $LAMW4LINUX_HOME/$LAZARUS_STABLE
-		fi
+		fi 
 	else
 		echo "Restoring directories ..."
 		if [ -e $ROOT_LAMW ]; then
@@ -357,35 +357,11 @@ CleanOldConfig(){
 	if [ -e "/usr/bin/ppcrossarm"  ]; then
 		rm -rf "/usr/bin/ppcrossarm" 
 	fi
-	echo "Uninstall LAMW4Linux IDE ..."
-	if [ -e $LAMW4LINUX_HOME ] ; then
-		 rm $LAMW4LINUX_HOME -rf
-	fi
 
-	if [ -e $LAMW4_LINUX_PATH_CFG ]; then  rm -r $LAMW4_LINUX_PATH_CFG; fi
-
-	if [ -e $ROOT_LAMW ] ; then
-		 rm $ROOT_LAMW  -rf
-	fi
-
-
-	if [ -e $LAMW_MENU_ITEM_PATH ]; then
-		rm $LAMW_MENU_ITEM_PATH
-	fi
-
-	if [ -e $GRADLE_CFG_HOME ]; then
-		rm -r $GRADLE_CFG_HOME
-	fi
-
-	if [ -e usr/bin/arm-embedded-as ] ; then    
-		 rm usr/bin/arm-embedded-as
-	fi
 	if [ -e  /usr/bin/arm-linux-androideabi-ld ]; then
 		  rm /usr/bin/arm-linux-androideabi-ld
 	fi
-	if [ -e /usr/bin/arm-embedded-ld  ]; then
-		rm /usr/bin/arm-embedded-ld           
-	fi 
+
 	if [ -e /usr/bin/arm-linux-as ] ; then 
 	 	 rm  /usr/bin/arm-linux-as
 	fi
@@ -404,6 +380,26 @@ CleanOldConfig(){
 	if [ -e $FPC_CFG_PATH ]; then #remove local ppc config
 		rm $FPC_CFG_PATH
 	fi
+
+		echo "Uninstall LAMW4Linux IDE ..."
+	# if [ -e $LAMW4LINUX_HOME ] ; then
+	# 	 rm $LAMW4LINUX_HOME -rf
+	# fi
+
+	if [ -e $LAMW4_LINUX_PATH_CFG ]; then  rm -r $LAMW4_LINUX_PATH_CFG; fi
+
+	if [ -e $ROOT_LAMW ] ; then
+		 rm $ROOT_LAMW  -rf
+	fi
+
+
+	if [ -e $LAMW_MENU_ITEM_PATH ]; then
+		rm $LAMW_MENU_ITEM_PATH
+	fi
+
+	if [ -e $GRADLE_CFG_HOME ]; then
+		rm -r $GRADLE_CFG_HOME
+	fi
 	if [ -e "$work_home_desktop/lamw4linux.desktop" ]; then
 		rm "$work_home_desktop/lamw4linux.desktop"
 	fi
@@ -414,26 +410,35 @@ CleanOldConfig(){
 		update-menus
 	fi
 
+
 	if  [  -e $LAMW_USER_HOME/.android ]; then
 		rm -r  $LAMW_USER_HOME/.android 
 	fi
 
-	
-
-	#echo "cheguei no fim  de clean";read
+	if [ -e /root/.android ]; then 
+		rm -r /root/.android
+	fi
 	cleanPATHS
+
+	if [ -e $FPC_TRUNK_LIB_PATH ]; then
+		rm $FPC_TRUNK_LIB_PATH
+	fi
+
+	if [ -e $FPC_TRUNK_EXEC_PATH ]; then
+		rm $FPC_TRUNK_EXEC_PATH/fpc*
+	fi
 	
 }
 
 #Create SDK simbolic links
 CreateSDKSimbolicLinks(){
 	ln -sf "$ROOT_LAMW/sdk/ndk-bundle" "$ROOT_LAMW/ndk"
-	ln -sf "$ROOT_LAMW/ndk/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin" "$ROOT_LAMW/ndk-toolchain"
-	ln -sf "$ROOT_LAMW/ndk-toolchain/arm-linux-androideabi-as" "$ROOT_LAMW/ndk-toolchain/arm-linux-as"
-	ln -sf "$ROOT_LAMW/ndk-toolchain/arm-linux-androideabi-ld" "$ROOT_LAMW/ndk-toolchain/arm-linux-ld"
-	ln -sf "$ROOT_LAMW/ndk-toolchain/arm-linux-androideabi-as" "/usr/bin/arm-linux-androideabi-as"
-	ln -sf "$ROOT_LAMW/ndk-toolchain/arm-linux-ld"  "/usr/bin/arm-linux-androideabi-ld"
-	ln -sf "$ROOT_LAMW/ndk-toolchain/arm-linux-androideabi-as" "/usr/bin/arm-linux-androideabi-as"
+	ln -sf "$ARM_ANDROID_TOOLS" "$ROOT_LAMW/ndk-toolchain"
+	ln -sf "$ARM_ANDROID_TOOLS/arm-linux-androideabi-as" "$ROOT_LAMW/ndk-toolchain/arm-linux-as"
+	ln -sf "$ARM_ANDROID_TOOLS/arm-linux-androideabi-ld" "$ROOT_LAMW/ndk-toolchain/arm-linux-ld"
+	ln -sf "$ARM_ANDROID_TOOLS/arm-linux-androideabi-as" "/usr/bin/arm-linux-androideabi-as"
+	ln -sf "$ARM_ANDROID_TOOLS/arm-linux-androideabi-ld" "/usr/bin/arm-linux-androideabi-ld"
+	ln -sf "$ARM_ANDROID_TOOLS/arm-linux-androideabi-as" "/usr/bin/arm-linux-androideabi-as"
 	if [  $FLAG_FORCE_ANDROID_AARCH64 = 1 ]; then 
 		ln -sf $FPC_TRUNK_LIB_PATH/ppcrossarm /usr/bin/ppcrossarm
 		ln -sf $FPC_TRUNK_LIB_PATH/ppcrossarm /usr/bin/ppcarm
@@ -505,8 +510,8 @@ configureFPCTrunk(){
 CreateSimbolicLinksAndroidAARCH64(){
 	ln -sf "$AARCH64_ANDROID_TOOLS/aarch64-linux-android-as" "$AARCH64_ANDROID_TOOLS/aarch64-linux-as"
 	ln -sf "$AARCH64_ANDROID_TOOLS/aarch64-linux-android-ld" "$AARCH64_ANDROID_TOOLS/aarch64-linux-ld"
-	ln -sf "$AARCH64_ANDROID_TOOLS/aarch64-linux-as"  "/usr/bin/aarch64-linux-androideabi-as"
-	ln -sf "$AARCH64_ANDROID_TOOLS/aarch64-linux-ld"  "/usr/bin/aarch64-linux-androideabi-ld"
+	ln -sf "$AARCH64_ANDROID_TOOLS/aarch64-linux-android-as" "/usr/bin/aarch64-linux-android-as"
+	ln -sf "$AARCH64_ANDROID_TOOLS/aarch64-linux-android-ld" "/usr/bin/aarch64-linux-android-ld"
 	ln -sf "${FPC_TRUNK_LIB_PATH}/ppcrossa64" /usr/bin/ppcrossa64
 	ln -sf "${FPC_TRUNK_LIB_PATH}/ppcrossa64" /usr/bin/ppca64
 }
@@ -521,3 +526,50 @@ wrapperCreateSDKSimbolicLinks(){
 }
 
 #echo "importei lamw-settings-editor.sh";read
+
+CreateFPCTrunkBootStrap(){
+
+	fpc_trunk_boostrap_path="$FPC_TRUNK_EXEC_PATH/fpc"
+	fpc_bootstrap_str=(
+		'#!/bin/bash'
+		#"export LAMW_ENV=$LAMW4LINUX_HOME/usr/bin"
+		#'export PATH=$LAMW_ENV:$PATH'
+		"export FPC_TRUNK_LIB_PATH=$FPC_TRUNK_LIB_PATH"
+		#'export LD_LIBRARY=$LAMW_ENV/usr/lib:$LD_LIBRARY'
+		#sudo ldconfig
+		'export FPC_ARGS=($*)'
+		'export FPC_EXEC="ppcx64"'
+		'if [ -e $FPC_TRUNK_LIB_PATH/ppcrossa64 ]; then'
+		'	export PATH=$FPC_TRUNK_LIB_PATH:$PATH'
+		'fi'
+
+		''
+		'for((i=0;i<${#FPC_ARGS[*]};i++))'
+		'do'
+
+		'		case "${FPC_ARGS[i]}" in'
+		'			"-Parm")'
+		'				echo "$(date) arm detected" >> ~/fpc-detected.txt'
+		'				echo "cmd-line:$FPC_ARGS" >> ~/fpc-detected.txt'
+		'				echo "" >> ~/fpc-detected.txt'
+		'				export FPC_EXEC="ppcarm"'
+		'				break'
+		'			;;'
+
+		'			"-Paarch64")'
+		'				echo "$(date) aarch64 detected" >> ~/fpc-detected.txt'
+		'				echo "cmd-line:$FPC_ARGS" >> ~/fpc-detected.txt'
+		'				echo "" >> ~/fpc-detected.txt'
+		'				export FPC_EXEC="ppca64"'
+		'				break'
+		'			;;'
+		'		esac'
+		'done'
+
+		'echo "$FPC_EXEC" >> ~/void-ptr.txt'
+		'$FPC_EXEC ${FPC_ARGS[@]}'
+	)
+
+	WriterFileln "$fpc_trunk_boostrap_path" "fpc_bootstrap_str"
+	chmod +x "$fpc_trunk_boostrap_path"
+}
