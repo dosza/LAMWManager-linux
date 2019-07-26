@@ -61,7 +61,11 @@ checkForceLAMW4LinuxInstall(){
 
 #Build lazarus ide
 BuildLazarusIDE(){
+
+	#export PPC_CONFIG_PATH=$LAMW_USER_HOME/.fpc.cfg
+	cp $PPC_CONFIG_PATH /root
 	opt=''
+
 	if [ $FLAG_FORCE_ANDROID_AARCH64 = 1 ]; then
 		if [ -e "/usr/local/bin/fpc" ]; then
 			export PATH=/usr/local/bin:$PATH
