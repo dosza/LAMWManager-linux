@@ -625,9 +625,6 @@ mainInstall(){
 	installDependences
 	checkProxyStatus
 	#configureFPC
-	SearchPackage fpc
-	index=$?
-	parseFPC ${packs[$index]}
 	wrapperParseFPC
 	getAndroidSDKTools
 	changeDirectory $ANDROID_SDK/tools/bin #change directory
