@@ -55,25 +55,20 @@ parseFPC(){
 
 #this function set env to FPC_TRUNK 
 parseFPCTrunk(){
-	if [ -e "$LAMW4LINUX_HOME/fpcsrc/trunk" ]; then
-		changeDirectory "$LAMW4LINUX_HOME/fpcsrc/trunk"
+	if [ -e "$FPC_TRUNK_SOURCE_PATH/trunk" ]; then
+		changeDirectory "$FPC_TRUNK_SOURCE_PATH/trunk"
 		export FPC_TRUNK_VERSION=$(cat Makefile.fpc | grep 'version=' | sed 's/version=//g') #descover trunk version
-		
 	else
 		export FPC_TRUNK_VERSION="3.3.1"
 	fi
 	export FPC_INSTALL_TRUNK_ZIP="$LAMW4LINUX_HOME/usr/share/fpcsrc/trunk/fpc-${FPC_TRUNK_VERSION}.x86_64-linux.tar.gz"
 	export FPC_TRUNK_LIB_PATH=/usr/local/lib/fpc/${FPC_TRUNK_VERSION}
 	export FPC_TRUNK_EXEC_PATH="/usr/local/bin"
-	#export PATH=$FPC_TRUNK_EXEC_PATH:$PATH
-
-	#export FPC_MKCFG_EXE=$FPC_TRUNK_EXEC_PATH/fpcmkcfg
-
 }
 
 
 
-#to build
+#to build FPC to ARMv7
 BuildCrossArm(){
 	changeDirectory $LAMW4LINUX_HOME/fpcsrc 
 	changeDirectory $FPC_RELEASE
@@ -81,21 +76,20 @@ BuildCrossArm(){
 	make crossall crossinstall  CPU_TARGET=arm OPT="-dFPC_ARMEL" OS_TARGET=android CROSSOPT="-CpARMV7A -CfVFPV3" INSTALL_PREFIX=/usr		
 }
 
+
+#BuildFPC to Trunk
 buildFPCTrunk(){
 	if [ -e "$FPC_TRUNK_SOURCE_PATH" ]; then
 		changeDirectory "$FPC_TRUNK_SOURCE_PATH/trunk"
-
-		#export FPC_TRUNK_VERSION=$(cat MakeFile.fpc | grep version | sed 's/version=//g') #descover trunk versin
 		make clean
 		make all zipinstall
-		
 		changeDirectory "/usr/local"
 		echo "$FPC_INSTALL_TRUNK_ZIP";
-		tar -zxvf "$FPC_INSTALL_TRUNK_ZIP" 
-		
+		tar -zxvf "$FPC_INSTALL_TRUNK_ZIP" 	
 	fi
 }
 
+#Function to build ARMv7 and AARCH64
 BuildCrossAArch64(){
 	changeDirectory "$LAMW4LINUX_HOME/usr/share/fpcsrc/trunk"
 	make clean 
@@ -105,6 +99,7 @@ BuildCrossAArch64(){
 	CreateFPCTrunkBootStrap
 }
 
+#wrapper to configureFPC
 wrapperConfigureFPC(){
 	if [ $FLAG_FORCE_ANDROID_AARCH64 = 1 ]; then
 		configureFPCTrunk
@@ -113,8 +108,7 @@ wrapperConfigureFPC(){
 	fi
 }
 
-
-
+#wrapper to BuilCrossArm
 wrapperBuildFPCCross(){
 	if [ $FLAG_FORCE_ANDROID_AARCH64 = 1 ]; then
 		buildFPCTrunk
@@ -123,39 +117,13 @@ wrapperBuildFPCCross(){
 		BuildCrossArm 
 	fi
 }
+#function to wrapper FPC
 wrapperParseFPC(){
+	SearchPackage fpc
+	index=$?
+	parseFPC ${packs[$index]}
 	if [ $FLAG_FORCE_ANDROID_AARCH64 = 1 ]; then
-		parseFPC
 		parseFPCTrunk
-	else
-		parseFPC
 	fi
 }
-# case "$1" in 
-# 	"build")
-# 		getFPCTrunk
-# 		buildFPCTrunk
-# 		BuildCrossAArch64 0
-# 		chown danny:danny -R $ROOT_LAMW
-# 		ln -sf /usr/lib/fpc/3.3.1/ppcrossa64 /usr/bin/ppcrossa64
-# 		ln -sf /usr/bin/ppcrossa64 /usr/bin/ppca64
-# 	;;
-# 	"clean")
-# 		rm "/usr/bin/aarch64-linux-androideabi-as"
-# 		rm "/usr/bin/aarch64-linux-androideabi-ld"
-# 		rm -rf /usr/lib/fpc/3.3.1/ppcrossa64
-# 		rm /usr/bin/ppca64
-# 		rm -rfv /usr/lib/fpc/3.3.1
-# 		rm -rfv /home/danny/fpcsrc
 
-# 	;;
-# 	"lamw")
-# 		BuildLazarusIDE 1
-# 		chown danny:danny -R $ROOT_LAMW
-# 		chown danny:danny -R $LAMW4_LINUX_PATH_CFG
-# 	;;
-# 	*)
-# 		echo "no actions to CrossArm";
-# 		wrapperConfigureFPC
-# 	;;
-# esac

@@ -30,13 +30,6 @@ configureFPC(){
 			'-Fu/usr/lib/fpc/$fpcversion/units/$fpctarget/rtl'
 			"#ENDIF"
 			"#ENDIF"
-			#"IFDEF CPUAARCH64"
-			#"-Xd"
-			#"-XPaarch64-linux-android-"
-			#"-Fl$ROOT_LAMW/ndk/platforms/android-$SDK_VERSION/arch-arm64/usr/lib"
-			#"-FLlibdl.so"
-			#"-FD$ROOT_LAMW/ndk/toolchains/aarch64-linux-android-4.9/prebuilt/linux-x86_64/bin"
-			#"#ENDIF"
 		)
 
 		if [ -e $FPC_CFG_PATH ] ; then  # se exiir /etc/fpc.cfg
@@ -44,30 +37,23 @@ configureFPC(){
 			flag_fpc_cfg=$?
 
 			if [ $flag_fpc_cfg != 1 ]; then # caso o arquvo ainda não esteja configurado
-				for ((i = 0 ; i<${#fpc_cfg_str[@]};i++)) 
-				do
-					echo "${fpc_cfg_str[i]}" | tee -a  $FPC_CFG_PATH
-				done	
+				AppendFileln "$FPC_CFG_PATH" "fpc_cfg_str"  
 			fi
 		fi
 }
 
 
 AddSDKPathstoProfile(){
-	aux=$(tail -1 $LAMW_USER_HOME/.profile)       #tail -1 mostra a última linha do arquivo 
-	if [ "$aux" != "" ] ; then   # verifica se a última linha é vazia
-			sed  -i '$a\' $LAMW_USER_HOME/.profile #adiciona uma linha ao fim do arquivo
-	fi
-	aux=$(tail -1 $LAMW_USER_HOME/.bashrc)       #tail -1 mostra a última linha do arquivo 
-	if [ "$aux" != "" ] ; then   # verifica se a última linha é vazia
-			sed  -i '$a\' $LAMW_USER_HOME/.bashrc #adiciona uma linha ao fim do arquivo
-	fi
 	profile_file=$LAMW_USER_HOME/.bashrc
 	flag_profile_paths=0
 	profile_line_path='export PATH=$PATH:$GRADLE_HOME/bin'
+
+	InsertUniqueBlankLine "$LAMW_USER_HOME/.profile"
+	InsertUniqueBlankLine "$LAMW_USER_HOME/.bashrc"
 	cleanPATHS
 	searchLineinFile "$profile_file" "$profile_line_path"
 	flag_profile_paths=$?
+
 	if [ $flag_profile_paths = 0 ] ; then 
 		echo "export ANDROID_HOME=$ANDROID_HOME" >>  $LAMW_USER_HOME/.bashrc
 		echo "export GRADLE_HOME=$GRADLE_HOME" >> $LAMW_USER_HOME/.bashrc
@@ -128,29 +114,22 @@ changeOwnerAllLAMW(){
 writeLAMWLogInstall(){
 
 	lamw_log_str=(
-		"Generate LAMW_INSTALL_VERSION=$LAMW_INSTALL_VERSION\n" 
+		"Generate LAMW_INSTALL_VERSION=$LAMW_INSTALL_VERSION" 
 		"Info:\nLAMW4Linux:$LAMW4LINUX_HOME\nLAMW workspace:" 	
-		"$LAMW_WORKSPACE_HOME\nAndroid SDK:$ROOT_LAMW/sdk\n" 
-		"Android NDK:$ROOT_LAMW/ndk\nGradle:$GRADLE_HOME\n"
-		"OLD_ANDROID_SDK=$OLD_ANDROID_SDK\n"
-		"ANT_VERSION=$ANT_VERSION\n"
-		"GRADLE_VERSION=$GRADLE_VERSION\n"
-		"SDK_TOOLS_VERSION=$SDK_TOOLS_VERSION\n"
-		"NDK_VERSION=$NDK_VERSION\n"
-		"FPC_VERSION=$FPC_VERSION\n"
-		"LAZARUS_VERSION=$LAZARUS_STABLE_VERSION\n" 
-		"Install-date:$(date)\n"
+		"$LAMW_WORKSPACE_HOME\nAndroid SDK:$ROOT_LAMW/sdk" 
+		"Android NDK:$ROOT_LAMW/ndk\nGradle:$GRADLE_HOME"
+		"OLD_ANDROID_SDK=$OLD_ANDROID_SDK"
+		"ANT_VERSION=$ANT_VERSION"
+		"GRADLE_VERSION=$GRADLE_VERSION"
+		"SDK_TOOLS_VERSION=$SDK_TOOLS_VERSION"
+		"NDK_VERSION=$NDK_VERSION"
+		"FPC_VERSION=$FPC_VERSION"
+		"LAZARUS_VERSION=$LAZARUS_STABLE_VERSION" 
+		"Install-date:$(date)"
 		)
 
 	NOTIFY_SEND_EXE=$(which notify-send)
-	for((i=0; i<${#lamw_log_str[*]};i++)) 
-	do
-		if [ $i = 0 ] ; then 
-			printf "${lamw_log_str[i]}" > $LAMW4LINUX_HOME/lamw-install.log
-		else
-			printf "${lamw_log_str[i]}" >> $LAMW4LINUX_HOME/lamw-install.log
-		fi
-	done
+	WriterFileln "$LAMW4LINUX_HOME/lamw-install.log" "lamw_log_str"
 	if [ "$NOTIFY_SEND_EXE" != "" ]; then
 		$NOTIFY_SEND_EXE  "Info:\nLAMW4Linux:$LAMW4LINUX_HOME\nLAMW workspace : $LAMW_WORKSPACE_HOME\nAndroid SDK:$ROOT_LAMW/sdk\nAndroid NDK:$ROOT_LAMW/ndk\nGradle:$GRADLE_HOME\nLOG:$LAMW4LINUX_HOME/lamw-install.log"
 	else
@@ -186,14 +165,8 @@ AddLAMWtoStartMenu(){
 		"Value=.pas"
 		"X-Ubuntu-Gettext-Domain=desktop_kdelibs"
 	)
-	for ((i=0;i<${#lamw_desktop_file_str[*]};i++))
-	do
-		if [ $i = 0 ]; then
-			echo ${lamw_desktop_file_str[i]} > $LAMW_MENU_ITEM_PATH
-		else
-			echo ${lamw_desktop_file_str[i]} >> $LAMW_MENU_ITEM_PATH
-		fi
-	done
+
+	WriterFileln "$LAMW_MENU_ITEM_PATH" "lamw_desktop_file_str"
 	chmod +x $LAMW_MENU_ITEM_PATH
 	cp $LAMW_MENU_ITEM_PATH "$work_home_desktop"
 	#mime association: ref https://help.gnome.org/admin/system-admin-guide/stable/mime-types-custom-user.html.en
@@ -253,21 +226,21 @@ LAMW4LinuxPostConfig(){
 		"PathToSmartDesigner=$ROOT_LAMW/lazandroidmodulewizard/android_wizard/smartdesigner"
 
 	)
-	for ((i=0;i<${#LAMW_init_str[@]};i++))
-	do
-		if [ $i = 0 ]; then 
-			echo "${LAMW_init_str[i]}" > $LAMW4_LINUX_PATH_CFG/LAMW.ini 
-		else
-			echo "${LAMW_init_str[i]}" >> $LAMW4_LINUX_PATH_CFG/LAMW.ini
-		fi
-	done
-
-	echo '#!/bin/bash' > "$LAMW_IDE_HOME/startlamw4linux"
+	aux_str=''
 	if [ $FLAG_FORCE_ANDROID_AARCH64 = 1 ]; then
-		echo "export PATH=$PATH" >> "$LAMW_IDE_HOME/startlamw4linux"
+		aux_str="export PATH=$PATH"
 	fi
-	echo "export PPC_CONFIG_PATH=$PPC_CONFIG_PATH" >> "$LAMW_IDE_HOME/startlamw4linux"
-	echo  "$LAMW4LINUX_EXE_PATH --primary-config-path=$LAMW4_LINUX_PATH_CFG" >> "$LAMW_IDE_HOME/startlamw4linux"
+	startlamw4linux_str=(
+		'#!/bin/bash'
+		"export PPC_CONFIG_PATH=$PPC_CONFIG_PATH"
+		"$aux_str"
+		"export PPC_CONFIG_PATH=$PPC_CONFIG_PATH"
+		"$LAMW4LINUX_EXE_PATH --primary-config-path=$LAMW4_LINUX_PATH_CFG"
+	)
+
+	WriterFileln "$LAMW4_LINUX_PATH_CFG/LAMW.ini" "LAMW_init_str"
+	WriterFileln "$LAMW_IDE_HOME/startlamw4linux" "startlamw4linux_str"
+
 	if [ -e  $LAMW_IDE_HOME/startlamw4linux ]; then
 		chmod +x $LAMW_IDE_HOME/startlamw4linux
 	fi
@@ -331,10 +304,7 @@ cleanPATHS(){
 }
 #this function remove old config of lamw4linux  
 CleanOldConfig(){
-	SearchPackage fpc
-	index=$?
-	parseFPC ${packs[$index]}
-	parseFPCTrunk
+	wrapperParseFPC
 	CleanOldCrossCompileBins
 
 	if [ -e "/usr/bin/aarch64-linux-androideabi-as" ]; then
@@ -502,10 +472,7 @@ configureFPCTrunk(){
 		flag_fpc_cfg=$?
 
 		if [ $flag_fpc_cfg != 1 ]; then # caso o arquvo ainda não esteja configurado
-			for ((i = 0 ; i<${#fpc_cfg_str[@]};i++)) 
-			do
-				echo "${fpc_cfg_str[i]}" | tee -a  $FPC_CFG_PATH
-			done	
+			AppendFileln "$FPC_CFG_PATH" "fpc_cfg_str"		
 		fi
 	fi
 }
