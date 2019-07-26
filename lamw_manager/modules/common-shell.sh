@@ -111,9 +111,9 @@ WriterFile(){
 		for((i=0;i<${#stream[*]};i++))
 		do
 			if [ $i = 0 ]; then 
-				printf "${stream[i]}" > $filename
+				printf "%s" "${stream[i]}" > $filename
 			else
-				printf "${stream[i]}" >> $filename
+				printf "%s" "${stream[i]}" >> $filename
 			fi
 		done
 	fi
@@ -126,9 +126,9 @@ WriterFileln(){
 		for((i=0;i<${#stream[*]};i++))
 		do
 			if [ $i = 0 ]; then 
-				printf "${stream[i]}\n" > $filename
+				printf "%s\n" "${stream[i]}" > $filename
 			else
-				printf "${stream[i]}\n" >> $filename
+				printf "%s\n" "${stream[i]}" >> $filename
 			fi
 		done
 	fi
@@ -146,7 +146,7 @@ AppendFile(){
 		if [  -e  $filename ]; then 
 			for((i=0;i<${#stream[*]};i++))
 			do
-					printf "${stream[i]}" >> $filename
+					printf "%s" "${stream[i]}" >> $filename
 			done
 		else
 			echo "\"$filename\" does not exists!"
@@ -161,10 +161,21 @@ AppendFileln(){
 		if [  -e  $filename ]; then 
 			for((i=0;i<${#stream[*]};i++))
 			do
-					printf "${stream[i]}\n" >> $filename
+					printf "%s\n" "${stream[i]}" >> $filename
 			done
 		else
 			echo "\"$filename\" does not exists!"
+		fi
+	fi
+}
+
+InsertUniqueBlankLine(){
+	if [ "$1" != "" ] ; then
+		if [ -e $1 ] ; then 
+			aux=$(tail -1 $1 )       #tail -1 mostra a última linha do arquivo 
+			if [ "$aux" != "" ] ; then   # verifica se a última linha é vazia
+				sed  -i '$a\' $1 #adiciona uma linha ao fim do arquivo
+			fi
 		fi
 	fi
 }

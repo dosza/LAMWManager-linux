@@ -233,7 +233,7 @@ getFPCSourcesTrunk(){
 	parseFPCTrunk
 }
 #wrapper to get FPC Sources 
-getWrapperFPCSouces(){
+getWrapperFPCSources(){
 	if [ $FLAG_FORCE_ANDROID_AARCH64 = 1 ]; then
 		echo "Warming:mode experimental Android Aarch64!"
 		getFPCSourcesTrunk
@@ -521,17 +521,25 @@ WrappergetAndroidSDK(){
 
 Repair(){
 	flag_need_repair=0 # flag de reparo 
+	flag_upgrade_lazarus=0
 	getStatusInstalation 
 	if [ $LAMW_INSTALL_STATUS = 1 ]; then # só executa essa funcao se o lamw tiver instalado
 		flag_old_fpc=""
 		fpc_exe=$(which fpc) #verifica se existe o executavel para o fpc
 		fpc_arm=$(which ppcarm )
+		if [ $FLAG_FORCE_ANDROID_AARCH64 = 1 ]; then
+			fpc_aarch=$(which ppca64)
+			if [ "$fpc_aarch" = "" ];  then
+				flag_need_repair=1
+			fi
+		fi
 
 		if [ "$fpc_exe" = "" ]; then
 			flag_need_repair=1
 			installDependences # caso não exista -reinstale
 			setJava8asDefault
 		fi
+
 		CheckFPCSupport
 		if [ $NEED_UPGRADE_FPC = 1 ]; then
 			installDependences
@@ -542,62 +550,76 @@ Repair(){
 		if [ "$fpc_arm" = "" ]; then
 			flag_need_repair=1  # caso o  crosscompile para arm nao exista,  sinaliza reparo
 		fi
-		SearchPackage fpc
-		index=$?
-		parseFPC ${packs[$index]}
-		# verifica se  a versao do codigo fonte do fpc casa com a versão do sistema
-		ls $LAMW4LINUX_HOME/fpcsrc | grep $FPC_RELEASE   > /dev/null
-		flag_old_fpc=$?
-		aux_path=""
-		if [ $flag_old_fpc != 0 ] ; then # caso o código fonte do fpc do LAMW4Linux não match com o do sistema, verifica se necessita fazer downgrade ou upgrade
-			if [ "$FPC_RELEASE" = "release_3_0_0" ]; then #caso a versão do fpc no sistema seja 3.0.0  
-				aux_path="$LAMW4LINUX_HOME/fpcsrc/release_3_0_4"  #faz downgrade
-			#configureFPC
-			wrapperConfigureFPC
-				if [ -e $aux_path ]; then 
-					rm -rf $aux_path
-					flag_need_repair=1
-					getFPCSources
-				fi
-			else
-				wrapperConfigureFPC
-				aux_path="$LAMW4LINUX_HOME/fpcsrc/release_3_0_0" #caso a versão do fpc do sistema seja mais nova que a do LAMW4LINUX
-				ls "$aux_path"
 
-				if [  -e $aux_path ]; then # prepara o upgrade
-					rm -rf $aux_path
-					flag_need_repair=1
-					#getFPCSources
-					getWrapperFPCSouces
+		wrapperParseFPC
+		# verifica se  a versao do codigo fonte do fpc casa com a versão do sistema
+		if [ -e $LAMW4LINUX_HOME/fpcsrc ]; then 
+			ls $LAMW4LINUX_HOME/fpcsrc | grep $FPC_RELEASE   > /dev/null
+			flag_match_fpc=$?
+			aux_path=""
+			if [ $flag_match_fpc != 0 ] ; then # caso o código fonte do fpc do LAMW4Linux não match com o do sistema, verifica se necessita fazer downgrade ou upgrade
+				if [ "$FPC_RELEASE" = "release_3_0_0" ]; then #caso a versão do fpc no sistema seja 3.0.0  
+					aux_path="$LAMW4LINUX_HOME/fpcsrc/release_3_0_4"  #faz downgrade
+				#configureFPC
+				wrapperConfigureFPC
+					if [ -e $aux_path ]; then 
+						rm -rf $aux_path
+						flag_need_repair=1
+						#getFPCSources
+						getWrapperFPCSources
+					fi
+				else
+					wrapperConfigureFPC
+					aux_path="$LAMW4LINUX_HOME/fpcsrc/release_3_0_0" #caso a versão do fpc do sistema seja mais nova que a do LAMW4LINUX
+					ls "$aux_path"
+
+					if [  -e $aux_path ]; then # prepara o upgrade
+						rm -rf $aux_path
+						flag_need_repair=1
+						#getFPCSources
+						getWrapperFPCSources
+					fi
 				fi
 			fi
 		fi
 
-		expected_fpc_src_path="${LAMW4LINUX_HOME}/fpcsrc/"
-		expected_fpc_src_path="${expected_fpc_src_path}${FPC_RELEASE}"
+		if [ $FLAG_FORCE_ANDROID_AARCH64 = 1 ]; then
+			expected_fpc_src_path="$FPC_TRUNK_SOURCE_PATH/trunk"
+
+		else
+			expected_fpc_src_path="${LAMW4LINUX_HOME}/fpcsrc/"
+			expected_fpc_src_path="${expected_fpc_src_path}${FPC_RELEASE}"
+		fi
+
 		if [ ! -e $expected_fpc_src_path ]; then
 			#getFPCSources
-			getWrapperFPCSouces
+			getWrapperFPCSources
 			flag_need_repair=1
 		fi
 			
 		if [ $flag_need_repair = 1 ]; then
 			
 			CleanOldCrossCompileBins
-			BuildCrossArm $FPC_ID_DEFAULT
+			#BuildCrossArm $FPC_ID_DEFAULT
+			wrapperBuildFPCCross
+			if [ -e "$LAMW4LINUX_HOME/${LAZARUS_OLD_STABLE[0]}" ]; then
+				rm -rf "$LAMW4LINUX_HOME/${LAZARUS_OLD_STABLE[0]}"
+				getLazarusSources
+			fi
 			BuildLazarusIDE
-			CreateSDKSimbolicLinks
+			#CreateSDKSimbolicLinks
+			wrapperCreateSDKSimbolicLinks
 			enableADBtoUdev
 			writeLAMWLogInstall
 			changeOwnerAllLAMW
 		fi
 		
 		if  [ -e $FPC_CFG_PATH ]; then 
-			chown $LAMW_USER:$LAMW_USER $FPC_CFG_PATH
-			
+			chown $LAMW_USER:$LAMW_USER $FPC_CFG_PATH	
 		fi
 	fi
 }
+
 #get implict install 
 getImplicitInstall(){
 	if [  -e $LAMW4LINUX_HOME/lamw-install.log ]; then
@@ -633,7 +655,7 @@ mainInstall(){
 	#getSDKAndroid
 	WrappergetAndroidSDK #temporariamente comentado
 	#getFPCSources
-	getWrapperFPCSouces
+	getWrapperFPCSources
 	getLazarusSources
 	getLAMWFramework
 	#CreateSDKSimbolicLinks
