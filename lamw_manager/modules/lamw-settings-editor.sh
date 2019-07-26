@@ -427,6 +427,10 @@ CleanOldConfig(){
 	if [ -e $FPC_TRUNK_EXEC_PATH ]; then
 		rm $FPC_TRUNK_EXEC_PATH/fpc*
 	fi
+
+	if [ -e /root/.fpc.cfg ]; then
+		rm /root/.fpc.cfg
+	fi
 	
 }
 
@@ -458,7 +462,8 @@ configureFPCTrunk(){
 	$FPC_MKCFG_EXE -d basepath=$FPC_TRUNK_LIB_PATH -o $FPC_CFG_PATH
 
 
-	fpc_trunk_parent=$LAMW4LINUX_HOME/usr/lib/fpc
+	fpc_trunk_parent=$FPC_TRUNK_LIB_PATH
+	fpc_trunk_parent=$(echo $fpc_trunk_parent | sed "s/\/$FPC_TRUNK_VERSION//g")
 	#ls $fpc_trunk_parent;echo $fpc_trunk_parent;read;
 
 	#this config enable to crosscompile in fpc 
@@ -533,9 +538,9 @@ CreateFPCTrunkBootStrap(){
 	fpc_bootstrap_str=(
 		'#!/bin/bash'
 		#"export LAMW_ENV=$LAMW4LINUX_HOME/usr/bin"
-		#'export PATH=$LAMW_ENV:$PATH'
+		'export PATH=$LAMW_ENV:$PATH'
 		"export FPC_TRUNK_LIB_PATH=$FPC_TRUNK_LIB_PATH"
-		#'export LD_LIBRARY=$LAMW_ENV/usr/lib:$LD_LIBRARY'
+		'export LD_LIBRARY=$LAMW_ENV/usr/lib:$LD_LIBRARY'
 		#sudo ldconfig
 		'export FPC_ARGS=($*)'
 		'export FPC_EXEC="ppcx64"'
