@@ -64,6 +64,7 @@ parseFPCTrunk(){
 	export FPC_INSTALL_TRUNK_ZIP="$LAMW4LINUX_HOME/usr/share/fpcsrc/trunk/fpc-${FPC_TRUNK_VERSION}.x86_64-linux.tar.gz"
 	export FPC_TRUNK_LIB_PATH=/usr/local/lib/fpc/${FPC_TRUNK_VERSION}
 	export FPC_TRUNK_EXEC_PATH="/usr/local/bin"
+	echo "FPC_TRUNK_VERSION=$FPC_TRUNK_VERSION";read
 }
 
 
