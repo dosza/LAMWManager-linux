@@ -277,9 +277,7 @@ ActiveProxy(){
 	fi
 }
 CleanOldCrossCompileBins(){
-	SearchPackage fpc
-	index=$?
-	parseFPC ${packs[$index]}
+	wrapperParseFPC
 	if [ -e $FPC_LIB_PATH/ppcrossarm ]; then
 		 rm $FPC_LIB_PATH/ppcrossarm
 	fi
