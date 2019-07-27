@@ -7,6 +7,9 @@ changeDirectory(){
 	if [ "$1" != "" ] ; then
 		if [ -e "$1"  ]; then
 			cd "$1"
+		else
+			echo "\"$1\" does not exists!" &<2
+			exit 1
 		fi
 	fi 
 }
@@ -17,19 +20,16 @@ changeDirectory(){
 #this function return 0 if not found or 1  if found
 searchLineinFile(){
 	flag=0
-	if [ "$1" != "" ];then
-		if [ -e "$1" ];then
-			if [ "$2" != "" ];then
-				line="NULL"
-				#file=$1
-				while read line # read a line from
-				do
-					if [ "$line" = "$2" ];then # if current line is equal $2
-						flag=1
-						break #break loop 
-					fi
-				done < "$1"
-			fi
+	line='NONE'
+	if [ "$1" != "" ]; then
+		if [ "$2" != "" ]; then
+			for i in $(cat "$1")
+			do
+				if [ "$2" = "$i" ]; then
+					flag=1
+					break
+				fi
+			done
 		fi
 	fi
 	return $flag # return value 
@@ -106,14 +106,14 @@ Split (){
 #note a stream must to be a formatted string
 WriterFile(){
 	if [ $# = 2 ]; then
-		filename=$1
+		filename="$1"
 		newPtr stream=$2
 		for((i=0;i<${#stream[*]};i++))
 		do
 			if [ $i = 0 ]; then 
-				printf "%s" "${stream[i]}" > $filename
+				printf "%s" "${stream[i]}" > "$filename"
 			else
-				printf "%s" "${stream[i]}" >> $filename
+				printf "%s" "${stream[i]}" >> "$filename"
 			fi
 		done
 	fi
@@ -126,9 +126,9 @@ WriterFileln(){
 		for((i=0;i<${#stream[*]};i++))
 		do
 			if [ $i = 0 ]; then 
-				printf "%s\n" "${stream[i]}" > $filename
+				printf "%s\n" "${stream[i]}" > "$filename"
 			else
-				printf "%s\n" "${stream[i]}" >> $filename
+				printf "%s\n" "${stream[i]}" >> "$filename"
 			fi
 		done
 	fi
@@ -141,7 +141,7 @@ WriterFileln(){
 #note a stream must to be a formatted string
 AppendFile(){
 	if [ $# = 2 ]; then
-		filename=$1
+		filename="$1"
 		newPtr stream=$2
 		if [  -e  $filename ]; then 
 			for((i=0;i<${#stream[*]};i++))
@@ -156,12 +156,12 @@ AppendFile(){
 
 AppendFileln(){
 	if [ $# = 2 ]; then
-		filename=$1
+		filename="$1"
 		newPtr stream=$2
-		if [  -e  $filename ]; then 
+		if [  -e  "$filename" ]; then 
 			for((i=0;i<${#stream[*]};i++))
 			do
-					printf "%s\n" "${stream[i]}" >> $filename
+					printf "%s\n" "${stream[i]}" >> "$filename"
 			done
 		else
 			echo "\"$filename\" does not exists!"
@@ -171,8 +171,8 @@ AppendFileln(){
 
 InsertUniqueBlankLine(){
 	if [ "$1" != "" ] ; then
-		if [ -e $1 ] ; then 
-			aux=$(tail -1 $1 )       #tail -1 mostra a última linha do arquivo 
+		if [ -e "$1" ] ; then 
+			aux=$(tail -1 "$1" )       #tail -1 mostra a última linha do arquivo 
 			if [ "$aux" != "" ] ; then   # verifica se a última linha é vazia
 				sed  -i '$a\' $1 #adiciona uma linha ao fim do arquivo
 			fi

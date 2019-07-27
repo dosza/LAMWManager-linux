@@ -65,13 +65,15 @@ BuildLazarusIDE(){
 	make_opts=()
 
 	if [ $FLAG_FORCE_ANDROID_AARCH64 = 1 ]; then
+		wrapperParseFPC
 		if [ -e "/usr/local/bin/fpc" ]; then
 			cp $PPC_CONFIG_PATH /root
-			export PATH=/usr/local/bin:$PATH
+			export PATH=$FPC_TRUNK_LIB_PATH:/usr/local/bin:$PATH
 			make_opts=(
-				"PP=$opt${FPC_TRUNK_LIB_PATH}/ppcx64"
+				"PP=${FPC_TRUNK_LIB_PATH}/ppcx64"
 				"FPC_VERSION=$FPC_TRUNK_VERSION"
 			)
+			echo "${make_opts[*]}";read
 		fi
 	fi
 	ln -sf $LAMW4LINUX_HOME/$LAZARUS_STABLE $LAMW_IDE_HOME  # link to lamw4_home directory 
@@ -167,7 +169,7 @@ case "$1" in
 			changeOwnerAllLAMW
 
 		else
-			Repair
+			wrapperRepair
 			checkProxyStatus;
 			echo "Updating LAMW";
 			getLAMWFramework;
@@ -224,7 +226,7 @@ case "$1" in
 			printf "${NEGRITO}Implicit LAMW Framework update starting in $TIME_WAIT seconds ... ${NORMAL}...\n"
 			printf "Press control+c to exit ...\n"
 			sleep $TIME_WAIT 
-			Repair
+			wrapperRepair
 			checkProxyStatus;
 			echo "Updating LAMW";
 			getLAMWFramework;
