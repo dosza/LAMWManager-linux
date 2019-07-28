@@ -28,7 +28,7 @@ LAMWPackageManager(){
 			rm "$old_lamw_ide_home"  -rf
 
 			if [ -e "$old_lazarus_home" ]; then
-				rm "$old_lazarus_home"-rf
+				rm "$old_lazarus_home" -rf
 			fi
 		fi
 		if [ -e "$old_fpc_src" ]; then
