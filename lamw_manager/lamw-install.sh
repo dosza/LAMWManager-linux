@@ -73,7 +73,7 @@ BuildLazarusIDE(){
 				"PP=${FPC_TRUNK_LIB_PATH}/ppcx64"
 				"FPC_VERSION=$FPC_TRUNK_VERSION"
 			)
-			echo "${make_opts[*]}";read
+			echo "${make_opts[*]}"
 		fi
 	fi
 	ln -sf $LAMW4LINUX_HOME/$LAZARUS_STABLE $LAMW_IDE_HOME  # link to lamw4_home directory 
