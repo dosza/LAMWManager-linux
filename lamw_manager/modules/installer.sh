@@ -19,9 +19,17 @@ LAMWPackageManager(){
 		# )
 		# WriterFileln "$LAMW4_LINUX_PATH_CFG/environmentoptions.xml" "lamw_env_str"
 		#configure  lazarus to work with new FPC \(based in trunk)
+
+
 		if [ -e  "$LAMW4_LINUX_PATH_CFG/environmentoptions.xml" ]; then
-			sed -i 's/    <CompilerFilename Value="\/usr\/bin\/fpc\">/\    <CompilerFilename Value=\"\/usr\/local\/bin\/fpc\">/g' "$LAMW4_LINUX_PATH_CFG/environmentoptions.xml"
+			path_splited=$(GenerateScapesStr $FPC_TRUNK_SOURCE_PATH/trunk )
+			echo $path_splited
+			sed -i "s/CompilerFilename Value=\"\/usr\/bin\/fpc\"/CompilerFilename Value=\"\/usr\/local\/bin\/fpc\"/g" "$LAMW4_LINUX_PATH_CFG/environmentoptions.xml"
+			sed -i "s/FPCSourceDirectory Value=\"\/usr\/share\/fpcsrc\/\$(FPCVer)\"/FPCSourceDirectory Value=\"$path_splited\"/g" "$LAMW4_LINUX_PATH_CFG/environmentoptions.xml"
+			#sed -i "s/${LAZARUS_OLD_STABLE[0]}/${LAZARUS_STABLE}/g" "$LAMW4_LINUX_PATH_CFG/environmentoptions.xml"
 		fi
+
+
 
 		if [ -e "$old_lamw_ide_home"  ]; then
 			echo "Uninstalling  Old Lazarus ..."
@@ -41,7 +49,6 @@ LAMWPackageManager(){
 			rm "$PPC_CONFIG_PATH"
 		fi
 	fi
-	echo "exiting of LAMWPackageManager"
 }
 getStatusInstalation(){
 	if [  -e $LAMW4LINUX_HOME/lamw-install.log ]; then
