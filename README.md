@@ -37,6 +37,7 @@ LAMW Manager is a command line tool,like *APT*, to automate the <strong>installa
 	<li>Android SDK</li>
 	<li>OpenJDK</li>
 	<li>Build Freepascal Cross-compile to <strong>ARM-android</strong></li>
+	<li><strong>New! </strong>Build Freepascal Cross-compile to <strong>AARCH64-android</strong></li>
 	<li>Build Lazarus IDE</li>
 	<li>LAMW framework</li>
 	<li>Create launcher to menu</li>
