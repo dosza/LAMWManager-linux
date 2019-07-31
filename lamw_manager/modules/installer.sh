@@ -483,14 +483,14 @@ getSDKAndroid(){
 
 getOldAndroidSDK(){
 	SDK_MANAGER_SDK_PATHS=(
-		"platforms/android-26"
-		"platform-tools"
-		"build-tools/26.0.2"
-		"extras/google/google_play_services"  
-		"extras/android/m2repository"
-		"extras/google/m2repository"  
-		"extras/google/market_apk_expansion"  
-		"extras/google/market_licensing"
+		"$ANDROID_SDK/platforms/android-26"
+		"$ANDROID_SDK/platform-tools"
+		"$ANDROID_SDK/build-tools/26.0.2"
+		"$ANDROID_SDK/extras/google/google_play_services"  
+		"$ANDROID_SDK/extras/android/m2repository"
+		"$ANDROID_SDK/extras/google/m2repository"  
+		"$ANDROID_SDK/extras/google/market_apk_expansion"  
+		"$ANDROID_SDK/extras/google/market_licensing"
 	)
 
 	if [ -e $ANDROID_SDK/tools/android  ]; then 
@@ -504,7 +504,7 @@ getOldAndroidSDK(){
 				echo "Getting \"${SDK_MANAGER_CMD_PARAMETERS2[i]}\" ..."
 				#read;
 			#	ls "$ANDROID_SDK/${SDK_MANAGER_SDK_PATHS[i]}";read
-				if [ ! -e "$ANDROID_SDK/${SDK_MANAGER_SDK_PATHS[i]}" ];then
+				if [ ! -e "${SDK_MANAGER_SDK_PATHS[i]}" ];then
 					echo "y" |   ./android update sdk --all --no-ui --filter ${SDK_MANAGER_CMD_PARAMETERS2[i]} ${SDK_MANAGER_CMD_PARAMETERS2_PROXY[*]}
 					if [ $? != 0 ]; then
 						echo "y" |   ./android update sdk --all --no-ui --filter ${SDK_MANAGER_CMD_PARAMETERS2[i]} ${SDK_MANAGER_CMD_PARAMETERS2_PROXY[*]}
