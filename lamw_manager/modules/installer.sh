@@ -8,17 +8,6 @@ LAMWPackageManager(){
 		old_lazarus_home=$LAMW4LINUX_HOME/${LAZARUS_OLD_STABLE[0]}
 		old_lamw_ide_home="$LAMW4LINUX_HOME/lamw4linux"
 		old_fpc_src="$LAMW4LINUX_HOME/fpcsrc"
-		# lamw_env_str=(
-		# 	'<?xml version="1.0" encoding="UTF-8"?>'
-		# 	'<CONFIG>'
-		# 	'  <EnvironmentOptions>'
-		# 	"   <LazarusDirectory Value=\"$LAMW_IDE_HOME/\"/>"
-		# 	"    <CompilerFilename Value=\"/usr/local/bin/fpc\"/>"
-		# 	'  </EnvironmentOptions>'
-		# 	'</CONFIG>'
-		# )
-		# WriterFileln "$LAMW4_LINUX_PATH_CFG/environmentoptions.xml" "lamw_env_str"
-		#configure  lazarus to work with new FPC \(based in trunk)
 
 
 		if [ -e  "$LAMW4_LINUX_PATH_CFG/environmentoptions.xml" ]; then
@@ -39,6 +28,7 @@ LAMWPackageManager(){
 				rm "$old_lazarus_home" -rf
 			fi
 		fi
+
 		if [ -e "$old_fpc_src" ]; then
 			echo "Uninstalling Old FPC Sources ..."
 			rm -rf "$old_fpc_src"
@@ -97,14 +87,7 @@ CheckFPCSupport(){
 enableUpgradeFPC(){
 	cat  /etc/apt/sources.list | grep "${fpc_debian_backports[1]}"
 	if [ $? != 0 ]; then
-		for((i=0;i<${#fpc_debian_backports[*]};i++))
-		do
-			if [ $i = 0 ]; then
-				echo ${fpc_debian_backports[i]} > /etc/apt/sources.list.d/fpc-backports.list
-			else
-				echo ${fpc_debian_backports[i]} >> /etc/apt/sources.list.d/fpc-backports.list
-			fi
-		done
+		WriterFileln  "/etc/apt/sources.list.d/fpc-backports.list" "fpc_debian_backports"
 		apt-get update
 		if [ $? != 0 ] ; then
 			apt-get update
@@ -499,6 +482,17 @@ getSDKAndroid(){
 }
 
 getOldAndroidSDK(){
+	SDK_MANAGER_SDK_PATHS=(
+		"platforms/android-26"
+		"platform-tools"
+		"build-tools/26.0.2"
+		"extras/google/google_play_services"  
+		"extras/android/m2repository"
+		"extras/google/m2repository"  
+		"extras/google/market_apk_expansion"  
+		"extras/google/market_licensing"
+	)
+
 	if [ -e $ANDROID_SDK/tools/android  ]; then 
 		changeDirectory $ANDROID_SDK/tools
 		if [ $NO_GUI_OLD_SDK = 0 ]; then
@@ -509,18 +503,20 @@ getOldAndroidSDK(){
 			do
 				echo "Getting \"${SDK_MANAGER_CMD_PARAMETERS2[i]}\" ..."
 				#read;
-				echo "y" |   ./android update sdk --all --no-ui --filter ${SDK_MANAGER_CMD_PARAMETERS2[i]} ${SDK_MANAGER_CMD_PARAMETERS2_PROXY[*]}
-				if [ $? != 0 ]; then
+			#	ls "$ANDROID_SDK/${SDK_MANAGER_SDK_PATHS[i]}";read
+				if [ ! -e "$ANDROID_SDK/${SDK_MANAGER_SDK_PATHS[i]}" ];then
 					echo "y" |   ./android update sdk --all --no-ui --filter ${SDK_MANAGER_CMD_PARAMETERS2[i]} ${SDK_MANAGER_CMD_PARAMETERS2_PROXY[*]}
 					if [ $? != 0 ]; then
-						echo "possible network instability! Try later!"
-						exit 1
+						echo "y" |   ./android update sdk --all --no-ui --filter ${SDK_MANAGER_CMD_PARAMETERS2[i]} ${SDK_MANAGER_CMD_PARAMETERS2_PROXY[*]}
+						if [ $? != 0 ]; then
+							echo "possible network instability! Try later!"
+							exit 1
+						fi
 					fi
 				fi	
 			done 
 		fi
 	fi
-
 }
 
 RepairOldSDKAndroid(){
@@ -749,6 +745,8 @@ getImplicitInstall(){
 		else
 			echo "You need upgrade your LAMW4Linux!"
 			export LAMW_IMPLICIT_ACTION_MODE=0
+			export OLD_ANDROID_SDK=1 #obetem por padrão o old sdk 
+			export NO_GUI_OLD_SDK=1
 			LAMWPackageManager
 		fi
 	else

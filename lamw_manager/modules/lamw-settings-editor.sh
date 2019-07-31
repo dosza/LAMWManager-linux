@@ -112,6 +112,11 @@ changeOwnerAllLAMW(){
 }
 #write log lamw install 
 writeLAMWLogInstall(){
+	fpc_version=$FPC_VERSION
+	if [ $FLAG_FORCE_ANDROID_AARCH64 = 1 ]; then
+		fpc_version=$FPC_TRUNK_VERSION
+
+	fi
 
 	lamw_log_str=(
 		"Generate LAMW_INSTALL_VERSION=$LAMW_INSTALL_VERSION" 
@@ -123,8 +128,9 @@ writeLAMWLogInstall(){
 		"GRADLE_VERSION=$GRADLE_VERSION"
 		"SDK_TOOLS_VERSION=$SDK_TOOLS_VERSION"
 		"NDK_VERSION=$NDK_VERSION"
-		"FPC_VERSION=$FPC_VERSION"
-		"LAZARUS_VERSION=$LAZARUS_STABLE_VERSION" 
+		"FPC_VERSION=$fpc_version"
+		"LAZARUS_VERSION=$LAZARUS_STABLE_VERSION"
+		"AARCH64_SUPPORT=$FLAG_FORCE_ANDROID_AARCH64"
 		"Install-date:$(date)"
 		)
 
