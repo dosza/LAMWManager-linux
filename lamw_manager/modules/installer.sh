@@ -643,6 +643,9 @@ Repair(){
 Repair1(){
 	flag_need_repair=0 # flag de reparo 
 	flag_upgrade_lazarus=0
+	aux_path="$LAMW4LINUX_HOME/fpcsrc"
+	expected_fpc_src_path="$FPC_TRUNK_SOURCE_PATH/trunk"
+
 	getStatusInstalation 
 	if [ $LAMW_INSTALL_STATUS = 1 ]; then # só executa essa funcao se o lamw tiver instalado
 		flag_old_fpc=""
@@ -665,42 +668,23 @@ Repair1(){
 			#configureFPC
 			wrapperConfigureFPC
 		fi
-		if [ "$fpc_arm" = "" ]; then
-			flag_need_repair=1  # caso o  crosscompile para arm nao exista,  sinaliza reparo
-		fi
 
 		wrapperParseFPC
 		# verifica se  a versao do codigo fonte do fpc casa com a versão do sistema
-		if [ -e "$LAMW4LINUX_HOME/fpcsrc" ]; then 
-		
-			if [ -e "$LAMW4LINUX_HOME/fpcsrc/release_3_0_4" ]; then
-				aux_path="$LAMW4LINUX_HOME/fpcsrc/release_3_0_4"
-			else
-				"$LAMW4LINUX_HOME/fpcsrc/release_3_0_0"
-			fi
-
-			#if [ $flag_match_fpc != 0 ] ; then # caso o código fonte do fpc do LAMW4Linux não match com o do sistema, verifica se necessita fazer downgrade ou upgrade
-				#configureFPC
-				wrapperConfigureFPC
-				if [ -e $aux_path ]; then 
-					rm -rf $aux_path
-					flag_need_repair=1
-					#getFPCSources
-					getWrapperFPCSources
-				fi
-			#fi
+	
+		if [ -e "$aux_path" ]; then 
+			rm -rf $aux_path
+			flag_need_repair=1
+			getWrapperFPCSources
 		fi
-
-		expected_fpc_src_path="$FPC_TRUNK_SOURCE_PATH/trunk"
-
+	
 		if [ ! -e $expected_fpc_src_path ]; then
-			#getFPCSources
 			getWrapperFPCSources
 			flag_need_repair=1
 		fi
 			
 		if [ $flag_need_repair = 1 ]; then
-			
+			wrapperConfigureFPC
 			CleanOldCrossCompileBins
 			#BuildCrossArm $FPC_ID_DEFAULT
 			wrapperBuildFPCCross
@@ -709,7 +693,6 @@ Repair1(){
 				getLazarusSources
 			fi
 			BuildLazarusIDE
-			#CreateSDKSimbolicLinks
 			wrapperCreateSDKSimbolicLinks
 			enableADBtoUdev
 			writeLAMWLogInstall
@@ -725,7 +708,7 @@ Repair1(){
 wrapperRepair(){
 	if [ $FLAG_FORCE_ANDROID_AARCH64 = 1 ]; then
 		#Repair1
-		true;
+		Repair1
 	else
 		Repair
 	fi
