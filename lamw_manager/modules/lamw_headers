@@ -21,7 +21,7 @@ ANDROID_HOME=$LAMW_USER_HOME/LAMW
 ANDROID_SDK="$ROOT_LAMW/sdk"
 #--------------------------------------------------------------------------------------
 export XDG_DATA_DIRS="/usr/share:/usr/local/share:$LAMW_USER_HOME/.local/share"
-LAMW_INSTALL_VERSION="0.3.1"
+LAMW_INSTALL_VERSION="0.3.2"
 LAMW_INSTALL_WELCOME=(
 	"${NEGRITO}\t\tWelcome LAMW Manager - version: $LAMW_INSTALL_VERSION${NORMAL}\n"
 	"\t\tPowerd by Daniel Oliveira Souza\n"
@@ -77,9 +77,9 @@ GRADLE_ZIP_FILE="gradle-4.4.1-bin.zip"
 FPC_STABLE=""
 LAZARUS_STABLE="lazarus_2_0_2"
 LAZARUS_STABLE_VERSION="2.0.2"
-FPC_CFG_PATH="$LAMW_USER_HOME/.fpc.cfg"
-PPC_CONFIG_PATH=$FPC_CFG_PATH
-
+OLD_FPC_CFG_PATH="$LAMW_USER_HOME/.fpc.cfg"
+export FPC_CFG_PATH="$LAMW_USER_HOME/.fpc.cfg"
+export PPC_CONFIG_PATH="$FPC_CFG_PATH"
 LAZARUS_OLD_STABLE=(
 	lazarus_1_8_4
 )

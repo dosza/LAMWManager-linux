@@ -2,7 +2,7 @@
 #!/bin/bash
 #Universidade federal de Mato Grosso
 #Curso ciencia da computação
-#Versao  0.3.1
+#Versao  0.3.2
 #Descrição: Este script configura o ambiente de desenvolvimento para o LAMW
 #V
 
@@ -67,7 +67,7 @@ BuildLazarusIDE(){
 	if [ $FLAG_FORCE_ANDROID_AARCH64 = 1 ]; then
 		wrapperParseFPC
 		if [ -e "/usr/local/bin/fpc" ]; then
-			cp $PPC_CONFIG_PATH /root
+			cp "$PPC_CONFIG_PATH" "/root/.fpc.cfg"
 			export PATH=$FPC_TRUNK_LIB_PATH:/usr/local/bin:$PATH
 			make_opts=(
 				"PP=${FPC_TRUNK_LIB_PATH}/ppcx64"

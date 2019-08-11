@@ -34,6 +34,9 @@ LAMWPackageManager(){
 			rm -rf "$old_fpc_src"
 		fi
 
+		if [ -e "$OLD_FPC_CFG_PATH" ]; then
+			rm "$OLD_FPC_CFG_PATH"
+		fi
 
 		if [ -e "$PPC_CONFIG_PATH" ]; then
 			rm "$PPC_CONFIG_PATH"

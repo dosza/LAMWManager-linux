@@ -65,6 +65,8 @@ parseFPCTrunk(){
 	export FPC_TRUNK_LIB_PATH=/usr/local/lib/fpc/${FPC_TRUNK_VERSION}
 	export FPC_TRUNK_EXEC_PATH="/usr/local/bin"
 	#echo "FPC_TRUNK_VERSION=$FPC_TRUNK_VERSION"
+	export FPC_CFG_PATH="$FPC_TRUNK_LIB_PATH/fpc.cfg"
+	export PPC_CONFIG_PATH="$FPC_TRUNK_LIB_PATH"
 }
 
 
