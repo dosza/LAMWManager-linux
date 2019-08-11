@@ -111,9 +111,9 @@ WriterFile(){
 		for((i=0;i<${#stream[*]};i++))
 		do
 			if [ $i = 0 ]; then 
-				printf "%s" "${stream[i]}" > "$filename"
+				printf "%b" "${stream[i]}" > "$filename"
 			else
-				printf "%s" "${stream[i]}" >> "$filename"
+				printf "%b" "${stream[i]}" >> "$filename"
 			fi
 		done
 	fi
@@ -126,9 +126,9 @@ WriterFileln(){
 		for((i=0;i<${#stream[*]};i++))
 		do
 			if [ $i = 0 ]; then 
-				printf "%s\n" "${stream[i]}" > "$filename"
+				printf "%b\n" "${stream[i]}" > "$filename"
 			else
-				printf "%s\n" "${stream[i]}" >> "$filename"
+				printf "%b\n" "${stream[i]}" >> "$filename"
 			fi
 		done
 	fi
@@ -146,7 +146,7 @@ AppendFile(){
 		if [  -e  $filename ]; then 
 			for((i=0;i<${#stream[*]};i++))
 			do
-					printf "%s" "${stream[i]}" >> $filename
+					printf "%b" "${stream[i]}" >> $filename
 			done
 		else
 			echo "\"$filename\" does not exists!"
@@ -161,7 +161,7 @@ AppendFileln(){
 		if [  -e  "$filename" ]; then 
 			for((i=0;i<${#stream[*]};i++))
 			do
-					printf "%s\n" "${stream[i]}" >> "$filename"
+					printf "%b\n" "${stream[i]}" >> "$filename"
 			done
 		else
 			echo "\"$filename\" does not exists!"
