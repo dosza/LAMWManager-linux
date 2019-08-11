@@ -240,7 +240,6 @@ LAMW4LinuxPostConfig(){
 		'#!/bin/bash'
 		"export PPC_CONFIG_PATH=$PPC_CONFIG_PATH"
 		"$aux_str"
-		"export PPC_CONFIG_PATH=$PPC_CONFIG_PATH"
 		"$LAMW4LINUX_EXE_PATH --primary-config-path=$LAMW4_LINUX_PATH_CFG"
 	)
 
@@ -404,6 +403,9 @@ CleanOldConfig(){
 
 	if [ -e /root/.fpc.cfg ]; then
 		rm /root/.fpc.cfg
+	fi
+	if [ -e $OLD_FPC_CFG_PATH ]; then
+		rm $OLD_FPC_CFG_PATH
 	fi
 	
 }
