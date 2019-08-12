@@ -67,7 +67,6 @@ BuildLazarusIDE(){
 	if [ $FLAG_FORCE_ANDROID_AARCH64 = 1 ]; then
 		wrapperParseFPC
 		if [ -e "/usr/local/bin/fpc" ]; then
-			cp "$PPC_CONFIG_PATH" "/root/.fpc.cfg"
 			export PATH=$FPC_TRUNK_LIB_PATH:/usr/local/bin:$PATH
 			make_opts=(
 				"PP=${FPC_TRUNK_LIB_PATH}/ppcx64"
@@ -92,7 +91,7 @@ BuildLazarusIDE(){
 	done
 
 	if [ -e /root/.fpc.cfg ]; then
-		rm /root/.fpc.cfg
+		rm  -rf /root/.fpc.cfg
 	fi
 }
 
