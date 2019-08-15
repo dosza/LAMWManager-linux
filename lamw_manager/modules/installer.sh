@@ -5,7 +5,7 @@
 #prepare upgrade
 LAMWPackageManager(){
 	if [ $FLAG_FORCE_ANDROID_AARCH64 = 1 ]; then 
-		old_lazarus_home=$LAMW4LINUX_HOME/${LAZARUS_OLD_STABLE[0]}
+		
 		old_lamw_ide_home="$LAMW4LINUX_HOME/lamw4linux"
 		old_fpc_src="$LAMW4LINUX_HOME/fpcsrc"
 
@@ -23,11 +23,16 @@ LAMWPackageManager(){
 		if [ -e "$old_lamw_ide_home"  ]; then
 			echo "Uninstalling  Old Lazarus ..."
 			rm "$old_lamw_ide_home"  -rf
+		fi
 
+		for((i=0;i<${#LAZARUS_OLD_STABLE[*]};i++))
+		do
+			old_lazarus_home=$LAMW4LINUX_HOME/${LAZARUS_OLD_STABLE[i]}
 			if [ -e "$old_lazarus_home" ]; then
 				rm "$old_lazarus_home" -rf
 			fi
-		fi
+		done
+		
 
 		if [ -e "$old_fpc_src" ]; then
 			echo "Uninstalling Old FPC Sources ..."
@@ -41,6 +46,18 @@ LAMWPackageManager(){
 		if [ -e "$PPC_CONFIG_PATH" ]; then
 			rm "$PPC_CONFIG_PATH"
 		fi
+
+		#fixs 0.3.1 to 0.3.2
+		if [ -e $LAMW4LINUX_HOME/lamw-install.log ]; then
+			cat  $LAMW4LINUX_HOME/lamw-install.log | grep '0.3.1'
+			if [ $? = 0 ]; then 
+				if [ -e "$LAMW4LINUX_HOME/usr" ]; then
+					rm -rf "$LAMW4LINUX_HOME/usr"
+				fi
+			fi
+		fi
+
+
 	fi
 }
 getStatusInstalation(){
@@ -250,15 +267,14 @@ getFPCSources(){
 }
 
 getFPCSourcesTrunk(){
-	changeDirectory $LAMW_USER_HOME
 	mkdir -p $FPC_TRUNK_SOURCE_PATH
 	changeDirectory $FPC_TRUNK_SOURCE_PATH
 	svn checkout $FPC_TRUNK_URL
 	if [ $? != 0 ]; then
-		rm -rf trunk
+		rm -rf "$FPC_TRUNK_SVNTAG"
 		svn checkout "$FPC_TRUNK_URL"
 		if [ $? != 0 ]; then 
-			rm -rf "trunk"
+			rm -rf "$FPC_TRUNK_SVNTAG"
 			echo "possible network instability! Try later!"
 			exit 1
 		fi
@@ -491,9 +507,10 @@ getOldAndroidSDK(){
 		"$ANDROID_SDK/build-tools/26.0.2"
 		"$ANDROID_SDK/extras/google/google_play_services"  
 		"$ANDROID_SDK/extras/android/m2repository"
-		"$ANDROID_SDK/extras/google/m2repository"  
+		"$ANDROID_SDK/extras/google/m2repository" 
+		"$ANDROID_SDK/extras/google/market_licensing" 
 		"$ANDROID_SDK/extras/google/market_apk_expansion"  
-		"$ANDROID_SDK/extras/google/market_licensing"
+		
 	)
 
 	if [ -e $ANDROID_SDK/tools/android  ]; then 
@@ -711,7 +728,8 @@ Repair1(){
 wrapperRepair(){
 	if [ $FLAG_FORCE_ANDROID_AARCH64 = 1 ]; then
 		#Repair1
-		Repair1
+		#Repair1
+		true
 	else
 		Repair
 	fi

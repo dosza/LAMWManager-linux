@@ -161,7 +161,7 @@ AppendFileln(){
 		if [  -e  "$filename" ]; then 
 			for((i=0;i<${#stream[*]};i++))
 			do
-					printf "%b\n" "${stream[i]}" >> "$filename"
+				printf "%b\n" "${stream[i]}" >> "$filename"
 			done
 		else
 			echo "\"$filename\" does not exists!"

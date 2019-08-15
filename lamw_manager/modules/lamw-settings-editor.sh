@@ -293,6 +293,14 @@ CleanOldCrossCompileBins(){
 	if [ -e /usr/lib/fpc/$FPC_VERSION/units/arm-android ]; then
 		 rm -r /usr/lib/fpc/$FPC_VERSION/units/arm-android
 	fi
+
+	if [ -e /usr/local/bin/fpc ]; then
+		rm -rf  /usr/local/bin/fp*
+	fi
+
+	if [ -e /usr/local/lib/fpc/3.3.1 ]; then
+		rm -rf /usr/local/lib/fpc/3.3.1
+	fi
 }
 
 cleanPATHS(){
@@ -439,7 +447,7 @@ configureFPCTrunk(){
 
 
 	fpc_trunk_parent=$FPC_TRUNK_LIB_PATH
-	fpc_trunk_parent=$(echo $fpc_trunk_parent | sed "s/\/$FPC_TRUNK_VERSION//g")
+	fpc_trunk_parent=$(echo $fpc_trunk_parent | sed "s/\/$_FPC_TRUNK_VERSION//g")
 	#ls $fpc_trunk_parent;echo $fpc_trunk_parent;read;
 
 	#this config enable to crosscompile in fpc 
@@ -519,7 +527,8 @@ CreateFPCTrunkBootStrap(){
 		#sudo ldconfig
 		'export FPC_ARGS=($*)'
 		'export FPC_EXEC="ppcx64"'
-		'if [ -e $FPC_TRUNK_LIB_PATH/ppcrossa64 ]; then'
+		#'if [ -e $FPC_TRUNK_LIB_PATH/ppcrossa64 ]; then'
+		'if [ -e $FPC_TRUNK_LIB_PATH/ppcrossarm ]; then'
 		'	export PATH=$FPC_TRUNK_LIB_PATH:$PATH'
 		'fi'
 
@@ -529,27 +538,37 @@ CreateFPCTrunkBootStrap(){
 
 		'		case "${FPC_ARGS[i]}" in'
 		'			"-Parm")'
-		# '				echo "$(date) arm detected" >> ~/fpc-detected.txt'
-		# '				echo "cmd-line:$FPC_ARGS" >> ~/fpc-detected.txt'
-		# '				echo "" >> ~/fpc-detected.txt'
 		'				export FPC_EXEC="ppcarm"'
 		'				break'
 		'			;;'
 
 		'			"-Paarch64")'
-		# '				echo "$(date) aarch64 detected" >> ~/fpc-detected.txt'
-		# '				echo "cmd-line:$FPC_ARGS" >> ~/fpc-detected.txt'
-		# '				echo "" >> ~/fpc-detected.txt'
 		'				export FPC_EXEC="ppca64"'
 		'				break'
 		'			;;'
 		'		esac'
 		'done'
-
-		#'echo "$FPC_EXEC" >> ~/void-ptr.txt'
 		'$FPC_EXEC ${FPC_ARGS[@]}'
 	)
 
 	WriterFileln "$fpc_trunk_boostrap_path" "fpc_bootstrap_str"
 	chmod +x "$fpc_trunk_boostrap_path"
+}
+
+initLAMw4LinuxConfig(){
+	lazarus_env_cfg_str=(
+	'<?xml version="1.0" encoding="UTF-8"?>'
+	'<CONFIG>'
+		'<EnvironmentOptions>'
+	"		<LazarusDirectory Value=\"/home/danny/LAMW/lamw4linux/lamw4linux/\"/>"
+	"		<CompilerFilename Value=\"$FPC_TRUNK_EXEC_PATH/fpc\"/>"
+	"	</EnvironmentOptions>"
+	"</CONFIG>"
+	)
+
+	if [ ! -e $LAMW4_LINUX_PATH_CFG ]; then
+		mkdir $LAMW4_LINUX_PATH_CFG
+		lazarus_env_cfg_path="$LAMW4_LINUX_PATH_CFG/environmentoptions.xml"
+		WriterFileln  "$lazarus_env_cfg_path" "lazarus_env_cfg_str"
+	fi
 }
