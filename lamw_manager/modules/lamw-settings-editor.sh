@@ -120,8 +120,10 @@ writeLAMWLogInstall(){
 
 	lamw_log_str=(
 		"Generate LAMW_INSTALL_VERSION=$LAMW_INSTALL_VERSION" 
-		"Info:\nLAMW4Linux:$LAMW4LINUX_HOME\nLAMW workspace:" 	
-		"$LAMW_WORKSPACE_HOME\nAndroid SDK:$ROOT_LAMW/sdk" 
+		"Info:"
+		"LAMW4Linux:$LAMW4LINUX_HOME"
+		"LAMW workspace:$LAMW_WORKSPACE_HOME"
+		"Android SDK:$ROOT_LAMW/sdk" 
 		"Android NDK:$ROOT_LAMW/ndk\nGradle:$GRADLE_HOME"
 		"OLD_ANDROID_SDK=$OLD_ANDROID_SDK"
 		"ANT_VERSION=$ANT_VERSION"
