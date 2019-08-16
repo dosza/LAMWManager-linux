@@ -10,16 +10,6 @@ LAMWPackageManager(){
 		old_fpc_src="$LAMW4LINUX_HOME/fpcsrc"
 
 
-		if [ -e  "$LAMW4_LINUX_PATH_CFG/environmentoptions.xml" ]; then
-			path_splited=$(GenerateScapesStr $FPC_TRUNK_SOURCE_PATH/trunk )
-			echo $path_splited
-			sed -i "s/CompilerFilename Value=\"\/usr\/bin\/fpc\"/CompilerFilename Value=\"\/usr\/local\/bin\/fpc\"/g" "$LAMW4_LINUX_PATH_CFG/environmentoptions.xml"
-			sed -i "s/FPCSourceDirectory Value=\"\/usr\/share\/fpcsrc\/\$(FPCVer)\"/FPCSourceDirectory Value=\"$path_splited\"/g" "$LAMW4_LINUX_PATH_CFG/environmentoptions.xml"
-			#sed -i "s/${LAZARUS_OLD_STABLE[0]}/${LAZARUS_STABLE}/g" "$LAMW4_LINUX_PATH_CFG/environmentoptions.xml"
-		fi
-
-
-
 		if [ -e "$old_lamw_ide_home"  ]; then
 			echo "Uninstalling  Old Lazarus ..."
 			rm "$old_lamw_ide_home"  -rf
@@ -196,9 +186,9 @@ initParameters(){
 
 	if [ $USE_PROXY = 1 ]; then
 		SDK_MANAGER_CMD_PARAMETERS=(
-			"platforms;android-26" 
+			"platforms;android-$ANDROID_SDK_TARGET" 
 			"platform-tools"
-			"build-tools;26.0.2" 
+			"build-tools;$ANDROID_BUILD_TOOLS_TARGET" 
 			"tools" 
 			"ndk-bundle" 
 			"extras;android;m2repository" 
@@ -207,9 +197,9 @@ initParameters(){
 			--proxy_port=$PORT_SERVER 
 		)
 		SDK_MANAGER_CMD_PARAMETERS2=(
-			"android-26"
+			"android-$ANDROID_SDK_TARGET"
 			"platform-tools"
-			"build-tools-26.0.2" 
+			"build-tools-$ANDROID_BUILD_TOOLS_TARGET" 
 			"extra-google-google_play_services"
 			"extra-android-m2repository"
 			"extra-google-m2repository"
@@ -228,17 +218,17 @@ initParameters(){
 #	ActiveProxy 1
 	else
 		SDK_MANAGER_CMD_PARAMETERS=(
-			"platforms;android-26" 
+			"platforms;android-$ANDROID_SDK_TARGET" 
 			"platform-tools"
-			"build-tools;26.0.2" 
+			"build-tools;$ANDROID_BUILD_TOOLS_TARGET" 
 			"tools" 
 			"ndk-bundle" 
 			"extras;android;m2repository"
 		)			#ActiveProxy 0
 		SDK_MANAGER_CMD_PARAMETERS2=(
-			"android-26"
+			"android-$ANDROID_SDK_TARGET"
 			"platform-tools"
-			"build-tools-26.0.2" 
+			"build-tools-$ANDROID_BUILD_TOOLS_TARGET" 
 			"extra-google-google_play_services"
 			"extra-android-m2repository"
 			"extra-google-m2repository"
@@ -502,9 +492,9 @@ getSDKAndroid(){
 
 getOldAndroidSDK(){
 	SDK_MANAGER_SDK_PATHS=(
-		"$ANDROID_SDK/platforms/android-26"
+		"$ANDROID_SDK/platforms/android-$ANDROID_SDK_TARGET"
 		"$ANDROID_SDK/platform-tools"
-		"$ANDROID_SDK/build-tools/26.0.2"
+		"$ANDROID_SDK/build-tools/$ANDROID_BUILD_TOOLS_TARGET"
 		"$ANDROID_SDK/extras/google/google_play_services"  
 		"$ANDROID_SDK/extras/android/m2repository"
 		"$ANDROID_SDK/extras/google/m2repository" 
