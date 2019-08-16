@@ -561,16 +561,36 @@ initLAMw4LinuxConfig(){
 	lazarus_env_cfg_str=(
 	'<?xml version="1.0" encoding="UTF-8"?>'
 	'<CONFIG>'
-		'<EnvironmentOptions>'
+	'	<EnvironmentOptions>'
 	"		<LazarusDirectory Value=\"/home/danny/LAMW/lamw4linux/lamw4linux/\"/>"
 	"		<CompilerFilename Value=\"$FPC_TRUNK_EXEC_PATH/fpc\"/>"
 	"	</EnvironmentOptions>"
 	"</CONFIG>"
 	)
+	lazarus_env_cfg_path="$LAMW4_LINUX_PATH_CFG/environmentoptions.xml"
 
 	if [ ! -e $LAMW4_LINUX_PATH_CFG ]; then
 		mkdir $LAMW4_LINUX_PATH_CFG
-		lazarus_env_cfg_path="$LAMW4_LINUX_PATH_CFG/environmentoptions.xml"
 		WriterFileln  "$lazarus_env_cfg_path" "lazarus_env_cfg_str"
+	else
+		fpc_splited=(
+			$(GenerateScapesStr "/usr/bin/fpc"					)				 		#0
+			$(GenerateScapesStr "/usr/share/fpcsrc/\$(FPCVer)"	) 						#1
+			$(GenerateScapesStr "/usr/local/bin/fpc"			)						#2
+			$(GenerateScapesStr "$FPC_TRUNK_SOURCE_PATH/trunk" 	)						#3
+			$(GenerateScapesStr "$LAMW4LINUX_HOME/usr/bin/fpc" 	)						#4
+			$(GenerateScapesStr "$FPC_TRUNK_SOURCE_PATH/${FPC_TRUNK_SVNTAG}")			#5
+		)
+		
+		cat $lazarus_env_cfg_path | grep 'CompilerFilename Value=\"\/usr\/bin\/fpc\"'
+		if [ $? = 0 ]; then
+			sed -i "s/CompilerFilename Value=\"${fpc_splited[0]}\"/CompilerFilename Value=\"${fpc_splited[4]}\"/g" "$lazarus_env_cfg_path"
+			sed -i "s/FPCSourceDirectory Value=\"${fpc_splited[1]}\"/FPCSourceDirectory Value=\"${fpc_splited[5]}\"/g" "$lazarus_env_cfg_path"
+		fi
+		cat $lazarus_env_cfg_path | grep 'CompilerFilename Value=\"\/usr\/local\/bin\/fpc\"'
+		if [ $? = 0 ]; then
+			sed -i "s/CompilerFilename Value=\"${fpc_splited[2]}\"/CompilerFilename Value=\"${fpc_splited[4]}\"/g" "$lazarus_env_cfg_path"
+			sed -i "s/FPCSourceDirectory Value=\"${fpc_splited[3]}\"/FPCSourceDirectory Value=\"${fpc_splited[5]}\"/g" "$lazarus_env_cfg_path"
+		fi
 	fi
 }
