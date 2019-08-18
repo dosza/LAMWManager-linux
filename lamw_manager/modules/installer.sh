@@ -192,6 +192,7 @@ initParameters(){
 			"tools" 
 			"ndk-bundle" 
 			"extras;android;m2repository" 
+			"build-tools;$GRADLE_MIN_BUILD_TOOLS"
 			--no_https --proxy=http 
 			--proxy_host=$PROXY_SERVER 
 			--proxy_port=$PORT_SERVER 
@@ -205,6 +206,7 @@ initParameters(){
 			"extra-google-m2repository"
 			"extra-google-market_licensing"
 			"extra-google-market_apk_expansion"
+			"build-tools-$GRADLE_MIN_BUILD_TOOLS"
 		)
 		SDK_MANAGER_CMD_PARAMETERS2_PROXY=(
 			--no_https 
@@ -224,6 +226,7 @@ initParameters(){
 			"tools" 
 			"ndk-bundle" 
 			"extras;android;m2repository"
+			"build-tools;$GRADLE_MIN_BUILD_TOOLS"
 		)			#ActiveProxy 0
 		SDK_MANAGER_CMD_PARAMETERS2=(
 			"android-$ANDROID_SDK_TARGET"
@@ -234,6 +237,7 @@ initParameters(){
 			"extra-google-m2repository"
 			"extra-google-market_licensing"
 			"extra-google-market_apk_expansion"
+			"build-tools-$GRADLE_MIN_BUILD_TOOLS"
 			)
 		SDK_LICENSES_PARAMETERS=(--licenses )
 	fi
@@ -499,7 +503,8 @@ getOldAndroidSDK(){
 		"$ANDROID_SDK/extras/android/m2repository"
 		"$ANDROID_SDK/extras/google/m2repository" 
 		"$ANDROID_SDK/extras/google/market_licensing" 
-		"$ANDROID_SDK/extras/google/market_apk_expansion"  
+		"$ANDROID_SDK/extras/google/market_apk_expansion"
+		"$ANDROID_SDK/build-tools/$GRADLE_MIN_BUILD_TOOLS"
 		
 	)
 
@@ -654,7 +659,7 @@ Repair1(){
 	flag_need_repair=0 # flag de reparo 
 	flag_upgrade_lazarus=0
 	aux_path="$LAMW4LINUX_HOME/fpcsrc"
-	expected_fpc_src_path="$FPC_TRUNK_SOURCE_PATH/trunk"
+	expected_fpc_src_path="$FPC_TRUNK_SOURCE_PATH/${FPC_TRUNK_SVNTAG}"
 
 	getStatusInstalation 
 	if [ $LAMW_INSTALL_STATUS = 1 ]; then # só executa essa funcao se o lamw tiver instalado
@@ -718,7 +723,7 @@ Repair1(){
 wrapperRepair(){
 	if [ $FLAG_FORCE_ANDROID_AARCH64 = 1 ]; then
 		#Repair1
-		#Repair1
+		Repair1
 		true
 	else
 		Repair
