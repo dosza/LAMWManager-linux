@@ -5,17 +5,14 @@ _ola() {
        COMPREPLY=()
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
-    opts="--help --message --version"
+    opts="uninstall DEBUG=1 version --help   --sdkmanager --reset --reset-aapis --update-lamw   --use_proxy --server --port "
 
     if [[ ${cur} == -* ]] ; then
           COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
           return 0
     fi
   }
-  complete -F _ola teste
-teste(){
-	if [ "$1" = "--version" ]
-  	then
-  		echo "works"
-  	fi
-}
+  complete -F _ola lamw_manager
+  complete -F _ola lamw-manager
+  complete -F _ola ./lamw_manager
+  complete -F _ola ./lamw-manager
