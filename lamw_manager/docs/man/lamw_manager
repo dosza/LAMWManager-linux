@@ -1,5 +1,5 @@
-.\"Manpage for lamw_manager
-.TH lamw_manager 1 "2019 Aug 18" "0.3.2" "LAMW Manager\ man page"
+.\" Manpage for lamw_manager
+.TH lamw_manager 8 "2019 Aug 18" "0.3.2" "LAMW manager man page"
 .SH NAME
 lamw_manager -\ manager to LAMW framework
 .SH SINOPSIS
@@ -9,24 +9,25 @@ lamw_manager
 .br 
  ./lamw_manager [\fBOPTIONS\fR]
 .br
- ./lamw_manager [\fBACTIONS][OPTIONS\fR] DEBUG=1
+ ./lamw_manager [\fBACTIONS\fR][\fBOPTIONS\fR] DEBUG=1
+.br
  ./lamw_manager [\fBuninstall\fR] [\fB\-\-reset\fR] [\fB\-\-reset-aapis\fR] [\fB\-\-sdkmanager\fR] [\fB\-\-update-lamw\fR] [\fB\-\-help\fR]
 .SH DESCRIPTION
 LAMW Manager is a command line tool,like APT, to automate the installation, configuration and upgrade the framework LAMW - Lazarus Android Module Wizard
 .SH ACTIONS
-uninstall 	Clean all LAMw
+\fBuninstall\fR 			Clean all LAMw
 .SH OPTIONS
-\fB\-\-reset\fR  Clean and Install LAMW
+\fB\-\-reset\fR  			Clean and Install LAMW
 .br
-\fB\-\-reset-aapis\fR   Reset Android API's to default
+\fB\-\-reset-aapis\fR   	Reset Android API's to default
 .br
-\fB\-\-help\fR   Show this help
+\fB\-\-help\fR   			Show this help
 .br
-\fB\-\-sdkmanager\fR  Run Android SDK Manager
+\fB\-\-sdkmanager\fR  		Run Android SDK Manager
 .br
-\fB--update\-lamw\fR  Just upgrade LAMW Framework (with the latest version avaliable in git )
+\fB\-\-update\-lamw\fR  	Just upgrade LAMW Framework (with the latest version avaliable in git )
 .SH PROXY OPTIONS
-lamw_manager [ACTIONS]||[OPTIONS] \fB\-\-use-proxy\fR \fB\-\-server\fR [HOST] fB\-\-port\fR [NUMBER]
+lamw_manager [ACTIONS]||[OPTIONS] \fB\-\-use-proxy\fR \fB\-\-server\fR [HOST] \fB\-\-port\fR [NUMBER]
 .br
 sample:
 .br
@@ -34,11 +35,11 @@ sample:
 .SH DEBUG=1
  Use the \fBDEBUG=1\fR flag later in any position of ./lamw_manager (flag does not count as argument)
 .br
- sample:
+ \fBsample\fR:
 .br
- ./lamw_manager --reset DEBUG=1
+ ./lamw_manager --reset \fBDEBUG=1\fR
 .br
- ./lamw_manager DEBUG=1 --reset
+ ./lamw_manager \fBDEBUG=1\fR --reset
 .SH BUGS
 If the LAMW4Linux launcher does not appear in the start menu, simply restart the user session
 .SH AUTHOR
