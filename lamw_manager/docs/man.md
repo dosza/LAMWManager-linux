@@ -1,4 +1,4 @@
-**&nbsp; lamw_manager(1) &nbsp; 2019 Aug 18 &nbsp;0.3.2 &nbsp;&nbsp;LAMW Manager man page**
+**&nbsp;&nbsp;&nbsp;lamw_manager(1)&nbsp; 2019 Aug 18 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LAMW Manager man page&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lamw_manager(1)**
 
 **NAME**
 <p>
@@ -25,7 +25,7 @@
 **ACTIONS**
 <p>
        <pre>
-              uninstall      Clean all LAMw
+              <strong>uninstall</strong>      Clean all LAMw
        </pre>
 </p>
 
@@ -54,6 +54,10 @@
 <p>
        <pre>
               Use the <strong>DEBUG=1</strong> flag later in any position of ./lamw_manager (flag does not count as argument)
+              <strong>Sample:</strong>
+              sample:
+              ./lamw_manager --reset <strong>DEBUG=1</strong>
+              ./lamw_manager <strong>DEBUG=1</strong> --reset
        </pre>
 </p>
 
