@@ -24,9 +24,7 @@
 
 **ACTIONS**
 <p>
-       <pre>
-              <strong>uninstall</strong>      Clean all LAMw
-       </pre>
+       <pre><strong>uninstall</strong>      Clean all LAMW</pre>
 </p>
 
 **OPTIONS**
@@ -62,9 +60,8 @@
 </p>
 
 **BUGS**
-<p>
-       If the LAMW4Linux launcher does not appear in the  start  menu,  simply restart the user session
-</p>
+<p>If the LAMW4Linux launcher does not appear in the  start  menu,  simply restart the user session</p>
+
 
 **AUTHOR**
        Daniel Oliveira Souza 
