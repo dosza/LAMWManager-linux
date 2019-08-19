@@ -1,33 +1,44 @@
 .\"Manpage for lamw_manager
-.TH man "11 Fev 2019" "0.3.0" "LAMW Manager man page"
+.TH lamw_manager 1 "2019 Aug 18" "0.3.2" "LAMW Manager\ man page"
 .SH NAME
 lamw_manager -\ manager to LAMW framework
 .SH SINOPSIS
 lamw_manager
 .br
-lamw_manger [action] [options]
+ ./lamw_manger [\fBACTION\fR] [\fBOPTIONS\fR]
 .br 
-lamw_manager [options]
+ ./lamw_manager [\fBOPTIONS\fR]
 .br
-lamw_manager [uninstall] [--reset] [--sdkmanager] [--update-lamw] [--help]
+ ./lamw_manager [\fBACTIONS][OPTIONS\fR] DEBUG=1
+ ./lamw_manager [\fBuninstall\fR] [\fB\-\-reset\fR] [\fB\-\-reset-aapis\fR] [\fB\-\-sdkmanager\fR] [\fB\-\-update-lamw\fR] [\fB\-\-help\fR]
 .SH DESCRIPTION
 LAMW Manager is a command line tool,like APT, to automate the installation, configuration and upgrade the framework LAMW - Lazarus Android Module Wizard
 .SH ACTIONS
 uninstall 	Clean all LAMw
 .SH OPTIONS
---reset  Clean and Install LAMW
+\fB\-\-reset\fR  Clean and Install LAMW
 .br
---help   Show this help
+\fB\-\-reset-aapis\fR   Reset Android API's to default
 .br
---sdkmanager  Run Android SDK Manager
+\fB\-\-help\fR   Show this help
 .br
---update-lamw  Just upgrade LAMW Framework (with the latest version avaliable in git )
+\fB\-\-sdkmanager\fR  Run Android SDK Manager
+.br
+\fB--update\-lamw\fR  Just upgrade LAMW Framework (with the latest version avaliable in git )
 .SH PROXY OPTIONS
-lamw_manager [actions]||[options] --use-proxy --server [HOST] --port [NUMBER]
+lamw_manager [ACTIONS]||[OPTIONS] \fB\-\-use-proxy\fR \fB\-\-server\fR [HOST] fB\-\-port\fR [NUMBER]
 .br
 sample:
 .br
  ./lamw_manger --update-lamw --use-proxy --server 10.0.16.1 --port 3128
+.SH DEBUG=1
+ Use the \fBDEBUG=1\fR flag later in any position of ./lamw_manager (flag does not count as argument)
+.br
+ sample:
+.br
+ ./lamw_manager --reset DEBUG=1
+.br
+ ./lamw_manager DEBUG=1 --reset
 .SH BUGS
 If the LAMW4Linux launcher does not appear in the start menu, simply restart the user session
 .SH AUTHOR

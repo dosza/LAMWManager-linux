@@ -1,59 +1,76 @@
-**LAMW Manager v0.3.0 Manual**
-
-**commands:**
-	lamw_manager** (this tool *invokes* root as sudo) 
-
-*Note: you need run this tool without root privileges!*
-
-
 <p>
-<pre>					<Strong>Syntax:</Strong>
-./lamw_manager¹
-./lamw_manager² 	<strong>[actions]</strong>         <strong>[options]</strong>  
-</pre>
+       <pre>
+       <strong>lamw_manager(1)     2019 Aug 18   0.3.2  LAMW Manager man page </strong>
+       </pre>
 </p>
 
-
-**Usage:**
-
+**NAME**
 <p>
-./lamw_manager                                         
-	<pre>
-	<strong>[action]</strong>                            <em>Description</em>
-	<strong>uninstall</strong>                           Uninstall LAMW completely and erase all settings.
-	<strong>--sdkmanager</strong>                        Run Android SDK Manager 
-	<strong>--update-lamw</strong>                       Update LAMW sources and rebuild Lazarus IDE
-	</pre>
-	<strong>Note:</strong>The <em>default option</em> is <strong><em>Android SDK Tools r25.2.5</em></strong>
+       <pre>
+              lamw_manager - manager to LAMW framework
+       </pre>
 </p>
 
-**proxy options:**
+**SINOPSIS**
 <p>
-	<pre>
-	<em>actions</em>    <strong>--use-proxy</strong> 		<em>[proxy options]</em>
-</pre>
+       <pre>
+     </pre>         ./lamw_manager
+              ./lamw_manger [<strong>ACTION</strong>] [<strong>OPTIONS</strong>]
+              ./lamw_manager [<strong>OPTIONS</strong>]
+              ./lamw_manager   [<strong>uninstall</strong>]   [<strong>--reset</strong>]  [<strong>--reset-aapis</strong>] [<strong>--sdkmanager</strong>]  [<strong>--update-lamw</strong>] [<strong>--help</strong>]
+       </pre>
 </p>
 
-<pre> <strong>sample:</strong>	lamw_manager install	<strong>--use-proxy	--server</strong> <em>10.0.16.1</em>	<strong>--port</strong>	<em>3128</em> </pre>
-
-**Forced installation:**
-
+**DESCRIPTION**
 <p>
-	if the default installation fails!
-	Possibly caused by a lazarus package (.deb) in <em>bad condition</em>, <strong>action</strong> recommends uninstalling any lazarus 
-	(.deb) for this use: <strong>--force</strong> as the last parameter.
+       <pre>
+              LAMW Manager is a command line tool,like APT, to automate the installation,  configuration  and  upgrade the framework LAMW - Lazarus Android Module Wizard
+       </pre>
 </p>
 
+**ACTIONS**
 <p>
-	<pre>
-					<strong>Syntax:</strong>
-	./lamw_manager 			<em>[actions]</em>       <strong>--force</strong>
-<strong>Examples:</strong>					 
-	./lamw_manager                  <em>--update-lamw      <strong>--force</strong>
-	./lamw_manager                 <em>--sdkmanager</em>        <em>--use-proxy --server 10.0.16.1 --port 3128</em> <strong>--force</strong>
-</pre>
+       <pre>
+              uninstall      Clean all LAMw
+       </pre>
 </p>
 
-¹<strong>New!
-Implied action</strong>:
-<em>When using the <strong>./lamw_manager</strong> command <strong>without parameters the first time</strong>, LAMW Manager installs the default LAMW environment (Android SDK Tools r25.2.5), in other cases LAMW Manager <strong>only</strong> installs updates.</em>
+**OPTIONS**
+<p>
+       <pre>
+              <strong>--reset</strong>            Clean and Install LAMW
+              <strong>--reset-aapis</strong>      Reset Android API's to default
+              <strong>--help</strong>             Show this help
+              <strong>--sdkmanager</strong>       Run Android SDK Manager
+              <strong>--update-lamw</strong>      Just upgrade LAMW Framework  (with  the  latest  version avaliable in git )
+       </pre>
+</p>
+
+**PROXY OPTIONS**
+<p>
+       <pre>
+              ./lamw_manager  [ACTIONS]||[OPTIONS]  <strong>--use-proxy</strong>  <strong>--server</strong> [HOST] <strong>--port</strong>
+              [NUMBER]
+              sample:
+              ./lamw_manger --update-lamw --use-proxy --server 10.0.16.1 --port 3128
+        </pre>
+ </p>
+
+**DEBUG=1**
+<p>
+       <pre>
+              Use the <strong>DEBUG=1</strong> flag later in any position of ./lamw_manager (flag does not count as argument)
+       </pre>
+</p>
+
+**BUGS**
+<p>
+       <pre>
+              If the LAMW4Linux launcher does not appear in the  start  menu,  simply restart the user session
+       </pre>
+</p>
+
+**AUTHOR**
+<p>
+       Daniel Oliveira Souza 
+</p>
