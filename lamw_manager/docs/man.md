@@ -1,8 +1,4 @@
-<p>
-       <pre>
-       <strong>lamw_manager(1)     2019 Aug 18   0.3.2  LAMW Manager man page </strong>
-       </pre>
-</p>
+**&nbsp; lamw_manager(1) &nbsp; 2019 Aug 18 &nbsp;0.3.2 &nbsp;&nbsp;LAMW Manager man page**
 
 **NAME**
 <p>
@@ -14,7 +10,7 @@
 **SINOPSIS**
 <p>
        <pre>
-     </pre>         ./lamw_manager
+              ./lamw_manager
               ./lamw_manger [<strong>ACTION</strong>] [<strong>OPTIONS</strong>]
               ./lamw_manager [<strong>OPTIONS</strong>]
               ./lamw_manager   [<strong>uninstall</strong>]   [<strong>--reset</strong>]  [<strong>--reset-aapis</strong>] [<strong>--sdkmanager</strong>]  [<strong>--update-lamw</strong>] [<strong>--help</strong>]
@@ -23,9 +19,7 @@
 
 **DESCRIPTION**
 <p>
-       <pre>
               LAMW Manager is a command line tool,like APT, to automate the installation,  configuration  and  upgrade the framework LAMW - Lazarus Android Module Wizard
-       </pre>
 </p>
 
 **ACTIONS**
