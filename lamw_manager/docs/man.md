@@ -63,12 +63,8 @@
 
 **BUGS**
 <p>
-       <pre>
-              If the LAMW4Linux launcher does not appear in the  start  menu,  simply restart the user session
-       </pre>
+       If the LAMW4Linux launcher does not appear in the  start  menu,  simply restart the user session
 </p>
 
 **AUTHOR**
-<p>
        Daniel Oliveira Souza 
-</p>
