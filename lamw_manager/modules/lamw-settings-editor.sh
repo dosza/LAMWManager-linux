@@ -242,7 +242,7 @@ LAMW4LinuxPostConfig(){
 		'#!/bin/bash'
 		"export PPC_CONFIG_PATH=$PPC_CONFIG_PATH"
 		"$aux_str"
-		"$LAMW4LINUX_EXE_PATH --primary-config-path=$LAMW4_LINUX_PATH_CFG"
+		"$LAMW4LINUX_EXE_PATH --primary-config-path=$LAMW4_LINUX_PATH_CFG \$*"
 	)
 
 	WriterFileln "$LAMW4_LINUX_PATH_CFG/LAMW.ini" "LAMW_init_str"
@@ -250,6 +250,9 @@ LAMW4LinuxPostConfig(){
 
 	if [ -e  $LAMW_IDE_HOME/startlamw4linux ]; then
 		chmod +x $LAMW_IDE_HOME/startlamw4linux
+		if [ ! -e "/usr/bin/startlamw4linux" ]; then
+			ln -s "$LAMW_IDE_HOME/startlamw4linux" "/usr/bin/startlamw4linux"
+		fi
 	fi
 
 	AddLAMWtoStartMenu
@@ -358,6 +361,10 @@ CleanOldConfig(){
 	fi
 	if [ -e /usr/bin/arm-linux-ld ] ; then 
 		 rm /usr/bin/arm-linux-ld
+	fi
+
+	if [ ! -e "/usr/bin/startlamw4linux" ]; then
+			rm "/usr/bin/startlamw4linux"
 	fi
 
 	if [ -e $FPC_CFG_PATH ]; then #remove local ppc config
