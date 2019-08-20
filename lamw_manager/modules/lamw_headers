@@ -2,7 +2,7 @@
 #----ColorTerm
 export VERDE=$'\e[1;32m'
 export AMARELO=$'\e[01;33m'
-export SUBLINHADO='4'
+export SUBLINHADO=$'4'
 export NEGRITO=$'\e[1m'
 export VERMELHO=$'\e[1;31m'
 export VERMELHO_SUBLINHADO=$'\e[1;4;31m'
@@ -21,7 +21,7 @@ ANDROID_HOME=$LAMW_USER_HOME/LAMW
 ANDROID_SDK="$ROOT_LAMW/sdk"
 #--------------------------------------------------------------------------------------
 export XDG_DATA_DIRS="/usr/share:/usr/local/share:$LAMW_USER_HOME/.local/share"
-LAMW_INSTALL_VERSION="0.3.1"
+LAMW_INSTALL_VERSION="0.3.2"
 LAMW_INSTALL_WELCOME=(
 	"${NEGRITO}\t\tWelcome LAMW Manager - version: $LAMW_INSTALL_VERSION${NORMAL}\n"
 	"\t\tPowerd by Daniel Oliveira Souza\n"
@@ -57,7 +57,7 @@ SDK_MANAGER_CMD_PARAMETERS=()
 SDK_MANAGER_CMD_PARAMETERS2=()
 SDK_MANAGER_CMD_PARAMETERS2_PROXY=()
 SDK_LICENSES_PARAMETERS=()
-LAZARUS_STABLE_SRC_LNK="https://svn.freepascal.org/svn/lazarus/tags/lazarus_2_0_2"
+
 LAMW_SRC_LNK="https://github.com/jmpessoa/lazandroidmodulewizard.git"
 LAMW4_LINUX_PATH_CFG="$LAMW_USER_HOME/.lamw4linux"
 LAMW4LINUX_HOME="$ROOT_LAMW/lamw4linux"
@@ -75,16 +75,19 @@ GRADLE_CFG_HOME="$LAMW_USER_HOME/.gradle"
 GRADLE_ZIP_LNK="https://services.gradle.org/distributions/gradle-4.4.1-bin.zip"
 GRADLE_ZIP_FILE="gradle-4.4.1-bin.zip"
 FPC_STABLE=""
-LAZARUS_STABLE="lazarus_2_0_2"
-LAZARUS_STABLE_VERSION="2.0.2"
-FPC_CFG_PATH="$LAMW_USER_HOME/.fpc.cfg"
-PPC_CONFIG_PATH=$FPC_CFG_PATH
-
+LAZARUS_STABLE="lazarus_2_0_4"
+LAZARUS_STABLE_VERSION="2.0.4"
+LAZARUS_STABLE_SRC_LNK="https://svn.freepascal.org/svn/lazarus/tags/${LAZARUS_STABLE}"
+OLD_FPC_CFG_PATH="$LAMW_USER_HOME/.fpc.cfg"
+export FPC_CFG_PATH="$LAMW_USER_HOME/.fpc.cfg"
+export PPC_CONFIG_PATH="$FPC_CFG_PATH"
 LAZARUS_OLD_STABLE=(
-	lazarus_1_8_4
+	"lazarus_1_8_4"
+	"lazarus_2_0_2"
 )
 LAZARUS_OLD_STABLE_VERSION=(
 	"1.8.4"
+	"2.0.4"
 )
 
 FPC_ID_DEFAULT=0
@@ -156,9 +159,15 @@ export FPC_CROSS_AARCH_DEFAULT_PARAMETERS=('clean crossall crossinstall  CPU_TAR
 export PATH=$PATH:$AARCH64_ANDROID_TOOLS
 export FLAG_FORCE_ANDROID_AARCH64=1
 export FPC_TRUNK_RELEASE=""
-export FPC_TRUNK_URL="https://svn.freepascal.org/svn/fpc/trunk"
+export FPC_TRUNK_URL="https://svn.freepascal.org/svn/fpc/branches/fixes_3_2"
 export FPC_TRUNK_VERSION=""
 export FPC_TRUNK_LIB_PATH=""
 export FPC_TRUNK_EXEC_PATH=""
 export FPC_TRUNK_SOURCE_PATH="$LAMW4LINUX_HOME/usr/share/fpcsrc"
+export FPC_TRUNK_SVNTAG="fixes_3_2"
+
+
+export ANDROID_SDK_TARGET=28
+export ANDROID_BUILD_TOOLS_TARGET="28.0.3"
+export GRADLE_MIN_BUILD_TOOLS='27.0.3'
 #---------------------------------------------------------------------------------------------------------------------
