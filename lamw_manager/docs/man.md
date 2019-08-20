@@ -24,7 +24,8 @@
 
 **ACTIONS**
 <p>
-       <pre><strong>uninstall</strong>      Clean all LAMW</pre>
+       <pre>
+              <strong>uninstall</strong>  Clean all LAMW</pre>
 </p>
 
 **OPTIONS**
