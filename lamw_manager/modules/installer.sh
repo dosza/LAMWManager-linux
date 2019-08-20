@@ -5,39 +5,49 @@
 #prepare upgrade
 LAMWPackageManager(){
 	if [ $FLAG_FORCE_ANDROID_AARCH64 = 1 ]; then 
-		old_lazarus_home=$LAMW4LINUX_HOME/${LAZARUS_OLD_STABLE[0]}
+		
 		old_lamw_ide_home="$LAMW4LINUX_HOME/lamw4linux"
 		old_fpc_src="$LAMW4LINUX_HOME/fpcsrc"
-
-
-		if [ -e  "$LAMW4_LINUX_PATH_CFG/environmentoptions.xml" ]; then
-			path_splited=$(GenerateScapesStr $FPC_TRUNK_SOURCE_PATH/trunk )
-			echo $path_splited
-			sed -i "s/CompilerFilename Value=\"\/usr\/bin\/fpc\"/CompilerFilename Value=\"\/usr\/local\/bin\/fpc\"/g" "$LAMW4_LINUX_PATH_CFG/environmentoptions.xml"
-			sed -i "s/FPCSourceDirectory Value=\"\/usr\/share\/fpcsrc\/\$(FPCVer)\"/FPCSourceDirectory Value=\"$path_splited\"/g" "$LAMW4_LINUX_PATH_CFG/environmentoptions.xml"
-			#sed -i "s/${LAZARUS_OLD_STABLE[0]}/${LAZARUS_STABLE}/g" "$LAMW4_LINUX_PATH_CFG/environmentoptions.xml"
-		fi
-
 
 
 		if [ -e "$old_lamw_ide_home"  ]; then
 			echo "Uninstalling  Old Lazarus ..."
 			rm "$old_lamw_ide_home"  -rf
+		fi
 
+		for((i=0;i<${#LAZARUS_OLD_STABLE[*]};i++))
+		do
+			old_lazarus_home=$LAMW4LINUX_HOME/${LAZARUS_OLD_STABLE[i]}
 			if [ -e "$old_lazarus_home" ]; then
 				rm "$old_lazarus_home" -rf
 			fi
-		fi
+		done
+		
 
 		if [ -e "$old_fpc_src" ]; then
 			echo "Uninstalling Old FPC Sources ..."
 			rm -rf "$old_fpc_src"
 		fi
 
+		if [ -e "$OLD_FPC_CFG_PATH" ]; then
+			rm "$OLD_FPC_CFG_PATH"
+		fi
 
 		if [ -e "$PPC_CONFIG_PATH" ]; then
 			rm "$PPC_CONFIG_PATH"
 		fi
+
+		#fixs 0.3.1 to 0.3.2
+		if [ -e $LAMW4LINUX_HOME/lamw-install.log ]; then
+			cat  $LAMW4LINUX_HOME/lamw-install.log | grep '0.3.1'
+			if [ $? = 0 ]; then 
+				if [ -e "$LAMW4LINUX_HOME/usr" ]; then
+					rm -rf "$LAMW4LINUX_HOME/usr"
+				fi
+			fi
+		fi
+
+
 	fi
 }
 getStatusInstalation(){
@@ -176,25 +186,27 @@ initParameters(){
 
 	if [ $USE_PROXY = 1 ]; then
 		SDK_MANAGER_CMD_PARAMETERS=(
-			"platforms;android-26" 
+			"platforms;android-$ANDROID_SDK_TARGET" 
 			"platform-tools"
-			"build-tools;26.0.2" 
+			"build-tools;$ANDROID_BUILD_TOOLS_TARGET" 
 			"tools" 
 			"ndk-bundle" 
 			"extras;android;m2repository" 
+			"build-tools;$GRADLE_MIN_BUILD_TOOLS"
 			--no_https --proxy=http 
 			--proxy_host=$PROXY_SERVER 
 			--proxy_port=$PORT_SERVER 
 		)
 		SDK_MANAGER_CMD_PARAMETERS2=(
-			"android-26"
+			"android-$ANDROID_SDK_TARGET"
 			"platform-tools"
-			"build-tools-26.0.2" 
+			"build-tools-$ANDROID_BUILD_TOOLS_TARGET" 
 			"extra-google-google_play_services"
 			"extra-android-m2repository"
 			"extra-google-m2repository"
 			"extra-google-market_licensing"
 			"extra-google-market_apk_expansion"
+			"build-tools-$GRADLE_MIN_BUILD_TOOLS"
 		)
 		SDK_MANAGER_CMD_PARAMETERS2_PROXY=(
 			--no_https 
@@ -208,22 +220,24 @@ initParameters(){
 #	ActiveProxy 1
 	else
 		SDK_MANAGER_CMD_PARAMETERS=(
-			"platforms;android-26" 
+			"platforms;android-$ANDROID_SDK_TARGET" 
 			"platform-tools"
-			"build-tools;26.0.2" 
+			"build-tools;$ANDROID_BUILD_TOOLS_TARGET" 
 			"tools" 
 			"ndk-bundle" 
 			"extras;android;m2repository"
+			"build-tools;$GRADLE_MIN_BUILD_TOOLS"
 		)			#ActiveProxy 0
 		SDK_MANAGER_CMD_PARAMETERS2=(
-			"android-26"
+			"android-$ANDROID_SDK_TARGET"
 			"platform-tools"
-			"build-tools-26.0.2" 
+			"build-tools-$ANDROID_BUILD_TOOLS_TARGET" 
 			"extra-google-google_play_services"
 			"extra-android-m2repository"
 			"extra-google-m2repository"
 			"extra-google-market_licensing"
 			"extra-google-market_apk_expansion"
+			"build-tools-$GRADLE_MIN_BUILD_TOOLS"
 			)
 		SDK_LICENSES_PARAMETERS=(--licenses )
 	fi
@@ -247,15 +261,14 @@ getFPCSources(){
 }
 
 getFPCSourcesTrunk(){
-	changeDirectory $LAMW_USER_HOME
 	mkdir -p $FPC_TRUNK_SOURCE_PATH
 	changeDirectory $FPC_TRUNK_SOURCE_PATH
 	svn checkout $FPC_TRUNK_URL
 	if [ $? != 0 ]; then
-		rm -rf trunk
+		rm -rf "$FPC_TRUNK_SVNTAG"
 		svn checkout "$FPC_TRUNK_URL"
 		if [ $? != 0 ]; then 
-			rm -rf "trunk"
+			rm -rf "$FPC_TRUNK_SVNTAG"
 			echo "possible network instability! Try later!"
 			exit 1
 		fi
@@ -483,14 +496,16 @@ getSDKAndroid(){
 
 getOldAndroidSDK(){
 	SDK_MANAGER_SDK_PATHS=(
-		"$ANDROID_SDK/platforms/android-26"
+		"$ANDROID_SDK/platforms/android-$ANDROID_SDK_TARGET"
 		"$ANDROID_SDK/platform-tools"
-		"$ANDROID_SDK/build-tools/26.0.2"
+		"$ANDROID_SDK/build-tools/$ANDROID_BUILD_TOOLS_TARGET"
 		"$ANDROID_SDK/extras/google/google_play_services"  
 		"$ANDROID_SDK/extras/android/m2repository"
-		"$ANDROID_SDK/extras/google/m2repository"  
-		"$ANDROID_SDK/extras/google/market_apk_expansion"  
-		"$ANDROID_SDK/extras/google/market_licensing"
+		"$ANDROID_SDK/extras/google/m2repository" 
+		"$ANDROID_SDK/extras/google/market_licensing" 
+		"$ANDROID_SDK/extras/google/market_apk_expansion"
+		"$ANDROID_SDK/build-tools/$GRADLE_MIN_BUILD_TOOLS"
+		
 	)
 
 	if [ -e $ANDROID_SDK/tools/android  ]; then 
@@ -644,7 +659,7 @@ Repair1(){
 	flag_need_repair=0 # flag de reparo 
 	flag_upgrade_lazarus=0
 	aux_path="$LAMW4LINUX_HOME/fpcsrc"
-	expected_fpc_src_path="$FPC_TRUNK_SOURCE_PATH/trunk"
+	expected_fpc_src_path="$FPC_TRUNK_SOURCE_PATH/${FPC_TRUNK_SVNTAG}"
 
 	getStatusInstalation 
 	if [ $LAMW_INSTALL_STATUS = 1 ]; then # só executa essa funcao se o lamw tiver instalado
@@ -709,6 +724,7 @@ wrapperRepair(){
 	if [ $FLAG_FORCE_ANDROID_AARCH64 = 1 ]; then
 		#Repair1
 		Repair1
+		true
 	else
 		Repair
 	fi

@@ -269,7 +269,7 @@ end;
 
 procedure TFmain.MenuItem11Click(Sender: TObject);
 begin
-        ShowMessage('This feature is still in development!!' +  sLineBreak);
+        ShowMessage('This feature is still in development');
 end;
 
 

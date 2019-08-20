@@ -120,8 +120,10 @@ writeLAMWLogInstall(){
 
 	lamw_log_str=(
 		"Generate LAMW_INSTALL_VERSION=$LAMW_INSTALL_VERSION" 
-		"Info:\nLAMW4Linux:$LAMW4LINUX_HOME\nLAMW workspace:" 	
-		"$LAMW_WORKSPACE_HOME\nAndroid SDK:$ROOT_LAMW/sdk" 
+		"Info:"
+		"LAMW4Linux:$LAMW4LINUX_HOME"
+		"LAMW workspace:$LAMW_WORKSPACE_HOME"
+		"Android SDK:$ROOT_LAMW/sdk" 
 		"Android NDK:$ROOT_LAMW/ndk\nGradle:$GRADLE_HOME"
 		"OLD_ANDROID_SDK=$OLD_ANDROID_SDK"
 		"ANT_VERSION=$ANT_VERSION"
@@ -240,8 +242,7 @@ LAMW4LinuxPostConfig(){
 		'#!/bin/bash'
 		"export PPC_CONFIG_PATH=$PPC_CONFIG_PATH"
 		"$aux_str"
-		"export PPC_CONFIG_PATH=$PPC_CONFIG_PATH"
-		"$LAMW4LINUX_EXE_PATH --primary-config-path=$LAMW4_LINUX_PATH_CFG"
+		"$LAMW4LINUX_EXE_PATH --primary-config-path=$LAMW4_LINUX_PATH_CFG \$*"
 	)
 
 	WriterFileln "$LAMW4_LINUX_PATH_CFG/LAMW.ini" "LAMW_init_str"
@@ -249,6 +250,9 @@ LAMW4LinuxPostConfig(){
 
 	if [ -e  $LAMW_IDE_HOME/startlamw4linux ]; then
 		chmod +x $LAMW_IDE_HOME/startlamw4linux
+		if [ ! -e "/usr/bin/startlamw4linux" ]; then
+			ln -s "$LAMW_IDE_HOME/startlamw4linux" "/usr/bin/startlamw4linux"
+		fi
 	fi
 
 	AddLAMWtoStartMenu
@@ -293,6 +297,14 @@ CleanOldCrossCompileBins(){
 	fi
 	if [ -e /usr/lib/fpc/$FPC_VERSION/units/arm-android ]; then
 		 rm -r /usr/lib/fpc/$FPC_VERSION/units/arm-android
+	fi
+
+	if [ -e /usr/local/bin/fpc ]; then
+		rm -rf  /usr/local/bin/fp*
+	fi
+
+	if [ -e /usr/local/lib/fpc/3.3.1 ]; then
+		rm -rf /usr/local/lib/fpc/3.3.1
 	fi
 }
 
@@ -351,6 +363,10 @@ CleanOldConfig(){
 		 rm /usr/bin/arm-linux-ld
 	fi
 
+	if [ ! -e "/usr/bin/startlamw4linux" ]; then
+			rm "/usr/bin/startlamw4linux"
+	fi
+
 	if [ -e $FPC_CFG_PATH ]; then #remove local ppc config
 		rm $FPC_CFG_PATH
 	fi
@@ -405,6 +421,9 @@ CleanOldConfig(){
 	if [ -e /root/.fpc.cfg ]; then
 		rm /root/.fpc.cfg
 	fi
+	if [ -e $OLD_FPC_CFG_PATH ]; then
+		rm $OLD_FPC_CFG_PATH
+	fi
 	
 }
 
@@ -437,7 +456,7 @@ configureFPCTrunk(){
 
 
 	fpc_trunk_parent=$FPC_TRUNK_LIB_PATH
-	fpc_trunk_parent=$(echo $fpc_trunk_parent | sed "s/\/$FPC_TRUNK_VERSION//g")
+	fpc_trunk_parent=$(echo $fpc_trunk_parent | sed "s/\/$_FPC_TRUNK_VERSION//g")
 	#ls $fpc_trunk_parent;echo $fpc_trunk_parent;read;
 
 	#this config enable to crosscompile in fpc 
@@ -517,7 +536,8 @@ CreateFPCTrunkBootStrap(){
 		#sudo ldconfig
 		'export FPC_ARGS=($*)'
 		'export FPC_EXEC="ppcx64"'
-		'if [ -e $FPC_TRUNK_LIB_PATH/ppcrossa64 ]; then'
+		#'if [ -e $FPC_TRUNK_LIB_PATH/ppcrossa64 ]; then'
+		'if [ -e $FPC_TRUNK_LIB_PATH/ppcrossarm ]; then'
 		'	export PATH=$FPC_TRUNK_LIB_PATH:$PATH'
 		'fi'
 
@@ -527,27 +547,57 @@ CreateFPCTrunkBootStrap(){
 
 		'		case "${FPC_ARGS[i]}" in'
 		'			"-Parm")'
-		# '				echo "$(date) arm detected" >> ~/fpc-detected.txt'
-		# '				echo "cmd-line:$FPC_ARGS" >> ~/fpc-detected.txt'
-		# '				echo "" >> ~/fpc-detected.txt'
 		'				export FPC_EXEC="ppcarm"'
 		'				break'
 		'			;;'
 
 		'			"-Paarch64")'
-		# '				echo "$(date) aarch64 detected" >> ~/fpc-detected.txt'
-		# '				echo "cmd-line:$FPC_ARGS" >> ~/fpc-detected.txt'
-		# '				echo "" >> ~/fpc-detected.txt'
 		'				export FPC_EXEC="ppca64"'
 		'				break'
 		'			;;'
 		'		esac'
 		'done'
-
-		#'echo "$FPC_EXEC" >> ~/void-ptr.txt'
 		'$FPC_EXEC ${FPC_ARGS[@]}'
 	)
 
 	WriterFileln "$fpc_trunk_boostrap_path" "fpc_bootstrap_str"
 	chmod +x "$fpc_trunk_boostrap_path"
+}
+
+initLAMw4LinuxConfig(){
+	lazarus_env_cfg_str=(
+	'<?xml version="1.0" encoding="UTF-8"?>'
+	'<CONFIG>'
+	'	<EnvironmentOptions>'
+	"		<LazarusDirectory Value=\"/home/danny/LAMW/lamw4linux/lamw4linux/\"/>"
+	"		<CompilerFilename Value=\"$FPC_TRUNK_EXEC_PATH/fpc\"/>"
+	"	</EnvironmentOptions>"
+	"</CONFIG>"
+	)
+	lazarus_env_cfg_path="$LAMW4_LINUX_PATH_CFG/environmentoptions.xml"
+
+	if [ ! -e $LAMW4_LINUX_PATH_CFG ]; then
+		mkdir $LAMW4_LINUX_PATH_CFG
+		WriterFileln  "$lazarus_env_cfg_path" "lazarus_env_cfg_str"
+	else
+		fpc_splited=(
+			$(GenerateScapesStr "/usr/bin/fpc"					)				 		#0
+			$(GenerateScapesStr "/usr/share/fpcsrc/\$(FPCVer)"	) 						#1
+			$(GenerateScapesStr "/usr/local/bin/fpc"			)						#2
+			$(GenerateScapesStr "$FPC_TRUNK_SOURCE_PATH/trunk" 	)						#3
+			$(GenerateScapesStr "$LAMW4LINUX_HOME/usr/bin/fpc" 	)						#4
+			$(GenerateScapesStr "$FPC_TRUNK_SOURCE_PATH/${FPC_TRUNK_SVNTAG}")			#5
+		)
+		
+		cat $lazarus_env_cfg_path | grep 'CompilerFilename Value=\"\/usr\/bin\/fpc\"'
+		if [ $? = 0 ]; then
+			sed -i "s/CompilerFilename Value=\"${fpc_splited[0]}\"/CompilerFilename Value=\"${fpc_splited[4]}\"/g" "$lazarus_env_cfg_path"
+			sed -i "s/FPCSourceDirectory Value=\"${fpc_splited[1]}\"/FPCSourceDirectory Value=\"${fpc_splited[5]}\"/g" "$lazarus_env_cfg_path"
+		fi
+		cat $lazarus_env_cfg_path | grep 'CompilerFilename Value=\"\/usr\/local\/bin\/fpc\"'
+		if [ $? = 0 ]; then
+			sed -i "s/CompilerFilename Value=\"${fpc_splited[2]}\"/CompilerFilename Value=\"${fpc_splited[4]}\"/g" "$lazarus_env_cfg_path"
+			sed -i "s/FPCSourceDirectory Value=\"${fpc_splited[3]}\"/FPCSourceDirectory Value=\"${fpc_splited[5]}\"/g" "$lazarus_env_cfg_path"
+		fi
+	fi
 }

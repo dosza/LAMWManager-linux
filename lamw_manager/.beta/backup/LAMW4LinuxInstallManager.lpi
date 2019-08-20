@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
-    <Version Value="11"/>
+    <Version Value="10"/>
     <General>
       <SessionStorage Value="InProjectDir"/>
       <MainUnit Value="0"/>
-      <Title Value="LAMW Manager"/>
+      <Title Value="LAMW4LinuxInstallManager"/>
       <ResourceType Value="res"/>
       <UseXPManifest Value="True"/>
       <Icon Value="0"/>
@@ -17,10 +17,9 @@
       <Version Value="2"/>
     </PublishOptions>
     <RunParams>
-      <FormatVersion Value="2"/>
-      <Modes Count="1">
-        <Mode0 Name="default"/>
-      </Modes>
+      <local>
+        <FormatVersion Value="1"/>
+      </local>
     </RunParams>
     <RequiredPackages Count="4">
       <Item1>
@@ -38,7 +37,7 @@
     </RequiredPackages>
     <Units Count="4">
       <Unit0>
-        <Filename Value="LAMWManager.lpr"/>
+        <Filename Value="LAMW4LinuxInstallManager.lpr"/>
         <IsPartOfProject Value="True"/>
       </Unit0>
       <Unit1>
@@ -64,7 +63,7 @@
   <CompilerOptions>
     <Version Value="11"/>
     <Target>
-      <Filename Value="LAMWManager"/>
+      <Filename Value="LAMW4LinuxInstallManager"/>
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>

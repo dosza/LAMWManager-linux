@@ -27,6 +27,7 @@
       <Unit2>
         <Filename Value="uglobal.pas"/>
         <IsPartOfProject Value="True"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="3"/>
         <TopLine Value="14"/>
         <CursorPos X="317" Y="26"/>
@@ -46,10 +47,9 @@
       </Unit3>
       <Unit4>
         <Filename Value="uprocessos.pas"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="2"/>
-        <TopLine Value="17"/>
-        <CursorPos X="10" Y="29"/>
+        <TopLine Value="24"/>
+        <CursorPos X="10" Y="30"/>
         <UsageCount Value="131"/>
         <Loaded Value="True"/>
       </Unit4>
@@ -84,7 +84,7 @@
         <UsageCount Value="10"/>
       </Unit8>
     </Units>
-    <JumpHistory Count="30" HistoryIndex="29">
+    <JumpHistory Count="29" HistoryIndex="28">
       <Position1>
         <Filename Value="umain.pas"/>
         <Caret Line="330" Column="9" TopLine="328"/>
@@ -201,10 +201,6 @@
         <Filename Value="umain.pas"/>
         <Caret Line="272" Column="75" TopLine="270"/>
       </Position29>
-      <Position30>
-        <Filename Value="uglobal.pas"/>
-        <Caret Line="26" Column="317" TopLine="14"/>
-      </Position30>
     </JumpHistory>
     <RunParams>
       <FormatVersion Value="2"/>
