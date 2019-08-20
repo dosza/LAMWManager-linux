@@ -15,7 +15,7 @@ lamw_manager
 .SH DESCRIPTION
 LAMW Manager is a command line tool,like APT, to automate the installation, configuration and upgrade the framework LAMW - Lazarus Android Module Wizard
 .SH ACTIONS
-\fBuninstall\fR 			Clean all LAMw
+\fBuninstall\fR 		Clean all LAMw
 .SH OPTIONS
 \fB\-\-reset\fR  			Clean and Install LAMW
 .br
@@ -25,7 +25,7 @@ LAMW Manager is a command line tool,like APT, to automate the installation, conf
 .br
 \fB\-\-sdkmanager\fR  		Run Android SDK Manager
 .br
-\fB\-\-update\-lamw\fR  	Just upgrade LAMW Framework (with the latest version avaliable in git )
+\fB\-\-update\-lamw\fR  	Just upgrade LAMW Framework(with the latest version avaliable in git)
 .SH PROXY OPTIONS
 lamw_manager [ACTIONS]||[OPTIONS] \fB\-\-use-proxy\fR \fB\-\-server\fR [HOST] \fB\-\-port\fR [NUMBER]
 .br

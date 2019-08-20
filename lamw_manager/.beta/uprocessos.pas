@@ -26,7 +26,7 @@ type
 
       public
           strOut: TStringList;
-         //ref_memo: TMemo;
+       //  ref_memo: TMemo;
          procedure RunProcess();
          procedure RunProcessAsConsole();
          procedure RunProcessAsRoot();

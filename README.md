@@ -44,7 +44,6 @@ LAMW Manager is a command line tool,like *APT*, to automate the <strong>installa
 	<li>Register <strong>MIME</strong> </li>
 </ul>
 
-
 <strong>Example of installation:</strong>
 <pre> 
 To install LAMW and dependencies:
@@ -63,6 +62,12 @@ To install LAMW and dependencies:
 </p>
 
 <br></br>
+
+**Release Notes:**
+<p>
+	For information on new features and bug fixes read the <a href="https://github.com/DanielOliveiraSouza/LAMWAutoRunScripts/blob/master/lamw_manager/docs/release_notes.md"><strong>Release Notes</strong></a>
+</p>
+
 **Congratulations!!**
 <p>
 	You are now a Lazarus for Android developer!
@@ -70,5 +75,5 @@ To install LAMW and dependencies:
 </p>
 
 <p>
-	For more info read <a href="https://github.com/DanielOliveiraSouza/LAMWAutoRunScripts/blob/master/lamw_manager/docs/man.md"><strong>LAMW Manager v0.3.2  Manual</strong></a>
+	For more info read <a href="https://github.com/DanielOliveiraSouza/LAMWAutoRunScripts/blob/master/lamw_manager/docs/man.md"><strong>LAMW Manager v0.3.2 Manual</strong></a>
 </p>
