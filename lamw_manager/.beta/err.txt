@@ -1,0 +1,1 @@
+/bin/bash: lamw-package: Arquivo ou diretório inexistente
