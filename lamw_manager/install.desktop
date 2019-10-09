@@ -1,4 +1,3 @@
-#!/usr/bin/env xdg-open
 [Desktop Entry]
 Name=LAMW Manager Setup
 Exec=bash -c '"$(dirname "$1")"/lamw-manager' dummy %k
