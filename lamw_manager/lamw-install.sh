@@ -1,4 +1,3 @@
-
 #!/bin/bash
 #Universidade federal de Mato Grosso
 #Curso ciencia da computação
