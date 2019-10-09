@@ -11,11 +11,11 @@
 LAMW_MANAGER_MODULES_PATH=$0
 LAMW_MANAGER_MODULES_PATH=${LAMW_MANAGER_MODULES_PATH%/lamw-install.sh*}
 
-source "$LAMW_MANAGER_MODULES_PATH/modules/lamw_headers"
-source "$LAMW_MANAGER_MODULES_PATH/modules/common-shell.sh"
-source "$LAMW_MANAGER_MODULES_PATH/modules/installer.sh"
-source "$LAMW_MANAGER_MODULES_PATH/modules/lamw-settings-editor.sh"
-source "$LAMW_MANAGER_MODULES_PATH/modules/cross-builder.sh"
+source "$LAMW_MANAGER_MODULES_PATH/lamw_headers"
+source "$LAMW_MANAGER_MODULES_PATH/common-shell.sh"
+source "$LAMW_MANAGER_MODULES_PATH/installer.sh"
+source "$LAMW_MANAGER_MODULES_PATH/lamw-settings-editor.sh"
+source "$LAMW_MANAGER_MODULES_PATH/cross-builder.sh"
 
 #_------------ OS function t
 
