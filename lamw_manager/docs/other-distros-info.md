@@ -1,9 +1,27 @@
 **Other distro Requerements**
+
 <p>
-	<strong>Note:</strong>For use in other distributions  like <em>Debian</em>(but are not officially supported by LAMW Manager)
-Make sure there is the <strong>openjdk-8-jdk</strong> package!
-<br>For licensing issues, we recommend only using openjdk instead of Oracle Java!</br>
-<br>The stable Freepascal Compiler package (3.0.4) <strong>MUST be available in official repositories</strong> of your linux distribution (APT)!
-<br><strong>Warning: We do not recommend fpc packages compiled by third parties!</strong></br>
-<br>FPC Trunk is not supported!</br>
+	Read the README carefully!
+	<br>To use LAMW Manager the user must meet the following requirements:</br>
+	<ul>
+		<li>Prior to distributions listed in <a href="https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/blob/master/README.md"> README</a></li>
+	</ul>
+</p>
+
+<p>
+	<strong>Other linux distributions must meet the following requirements:</strong>:
+	<ol type='A' style="list-style-type:disc">
+		<li>Ubuntu / Debian Based Linux Distribution</li>
+		<li>OpenJDK8 Available in Official Repository (from openjdk-8-jdk package)</li>
+		<li>FreePascal Stable Available in Official Repository (from fpc package)¹ ²</li>
+		<li>Using OpenJDK is recommended instead of Oracle JDK</li>
+		<li>If the system does not comply with items A,B and C:
+		It's the <strong>sole responsibility</strong> of the <strong>user</strong> to <strong>adapt</strong> the system to LAMW Manager.</li>
+	</ol>
+</p>
+
+<p>
+	<Strong>Notes:</Strong>
+	¹ Freepascal distributed by third parties is not supported!
+	² Freepascal Trunk is not supported!
 </p>
