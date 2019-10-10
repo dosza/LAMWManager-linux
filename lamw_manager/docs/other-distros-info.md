@@ -18,10 +18,7 @@
 		<li>If the system does not comply with items A,B and C:
 		It's the <strong>sole responsibility</strong> of the <strong>user</strong> to <strong>adapt</strong> the system to LAMW Manager.</li>
 	</ol>
-</p>
-
-<p>
 	<Strong>Notes:</Strong>
-	¹Freepascal distributed by third parties is not supported!<br>
-	²Freepascal Trunk is not supported!</br>
+	¹ Freepascal distributed by third parties is not supported!
+	² Freepascal Trunk is not supported!
 </p>
