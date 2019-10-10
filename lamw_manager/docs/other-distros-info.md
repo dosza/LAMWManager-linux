@@ -9,8 +9,8 @@
 </p>
 
 <p>
-	<strong>Other linux distributions must meet the following requirements:</strong>:
-	<ol type='A' style="list-style-type:disc">
+	<strong>Other linux distributions must meet the following requirements:</strong>
+	<ol type='A'>
 		<li>Ubuntu / Debian Based Linux Distribution</li>
 		<li>OpenJDK8 Available in Official Repository (from openjdk-8-jdk package)</li>
 		<li>FreePascal Stable Available in Official Repository (from fpc package)¹ ²</li>
@@ -22,6 +22,6 @@
 
 <p>
 	<Strong>Notes:</Strong>
-	¹ Freepascal distributed by third parties is not supported!
-	² Freepascal Trunk is not supported!
+	<br>¹ Freepascal distributed by third parties is not supported!</br>
+	<br>² Freepascal Trunk is not supported!</br>
 </p>
