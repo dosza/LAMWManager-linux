@@ -1,4 +1,4 @@
-# **LAMW Manager v0.3.2**
+# **LAMW Manager v0.3.3**
 
 LAMW Manager is a command line tool,like *APT*, to automate the <strong>installation</strong>, <strong>configuration</strong> and <strong>upgrade</strong>  the framework  <a href="https://github.com/jmpessoa/lazandroidmodulewizard"><strong>LAMW - Lazarus Android Module Wizard</strong></a>
 
@@ -65,7 +65,7 @@ To install LAMW and dependencies:
 
 **Release Notes:**
 <p>
-	For information on new features and bug fixes read the <a href="https://github.com/DanielOliveiraSouza/LAMWAutoRunScripts/blob/master/lamw_manager/docs/release_notes.md"><strong>Release Notes</strong></a>
+	For information on new features and bug fixes read the <a href="https://github.com/DanielOliveiraSouza/LAMWAutoRunScripts/blob/v0.3.3/lamw_manager/docs/release_notes.md"><strong>Release Notes</strong></a>
 </p>
 
 **Congratulations!!**
@@ -75,5 +75,5 @@ To install LAMW and dependencies:
 </p>
 
 <p>
-	For more info read <a href="https://github.com/DanielOliveiraSouza/LAMWAutoRunScripts/blob/master/lamw_manager/docs/man.md"><strong>LAMW Manager v0.3.2 Manual</strong></a>
+	For more info read <a href="https://github.com/DanielOliveiraSouza/LAMWAutoRunScripts/blob/v0.3.3/lamw_manager/docs/man.md"><strong>LAMW Manager v0.3.3 Manual</strong></a>
 </p>
