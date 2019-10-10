@@ -22,6 +22,6 @@
 
 <p>
 	<Strong>Notes:</Strong>
-	<br>¹ Freepascal distributed by third parties is not supported!</br>
-	<br>² Freepascal Trunk is not supported!</br>
+	¹Freepascal distributed by third parties is not supported!<br>
+	²Freepascal Trunk is not supported!</br>
 </p>
