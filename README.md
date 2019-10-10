@@ -22,7 +22,7 @@ LAMW Manager is a command line tool,like *APT*, to automate the <strong>installa
 	<li>Ubuntu 18.04 LTS</li>
 	<li>Linux Mint 18 <strong>Cinnamon</strong></li>
 	<li>Linux Mint 19 <strong>Cinnamon</strong></li>
-	<li><a href="https://github.com/DanielOliveiraSouza/LAMWAutoRunScripts/blob/master/lamw_manager/docs/other-distros-info.md"><strong>Requirements for other linux distributions</strong></a></li>
+	<li><a href="https://github.com/DanielOliveiraSouza/LAMWAutoRunScripts/blob/v0.3.3/lamw_manager/docs/other-distros-info.md"><strong>Requirements for other linux distributions</strong></a></li>
 </ul>		
 
 
