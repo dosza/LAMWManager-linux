@@ -1,9 +1,11 @@
-# **LAMW Manager v0.3.3**
+LAMW Manager v0.3.3
+=======================================================================
 
 LAMW Manager is a command line tool,like *APT*, to automate the <strong>installation</strong>, <strong>configuration</strong> and <strong>upgrade</strong>  the framework  <a href="https://github.com/jmpessoa/lazandroidmodulewizard"><strong>LAMW - Lazarus Android Module Wizard</strong></a>
 
 
-**What do you get?** 
+What do you get?
+----------------------------------------------------------------------
 
 <p>
 	A <strong><a href="http://www.lazarus-ide.org/">Lazarus  IDE </a></strong>ready to develop applications for Android !!
@@ -14,7 +16,8 @@ LAMW Manager is a command line tool,like *APT*, to automate the <strong>installa
 </p>
 
 
-**Linux Distro Supported:**
+Linux Distro Supported:
+----------------------------------------------------------------------
 
 <ul>
 	<li>Debian/GNU Linux 9</li>
@@ -27,7 +30,8 @@ LAMW Manager is a command line tool,like *APT*, to automate the <strong>installa
 
 
 
-**LAMW Manager install the following [dependencies] tools:**
+LAMW Manager install the following [dependencies] tools:
+----------------------------------------------------------------------
 <ul>
 	<li>Apache Ant</li>
 	<li>Gradle</li>
@@ -44,6 +48,7 @@ LAMW Manager is a command line tool,like *APT*, to automate the <strong>installa
 	<li>Register <strong>MIME</strong> </li>
 </ul>
 
+<!--
 <strong>Example of installation:</strong>
 <pre> 
 To install LAMW and dependencies:
@@ -59,16 +64,28 @@ To install LAMW and dependencies:
 <sup>1</sup>  If it is already installed, just run the Android SDK Tools
 </pre>
 
+</p> -->
+
+New Installer Procedure!!
+----------------------------------------------------------------------
+<p>
+	<strong>How to use LAMW Manager:</strong>
+	<ol>
+	<li><a href="https://raw.githubusercontent.com/DanielOliveiraSouza/LAMW4Linux-installer/v0.3.3/lamw_manager/lamw_manager_setup.run">Click here to download <em> LAMW Manager Setup</em></a></li> 
+	<li>Go to Download folder and open terminal</li>
+	<li>bash lamw_manager_setup.run</strong></li>
+	</ol>
 </p>
+<!--<br></br> -->
 
-<br></br>
-
-**Release Notes:**
+Release Notes:
+----------------------------------------------------------------------
 <p>
 	For information on new features and bug fixes read the <a href="https://github.com/DanielOliveiraSouza/LAMWAutoRunScripts/blob/v0.3.3/lamw_manager/docs/release_notes.md"><strong>Release Notes</strong></a>
 </p>
 
-**Congratulations!!**
+Congratulations!!
+----------------------------------------------------------------------
 <p>
 	You are now a Lazarus for Android developer!
 	<br><a href="https://drive.google.com/open?id=1CeDDpuDfRwYrKpN7VHbossH6GfZUfqjm">Building Android application with <strong>LAMW</strong> is <strong>RAD</strong>!</a></br>
