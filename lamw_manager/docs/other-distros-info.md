@@ -1,8 +1,6 @@
-Other distro Requerements
-===================================================
+# Other distro Requerements #
 
 <p>
-	Read the README carefully!
 	<br>To use LAMW Manager the user must meet the following requirements:</br>
 	<ul>
 		<li>Prior to distributions listed in <a href="https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/blob/master/README.md"> README</a></li>
@@ -11,9 +9,10 @@ Other distro Requerements
 
 
 
-##Other linux distributions must meet the following requirements:##
+## Other linux distributions must meet the following requirements: ##
+ 
 <p>
-	<ol type='A'>
+	<ol type='a'>
 		<li>Ubuntu / Debian Based Linux Distribution</li>
 		<li>OpenJDK8 Available in Official Repository (from openjdk-8-jdk package)</li>
 		<li>FreePascal Stable Available in Official Repository (from fpc package)¹ ²</li>
