@@ -2,16 +2,10 @@
 
 <p>
 	<br>To use LAMW Manager the user must meet the following requirements:</br>
-	<ul>
+	<ol type="I">
 		<li>Prior to distributions listed in <a href="https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/blob/master/README.md"> README</a></li>
-	</ul>
-</p>
-
-
-
-## Other linux distributions must meet the following requirements: ##
- 
-<p>
+		<li>Other linux distributions must meet the following requirements:</li>
+		<pre>
 	<ol type='a'>
 		<li>Ubuntu / Debian Based Linux Distribution</li>
 		<li>OpenJDK8 Available in Official Repository (from openjdk-8-jdk package)</li>
@@ -25,5 +19,13 @@
 		<li>Freepascal distributed by third parties is not supported!</li>
 		<li>Freepascal Trunk is not supported!</li>
 	</ol>
+</pre>
+	</ol>
+</p>
+
+
+ 
+<p>
+	
 </p>
 
