@@ -1,0 +1,9 @@
+#!/bin/bash
+
+
+#este script eh bootstrap que remove o primeiro -- (separador de argumentos do makeself do script embutido)
+ARGS="$*"
+#echo "ARGS=$ARGS"
+ARGS=${ARGS/\-\-/}
+#echo "Splitted ARGS=$ARGS"
+./lamw_manager $ARGS
