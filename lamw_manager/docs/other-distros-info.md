@@ -5,7 +5,7 @@
 	<ol type="I">
 		<li>Prior to distributions listed in <a href="https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/blob/master/README.md"> README</a></li>
 		<li>Compatibility with other linux distributions:</li>
-		<ol type='a'>
+		<ol type="a">
 			<li>Ubuntu / Debian Based Linux Distribution</li>
 			<li>OpenJDK8 Available in Official Repository (from openjdk-8-jdk package)</li>
 			<li>FreePascal Stable Available in Official Repository (from fpc package)¹ ²</li>
@@ -14,7 +14,7 @@
 			It's the <strong>sole responsibility</strong> of the <strong>user</strong> to <strong>adapt</strong> the system to LAMW Manager.</li>
 		</ol>
 	<Strong>Notes:</Strong>
-	<ol>
+	<ol type="1">
 		<li>Freepascal distributed by third parties is not supported!</li>
 		<li>Freepascal Trunk is not supported!</li>
 	</ol>
