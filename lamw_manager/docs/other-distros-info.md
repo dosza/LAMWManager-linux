@@ -10,7 +10,7 @@
 			<li>OpenJDK8 Available in Official Repository (from openjdk-8-jdk package)</li>
 			<li>FreePascal Stable Available in Official Repository (from fpc package)¹ ²</li>
 			<li>Using OpenJDK is recommended instead of Oracle JDK</li>
-			<li>If the system does not comply with items A,B and C:
+			<li>If the system does not comply with items i,ii and iii:
 			It's the <strong>sole responsibility</strong> of the <strong>user</strong> to <strong>adapt</strong> the system to LAMW Manager.</li>
 		</ol>
 	</ol>
