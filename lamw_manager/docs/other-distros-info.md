@@ -3,7 +3,7 @@
 <p>
 	<br>To use LAMW Manager the user must meet the following requirements:</br>
 	<ol type="I">
-		<li>Only linux distributions(and versions) listed in <a href="https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/blob/master/README.md"><strong>README</strong></a> are officially supported.</li>
+		<li>Only linux distributions ( and versions ) listed in <a href="https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/blob/master/README.md"><strong>README</strong></a> are officially supported.</li>
 		<li>Compatibility with other linux distributions:</li>
 		<ol type="a">
 			<li>Ubuntu / Debian Based Linux Distribution</li>
