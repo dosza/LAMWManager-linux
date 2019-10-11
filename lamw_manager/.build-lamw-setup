@@ -1,0 +1,3 @@
+#!/bin/bash -x
+#esse script compila o lamw_manager_setup.run, (arquivo self-extract que executa ./lamw_manager)
+makeself   --gzip --copy --target '$HOME/lamw_manager' $PWD lamw_manager_setup.run "LAMW Manager Setup"  ./.start_lamw_manager
