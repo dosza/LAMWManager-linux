@@ -1,4 +1,5 @@
-**Other distro Requerements**
+Other distro Requerements
+===================================================
 
 <p>
 	Read the README carefully!
@@ -8,8 +9,10 @@
 	</ul>
 </p>
 
+
+
+##Other linux distributions must meet the following requirements:##
 <p>
-	<strong>Other linux distributions must meet the following requirements:</strong>
 	<ol type='A'>
 		<li>Ubuntu / Debian Based Linux Distribution</li>
 		<li>OpenJDK8 Available in Official Repository (from openjdk-8-jdk package)</li>
@@ -24,3 +27,4 @@
 		<li>Freepascal Trunk is not supported!</li>
 	</ol>
 </p>
+
