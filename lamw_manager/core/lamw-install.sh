@@ -119,7 +119,7 @@ checkProxyStatus(){
 	if [ $FORCE_LAWM4INSTALL = 1 ]; then
 		echo "${NEGRITO}Warning: Earlier versions of Lazarus (debian package) will be removed!${NORMAL}"
 	else
-		echo "${NEGRITO}Warning:${NORMAL}${NEGRITO}This application not  is compatible with ${VERMELHO}lazarus-project${NORMAL} (debian package)${NORMAL}"
+		echo "${NEGRITO}Warning:${NORMAL}${NEGRITO}This application not  is compatible with ${VERMELHO}lazarus-project${NORMAL} (debian package)${NORMAL}" >&2
 		echo "use ${NEGRITO}--force${NORMAL} parameter remove anywhere lazarus (debian package)"
 		sleep 1
 	fi
