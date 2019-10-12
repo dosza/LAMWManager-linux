@@ -12,7 +12,7 @@ v0.3.3 - October ,2019
 	</ul>
 </p>
 
-v0.3.2-R1 -September 8,2019
+v0.3.2 - R1 - September 8,2019
 ---
 <p>
 	<strong>FIXED</strong>
