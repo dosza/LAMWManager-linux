@@ -363,8 +363,8 @@ CleanOldConfig(){
 		 rm /usr/bin/arm-linux-ld
 	fi
 
-	if [ ! -e "/usr/bin/startlamw4linux" ]; then
-			rm "/usr/bin/startlamw4linux"
+	if [  -e "/usr/bin/startlamw4linux" ]; then
+		rm "/usr/bin/startlamw4linux"
 	fi
 
 	if [ -e $FPC_CFG_PATH ]; then #remove local ppc config

@@ -4,7 +4,7 @@ This page contains information about new features and bug fixes.
 v0.3.3 - October, 2019
 ---
 <p>
-	<strong>NEWS</strong>
+	<strong>NEWS:</strong>
 	<ul>
 		<li>Introducing a new installer:lamw_manger_setup.run</li>
 		<li>Introducing a new flag PKEXEC</li>
@@ -30,7 +30,7 @@ v0.3.2 - August 19, 2019
 		<li>Lazarus 2.0.4</li>
 		<li>Android API's platform 28</li>
 		<li>Android Build Tools 28.0.3</li>
-		<li>Your now open projects from LAMW4Linux</li>
+		<li>Your now open Projects from File Manager</li>
 		<li>Start LAMW4Linux from the terminal with the command: <em>startlamw4linux</em></li>
 	</ul>
 	<strong>FIXED:</strong>
