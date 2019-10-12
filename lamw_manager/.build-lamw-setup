@@ -1,3 +1,42 @@
 #!/bin/bash -x
 #esse script compila o lamw_manager_setup.run, (arquivo self-extract que executa ./lamw_manager)
-makeself   --gzip --copy --target '$HOME/lamw_manager' $PWD lamw_manager_setup.run "LAMW Manager Setup"  ./.start_lamw_manager
+
+source "core/common-shell.sh"
+AUX=$PWD
+
+#!/bin/bash
+LAMW_MANAGER_TMP_BUILD="/tmp/lamw_manager_build"
+LAMW_MANAGER_INSTALLER="lamw_manager_setup.run"
+LAMW_MANAGER_FINAL_INSTALLER="$LAMW_MANAGER_TMP_BUILD/$LAMW_MANAGER_INSTALLER"
+if [ ! -e $LAMW_MANAGER_TMP_BUILD ]
+then
+	mkdir $LAMW_MANAGER_TMP_BUILD
+fi
+files=(
+	"core"
+	"docs"
+	"lamw_manager"	
+	".start_lamw_manager"
+	"../Getting Started.txt"
+)
+qt=${#files[*]}
+
+#copy directorys and files to LAMW_MANAGER_TMP_BUILD
+for((i=0;i<qt;i++))
+do 
+	if [ -e "${files[i]}" ]; then
+		if [ -d "${files[i]}" ]; then # if files[i] is a directory 
+			cp  -r "${files[i]}" "$LAMW_MANAGER_TMP_BUILD"
+		else
+			cp  "${files[i]}" "$LAMW_MANAGER_TMP_BUILD"
+		fi
+	fi
+done
+
+changeDirectory $LAMW_MANAGER_TMP_BUILD
+makeself   --gzip --copy --target '$HOME/lamw_manager' $PWD $LAMW_MANAGER_INSTALLER "LAMW Manager Setup"  ./.start_lamw_manager
+cp "$LAMW_MANAGER_FINAL_INSTALLER" "$AUX"
+
+if [ -e $LAMW_MANAGER_TMP_BUILD ]; then
+	rm -rv $LAMW_MANAGER_TMP_BUILD
+fi
