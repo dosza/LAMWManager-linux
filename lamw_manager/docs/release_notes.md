@@ -1,6 +1,9 @@
+# LAMW Manager Release Notes
+This page contains information about new features and bug fixes.
+
+v0.3.3 - October ,2019
+---
 <p>
-	<h2>LAMW Manager  v.0.3.3</h2>
-	October ,2019
 	<strong>NEWS</strong>
 	<ul>
 		<li>Introducing a new installer:lamw_manger_setup.run</li>
@@ -8,18 +11,18 @@
 		<li>Fusion the lamw_manager and lamw-manager files.</li>
 	</ul>
 </p>
-	
+
+v0.3.2-R1 -September 8,2019
+---
 <p>
-	<h2>LAMW Manager  v.0.3.2 R1</h2> 
-	September 8,2019
 	<strong>FIXED</strong>
 	<ul>
 		<li>Apache Ant URL</li>
 	</ul>	
 </p>
 
-<h2>LAMW Manager  v.0.3.2 </h2>
-August 19,2019
+v0.3.2 - August 19,2019
+---
 <p>
 	<strong>NEWS:</strong>
 	<ul>
@@ -37,8 +40,8 @@ August 19,2019
 	</ul>	
 </p>
 
-<h2>LAMW Manager  v.0.3.1</h2>
-	August 1,2019
+v0.3.1 - August 1,2019
+---
 <p>
 	<strong>NEWS:</strong>
 	<ul>
@@ -57,23 +60,18 @@ August 19,2019
 	</ul>	
 </p>
 
-<h2>LAMW Manager v.0.3.0</h2>
-		May 10,2019
+v0.3.0 - May 10,2019
+---
+
 <p>
 	<strong>NEWS:</strong>
 	<ul>
 		<li>Update FPC to 3.0.0 to 3.0.4 on Ubuntu 16.04/Linux Mint 18</li>
 		<li>Add Auto Repair to fixs FPC</li>
 	</ul>
-	<strong>FIX# LAMW Manager Release Notes #
-
-
-<h2>LAMW Manager  v.0.3.2 R1</h2> 
-	September 8,2019
-
-<p>
-	<strong>FIXED</strong>
+	<strong>FIXED:</strong>
 	<ul>
-		<li>Apache Ant URL</li>
-	</ul>	
+		<li>Fix Uninstaller</li>
+	    <li>Fix missing ppcrossarm</li>
+	</ul>
 </p>
