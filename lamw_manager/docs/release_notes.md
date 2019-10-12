@@ -1,7 +1,7 @@
 # LAMW Manager Release Notes
 This page contains information about new features and bug fixes.
 
-v0.3.3 - October ,2019
+v0.3.3 - October, 2019
 ---
 <p>
 	<strong>NEWS</strong>
@@ -12,16 +12,16 @@ v0.3.3 - October ,2019
 	</ul>
 </p>
 
-v0.3.2 - R1 - September 8,2019
+v0.3.2 - R1 - September 8, 2019
 ---
 <p>
-	<strong>FIXED</strong>
+	<strong>FIXED:</strong>
 	<ul>
 		<li>Apache Ant URL</li>
 	</ul>	
 </p>
 
-v0.3.2 - August 19,2019
+v0.3.2 - August 19, 2019
 ---
 <p>
 	<strong>NEWS:</strong>
@@ -40,7 +40,7 @@ v0.3.2 - August 19,2019
 	</ul>	
 </p>
 
-v0.3.1 - August 1,2019
+v0.3.1 - August 1, 2019
 ---
 <p>
 	<strong>NEWS:</strong>
@@ -60,7 +60,7 @@ v0.3.1 - August 1,2019
 	</ul>	
 </p>
 
-v0.3.0 - May 10,2019
+v0.3.0 - May 10, 2019
 ---
 
 <p>
