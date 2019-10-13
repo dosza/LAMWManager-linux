@@ -71,7 +71,7 @@ New Installer Procedure!!
 <p>
 	<strong>How to use LAMW Manager:</strong>
 	<ol>
-	<li><a href="https://raw.githubusercontent.com/DanielOliveiraSouza/LAMW4Linux-installer/v0.3.3/lamw_manager/lamw_manager_setup.run">Click here to download <em> LAMW Manager Setup</em></a></li> 
+	<li><a href="https://raw.githubusercontent.com/DanielOliveiraSouza/LAMW4Linux-installer/v0.3.3/lamw_manager/assets/lamw_manager_setup.run">Click here to download <em> LAMW Manager Setup</em></a></li> 
 	<li>Go to Download folder and open terminal</li>
 	<li>bash lamw_manager_setup.run</strong></li>
 	</ol>
