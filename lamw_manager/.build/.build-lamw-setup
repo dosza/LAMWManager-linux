@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
@@ -8,10 +8,11 @@
 #Note: This script requires makeself, read more in https://makeself.io/
 #-------------------------------------------------------------------------------------------------#
 
-source "core/common-shell.sh"
-AUX=$PWD
+source "../core/common-shell.sh"
 
-#!/bin/bash
+
+AUX=$PWD
+DESTPATH=${AUX/%\.build}
 LAMW_MANAGER_TMP_BUILD="/tmp/lamw_manager_build"
 LAMW_MANAGER_INSTALLER="lamw_manager_setup.run"
 LAMW_MANAGER_FINAL_INSTALLER="$LAMW_MANAGER_TMP_BUILD/$LAMW_MANAGER_INSTALLER"
@@ -20,11 +21,11 @@ then
 	mkdir $LAMW_MANAGER_TMP_BUILD
 fi
 files=(
-	"core"
-	"docs"
-	"lamw_manager"	
+	"../core"
+	"../docs"
+	"../lamw_manager"	
 	".start_lamw_manager"
-	"../Getting Started.txt"
+	"../../Getting Started.txt"
 )
 qt=${#files[*]}
 
@@ -42,7 +43,7 @@ done
 
 changeDirectory $LAMW_MANAGER_TMP_BUILD
 makeself   --gzip --copy --target '$HOME/lamw_manager' $PWD $LAMW_MANAGER_INSTALLER "LAMW Manager Setup"  ./.start_lamw_manager
-cp "$LAMW_MANAGER_FINAL_INSTALLER" "$AUX"
+cp "$LAMW_MANAGER_FINAL_INSTALLER" "$DESTPATH"
 
 if [ -e $LAMW_MANAGER_TMP_BUILD ]; then
 	rm -r $LAMW_MANAGER_TMP_BUILD
