@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<CONFIG>
-  <Compiler Value="/usr/bin/fpc" Date="1535575190"/>
-  <Params Value=" -MObjFPC -Scghi -Cg -O1 -g -gl -l -vewnhibq -Fu/home/danny/lazarus/components/synedit/units/x86_64-linux/gtk2 -Fu/home/danny/lazarus/lcl/units/x86_64-linux/gtk2 -Fu/home/danny/lazarus/lcl/units/x86_64-linux -Fu/home/danny/lazarus/components/lazutils/lib/x86_64-linux -Fu/home/danny/lazarus/packager/units/x86_64-linux -Fu/home/danny/Dev/LAMW4Linux-installer/lamw_manager/.gui/ -o/home/danny/Dev/LAMW4Linux-installer/lamw_manager/.gui/LAMWManager -dLCL -dLCLgtk2 -dUseCThreads LAMWManager.lpr"/>
-</CONFIG>
