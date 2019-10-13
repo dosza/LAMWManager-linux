@@ -8,7 +8,7 @@
 #Note: This script requires makeself, read more in https://makeself.io/
 #-------------------------------------------------------------------------------------------------#
 
-source "core/common-shell.sh"
+source "../core/common-shell.sh"
 
 
 AUX=$PWD
@@ -42,11 +42,11 @@ then
 	mkdir $LAMW_MANAGER_TMP_BUILD
 fi
 files=(
-	"core"
-	"docs"
-	"lamw_manager"	
+	"../core"
+	"../docs"
+	"../lamw_manager"	
 	".start_lamw_manager"
-	"../Getting Started.txt"
+	"../../Getting Started.txt"
 )
 qt=${#files[*]}
 
