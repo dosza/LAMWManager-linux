@@ -8,24 +8,45 @@
 #Note: This script requires makeself, read more in https://makeself.io/
 #-------------------------------------------------------------------------------------------------#
 
-source "../core/common-shell.sh"
+source "core/common-shell.sh"
 
 
 AUX=$PWD
-DESTPATH=${AUX/%\.build}
+
 LAMW_MANAGER_TMP_BUILD="/tmp/lamw_manager_build"
 LAMW_MANAGER_INSTALLER="lamw_manager_setup.run"
 LAMW_MANAGER_FINAL_INSTALLER="$LAMW_MANAGER_TMP_BUILD/$LAMW_MANAGER_INSTALLER"
+START_LAMW_MANAGER_FILE='.start_lamw_manager'
+
+START_LAMW_MANAGER_STR=(
+	'#!/bin/bash'
+	'#-------------------------------------------------------------------------------------------------#'
+	'### THIS FILE IS AUTOMATICALLY CONFIGURED by LAMW Manager'
+	'###ou may comment out this entry, but any other modifications may be lost.'
+	'#Description: This script is a parser to lamw_manager_setup.run'
+	'#This script remove  -- is a delimiter separating makeself arguments from internal scripts'
+	'#Ref: https://makeself.io/'
+	'#-------------------------------------------------------------------------------------------------#'
+	''
+	''
+	"ARGS=\"\$*\""
+	'ARGS=${ARGS/\-\-/}  #This is expansion that removes the first occurrence --. \-  is the escape of -'
+	"./lamw_manager \$ARGS"
+)
+
+WriterFileln "$AUX/$START_LAMW_MANAGER_FILE" "START_LAMW_MANAGER_STR"
+chmod +x "$AUX/$START_LAMW_MANAGER_FILE"
+
 if [ ! -e $LAMW_MANAGER_TMP_BUILD ]
 then
 	mkdir $LAMW_MANAGER_TMP_BUILD
 fi
 files=(
-	"../core"
-	"../docs"
-	"../lamw_manager"	
+	"core"
+	"docs"
+	"lamw_manager"	
 	".start_lamw_manager"
-	"../../Getting Started.txt"
+	"../Getting Started.txt"
 )
 qt=${#files[*]}
 
@@ -43,8 +64,14 @@ done
 
 changeDirectory $LAMW_MANAGER_TMP_BUILD
 makeself   --gzip --copy --target '$HOME/lamw_manager' $PWD $LAMW_MANAGER_INSTALLER "LAMW Manager Setup"  ./.start_lamw_manager
-cp "$LAMW_MANAGER_FINAL_INSTALLER" "$DESTPATH"
+cp "$LAMW_MANAGER_FINAL_INSTALLER" "$AUX"
 
+changeDirectory $AUX
 if [ -e $LAMW_MANAGER_TMP_BUILD ]; then
 	rm -r $LAMW_MANAGER_TMP_BUILD
+fi
+
+#Remove tempfile
+if [ -e "$AUX/$START_LAMW_MANAGER_FILE" ]; then
+	rm "$AUX/$START_LAMW_MANAGER_FILE"
 fi
