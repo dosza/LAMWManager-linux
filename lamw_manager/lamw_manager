@@ -1,5 +1,13 @@
 #!/bin/bash
-#!This script is a wraper to lamw-install.sh
+#-------------------------------------------------------------------------------------------------#
+#Universidade federal de Mato Grosso (Alma Mater)
+#Course: Science Computer
+#Version: 0.3.3
+#Date: 11/12/2019
+#Description:The "lamw_manager" is part of the core of LAMW Manager. This script is a wrapper for "core/lamw-instal.sh"
+#-------------------------------------------------------------------------------------------------#
+
+
 export DEBUG=0
 export ARGS="$*"
 export LAMW_MGR_CORE=""
