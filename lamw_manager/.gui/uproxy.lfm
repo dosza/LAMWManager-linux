@@ -9,19 +9,19 @@ object FormProxy: TFormProxy
   OnClose = FormClose
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '1.8.4.0'
+  LCLVersion = '2.0.4.0'
   object CheckBox1: TCheckBox
     Left = 93
     Height = 24
     Top = 66
-    Width = 128
+    Width = 136
     Caption = 'Transparent Proxy'
     OnChange = CheckBox1Change
     TabOrder = 0
   end
   object Edit1: TEdit
     Left = 157
-    Height = 29
+    Height = 28
     Top = 106
     Width = 176
     OnChange = Edit1Change
@@ -29,31 +29,31 @@ object FormProxy: TFormProxy
   end
   object Label1: TLabel
     Left = 97
-    Height = 14
+    Height = 16
     Top = 114
-    Width = 40
+    Width = 41
     Caption = 'Server:'
     ParentColor = False
   end
   object Edit2: TEdit
     Left = 157
-    Height = 29
+    Height = 28
     Top = 170
     Width = 176
     TabOrder = 2
   end
   object Label2: TLabel
     Left = 93
-    Height = 14
+    Height = 16
     Top = 170
-    Width = 26
+    Width = 29
     Caption = 'Port:'
     ParentColor = False
     OnClick = Label2Click
   end
   object Edit3: TEdit
     Left = 157
-    Height = 29
+    Height = 28
     Top = 258
     Width = 176
     OnChange = Edit3Change
@@ -63,14 +63,14 @@ object FormProxy: TFormProxy
     Left = 93
     Height = 24
     Top = 218
-    Width = 136
+    Width = 148
     Caption = 'Proxy Autentication '
     OnChange = CheckBox2Change
     TabOrder = 4
   end
   object Label3: TLabel
     Left = 97
-    Height = 14
+    Height = 16
     Top = 258
     Width = 30
     Caption = 'User:'
@@ -78,7 +78,7 @@ object FormProxy: TFormProxy
   end
   object Edit4: TEdit
     Left = 157
-    Height = 29
+    Height = 28
     Top = 322
     Width = 176
     OnChange = Edit4Change
@@ -86,9 +86,9 @@ object FormProxy: TFormProxy
   end
   object Label4: TLabel
     Left = 93
-    Height = 14
+    Height = 16
     Top = 330
-    Width = 57
+    Width = 61
     Caption = 'Password:'
     ParentColor = False
   end
@@ -96,7 +96,7 @@ object FormProxy: TFormProxy
     Left = 93
     Height = 24
     Top = 32
-    Width = 81
+    Width = 85
     Caption = 'Use Proxy'
     OnChange = CheckBox3Change
     TabOrder = 6
