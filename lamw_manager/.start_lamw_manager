@@ -1,9 +1,14 @@
 #!/bin/bash
+#-------------------------------------------------------------------------------------------------#
+#Universidade federal de Mato Grosso (Alma Mater)
+#Course: Science Computer
+#Version: 0.3.3
+#Date: 11/12/2019
+#Description: This script is a parser to lamw_manager_setup.run
+#This script remove  -- is a delimiter separating makeself arguments from internal scripts
+#Ref: https://makeself.io/
+#-------------------------------------------------------------------------------------------------#
 
-
-#este script eh bootstrap que remove o primeiro -- (separador de argumentos do makeself do script embutido)
 ARGS="$*"
-#echo "ARGS=$ARGS"
-ARGS=${ARGS/\-\-/}
-#echo "Splitted ARGS=$ARGS"
+ARGS=${ARGS/\-\-/}  #This is expansion that removes the first occurrence --. \-  is the escape of -
 ./lamw_manager $ARGS

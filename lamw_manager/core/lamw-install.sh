@@ -1,9 +1,11 @@
 #!/bin/bash
-#Universidade federal de Mato Grosso
-#Curso ciencia da computação
-#Versao  0.3.2
-#Descrição: Este script configura o ambiente de desenvolvimento para o LAMW
-#V
+#-------------------------------------------------------------------------------------------------#
+#Universidade federal de Mato Grosso (Alma Mater)
+#Course: Science Computer
+##Version: 0.3.3
+#Date: 11/12/2019
+#Description: The "lamw-install.sh" is part of the core of LAMW Manager. This script configures the development environment for LAMW
+#-------------------------------------------------------------------------------------------------#
 
 
 #zenity --info --text "ANDROID_HOME=$ROOT_LAMW"

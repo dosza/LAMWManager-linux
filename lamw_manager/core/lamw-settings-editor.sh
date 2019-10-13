@@ -1,4 +1,11 @@
 #!/bin/bash
+#-------------------------------------------------------------------------------------------------#
+#Universidade federal de Mato Grosso (mater-alma)
+#Course: Science Computer
+#Version: 0.3.3
+#Date: 11/12/2019
+#Description: The "lamw-manager-settings-editor.sh" is part of the core of LAMW Manager. Responsible for managing LAMW Manager / LAMW configuration files..
+#-------------------------------------------------------------------------------------------------#
 
 enableADBtoUdev(){
 	  printf 'SUBSYSTEM=="usb", ATTR{idVendor}=="<VENDOR>", MODE="0666", GROUP="plugdev"\n'  |  tee /etc/udev/rules.d/51-android.rules
