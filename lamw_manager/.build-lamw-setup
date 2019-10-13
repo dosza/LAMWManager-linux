@@ -1,5 +1,12 @@
-#!/bin/bash -x
-#esse script compila o lamw_manager_setup.run, (arquivo self-extract que executa ./lamw_manager)
+#!/bin/bash
+#-------------------------------------------------------------------------------------------------#
+#Universidade federal de Mato Grosso (Alma Mater)
+#Course: Science Computer
+#Version  0.3.3
+#Date: 11/12/2019
+#Description: This script generates compiles LAMW Manager source code into an executable installer.
+#Note: This script requires makeself, read more in https://makeself.io/
+#-------------------------------------------------------------------------------------------------#
 
 source "core/common-shell.sh"
 AUX=$PWD
@@ -38,5 +45,5 @@ makeself   --gzip --copy --target '$HOME/lamw_manager' $PWD $LAMW_MANAGER_INSTAL
 cp "$LAMW_MANAGER_FINAL_INSTALLER" "$AUX"
 
 if [ -e $LAMW_MANAGER_TMP_BUILD ]; then
-	rm -rv $LAMW_MANAGER_TMP_BUILD
+	rm -r $LAMW_MANAGER_TMP_BUILD
 fi

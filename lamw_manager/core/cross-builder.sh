@@ -1,8 +1,15 @@
 #!/bin/bash
+#-------------------------------------------------------------------------------------------------#
+#Universidade federal de Mato Grosso (Alma Mater)
+#Course: Science Computer
+#Version: 0.3.3
+#Date: 11/12/2019
+#Description:The "cross-builder.sh" is part of the core of LAMW Manager.  This script contains crosscompile compiler generation routines for ARMv7 / AARCH64- Android
+#-------------------------------------------------------------------------------------------------#
+
 
 
 #detecta a versão do fpc instalada no PC  seta as váriavies de ambiente
-
 parseFPC(){ 	
 	dist_file=$(cat /etc/issue.net)
 	case "$dist_file" in 
