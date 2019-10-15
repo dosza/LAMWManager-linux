@@ -66,7 +66,7 @@ To install LAMW and dependencies:
 
 </p> -->
 
-New Installer Procedure!!
+Getting Started!
 ----------------------------------------------------------------------
 <p>
 	<strong>How to use LAMW Manager:</strong>
