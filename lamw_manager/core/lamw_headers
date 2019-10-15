@@ -3,7 +3,7 @@
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
 #Version: 0.3.3
-#Date: 11/12/2019
+#Date: 10/15/2019
 #Description: The "lamw_headers" is part of the core of LAMW Manager. This script contains LAMW Manager variables.
 #-------------------------------------------------------------------------------------------------#
 
@@ -17,9 +17,8 @@ export VERMELHO_SUBLINHADO=$'\e[1;4;31m'
 export AZUL=$'\e[1;34m'
 export NORMAL=$'\e[0m'
 
-if [ ! -e /tmp/lamw-overrides.conf ]
-then
-	printf "${VERMELHO}Error: you need run lamw-manager or lamw_manager first! ${NORMAL}\n"
+if [ ! -e /tmp/lamw-overrides.conf ]; then
+	printf "${VERMELHO}Fatal Error: you need run lamw_manager first! ${NORMAL}\n"
 	exit 1
 fi
 LAMW_USER=$(cat /tmp/lamw-overrides.conf)
@@ -137,7 +136,7 @@ TIME_WAIT=2
 
 lamw_opts=(
 	"syntax:\n"
-	"./lamw_manager\tor\t./lamw_manger\t${NEGRITO}[actions]${NORMAL} ${VERDE}[options]${NORMAL}\n"
+	"./lamw_manager\tor\t./lamw_manager\t${NEGRITO}[actions]${NORMAL} ${VERDE}[options]${NORMAL}\n"
 	"${NEGRITO}Usage${NORMAL}:\n"
 	"\t${NEGRITO}./lamw_manager${NORMAL}                              Install LAMW and dependecies¹\n"
 	"\t./lamw_manager\t${VERDE}--sdkmanager${NORMAL}                Install LAMW and Run Android SDK Manager²\n"

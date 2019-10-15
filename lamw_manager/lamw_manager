@@ -18,8 +18,7 @@ export EXIT_STATUS=0
 
 
 if  [  "$(whoami)" = "root" ];then #impede que o script seja executado pelo root 
-	echo "Error: this version  of LAMW4Linux was designed  to run without root priveleges" >&2 # >&2 is a file descriptor to /dev/stderror
-	echo "Exiting ..."
+	echo "Error: this version  of LAMW4Linux was designed  to run without root priveleges\nExiting...\n" >&2 # >&2 is a file descriptor to /dev/stderror
 	exit 1
 fi
 
@@ -80,7 +79,6 @@ CheckFlagEnter(){
 
 #Run LAMW Manager as Police Kit
 RunAsPolkit(){
-	echo "$USER" > /tmp/lamw-overrides.conf
 	pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY  $CALL_BASH "$LAMW_MGR_CORE" $*
 	export EXIT_STATUS=$?
 	if [  $ENTER_TO_EXIT = 1 ]; then
@@ -90,13 +88,13 @@ RunAsPolkit(){
 
 #Run LAMW Manager as sudo (default)
 RunAsSudo(){
-	echo "$USER" > /tmp/lamw-overrides.conf
 	sudo -i $CALL_BASH "$LAMW_MGR_CORE" $*
 	export EXIT_STATUS=$?
 }
 
 #Wrapper function to Run LAMW Manager
 Run(){
+	echo "$USER" > /tmp/lamw-overrides.conf
 	if [ $USE_PKEXEC = 1 ]; then
 		RunAsPolkit $*
 	else
