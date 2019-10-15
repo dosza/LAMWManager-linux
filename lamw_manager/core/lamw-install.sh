@@ -3,7 +3,7 @@
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
 ##Version: 0.3.3
-#Date: 11/12/2019
+#Date: 10/15/2019
 #Description: The "lamw-install.sh" is part of the core of LAMW Manager. This script configures the development environment for LAMW
 #-------------------------------------------------------------------------------------------------#
 
@@ -121,7 +121,7 @@ checkProxyStatus(){
 	if [ $FORCE_LAWM4INSTALL = 1 ]; then
 		echo "${NEGRITO}Warning: Earlier versions of Lazarus (debian package) will be removed!${NORMAL}"
 	else
-		echo "${NEGRITO}Warning:${NORMAL}${NEGRITO}This application not  is compatible with ${VERMELHO}lazarus-project${NORMAL} (debian package)${NORMAL}" >&2
+		echo "${NEGRITO}Warning:${NORMAL}${NEGRITO}This application not  is compatible with ${VERMELHO}lazarus-project${NORMAL} (debian package)${NORMAL}" 
 		echo "use ${NEGRITO}--force${NORMAL} parameter remove anywhere lazarus (debian package)"
 		sleep 1
 	fi
@@ -259,7 +259,7 @@ case "$1" in
 	;;
 
 	*)
-		printf "${VERMELHO} Command not found!${NORMAL}\n${lamw_opts[*]}" >&2
+		printf "${VERMELHO}Invalid argument!${NORMAL}\n${lamw_opts[*]}" >&2
 		exit 1
 	;;
 
