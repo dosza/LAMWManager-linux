@@ -3,88 +3,132 @@
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
 #Version: 0.3.3
-#Date: 11/12/2019
+#Date: 10/14/2019
 #Description:The "lamw_manager" is part of the core of LAMW Manager. This script is a wrapper for "core/lamw-instal.sh"
 #-------------------------------------------------------------------------------------------------#
 
 
 export DEBUG=0
 export ARGS="$*"
-export LAMW_MGR_CORE=""
-if  [  "$(whoami)" = "root" ];then #impede que o script seja executado pelo root 
+export LAMW_MGR_CORE="core/lamw-install.sh"
+export USER_IS_SUDO=0
+export USE_PKEXEC=0
+export ENTER_TO_EXIT=0
 
+if  [  "$(whoami)" = "root" ];then #impede que o script seja executado pelo root 
 	echo "Error: this version  of LAMW4Linux was designed  to run without root priveleges" >&2 # >&2 is a file descriptor to /dev/stderror
 	echo "Exiting ..."
 	exit 1
 fi
 
-
-echo "$ARGS" | grep DEBUG=1 > /dev/null 
-if [ $? = 0 ]; then
-	export DEBUG=1;
-	export ARGS=${ARGS//DEBUG=1/} # remove todas as ocorrencias de DEBUG=1
-fi
-
-echo "$USER" > /tmp/lamw-overrides.conf
-if [ -e $PWD/core/lamw-install.sh ]; then
-	if [ $DEBUG = 1 ]; then
-		sudo -i bash  -x "$PWD/core/lamw-install.sh" $ARGS
-	else
-		sudo -i bash  "$PWD/core/lamw-install.sh" $*
+#Check if $USER is a sudo member 
+CheckUserIsSudo(){
+	cat /etc/group | grep sudo | grep $USER > /dev/null
+	if [ $? = 0 ]; then
+		export export USER_IS_SUDO=1
+	else 
+		export USE_PKEXEC=1
 	fi
-else
-	export AUX_PATH=$0
-	export AUX_PATH=${AUX_PATH%/lamw_manager*} #expansão de variavel que remove  lamw_manager (do final da string) restando a path
-	if [ $DEBUG = 1 ]; then
-		sudo -i bash  -x "$AUX_PATH/core/lamw-install.sh" $ARGS
-	else
-		sudo -i bash  "$AUX_PATH/core/lamw-install.sh" $*
+}
+
+
+#Check if PKEXEC flag is set 
+CheckFlagPKexec(){
+	echo "$ARGS" | grep "PKEXEC=1" > /dev/null
+	if [ $? = 0 ]; then 
+		export USE_PKEXEC=1
+		export ARGS=${ARGS//PKEXEC=1/} # remove todas as ocorrencias de DEBUG=1
 	fi
-fi
+}
 
-if [ -e /tmp/lamw-overrides.conf ];then
-	rm /tmp/lamw-overrides.conf
-fi
+#Check if DEBUG flag is set 
+CheckFlagDebug(){
+	echo "$ARGS" | grep DEBUG=1 > /dev/null 
+	if [ $? = 0 ]; then
+		export DEBUG=1;
+		export ARGS=${ARGS//DEBUG=1/} # remove todas as ocorrencias de DEBUG=1
+	fi
+}
+
+
+#Check Enter flag is set (this flag is a GUI flag)
+CheckFlagEnter(){
+	echo "$ARGS" | grep "ENTER=1" > /dev/null 
+	if [ $? = 0 ]; then
+		export ENTER_TO_EXIT=1;
+		export ARGS=${ARGS//ENTER=1/} # remove todas as ocorrencias de DEBUG=1
+	fi
+}
 
 
 
-# #!/bin/bash
-# #!This script is a wraper to lamw-install.sh
+RunAsPolkit(){
+	echo "$USER" > /tmp/lamw-overrides.conf
+	if [ -e "$PWD/$LAMW_MGR_CORE" ]; then
+		if [ $DEBUG = 1 ]; then  
+			pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY bash -x "$PWD/$LAMW_MGR_CORE" ${ARGS}
+		else
+			pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY bash "$PWD/$LAMW_MGR_CORE" $*
+		fi
+	else
+		export AUX_PATH=$0
+		export AUX_PATH=${AUX_PATH%/lamw_manager*} #expansão de variavel que remove  lamw-manager (do final da string) restando a path
+		if [ $DEBUG = 1 ]; then
+			pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY -x bash "$AUX_PATH/$LAMW_MGR_CORE" ${ARGS}
+		else
+			pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY bash "$AUX_PATH/$LAMW_MGR_CORE" $*
+		fi
+	fi
 
-# export DEBUG=0
-# export ARGS="$*"
+	if [ -e /tmp/lamw-overrides.conf ]
+	then
+		rm /tmp/lamw-overrides.conf
+	fi
 
-# if  [  "$(whoami)" = "root" ] #impede que o script seja executado pelo root 
-# then
-# 	echo "Error: this version  of LAMW4Linux was designed  to run without root priveleges" >&2 # >&2 is a file descriptor to /dev/stderror
-# 	echo "Exiting ..."
-# 	exit 1
-# fi
-# echo "$ARGS" | grep DEBUG=1 > /dev/null 
-# if [ $? = 0 ]; then
-# 	export DEBUG=1;
-# 	export ARGS=${ARGS//DEBUG=1/} # remove todas as ocorrencias de DEBUG=1
-# fi
+	if [  $ENTER_TO_EXIT = 1 ]; then
+		echo "press enter to exit ...";read
+	fi
+}
 
-# echo "$USER" > /tmp/lamw-overrides.conf
-# if [ -e $PWD/lamw-install.sh ]; then
-# 	if [ $DEBUG = 1 ]; then  
-# 		pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY bash -x "$PWD/lamw-install.sh" ${ARGS}
-# 	else
-# 		pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY bash "$PWD/lamw-install.sh" $*
-# 	fi
-# else
-# 	export AUX_PATH=$0
-# 	export AUX_PATH=${AUX_PATH%/lamw-manager*} #expansão de variavel que remove  lamw-manager (do final da string) restando a path
-# 	if [ $DEBUG = 1 ]; then
-# 		pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY -x bash "$AUX_PATH/lamw-install.sh" ${ARGS}
-# 	else
-# 		pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY bash "$AUX_PATH/lamw-install.sh" $*
-# 	fi
-# fi
+RunAsSudo(){
+	echo "$USER" > /tmp/lamw-overrides.conf
+	if [ -e $PWD/$LAMW_MGR_CORE ]; then
+		if [ $DEBUG = 1 ]; then
+			sudo -i bash  -x "$PWD/$LAMW_MGR_CORE" $ARGS
+		else
+			sudo -i bash  "$PWD/$LAMW_MGR_CORE" $*
+		fi
+	else
+		export AUX_PATH=$0
+		export AUX_PATH=${AUX_PATH%/lamw_manager*} #expansão de variavel que remove  lamw_manager (do final da string) restando a path
+		if [ $DEBUG = 1 ]; then
+			sudo -i bash  -x "$AUX_PATH/$LAMW_MGR_CORE" $ARGS
+		else
+			sudo -i bash  "$AUX_PATH/$LAMW_MGR_CORE" $*
+		fi
+	fi
 
-# if [ -e /tmp/lamw-overrides.conf ]
-# then
-# 	rm /tmp/lamw-overrides.conf
-# fi
-# echo "press enter to exit ...";read
+	if [ -e /tmp/lamw-overrides.conf ];then
+		rm /tmp/lamw-overrides.conf
+	fi
+
+}
+
+
+Run(){
+	if [ $USE_PKEXEC = 1 ]; then
+		RunAsPolkit $*
+	else
+		RunAsSudo $*
+	fi
+}
+#main function
+main(){
+	CheckFlagDebug
+	CheckFlagPKexec
+	CheckFlagEnter
+	CheckUserIsSudo
+	Run $ARGS
+}
+
+main $*
