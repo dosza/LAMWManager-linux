@@ -3,7 +3,7 @@
 #Universidade federal de Mato Grosso (mater-alma)
 #Course: Science Computer
 #version: 0.0.1
-#Date: 12/11/19
+#Date: 10/15/19
 #Description: This script is not part of LAMW Manager! It is an external library that implements routines common to shell script.
 #-------------------------------------------------------------------------------------------------#
 
