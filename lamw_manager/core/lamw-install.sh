@@ -257,6 +257,9 @@ case "$1" in
 			changeOwnerAllLAMW "1";
 		fi
 	;;
+	"--help") 
+		printf "${lamw_opts[*]}" 
+	;;
 
 	*)
 		printf "${VERMELHO}Invalid argument!${NORMAL}\n${lamw_opts[*]}" >&2
