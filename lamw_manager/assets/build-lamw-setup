@@ -34,13 +34,6 @@ START_LAMW_MANAGER_STR=(
 	"./lamw_manager \$ARGS"
 )
 
-WriterFileln "$AUX/$START_LAMW_MANAGER_FILE" "START_LAMW_MANAGER_STR"
-chmod +x "$AUX/$START_LAMW_MANAGER_FILE"
-
-if [ ! -e $LAMW_MANAGER_TMP_BUILD ]
-then
-	mkdir $LAMW_MANAGER_TMP_BUILD
-fi
 files=(
 	"../core"
 	"../docs"
@@ -49,6 +42,14 @@ files=(
 	"../../Getting Started.txt"
 )
 qt=${#files[*]}
+
+WriterFileln "$AUX/$START_LAMW_MANAGER_FILE" "START_LAMW_MANAGER_STR"
+chmod +x "$AUX/$START_LAMW_MANAGER_FILE"
+
+if [ ! -e $LAMW_MANAGER_TMP_BUILD ]
+then
+	mkdir $LAMW_MANAGER_TMP_BUILD
+fi
 
 #copy directorys and files to LAMW_MANAGER_TMP_BUILD
 for((i=0;i<qt;i++))
