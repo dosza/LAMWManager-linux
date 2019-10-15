@@ -259,7 +259,8 @@ case "$1" in
 	;;
 
 	*)
-		printf "${lamw_opts[*]}"
+		printf "${VERMELHO} Command not found!${NORMAL}\n${lamw_opts[*]}" >&2
+		exit 1
 	;;
 
 esac
