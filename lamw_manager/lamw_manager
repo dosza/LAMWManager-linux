@@ -16,22 +16,21 @@ export ENTER_TO_EXIT=0
 export CALL_BASH="bash"
 export EXIT_STATUS=0
 
-
 if  [  "$(whoami)" = "root" ];then #impede que o script seja executado pelo root 
 	echo "Error: this version  of LAMW4Linux was designed  to run without root priveleges\nExiting...\n" >&2 # >&2 is a file descriptor to /dev/stderror
 	exit 1
 fi
 
 #Get Directory of LAMW Manager Core
-GetLmgrCorePath(){
-	if [ -e "$PWD/$LAMW_MGR_INSTALL" ]; then
-		export LAMW_MGR_CORE="$PWD/$LAMW_MGR_INSTALL"
-	else
-		export LAMW_MGR_CORE=$0
-		export LAMW_MGR_CORE=${LAMW_MGR_CORE%/lamw_manager*} 
-		export LAMW_MGR_CORE=$LAMW_MGR_CORE/$LAMW_MGR_INSTALL
-	fi
-}
+if [ -e "$PWD/$LAMW_MGR_INSTALL" ]; then
+	export LAMW_MGR_CORE="$PWD"
+else
+	export LAMW_MGR_CORE=$0
+	export LAMW_MGR_CORE=${LAMW_MGR_CORE%/lamw_manager*} 
+fi
+export LAMW_MGR_INSTALL="$LAMW_MGR_CORE/$LAMW_MGR_INSTALL"
+
+source $LAMW_MGR_CORE/core/common-shell.sh
 
 #Del lamw-overrides
 DelTempFiles(){
@@ -48,69 +47,57 @@ CheckUserIsSudo(){
 	fi
 }
 
-#Check if PKEXEC flag is set 
-CheckFlagPKexec(){
-	echo "$ARGS" | grep "PKEXEC=1" > /dev/null
+CheckFlags(){
+	newPtr ref_flag="$1"
+	flagFind=$2
+	echo "$ARGS" | grep "$flagFind" 
 	if [ $? = 0 ]; then 
-		export USE_PKEXEC=1
-		export ARGS=${ARGS//PKEXEC=1/} # remove todas as ocorrencias de DEBUG=1
+		export ref_flag=1
+		export ARGS=${ARGS//$flagFind/} # remove todas as ocorrencias de DEBUG=1
 	fi
 }
 
 #Check if DEBUG flag is set 
-CheckFlagDebug(){
-	echo "$ARGS" | grep DEBUG=1 > /dev/null 
-	if [ $? = 0 ]; then
-		export DEBUG=1;
-		export ARGS=${ARGS//DEBUG=1/} # remove todas as ocorrencias de DEBUG=1
+getBashCMD(){
+	if [ $DEBUG = 1 ]; then
 		export CALL_BASH="$CALL_BASH -x"
 	fi
 }
 
-
-#Check Enter flag is set (this flag is a GUI flag)
-CheckFlagEnter(){
-	echo "$ARGS" | grep "ENTER=1" > /dev/null 
-	if [ $? = 0 ]; then
-		export ENTER_TO_EXIT=1;
-		export ARGS=${ARGS//ENTER=1/} # remove todas as ocorrencias de DEBUG=1
-	fi
+#Run LAMW Manager as sudo (default)
+RunAsSudo(){
+	sudo -i $CALL_BASH "$LAMW_MGR_INSTALL" $*
+	export EXIT_STATUS=$?
 }
 
 #Run LAMW Manager as Police Kit
 RunAsPolkit(){
-	pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY  $CALL_BASH "$LAMW_MGR_CORE" $*
+	pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY  $CALL_BASH "$LAMW_MGR_INSTALL" $*
 	export EXIT_STATUS=$?
 	if [  $ENTER_TO_EXIT = 1 ]; then
 		echo "press enter to exit ...";read
 	fi
 }
 
-#Run LAMW Manager as sudo (default)
-RunAsSudo(){
-	sudo -i $CALL_BASH "$LAMW_MGR_CORE" $*
-	export EXIT_STATUS=$?
-}
-
 #Wrapper function to Run LAMW Manager
 Run(){
 	echo "$USER" > /tmp/lamw-overrides.conf
+	getBashCMD
 	if [ $USE_PKEXEC = 1 ]; then
 		RunAsPolkit $*
 	else
 		RunAsSudo $*
 	fi
 }
+
 #main function
 main(){
-	GetLmgrCorePath
-	CheckFlagDebug
-	CheckFlagPKexec
-	CheckFlagEnter
+	CheckFlags DEBUG "DEBUG=1"
+	CheckFlags USE_PKEXEC "PKEXEC=1"
+	CheckFlags ENTER_TO_EXIT "ENTER=1"
 	CheckUserIsSudo
 	Run $ARGS
 	DelTempFiles
 }
-
 main $*
 exit $EXIT_STATUS
