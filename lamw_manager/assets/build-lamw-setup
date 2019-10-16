@@ -14,7 +14,7 @@ source "../core/common-shell.sh"
 AUX=$PWD
 
 LAMW_MANAGER_TMP_BUILD="/tmp/lamw_manager_build"
-LAMW_MANAGER_INSTALLER="lamw_manager_setup.run"
+LAMW_MANAGER_INSTALLER="lamw_manager_setup.sh"
 LAMW_MANAGER_FINAL_INSTALLER="$LAMW_MANAGER_TMP_BUILD/$LAMW_MANAGER_INSTALLER"
 START_LAMW_MANAGER_FILE='.start_lamw_manager'
 

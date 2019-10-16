@@ -6,7 +6,7 @@ v0.3.3 - October, 2019
 <p>
 	<strong>NEWS:</strong>
 	<ul>
-		<li>Introducing a new installer:lamw_manger_setup.run</li>
+		<li>Introducing a new installer : <em>lamw_manager_setup.run</em></li>
 		<li>Introducing a new flag PKEXEC</li>
 		<li>Fusion the lamw_manager and lamw-manager files.</li>
 	</ul>
