@@ -41,7 +41,7 @@ LAMW Manager install the following [dependencies] tools:
 	<li>Android SDK</li>
 	<li>OpenJDK</li>
 	<li>Build Freepascal Cross-compile to <strong>ARM-android</strong></li>
-	<li><strong>New! </strong>Build Freepascal Cross-compile to <strong>AARCH64-android</strong></li>
+	<li>Build Freepascal Cross-compile to <strong>AARCH64-android</strong></li>
 	<li>Build Lazarus IDE</li>
 	<li>LAMW framework</li>
 	<li>Create launcher to menu</li>
@@ -66,14 +66,14 @@ To install LAMW and dependencies:
 
 </p> -->
 
-Getting Started!
+Getting Started!!
 ----------------------------------------------------------------------
 <p>
 	<strong>How to use LAMW Manager:</strong>
 	<ol>
-	<li><a href="https://raw.githubusercontent.com/DanielOliveiraSouza/LAMW4Linux-installer/v0.3.3/lamw_manager/assets/lamw_manager_setup.run">Click here to download <em> LAMW Manager Setup</em></a></li> 
-	<li>Go to Download folder and open terminal</li>
-	<li>bash lamw_manager_setup.run</strong></li>
+	<li><a href="https://raw.githubusercontent.com/DanielOliveiraSouza/LAMW4Linux-installer/v0.3.3/lamw_manager/assets/lamw_manager_setup.sh">Click here to download <em> LAMW Manager Setup</em></a></li> 
+	<li>Go to download directory and right click 'Open terminal'</li>
+	<li>bash lamw_manager_setup.sh</strong></li>
 	</ol>
 </p>
 <!--<br></br> -->
