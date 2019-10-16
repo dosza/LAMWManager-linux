@@ -46,8 +46,6 @@ export FPC_VERSION=""
 export FPC_MKCFG_EXE=""
 export FORCE_LAWM4INSTALL=0
 work_home_desktop=$(xdg-user-dir DESKTOP)
-
-CROSS_COMPILE_URL="https://github.com/newpascal/fpcupdeluxe/releases/tag/v1.6.1e"
 APT_OPT=""
 export PROXY_SERVER="internet.cua.ufmt.br"
 export PORT_SERVER=3128
@@ -100,13 +98,11 @@ LAZARUS_OLD_STABLE_VERSION=(
 FPC_ID_DEFAULT=0
 FPC_CROSS_ARM_DEFAULT_PARAMETERS=('clean crossall crossinstall  CPU_TARGET=arm OS_TARGET=android OPT="-dFPC_ARMHF" SUBARCH="armv7a" INSTALL_PREFIX=/usr')
 #FPC_CROSS_AARCH_DEFAULT_PARAMETERS=(clean crossall crossinstall  CPU_TARGET=aarch64 OS_TARGET=android OPT="-dFPC_ARMHF"  INSTALL_PREFIX=/usr')
-FPC_CROSS_ARM_MODE_FPCDELUXE=(clean crossall crossinstall  CPU_TARGET=arm OS_TARGET=android CROSSOPT="-CpARMV7A -CfVFPV3" INSTALL_PREFIX=/usr)
-#FPC_CROSS_ARM_MODE_FPCDELUXE=(clean crossall crossinstall  CPU_TARGET=aarch64 OS_TARGET=android INSTALL_PREFIX=/usr)
-
 LAZBUILD_PARAMETERS=(
 	"--build-ide= --add-package $ROOT_LAMW/lazandroidmodulewizard/android_bridges/tfpandroidbridge_pack.lpk --primary-config-path=$LAMW4_LINUX_PATH_CFG  --lazarusdir=$LAMW_IDE_HOME"
 	"--build-ide= --add-package $ROOT_LAMW/lazandroidmodulewizard/android_wizard/lazandroidwizardpack.lpk --primary-config-path=$LAMW4_LINUX_PATH_CFG --lazarusdir=$LAMW_IDE_HOME"
 	"--build-ide= --add-package $ROOT_LAMW/lazandroidmodulewizard/ide_tools/amw_ide_tools.lpk --primary-config-path=$LAMW4_LINUX_PATH_CFG --lazarusdir=$LAMW_IDE_HOME"
+	"--build-ide= --add-package $ROOT_LAMW/lazandroidmodulewizard/fcl_bridges/fcl_bridges_pack.lpk --primary-config-path=$LAMW4_LINUX_PATH_CFG --lazarusdir=$LAMW_IDE_HOME"
 )
 
 #REGEX VARIABLES
