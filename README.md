@@ -73,7 +73,7 @@ Getting Started!!
 	<ol>
 	<li><a href="https://raw.githubusercontent.com/DanielOliveiraSouza/LAMW4Linux-installer/v0.3.3/lamw_manager/assets/lamw_manager_setup.sh">Click here to download <em> LAMW Manager Setup</em></a></li> 
 	<li>Go to download directory and right click <em>Open in Terminal</em></li>
-	<li>Run command:<em>bash lamw_manager_setup.sh</em></li>
+	<li>Run command : <em>bash lamw_manager_setup.sh</em></li>
 	</ol>
 </p>
 <!--<br></br> -->

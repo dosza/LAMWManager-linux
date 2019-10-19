@@ -28,10 +28,8 @@ export LAMW_MGR_INSTALL="$LAMW_MGR_CORE/$LAMW_MGR_INSTALL"
 source $LAMW_MGR_CORE/core/common-shell.sh
 
 #Del lamw-overrides
-DelTempFiles(){
-	if [ -e /tmp/lamw-overrides.conf ];then
-		rm /tmp/lamw-overrides.conf
-	fi
+DelTempFiles(){ 
+	if [ -e /tmp/lamw-overrides.conf ];then rm /tmp/lamw-overrides.conf ;fi
 }
 
 #Check if $USER is a sudo member 

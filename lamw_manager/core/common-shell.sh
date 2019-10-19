@@ -12,6 +12,7 @@ shopt  -s expand_aliases
 alias newPtr='declare -n'
 alias delPtr='unset'
 
+#cd not a native command, is a systemcall used to exec, read more in exec man 
 changeDirectory(){
 	if [ "$1" != "" ] ; then
 		if [ -e "$1"  ]; then
@@ -191,7 +192,7 @@ InsertUniqueBlankLine(){
 
 IsUserRoot(){
 	if  [  "$(whoami)" = "root" ];then #impede que o script seja executado pelo root 
-		echo "Error: \"$1\" was designed  to run without root priveleges\nExiting...\n" >&2 # >&2 is a file descriptor to /dev/stderror
+		printf "Error: \"$1\" was designed  to run without root privileges\nExiting...\n" >&2 # >&2 is a file descriptor to /dev/stderror
 		exit 1
 	fi
 }
