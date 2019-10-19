@@ -7,9 +7,6 @@
 #Description: The "lamw-install.sh" is part of the core of LAMW Manager. This script configures the development environment for LAMW
 #-------------------------------------------------------------------------------------------------#
 
-
-#zenity --info --text "ANDROID_HOME=$ROOT_LAMW"
-
 LAMW_MANAGER_MODULES_PATH=$0
 LAMW_MANAGER_MODULES_PATH=${LAMW_MANAGER_MODULES_PATH%/lamw-install.sh*}
 
@@ -73,11 +70,17 @@ BuildLazarusIDE(){
 				"PP=${FPC_TRUNK_LIB_PATH}/ppcx64"
 				"FPC_VERSION=$_FPC_TRUNK_VERSION"
 			)
-			echo "${make_opts[*]}"
 		fi
 	fi
-	ln -sf $LAMW4LINUX_HOME/$LAZARUS_STABLE $LAMW_IDE_HOME  # link to lamw4_home directory 
-	ln -sf $LAMW_IDE_HOME/lazarus $LAMW4LINUX_EXE_PATH #link  to lazarus executable
+
+	if [ ! -e "$LAMW_IDE_HOME" ]; then  
+		ln -sf $LAMW4LINUX_HOME/$LAZARUS_STABLE $LAMW_IDE_HOME # link to lamw4_home directory 
+	fi  
+
+	if [ ! -e "$LAMW4LINUX_EXE_PATH" ]; then 
+		ln -sf $LAMW_IDE_HOME/lazarus $LAMW4LINUX_EXE_PATH  #link  to lazarus executable
+	fi
+
 	changeDirectory $LAMW_IDE_HOME
 	if [ $# = 0 ]; then 
 		make clean all  ${make_opts[*]}
@@ -98,8 +101,6 @@ BuildLazarusIDE(){
 	fi
 }
 
-#cd not a native command, is a systemcall used to exec, read more in exec man 
-
 #this code add support a proxy 
 checkProxyStatus(){
 	if [ $USE_PROXY = 1 ] ; then
@@ -108,43 +109,68 @@ checkProxyStatus(){
 		ActiveProxy 0
 	fi
 }
-
-#this function repair fpc, caso este tenha sido desinstalado ou atualizado
-
-
-	checkForceLAMW4LinuxInstall $*
-	# echo "----------------------------------------------------------------------"
-	 printf "${LAMW_INSTALL_WELCOME[*]}"
-	# echo "----------------------------------------------------------------------"
-	#echo "LAMW Manager (Linux supported Debian 9, Ubuntu 16.04 LTS, Linux Mint 18)
-	#Generate LAMW4Linux to android-sdk=$SDK_VERSION"
-	if [ $FORCE_LAWM4INSTALL = 1 ]; then
-		echo "${NEGRITO}Warning: Earlier versions of Lazarus (debian package) will be removed!${NORMAL}"
-	else
-		echo "${NEGRITO}Warning:${NORMAL}${NEGRITO}This application not  is compatible with ${VERMELHO}lazarus-project${NORMAL} (debian package)${NORMAL}" 
-		echo "use ${NEGRITO}--force${NORMAL} parameter remove anywhere lazarus (debian package)"
+testLazarusProject(){
+	exec 2> /dev/null dpkg -l lazarus-project | grep lazarus-project #exec 2 redireciona a saída do stderror para /dev/null
+	if [ $? = 0 ]; then 
+		echo  -e "${VERMELHO}Warning: Lazarus Project Detected!!! LAMW Manager is not compatible with ${VERMELHO}lazarus-project${NORMAL} (debian package)${NORMAL}"  >&2
+		echo "use ${NEGRITO}--force${NORMAL} parameter remove anywhere lazarus (debian package)" >&2
 		sleep 1
 	fi
+}
+testImplicitInstall(){
+	getImplicitInstall
+	if [ $LAMW_IMPLICIT_ACTION_MODE = 0 ]; then
+		echo "Please wait..."
+		printf "${NEGRITO}Implicit installation of LAMW starting in $TIME_WAIT seconds  ... ${NORMAL}\n"
+		printf "Press control+c to exit ...\n"
+		sleep $TIME_WAIT
+		mainInstall
+		changeOwnerAllLAMW;
+	else
+		echo "Please wait ..."
+		printf "${NEGRITO}Implicit LAMW Framework update starting in $TIME_WAIT seconds ... ${NORMAL}...\n"
+		printf "Press control+c to exit ...\n"
+		sleep $TIME_WAIT 
+		wrapperRepair
+		checkProxyStatus;
+		echo "Updating LAMW";
+		getLAMWFramework;
+		BuildLazarusIDE "1";
+		changeOwnerAllLAMW "1";
+	fi				
+}
 
-	if [ $# = 6 ] || [ $# = 7 ]; then
-		if [ "$2" = "--use_proxy" ] ;then 
-			if [ "$3" = "--server" ]; then
-				if [ "$5" = "--port" ] ;then
-					initParameters $2 $4 $6
-				fi
+
+checkForceLAMW4LinuxInstall $*
+	# echo "----------------------------------------------------------------------"
+	#printf "${LAMW_INSTALL_WELCOME[*]}"
+	# echo "----------------------------------------------------------------------"
+	#echo "LAMW Manager (Linux supported Debian 9, Ubuntu 16.04 LTS, Linux Mint 18)
+if [ $FORCE_LAWM4INSTALL = 1 ]; then
+	echo "${NEGRITO}Warning: Earlier versions of Lazarus (debian package) will be removed!${NORMAL}"
+else
+	testLazarusProject
+fi
+
+if [ $# = 6 ] || [ $# = 7 ]; then
+	if [ "$2" = "--use_proxy" ] ;then 
+		if [ "$3" = "--server" ]; then
+			if [ "$5" = "--port" ] ;then
+				initParameters $2 $4 $6
 			fi
 		fi
-	else
-		initParameters
 	fi
-	 
-	GenerateScapesStr
+else
+	initParameters
+fi
+ 
+GenerateScapesStr
 	
 
 #Parameters are useful for understanding script operation
 case "$1" in
 	"version")
-	echo "LAMW4Linux  version $LAMW_INSTALL_VERSION"
+		printf "${LAMW_INSTALL_WELCOME[*]}"
 	;;
 
 	"uninstall")
@@ -214,48 +240,10 @@ case "$1" in
 	;;
 	
 	"")
-		
-		getImplicitInstall
-		if [ $LAMW_IMPLICIT_ACTION_MODE = 0 ]; then
-			echo "Please wait..."
-			printf "${NEGRITO}Implicit installation of LAMW starting in $TIME_WAIT seconds  ... ${NORMAL}\n"
-			printf "Press control+c to exit ...\n"
-			sleep $TIME_WAIT
-			mainInstall
-			changeOwnerAllLAMW;
-		else
-			echo "Please wait ..."
-			printf "${NEGRITO}Implicit LAMW Framework update starting in $TIME_WAIT seconds ... ${NORMAL}...\n"
-			printf "Press control+c to exit ...\n"
-			sleep $TIME_WAIT 
-			wrapperRepair
-			checkProxyStatus;
-			echo "Updating LAMW";
-			getLAMWFramework;
-			BuildLazarusIDE "1";
-			changeOwnerAllLAMW "1";
-		fi					
+		testImplicitInstall	
 	;;
 	"--use_proxy")
-		getImplicitInstall
-		if [ $LAMW_IMPLICIT_ACTION_MODE = 0 ]; then
-			echo "Please wait..."
-			printf "${NEGRITO}Implicit installation of LAMW starting in $TIME_WAIT seconds  ... ${NORMAL}\n"
-			printf "Press control+c to exit ...\n"
-			sleep $TIME_WAIT
-			mainInstall
-			changeOwnerAllLAMW;
-		else
-			echo "Please wait ..."
-			printf "${NEGRITO}Implicit LAMW Framework update starting in $TIME_WAIT seconds ... ${NORMAL}...\n"
-			printf "Press control+c to exit ...\n"
-			sleep $TIME_WAIT 
-			checkProxyStatus;
-			echo "Updating LAMW";
-			getLAMWFramework;
-			BuildLazarusIDE "1";
-			changeOwnerAllLAMW "1";
-		fi
+		testImplicitInstall
 	;;
 	"--help") 
 		printf "${lamw_opts[*]}" 
@@ -265,5 +253,4 @@ case "$1" in
 		printf "${VERMELHO}Invalid argument!${NORMAL}\n${lamw_opts[*]}" >&2
 		exit 1
 	;;
-
 esac

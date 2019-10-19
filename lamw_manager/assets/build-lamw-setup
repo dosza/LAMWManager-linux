@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
@@ -64,7 +64,7 @@ do
 done
 
 changeDirectory $LAMW_MANAGER_TMP_BUILD
-makeself   --gzip --copy --target '$HOME/lamw_manager' $PWD $LAMW_MANAGER_INSTALLER "LAMW Manager Setup"  ./.start_lamw_manager
+makeself  --quiet --gzip --copy --target '$HOME/lamw_manager' $PWD $LAMW_MANAGER_INSTALLER "LAMW Manager Setup"  ./.start_lamw_manager
 cp "$LAMW_MANAGER_FINAL_INSTALLER" "$AUX"
 
 changeDirectory $AUX
