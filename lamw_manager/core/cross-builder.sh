@@ -88,21 +88,32 @@ BuildCrossArm(){
 #BuildFPC to Trunk
 buildFPCTrunk(){
 	if [ -e "$FPC_TRUNK_SOURCE_PATH" ]; then
-		echo "$PATH"
 		changeDirectory "$FPC_TRUNK_SOURCE_PATH/$FPC_TRUNK_SVNTAG"
-		make clean all zipinstall
+		make clean all zipinstall "PP=$FPC_LIB_PATH/ppcx64"
+		if [ $? != 0 ]; then
+			echo "${VERMELHO}Fatal Error: Falls build FPC -x86_64-linux${NORMAL}" 
+			exit 1
+		fi
 		changeDirectory "$LAMW4LINUX_HOME/usr"
 		echo "$FPC_INSTALL_TRUNK_ZIP";
-		tar -zxvf "$FPC_INSTALL_TRUNK_ZIP" 	
+		tar -zxvf "$FPC_INSTALL_TRUNK_ZIP"	
 	fi
 }
 
 #Function to build ARMv7 and AARCH64
 BuildCrossAArch64(){
 	changeDirectory "$LAMW4LINUX_HOME/usr/share/fpcsrc/$FPC_TRUNK_SVNTAG"
-	make clean crossall crossinstall  CPU_TARGET=aarch64 OS_TARGET=android OPT="-dFPC_ARMHF"  INSTALL_PREFIX=$LAMW4LINUX_HOME/usr
+	make clean crossall crossinstall  CPU_TARGET=aarch64 OS_TARGET=android OPT="-dFPC_ARMHF" INSTALL_PREFIX=$LAMW4LINUX_HOME/usr "PP=$FPC_LIB_PATH/ppcx64"
+	if [ $? != 0 ]; then 
+		echo "${VERMELHO}Fatal Error: Falls to build FPC to  Android/AARCH64${NORMAL}"
+		exit 1
+	fi
+	make clean crossall crossinstall CPU_TARGET=arm OPT="-dFPC_ARMEL" OS_TARGET=android CROSSOPT="-CpARMV7A -CfVFPV3" INSTALL_PREFIX=$LAMW4LINUX_HOME/usr "PP=$FPC_LIB_PATH/ppcx64"
 	#make clean crossall crossinstall  CPU_TARGET=arm OS_TARGET=android OPT="-dFPC_ARMEL" CROSSOPT="-Cpaarch64 -CfVFPv4" INSTALL_PREFIX=$LAMW4LINUX_HOME/usr;read
-	make clean crossall crossinstall CPU_TARGET=arm OPT="-dFPC_ARMEL" OS_TARGET=android CROSSOPT="-CpARMV7A -CfVFPV3" INSTALL_PREFIX=$LAMW4LINUX_HOME/usr
+	if [ $? != 0 ]; then 
+		echo "${VERMELHO}Fatal Error: Falls to build FPC  to Android/ARMv7${NORMAL}"
+		exit 1
+	fi
 	CreateFPCTrunkBootStrap
 }
 
