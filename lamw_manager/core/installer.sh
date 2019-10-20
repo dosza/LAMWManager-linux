@@ -94,7 +94,7 @@ SearchPackage(){
 }
 
 CheckFPCSupport(){
-	apt show fpc | grep 'Version: 3.0.0' 
+	exec 2> apt show fpc | grep 'Version: 3.0.0'  > /dev/null 
 	if [ $? = 0 ]; then
 		export NEED_UPGRADE_FPC=1
 	fi
@@ -151,7 +151,7 @@ setJava8asDefault(){
 installDependences(){
 	 apt-get update;
 	if [ $FORCE_LAWM4INSTALL = 1 ]; then 
-		 apt-get remove --purge  lazarus* -y
+		 apt-get remove --purge  lazarus-project -y
 		 apt-get autoremove --purge -y
 	fi
 	CheckFPCSupport
