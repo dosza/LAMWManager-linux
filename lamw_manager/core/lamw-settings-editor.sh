@@ -148,7 +148,7 @@ writeLAMWLogInstall(){
 	if [ "$NOTIFY_SEND_EXE" != "" ]; then
 		$NOTIFY_SEND_EXE  "Info:\nLAMW4Linux:$LAMW4LINUX_HOME\nLAMW workspace : $LAMW_WORKSPACE_HOME\nAndroid SDK:$ROOT_LAMW/sdk\nAndroid NDK:$ROOT_LAMW/ndk\nGradle:$GRADLE_HOME\nLOG:$LAMW4LINUX_HOME/lamw-install.log"
 	else
-		printf "Info:\nLAMW4Linux:$LAMW4LINUX_HOME\nLAMW workspace : $LAMW_USER_HOME/Dev/lamw_workspace\nAndroid SDK:$ROOT_LAMW/sdk\nAndroid NDK:$ROOT_LAMW/ndk\nGradle:$GRADLE_HOME\nLOG:$LAMW4LINUX_HOME/lamw-install.log"
+		printf "Info:\nLAMW4Linux:$LAMW4LINUX_HOME\nLAMW workspace : $LAMW_USER_HOME/Dev/lamw_workspace\nAndroid SDK:$ROOT_LAMW/sdk\nAndroid NDK:$ROOT_LAMW/ndk\nGradle:$GRADLE_HOME\nLOG:$LAMW4LINUX_HOME/lamw-install.log\n"
 	fi		
 
 }
@@ -164,7 +164,8 @@ AddLAMWtoStartMenu(){
 	
 	lamw_desktop_file_str=(
 		"[Desktop Entry]"  
-		"Name=LAMW4Linux"   
+		"Name=LAMW4Linux"
+		"GenericName=LAMW4Linux"   
 		#Exec=$LAMW4LINUX_EXE_PATH --primary-config-path=$LAMW4_LINUX_PATH_CFG" 
 		"Exec=$LAMW_IDE_HOME/startlamw4linux"
 		"Icon=$LAMW_IDE_HOME/images/icons/lazarus_orange.ico"

@@ -112,7 +112,7 @@ WR_ANDROID_HOME=""
 HOME_USER_SPLITTED_ARRAY=(${HOME//\// })
 HOME_STR_SPLITTED=""
 libs_android="libx11-dev libgtk2.0-dev libgdk-pixbuf2.0-dev libcairo2-dev libpango1.0-dev libxtst-dev libatk1.0-dev libghc-x11-dev freeglut3 freeglut3-dev "
-prog_tools="menu fpc git subversion make build-essential zip unzip unrar android-tools-adb openjdk-8-jdk  gdb"
+prog_tools="menu fpc git subversion make build-essential zip unzip unrar android-tools-adb gdb"
 packs=()
 fpc_debian_backports=(
 	"# debian backports"  
@@ -173,4 +173,6 @@ export FPC_TRUNK_SVNTAG="fixes_3_2"
 export ANDROID_SDK_TARGET=28
 export ANDROID_BUILD_TOOLS_TARGET="28.0.3"
 export GRADLE_MIN_BUILD_TOOLS='27.0.3'
+export OPENJDK_DEFAULT='8'
+export OPENJDK_LTS=11
 #---------------------------------------------------------------------------------------------------------------------
