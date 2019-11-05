@@ -206,7 +206,7 @@ LAMW4LinuxPostConfig(){
 		mkdir -p $LAMW_WORKSPACE_HOME
 	fi
 
-	java_versions=("/usr/lib/jvm/java-8-openjdk-amd64"  "/usr/lib/jvm/java-8-oracle"  "/usr/lib/jvm/java-8-openjdk-i386")
+	java_versions=("/usr/lib/jvm/java-${OPENJDK_DEFAULT}-openjdk-amd64" "/usr/lib/jvm/java-${OPENJDK_DEFAULT}-openjdk-i386")
 	java_path=""
 	tam=${#java_versions[@]} #tam recebe o tamanho do vetor 
 	ant_path=$ANT_HOME/bin
