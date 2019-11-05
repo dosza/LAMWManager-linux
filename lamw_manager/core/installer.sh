@@ -94,9 +94,18 @@ SearchPackage(){
 }
 
 CheckFPCSupport(){
-	exec 2> apt show fpc | grep 'Version: 3.0.0'  > /dev/null 
+	exec 2> /dev/null apt show fpc | grep 'Version: 3.0.0'  > /dev/null 
 	if [ $? = 0 ]; then
 		export NEED_UPGRADE_FPC=1
+	fi
+}
+
+#Fix Debian 10/OpenJDK Support 
+CheckOpenJDK8Support(){
+	exec 2> /dev/null apt show  openjdk-8-jdk | grep 'Source: openjdk-8' > /dev/null
+	if [ $? != 0 ]; then 
+		printf "Warning:${VERMELHO}OpenJDK 8 not supported, using OpenJDK11${NORMAL}"
+		export OPENJDK_DEFAULT=$OPENJDK_LTS
 	fi
 }
 
@@ -122,6 +131,11 @@ disableUpgradeFPC(){
 }
 #unistall java not supported
 unistallJavaUnsupported(){
+	#se o jdk > 8 nada  sai da funçao
+	if [ $OPENJDK_DEFAULT = $OPENJDK_LTS ]; then 
+		return 
+	fi
+
 	if [ $flag_new_ubuntu_lts = 1 ]; then
 		 apt-get remove --purge openjdk-9-* -y 
 		 apt-get remove --purge openjdk-11* -y
@@ -130,6 +144,11 @@ unistallJavaUnsupported(){
 
 #setJRE8 as default
 setJava8asDefault(){
+	#se o jdk > 8 nada  sai da funçao
+	if [ $OPENJDK_DEFAULT = $OPENJDK_LTS ]; then 
+		return 
+	fi
+
 	path_java=($(dpkg -L openjdk-8-jre))
 	found_path=""
 	for((i = 0; i < ${#path_java[@]} ; i++ )); do
@@ -168,9 +187,11 @@ installDependences(){
 		fi
 		disableUpgradeFPC
 	fi
-	apt-get install $libs_android $prog_tools  -y --allow-unauthenticated
+
+	CheckOpenJDK8Support
+	apt-get install $libs_android $prog_tools  openjdk-${OPENJDK_DEFAULT}-jdk -y --allow-unauthenticated
 	if [ "$?" != "0" ]; then
-		apt-get install $libs_android $prog_tools  -y --allow-unauthenticated --fix-missing
+		apt-get install $libs_android $prog_tools openjdk-${OPENJDK_DEFAULT}-jdk  -y --allow-unauthenticated --fix-missing
 		if [ $? != 0 ]; then
 			echo "possible network instability! Try later!"
 			exit 1
