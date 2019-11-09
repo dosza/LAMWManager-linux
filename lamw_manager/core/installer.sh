@@ -168,7 +168,7 @@ setJava8asDefault(){
 }
 #install deps
 installDependences(){
-	 apt-get update;
+	apt-get update;
 	if [ $FORCE_LAWM4INSTALL = 1 ]; then 
 		 apt-get remove --purge  lazarus-project -y
 		 apt-get autoremove --purge -y
@@ -197,6 +197,9 @@ installDependences(){
 			exit 1
 		fi
 	fi
+	
+	apt-get clean
+	apt-get autoclean
 }
 
 #iniciandoparametros
