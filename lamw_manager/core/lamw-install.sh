@@ -237,8 +237,9 @@ case "$1" in
 	;;
 	"get-status")
 		getStatusInstalation
+		ret=$(echo "!$?" | bc) #nega o valor  usando o BC
+		exit $ret
 	;;
-	
 	"")
 		testImplicitInstall	
 	;;
