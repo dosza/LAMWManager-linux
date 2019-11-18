@@ -335,6 +335,9 @@ getLAMWFramework(){
 	#Remove LAMW  downloaded by SVN
 	if [ -e $ROOT_LAMW/lazandroidmodulewizard.git ]; then 
 		rm -fr $ROOT_LAMW/lazandroidmodulewizard.git
+		if [ -e $ROOT_LAMW/lazandroidmodulewizard ]; then 
+			rm -fr $ROOT_LAMW/lazandroidmodulewizard
+		fi
 	fi
 
 	export git_param=("clone" "$LAMW_SRC_LNK")
