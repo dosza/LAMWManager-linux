@@ -336,7 +336,7 @@ getLAMWFramework(){
 	if [ -e $ROOT_LAMW/lazandroidmodulewizard.git ]; then 
 		rm -fr $ROOT_LAMW/lazandroidmodulewizard.git
 	fi
-	
+
 	export git_param=("clone" "$LAMW_SRC_LNK")
 	if [ -e lazandroidmodulewizard/.git ]  ; then
 		changeDirectory "$ROOT_LAMW/lazandroidmodulewizard"
@@ -393,9 +393,11 @@ getAndroidSDKTools(){
 	changeDirectory $LAMW_USER_HOME
 	if  [ ! -e $LAMW_USER_HOME/.android ]; then
 		mkdir $LAMW_USER_HOME/.android 
-		mkdir -p $HOME/.android 
-		echo "create file"
 		echo "" > $LAMW_USER_HOME/.android/repositories.cfg
+	fi
+
+	if [ !  -e $HOME/.android ]; then
+		mkdir -p $HOME/.android 	
 		echo "" > $HOME/.android/repositories.cfg
 	fi 
 
