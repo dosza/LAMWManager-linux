@@ -332,6 +332,11 @@ getLazarusSources(){
 #GET LAMW FrameWork
 getLAMWFramework(){
 	changeDirectory $ROOT_LAMW
+	#Remove LAMW  downloaded by SVN
+	if [ -e $ROOT_LAMW/lazandroidmodulewizard.git ]; then 
+		rm -fr $ROOT_LAMW/lazandroidmodulewizard.git
+	fi
+	
 	export git_param=("clone" "$LAMW_SRC_LNK")
 	if [ -e lazandroidmodulewizard/.git ]  ; then
 		changeDirectory "$ROOT_LAMW/lazandroidmodulewizard"

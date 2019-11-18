@@ -30,9 +30,17 @@ ANDROID_SDK="$ROOT_LAMW/sdk"
 export XDG_DATA_DIRS="/usr/share:/usr/local/share:$LAMW_USER_HOME/.local/share"
 LAMW_INSTALL_VERSION="0.3.3"
 LAMW_INSTALL_WELCOME=(
-	"${NEGRITO}\t\tWelcome LAMW Manager - version: $LAMW_INSTALL_VERSION${NORMAL}\n"
-	"\t\tPowerd by Daniel Oliveira Souza\n"
+	"${NEGRITO}LAMW Manager v$LAMW_INSTALL_VERSION${NORMAL}\n"
+	#"\t\tPowerd by Daniel Oliveira Souza\n"
 	
+)
+
+LAMW_LINUX_SPP=(
+	"\t*Debian 9\n"
+	"\t*Ubuntu 16.04 LTS\n"
+	"\t*Ubuntu 18.04 LTS\n"
+	"\t*Linux Mint 18\n"
+	"\t*Linux Mint 19\n"
 )
 
 

@@ -145,7 +145,7 @@ checkForceLAMW4LinuxInstall $*
 	# echo "----------------------------------------------------------------------"
 	#printf "${LAMW_INSTALL_WELCOME[*]}"
 	# echo "----------------------------------------------------------------------"
-	#echo "LAMW Manager (Linux supported Debian 9, Ubuntu 16.04 LTS, Linux Mint 18)
+	
 if [ $FORCE_LAWM4INSTALL = 1 ]; then
 	echo "${NEGRITO}Warning: Earlier versions of Lazarus (debian package) will be removed!${NORMAL}"
 else
@@ -171,6 +171,7 @@ GenerateScapesStr
 case "$1" in
 	"version")
 		printf "${LAMW_INSTALL_WELCOME[*]}"
+		printf "Linux supported\n${LAMW_LINUX_SPP[*]}"
 	;;
 
 	"uninstall")
@@ -232,9 +233,9 @@ case "$1" in
 			mainInstall
 		fi
 	;;
-	"delete_paths")
-		cleanPATHS
-	;;
+	#"delete_paths")
+	#	cleanPATHS
+	#;;
 	"get-status")
 		getStatusInstalation
 		ret=$(echo "!$?" | bc) #nega o valor  usando o BC
