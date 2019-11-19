@@ -429,10 +429,6 @@ CleanOldConfig(){
 		rm -rf $FPC_TRUNK_LIB_PATH
 	fi
 
-	if [ -e $FPC_TRUNK_EXEC_PATH ]; then
-		rm $FPC_TRUNK_EXEC_PATH/fpc* 
-	fi
-
 	if [ -e /root/.fpc.cfg ]; then
 		rm /root/.fpc.cfg
 	fi
