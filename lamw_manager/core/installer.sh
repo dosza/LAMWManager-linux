@@ -333,10 +333,10 @@ getLazarusSources(){
 getLAMWFramework(){
 	changeDirectory $ROOT_LAMW
 	#Remove LAMW  downloaded by SVN
-	if [ -e $ROOT_LAMW/lazandroidmodulewizard.git ]; then 
-		rm -fr $ROOT_LAMW/lazandroidmodulewizard.git
-		if [ -e $ROOT_LAMW/lazandroidmodulewizard ]; then 
-			rm -fr $ROOT_LAMW/lazandroidmodulewizard
+	if [ -e "$ROOT_LAMW/lazandroidmodulewizard.git" ]; then 
+		if [ -e "$ROOT_LAMW/lazandroidmodulewizard" ]; then 
+			rm -fr "$ROOT_LAMW/lazandroidmodulewizard"
+			rm -fr "$ROOT_LAMW/lazandroidmodulewizard.git"
 		fi
 	fi
 
