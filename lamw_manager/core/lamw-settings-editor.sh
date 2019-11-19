@@ -311,7 +311,7 @@ CleanOldCrossCompileBins(){
 	if [  -e /usr/local/bin/fpc ]; then
 		fpc_tmp_files=("bin2obj" "chmcmd" "chmls" "cldrparser" "compileserver" "cvsco.tdf" "cvsdiff.tdf" "cvsup.tdf" "data2inc" "delp" "fd2pascal" "fp" "fp.ans" "fpc" "fpcjres" "fpclasschart" "fpclasschart.rsj" "fpcmake" "fpcmkcfg" "fpcmkcfg.rsj" "fpcres" "fpcsubst" "fpcsubst.rsj" "fpdoc" "fppkg" "fprcp" "fp.rsj" "gplprog.pt" "gplunit.pt" "grab_vcsa" "grep.tdf" "h2pas" "h2paspp" "instantfpc" "json2pas" "makeskel" "makeskel.rsj" "mka64ins" "mkarmins" "mkinsadd" "mkx86ins" "pas2fpm" "pas2jni" "pas2js" "pas2ut" "pas2ut.rsj" "plex" "postw32" "ppdep" "ppudump" "ppufiles" "ppumove" "program.pt" "ptop" "ptop.rsj" "pyacc" "rmcvsdir" "rstconv" "rstconv.rsj" "tpgrep.tdf" "unihelper" "unitdiff" "unitdiff.rsj" "unit.pt" "webidl2pas")
 		for((i=0;i<${#fpc_tmp_files[*]};i++)); do
-			local aux="/usr/local/${fpc_tmp_files[i]}"
+			local aux="/usr/local/bin/${fpc_tmp_files[i]}"
 			if [ -e $aux ]; then  rm $aux ; fi
 		done
 	fi
@@ -336,7 +336,6 @@ cleanPATHS(){
 #this function remove old config of lamw4linux  
 CleanOldConfig(){
 	wrapperParseFPC
-	CleanOldCrossCompileBins
 
 	if [ -e "/usr/bin/aarch64-linux-androideabi-as" ]; then
 		rm "/usr/bin/aarch64-linux-androideabi-as"
@@ -359,6 +358,7 @@ CleanOldConfig(){
 		rm -rf "/usr/bin/ppcrossarm" 
 	fi
 
+	
 	if [ -e  /usr/bin/arm-linux-androideabi-ld ]; then
 		  rm /usr/bin/arm-linux-androideabi-ld
 	fi
@@ -390,7 +390,7 @@ CleanOldConfig(){
 	# if [ -e $LAMW4LINUX_HOME ] ; then
 	# 	 rm $LAMW4LINUX_HOME -rf
 	# fi
-
+	CleanOldCrossCompileBins
 	if [ -e $LAMW4_LINUX_PATH_CFG ]; then  rm -r $LAMW4_LINUX_PATH_CFG; fi
 
 	if [ -e $ROOT_LAMW ] ; then
