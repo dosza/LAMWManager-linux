@@ -53,7 +53,19 @@ LAMWPackageManager(){
 			fi
 		fi
 
+		for ((i=0;i<${#OLD_GRADLE[*]};i++))
+		do
+			if [ -e ${OLD_GRADLE[i]} ]; then 
+				rm -rf ${OLD_GRADLE[i]} 
+			fi
+		done
 
+		for ((i=0;i<${#OLD_ANT[*]};i++))
+		do
+			if [ -e ${OLD_ANT[i]} ]; then 
+				rm -rf ${OLD_ANT[i]}
+			fi
+		done
 	fi
 }
 getStatusInstalation(){
@@ -368,14 +380,13 @@ getLAMWFramework(){
 }
 #this function get ant 
 getAnt(){
-	changeDirectory $ROOT_LAMW 
-	
-	if [ ! -e $ANT_HOME ]; then
+	changeDirectory "$ROOT_LAMW" 
+	if [ ! -e "$ANT_HOME" ]; then
 		magicTrapIndex=-1 # preperando o indice do arquivo/diretório a ser removido
 		trap TrapControlC  2
 		wget -c $ANT_TAR_URL
 		if [ $? != 0 ] ; then
-			ANT_TAR_URL="https://www-eu.apache.org/dist/ant/binaries/apache-ant-1.10.5-bin.tar.xz"
+			ANT_TAR_URL="https://www-eu.apache.org/dist/ant/binaries/apache-ant-${ANT_VERSION_STABLE}-bin.tar.xz"
 			wget -c $ANT_TAR_URL
 			if [ $? != 0 ]; then
 				echo "possible network instability! Try later!"
@@ -389,6 +400,25 @@ getAnt(){
 
 	if [ -e  $ANT_TAR_FILE ]; then
 		rm $ANT_TAR_FILE
+	fi
+}
+
+getGradle(){
+	changeDirectory $ROOT_LAMW
+	if [ ! -e "$GRADLE_HOME" ]; then
+		magicTrapIndex=-1 # Set arquivo a ser removido
+		trap TrapControlC  2 # set armadilha para o signal2 (siginterrupt)
+		wget -c $GRADLE_ZIP_LNK
+		if [ $? != 0 ] ; then
+			wget -c $GRADLE_ZIP_LNK
+		fi
+		magicTrapIndex=3
+		trap TrapControlC 2
+		unzip $GRADLE_ZIP_FILE
+	fi
+
+	if [ -e  $GRADLE_ZIP_FILE ]; then
+		rm $GRADLE_ZIP_FILE
 	fi
 }
 #Get Gradle and SDK Tools 
@@ -408,24 +438,8 @@ getAndroidSDKTools(){
 		mkdir $ROOT_LAMW
 	fi
 	
+	getGradle
 	changeDirectory $ROOT_LAMW
-	getAnt
-	
-	if [ ! -e $GRADLE_HOME ]; then
-		magicTrapIndex=-1 # Set arquivo a ser removido
-		trap TrapControlC  2 # set armadilha para o signal2 (siginterrupt)
-		wget -c $GRADLE_ZIP_LNK
-		if [ $? != 0 ] ; then
-			wget -c $GRADLE_ZIP_LNK
-		fi
-		magicTrapIndex=3
-		trap TrapControlC 2
-		unzip $GRADLE_ZIP_FILE
-	fi
-	
-	if [ -e  $GRADLE_ZIP_FILE ]; then
-		rm $GRADLE_ZIP_FILE
-	fi
 	#mode OLD SDK (24 with ant support )
 	if [ $OLD_ANDROID_SDK = 0 ]; then
 		mkdir -p $ANDROID_SDK
