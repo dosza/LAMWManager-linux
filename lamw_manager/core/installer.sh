@@ -378,6 +378,19 @@ getLAMWFramework(){
 	fi
 	
 }
+AntTrigger(){
+	if [ $OLD_ANDROID_SDK = 1 ]; then 
+		if [ $OPENJDK_DEFAULT = $OPENJDK_LTS ]; then 
+			if [ "$ANDROID_SDK/tools/ant" ]; then 
+				mv "$ANDROID_SDK/tools/ant" "$ANDROID_SDK/tools/.ant"
+			fi
+		else 
+			if [ "$ANDROID_SDK/tools/.ant" ]; then 
+				mv "$ANDROID_SDK/tools/.ant" "$ANDROID_SDK/tools/ant"
+			fi
+		fi
+	fi
+}
 #this function get ant 
 getAnt(){
 	changeDirectory "$ROOT_LAMW" 
@@ -482,6 +495,7 @@ getAndroidSDKTools(){
 			trap TrapControlC 2 
 			unzip $SDK_TOOLS_ZIP
 			rm $SDK_TOOLS_ZIP
+			AntTrigger
 		fi
 
 		changeDirectory $ANDROID_SDK
