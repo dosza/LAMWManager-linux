@@ -91,8 +91,8 @@ REAL_LAMW_TOOLS="$ROOT_LAMW/.real"
 GRADLE_ZIP_LNK="https://services.gradle.org/distributions/gradle-${GRADLE_VERSION_STABLE}-bin.zip"
 GRADLE_ZIP_FILE="gradle-${GRADLE_VERSION_STABLE}-bin.zip"
 FPC_STABLE=""
-LAZARUS_STABLE="lazarus_2_0_4"
-LAZARUS_STABLE_VERSION="2.0.4"
+LAZARUS_STABLE="lazarus_2_0_6"
+LAZARUS_STABLE_VERSION="2.0.6"
 LAZARUS_STABLE_SRC_LNK="https://svn.freepascal.org/svn/lazarus/tags/${LAZARUS_STABLE}"
 OLD_FPC_CFG_PATH="$LAMW_USER_HOME/.fpc.cfg"
 export FPC_CFG_PATH="$LAMW_USER_HOME/.fpc.cfg"
@@ -100,9 +100,11 @@ export PPC_CONFIG_PATH="$FPC_CFG_PATH"
 LAZARUS_OLD_STABLE=(
 	"lazarus_1_8_4"
 	"lazarus_2_0_2"
+	"lazarus_2_0_4"
 )
 LAZARUS_OLD_STABLE_VERSION=(
 	"1.8.4"
+	"2.0.2"
 	"2.0.4"
 )
 
