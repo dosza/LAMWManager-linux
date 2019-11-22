@@ -105,6 +105,14 @@ SearchPackage(){
 	return $index
 }
 
+CheckExistsFPCLaz(){
+	exec 2> /dev/null apt show $FPC_ALTERNATIVE_DEB_PACK | grep 'Version: 3.0.4'  > /dev/null
+	if [ $? = 0 ]; then
+		export FPC_DEFAULT_DEB_PACK=$FPC_ALTERNATIVE_DEB_PACK
+		return 1
+	fi
+	return 0
+}
 CheckFPCSupport(){
 	exec 2> /dev/null apt show fpc | grep 'Version: 3.0.0'  > /dev/null 
 	if [ $? = 0 ]; then
@@ -182,8 +190,35 @@ setJava8asDefault(){
 installDependences(){
 	apt-get update;
 	if [ $FORCE_LAWM4INSTALL = 1 ]; then 
-		 apt-get remove --purge  lazarus-project -y
-		 apt-get autoremove --purge -y
+		CheckExistsFPCLaz
+		if [ $? = 0 ]; then 
+			apt-get remove fpc*  --purge -y
+			apt-get autoremove --purge -y
+		fi
+		mkdir /tmp/fpc_laz_packs
+		changeDirectory /tmp/fpc_laz_packs
+		for ((i=0;i<${#FPC_LAZ_LINKS[*]};i++))
+		do
+			wget -c ${FPC_LAZ_LINKS[i]} 
+
+			if [ $? != 0 ]; then
+				echo  -e "falls in try get ${FPC_LAZ_LINKS[i]}...\nTrying again..."
+				wget -c ${FPC_LAZ_LINKS[i]}
+				if [ $? != 0 ]; then
+					echo "possible network instability! Try later!"
+					exit 1
+				fi
+			fi
+		done
+		for i in $(ls /tmp/fpc_laz_packs)
+		do
+			sudo dpkg -i /tmp/fpc_laz_packs/$i
+		done
+		if [ -e /tmp/fpc_laz_packs ]; then
+			rm -rf /tmp/fpc_laz_packs
+		fi
+		export FPC_DEFAULT_DEB_PACK=$FPC_ALTERNATIVE_DEB_PACK
+		
 	fi
 	CheckFPCSupport
 
@@ -201,9 +236,9 @@ installDependences(){
 	fi
 
 	CheckOpenJDK8Support
-	apt-get install $libs_android $prog_tools  openjdk-${OPENJDK_DEFAULT}-jdk -y --allow-unauthenticated
+	apt-get install $libs_android $prog_tools  openjdk-${OPENJDK_DEFAULT}-jdk $FPC_DEFAULT_DEB_PACK -y --allow-unauthenticated
 	if [ "$?" != "0" ]; then
-		apt-get install $libs_android $prog_tools openjdk-${OPENJDK_DEFAULT}-jdk  -y --allow-unauthenticated --fix-missing
+		apt-get install $libs_android $prog_tools openjdk-${OPENJDK_DEFAULT}-jdk $FPC_DEFAULT_DEB_PACK -y --allow-unauthenticated --fix-missing
 		if [ $? != 0 ]; then
 			echo "possible network instability! Try later!"
 			exit 1
@@ -563,7 +598,7 @@ getSDKAndroid(){
 }
 
 getOldAndroidSDK(){
-	SDK_MANAGER_SDK_PATHS=(
+	local SDK_MANAGER_SDK_PATHS=(
 		"$ANDROID_SDK/platforms/android-$ANDROID_SDK_TARGET"
 		"$ANDROID_SDK/platform-tools"
 		"$ANDROID_SDK/build-tools/$ANDROID_BUILD_TOOLS_TARGET"
@@ -603,7 +638,7 @@ getOldAndroidSDK(){
 }
 
 RepairOldSDKAndroid(){
-	SDK_MANAGER_FAILS=(
+	local SDK_MANAGER_FAILS=(
 		"platforms"
 		"platform-tools"
 		"build-tools"

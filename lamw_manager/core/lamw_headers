@@ -52,6 +52,8 @@ export flag_new_ubuntu_lts=0
 export FPC_LIB_PATH=""
 export FPC_VERSION=""
 export FPC_MKCFG_EXE=""
+export FPC_DEFAULT_DEB_PACK='fpc'
+export FPC_ALTERNATIVE_DEB_PACK='fpc-laz'
 export FORCE_LAWM4INSTALL=0
 work_home_desktop=$(xdg-user-dir DESKTOP)
 APT_OPT=""
@@ -125,7 +127,7 @@ WR_ANDROID_HOME=""
 HOME_USER_SPLITTED_ARRAY=(${HOME//\// })
 HOME_STR_SPLITTED=""
 libs_android="libx11-dev libgtk2.0-dev libgdk-pixbuf2.0-dev libcairo2-dev libpango1.0-dev libxtst-dev libatk1.0-dev libghc-x11-dev freeglut3 freeglut3-dev "
-prog_tools="menu fpc git subversion make build-essential zip unzip unrar android-tools-adb gdb wget "
+prog_tools="menu git subversion make build-essential zip unzip unrar android-tools-adb gdb wget "
 packs=()
 fpc_debian_backports=(
 	"# debian backports"  
@@ -194,5 +196,10 @@ export OLD_GRADLE=(
 )
 export OLD_ANT=(
 	"$ROOT_LAMW/apache-ant-1.10.5"
+)
+
+export FPC_LAZ_LINKS=(
+	'https://sourceforge.net/projects/lazarus/files/Lazarus%20Linux%20amd64%20DEB/Lazarus%202.0.6/fpc-laz_3.0.4-1_amd64.deb' 
+	'https://sourceforge.net/projects/lazarus/files/Lazarus%20Linux%20amd64%20DEB/Lazarus%202.0.6/fpc-src_3.0.4-2_amd64.deb'
 )
 #---------------------------------------------------------------------------------------------------------------------
