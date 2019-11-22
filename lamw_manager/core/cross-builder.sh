@@ -52,6 +52,9 @@ parseFPC(){
 	export FPC_MKCFG_EXE=$(which fpcmkcfg-$FPC_VERSION)
 	if [ "$FPC_MKCFG_EXE" = "" ]; then
 		export FPC_MKCFG_EXE=$(which x86_64-linux-gnu-fpcmkcfg-$FPC_VERSION)
+		if [ "$FPC_MKCFG_EXE" = "" ]; then
+			export FPC_MKCFG_EXE=$(which fpcmkcfg)
+		fi
 	fi
 }
 
@@ -137,7 +140,7 @@ wrapperBuildFPCCross(){
 }
 #function to wrapper FPC
 wrapperParseFPC(){
-	SearchPackage fpc
+	SearchPackage $FPC_DEFAULT_DEB_PACK
 	index=$?
 	parseFPC ${packs[$index]}
 	if [ $FLAG_FORCE_ANDROID_AARCH64 = 1 ]; then
