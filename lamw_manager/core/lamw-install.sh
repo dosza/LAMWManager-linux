@@ -73,6 +73,7 @@ BuildLazarusIDE(){
 		fi
 	fi
 
+
 	if [ ! -e "$LAMW_IDE_HOME" ]; then  
 		ln -sf $LAMW4LINUX_HOME/$LAZARUS_STABLE $LAMW_IDE_HOME # link to lamw4_home directory 
 	fi  
@@ -80,6 +81,7 @@ BuildLazarusIDE(){
 	if [ ! -e "$LAMW4LINUX_EXE_PATH" ]; then 
 		ln -sf $LAMW_IDE_HOME/lazarus $LAMW4LINUX_EXE_PATH  #link  to lazarus executable
 	fi
+
 
 	changeDirectory $LAMW_IDE_HOME
 	if [ $# = 0 ]; then 
@@ -110,11 +112,12 @@ checkProxyStatus(){
 	fi
 }
 testLazarusProject(){
-	exec 2> /dev/null dpkg -l lazarus-project | grep lazarus-project #exec 2 redireciona a saída do stderror para /dev/null
+	exec 2> /dev/null dpkg -l lazarus-project | grep lazarus-project > /dev/null #exec 2 redireciona a saída do stderror para /dev/null
 	if [ $? = 0 ]; then 
-		echo  -e "${VERMELHO}Warning: Lazarus Project Detected!!! LAMW Manager is not compatible with ${VERMELHO}lazarus-project${NORMAL} (debian package)${NORMAL}"  >&2
-		echo "use ${NEGRITO}--force${NORMAL} parameter remove anywhere lazarus (debian package)" >&2
-		sleep 1
+		echo  -e "${VERMELHO}Warning: Lazarus Project Detected!!!${NORMAL}"  >&2
+		#echo -e "use ${NEGRITO}--force${NORMAL} parameter to force install compatible with lazarus-project\nExit..." >&2
+		#export FORCE_LAWM4INSTALL=1
+		export FPC_DEFAULT_DEB_PACK=$FPC_ALTERNATIVE_DEB_PACK
 	fi
 }
 testImplicitInstall(){
@@ -203,7 +206,7 @@ case "$1" in
 			echo "Updating LAMW";
 			getLAMWFramework;
 			sleep 1;
-			BuildLazarusIDE "1";
+			BuildLazarusIDE 
 			changeOwnerAllLAMW "1";
 		fi
 	;;

@@ -13,7 +13,7 @@ enableADBtoUdev(){
 }
 configureFPC(){
 	# parte do arquivo de configuração do fpc, 
-	SearchPackage fpc
+	SearchPackage $FPC_DEFAULT_DEB_PACK
 		index=$?
 		parseFPC ${packs[$index]}
 	#	if [ ! -e $FPC_CFG_PATH ]; then
@@ -440,13 +440,47 @@ CleanOldConfig(){
 
 #Create SDK simbolic links
 CreateSDKSimbolicLinks(){
-	ln -sf "$ROOT_LAMW/sdk/ndk-bundle" "$ROOT_LAMW/ndk"
-	ln -sf "$ARM_ANDROID_TOOLS" "$ROOT_LAMW/ndk-toolchain"
-	ln -sf "$ARM_ANDROID_TOOLS/arm-linux-androideabi-as" "$ROOT_LAMW/ndk-toolchain/arm-linux-as"
-	ln -sf "$ARM_ANDROID_TOOLS/arm-linux-androideabi-ld" "$ROOT_LAMW/ndk-toolchain/arm-linux-ld"
-	ln -sf "$ARM_ANDROID_TOOLS/arm-linux-androideabi-as" "/usr/bin/arm-linux-androideabi-as"
-	ln -sf "$ARM_ANDROID_TOOLS/arm-linux-androideabi-ld" "/usr/bin/arm-linux-androideabi-ld"
-	ln -sf "$ARM_ANDROID_TOOLS/arm-linux-androideabi-as" "/usr/bin/arm-linux-androideabi-as"
+	local ndk_tools_orig=(
+		"$ROOT_LAMW/sdk/ndk-bundle"
+		"$ARM_ANDROID_TOOLS"
+		"$ARM_ANDROID_TOOLS/arm-linux-androideabi-as"
+		"$ARM_ANDROID_TOOLS/arm-linux-androideabi-ld"
+		"$ARM_ANDROID_TOOLS/arm-linux-androideabi-as"
+		"$ARM_ANDROID_TOOLS/arm-linux-androideabi-ld"
+		"$ARM_ANDROID_TOOLS/arm-linux-androideabi-as"
+		"$ROOT_LAMW/sdk/ndk-bundle/toolchains/arm-linux-androideabi-4.9"
+		"$ROOT_LAMW/sdk/ndk-bundle/toolchains/arm-linux-androideabi-4.9" 
+	)
+
+
+	local ndk_tools_s_links=(
+		"$ROOT_LAMW/ndk"
+		"$ROOT_LAMW/ndk-toolchain"
+		"$ROOT_LAMW/ndk-toolchain/arm-linux-as"
+		"$ROOT_LAMW/ndk-toolchain/arm-linux-ld"
+		"/usr/bin/arm-linux-androideabi-as"
+		"/usr/bin/arm-linux-androideabi-ld"
+		"/usr/bin/arm-linux-androideabi-as"
+		"$ROOT_LAMW/sdk/ndk-bundle/toolchains/mips64el-linux-android-4.9"
+		"$ROOT_LAMW/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9"
+
+	)
+
+	for ((i=0;i<${#ndk_tools_orig[*]};i++))
+	do
+		if [  -e "${ndk_tools_s_links[i]}" ]; then  
+			rm "${ndk_tools_s_links[i]}"
+		fi		
+		ln -sf "${ndk_tools_orig[i]}" "${ndk_tools_s_links[i]}"	
+	done 
+
+	# ln -sf "$ROOT_LAMW/sdk/ndk-bundle" "$ROOT_LAMW/ndk"
+	# ln -sf "$ARM_ANDROID_TOOLS" "$ROOT_LAMW/ndk-toolchain"
+	# ln -sf "$ARM_ANDROID_TOOLS/arm-linux-androideabi-as" "$ROOT_LAMW/ndk-toolchain/arm-linux-as"
+	# ln -sf "$ARM_ANDROID_TOOLS/arm-linux-androideabi-ld" "$ROOT_LAMW/ndk-toolchain/arm-linux-ld"
+	# ln -sf "$ARM_ANDROID_TOOLS/arm-linux-androideabi-as" "/usr/bin/arm-linux-androideabi-as"
+	# ln -sf "$ARM_ANDROID_TOOLS/arm-linux-androideabi-ld" "/usr/bin/arm-linux-androideabi-ld"
+	# ln -sf "$ARM_ANDROID_TOOLS/arm-linux-androideabi-as" "/usr/bin/arm-linux-androideabi-as"
 	if [  $FLAG_FORCE_ANDROID_AARCH64 = 1 ]; then 
 		ln -sf $FPC_TRUNK_LIB_PATH/ppcrossarm /usr/bin/ppcrossarm
 		ln -sf $FPC_TRUNK_LIB_PATH/ppcrossarm /usr/bin/ppcarm
@@ -454,8 +488,6 @@ CreateSDKSimbolicLinks(){
 		ln -sf $FPC_LIB_PATH/ppcrossarm /usr/bin/ppcrossarm
 		ln -sf /usr/bin/ppcrossarm /usr/bin/ppcarm
 	fi
-	ln -sf "$ROOT_LAMW/sdk/ndk-bundle/toolchains/arm-linux-androideabi-4.9" "$ROOT_LAMW/sdk/ndk-bundle/toolchains/mips64el-linux-android-4.9"
-	ln -sf "$ROOT_LAMW/sdk/ndk-bundle/toolchains/arm-linux-androideabi-4.9" "$ROOT_LAMW/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9"
 }
 #--------------------------AARCH64 SETTINGS--------------------------
 
