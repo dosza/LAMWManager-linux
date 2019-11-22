@@ -188,37 +188,39 @@ setJava8asDefault(){
 }
 #install deps
 installDependences(){
+	local fpc_files_tmp='/tmp/fpc_laz_packs'
 	apt-get update;
 	if [ $FORCE_LAWM4INSTALL = 1 ]; then 
 		CheckExistsFPCLaz
 		if [ $? = 0 ]; then 
 			apt-get remove fpc*  --purge -y
 			apt-get autoremove --purge -y
-		fi
-		mkdir /tmp/fpc_laz_packs
-		changeDirectory /tmp/fpc_laz_packs
-		for ((i=0;i<${#FPC_LAZ_LINKS[*]};i++))
-		do
-			wget -c ${FPC_LAZ_LINKS[i]} 
-
-			if [ $? != 0 ]; then
-				echo  -e "falls in try get ${FPC_LAZ_LINKS[i]}...\nTrying again..."
-				wget -c ${FPC_LAZ_LINKS[i]}
-				if [ $? != 0 ]; then
-					echo "possible network instability! Try later!"
-					exit 1
-				fi
+			if [ -e $fpc_files_tmp ]; then
+				rm -rf $fpc_files_tmp
 			fi
-		done
-		for i in $(ls /tmp/fpc_laz_packs)
-		do
-			sudo dpkg -i /tmp/fpc_laz_packs/$i
-		done
-		if [ -e /tmp/fpc_laz_packs ]; then
-			rm -rf /tmp/fpc_laz_packs
-		fi
-		export FPC_DEFAULT_DEB_PACK=$FPC_ALTERNATIVE_DEB_PACK
-		
+			mkdir $fpc_files_tmp 
+			changeDirectory $fpc_files_tmp 
+			for ((i=0;i<${#FPC_LAZ_LINKS[*]};i++));do
+				wget -c ${FPC_LAZ_LINKS[i]} 
+
+				if [ $? != 0 ]; then
+					echo  -e "falls in try get ${FPC_LAZ_LINKS[i]}...\nTrying again..."
+					wget -c ${FPC_LAZ_LINKS[i]}
+					if [ $? != 0 ]; then
+						echo "possible network instability! Try later!"
+						exit 1
+					fi
+				fi
+			done
+			for i in $(ls $fpc_files_tmp)
+			do
+				sudo dpkg -i $fpc_files_tmp/$i
+			done
+			changeDirectory $ROOT_LAMW
+			if [ -e $fpc_files_tmp ]; then
+				rm -rf $fpc_files_tmp
+			fi
+		fi		
 	fi
 	CheckFPCSupport
 
@@ -236,6 +238,7 @@ installDependences(){
 	fi
 
 	CheckOpenJDK8Support
+	CheckExistsFPCLaz
 	apt-get install $libs_android $prog_tools  openjdk-${OPENJDK_DEFAULT}-jdk $FPC_DEFAULT_DEB_PACK -y --allow-unauthenticated
 	if [ "$?" != "0" ]; then
 		apt-get install $libs_android $prog_tools openjdk-${OPENJDK_DEFAULT}-jdk $FPC_DEFAULT_DEB_PACK -y --allow-unauthenticated --fix-missing
