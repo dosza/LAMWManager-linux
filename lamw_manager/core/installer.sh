@@ -107,7 +107,7 @@ SearchPackage(){
 }
 
 CheckExistsFPCLaz(){
-	exec 2> /dev/null apt show $FPC_ALTERNATIVE_DEB_PACK | grep 'Version: 3.0.4'  > /dev/null
+	exec 2> /dev/null dpkg -l $FPC_ALTERNATIVE_DEB_PACK | grep '3.0.4'  > /dev/null
 	if [ $? = 0 ]; then
 		export FPC_DEFAULT_DEB_PACK=$FPC_ALTERNATIVE_DEB_PACK
 		return 1
@@ -379,7 +379,6 @@ getAnt(){
 		trap TrapControlC  2
 		Wget $ANT_TAR_URL
 		MAGIC_TRAP_INDEX=1
-		trap TrapControlC 2
 		tar -xvf "$ANT_TAR_FILE"
 	fi
 
@@ -395,7 +394,6 @@ getGradle(){
 		trap TrapControlC  2 # set armadilha para o signal2 (siginterrupt)
 		Wget $GRADLE_ZIP_LNK
 		MAGIC_TRAP_INDEX=3
-		trap TrapControlC 2
 		unzip $GRADLE_ZIP_FILE
 	fi
 
@@ -447,11 +445,10 @@ getAndroidSDKTools(){
 
 	changeDirectory $ANDROID_SDK
 	if [ ! -e tools ];then
-		MAGIC_TRAP_INDEX=4
 		trap TrapControlC  2
+		MAGIC_TRAP_INDEX=4
 		Wget $SDK_TOOLS_URL
 		MAGIC_TRAP_INDEX=5
-		trap TrapControlC 2 
 		unzip $SDK_TOOLS_ZIP
 		rm $SDK_TOOLS_ZIP
 		AntTrigger
