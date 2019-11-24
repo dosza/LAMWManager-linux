@@ -3,7 +3,7 @@
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
 ##Version: 0.3.3
-#Date: 10/15/2019
+#Date: 11/23/2019
 #Description: The "lamw-install.sh" is part of the core of LAMW Manager. This script configures the development environment for LAMW
 #-------------------------------------------------------------------------------------------------#
 
@@ -19,21 +19,21 @@ source "$LAMW_MANAGER_MODULES_PATH/cross-builder.sh"
 #_------------ OS function t
 
 TrapControlC(){
-	sdk_tools_zip=$ANDROID_SDK
-	#echo "magicTrapIndex=$magicTrapIndex";read
-	magic_trap=(
+	local sdk_tools_zip=$ANDROID_SDK
+	#echo "MAGICTRAPINDEX=$MAGICTRAPINDEX";read
+	local magic_trap=(
 		"$ANT_TAR_FILE" #0 
 		"$ANT_HOME"		#1
 		"$GRADLE_ZIP_FILE" #2
 		"$GRADLE_HOME"   #3
 		"$sdk_tools_zip" #4
 		"$ANDROID_SDK" #5
-		"android-ndk-r18b-linux-x86_64.zip" #6
-		"android-ndk-r18b" #7
+		"$NDK_ZIP" #6
+		"$NDK_DIR_UNZIP" #7
 	)
 	
-	if [ "$magicTrapIndex" != "-1" ]; then
-		file_deleted="${magic_trap[magicTrapIndex]}"
+	if [ "$MAGICTRAPINDEX" != "-1" ]; then
+		local file_deleted="${magic_trap[MAGICTRAPINDEX]}"
 		if [ -e "$file_deleted" ]; then
 			echo "deleting... $file_deleted"
 			rm  -rv $file_deleted
@@ -45,7 +45,7 @@ TrapControlC(){
 
 
 checkForceLAMW4LinuxInstall(){
-	args=($*)
+	local args=($*)
 	for((i=0;i<${#args[*]};i++))
 	do
 		#printf "${VERMELHO} ${args[i]} ${NORMAL}\n"
@@ -60,7 +60,7 @@ checkForceLAMW4LinuxInstall(){
 #Build lazarus ide
 BuildLazarusIDE(){
 	
-	make_opts=()
+	local make_opts=()
 
 	if [ $FLAG_FORCE_ANDROID_AARCH64 = 1 ]; then
 		wrapperParseFPC
@@ -220,7 +220,7 @@ case "$1" in
 	"--reset")
 		printf "Please wait ...\n"
 		CleanOldConfig
-		printf "Mode SDKTOOLS=24 with ant support "
+	#	printf "Mode SDKTOOLS=24 with ant support "
 		export OLD_ANDROID_SDK=1
 		export NO_GUI_OLD_SDK=1
 		mainInstall
@@ -251,11 +251,11 @@ case "$1" in
 		testImplicitInstall
 	;;
 	"--help") 
-		printf "${lamw_opts[*]}" 
+		printf "${LAMW_OPTS[*]}" 
 	;;
 
 	*)
-		printf "${VERMELHO}Invalid argument!${NORMAL}\n${lamw_opts[*]}" >&2
+		printf "${VERMELHO}Invalid argument!${NORMAL}\n${LAMW_OPTS[*]}" >&2
 		exit 1
 	;;
 esac
