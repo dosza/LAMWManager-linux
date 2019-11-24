@@ -3,20 +3,9 @@
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
 #Version: 0.3.3
-#Date: 10/15/2019
+#Date: 11/23/2019
 #Description: The "lamw_headers" is part of the core of LAMW Manager. This script contains LAMW Manager variables.
 #-------------------------------------------------------------------------------------------------#
-
-#----ColorTerm
-export VERDE=$'\e[1;32m'
-export AMARELO=$'\e[01;33m'
-export SUBLINHADO=$'4'
-export NEGRITO=$'\e[1m'
-export VERMELHO=$'\e[1;31m'
-export VERMELHO_SUBLINHADO=$'\e[1;4;31m'
-export AZUL=$'\e[1;34m'
-export NORMAL=$'\e[0m'
-
 if [ ! -e /tmp/lamw-overrides.conf ]; then
 	printf "${VERMELHO}Fatal Error: you need run lamw_manager first! ${NORMAL}\n"
 	exit 1
@@ -55,7 +44,7 @@ export FPC_MKCFG_EXE=""
 export FPC_DEFAULT_DEB_PACK='fpc'
 export FPC_ALTERNATIVE_DEB_PACK='fpc-laz'
 export FORCE_LAWM4INSTALL=0
-work_home_desktop=$(xdg-user-dir DESKTOP)
+WORK_HOME_DESKTOP=$(xdg-user-dir DESKTOP)
 APT_OPT=""
 export PROXY_SERVER="internet.cua.ufmt.br"
 export PORT_SERVER=3128
@@ -63,8 +52,12 @@ PROXY_URL="http://$PROXY_SERVER:$PORT_SERVER"
 export USE_PROXY=0
 export JAVA_PATH=""
 export SDK_TOOLS_URL="https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip"
-export NDK_URL="https://dl.google.com/android/repository/android-ndk-r18b-linux-x86_64.zip"
-export NDK_VERSION="r18b"
+export NDK_VERSION="r20b"
+export OLD_NDK_VERSION=r18b
+export NDK_URL="https://dl.google.com/android/repository/android-ndk-${NDK_VERSION}-linux-x86_64.zip"
+export NDK_ZIP="android-ndk-${NDK_VERSION}-linux-x86_64.zip"
+export NDK_DIR_UNZIP="android-ndk-${NDK_VERSION}"
+
 SDK_TOOLS_VERSION="r26.1.1"
 SDK_TOOLS_ZIP="sdk-tools-linux-4333796.zip"
 SDK_VERSION="28"
@@ -93,22 +86,23 @@ REAL_LAMW_TOOLS="$ROOT_LAMW/.real"
 GRADLE_ZIP_LNK="https://services.gradle.org/distributions/gradle-${GRADLE_VERSION_STABLE}-bin.zip"
 GRADLE_ZIP_FILE="gradle-${GRADLE_VERSION_STABLE}-bin.zip"
 FPC_STABLE=""
-LAZARUS_STABLE="lazarus_2_0_6"
 LAZARUS_STABLE_VERSION="2.0.6"
+LAZARUS_STABLE="lazarus_"${LAZARUS_STABLE_VERSION//\./_} #expansão que remove todos '.' por _, obs '\.' barra invertida escapa '.'
 LAZARUS_STABLE_SRC_LNK="https://svn.freepascal.org/svn/lazarus/tags/${LAZARUS_STABLE}"
 OLD_FPC_CFG_PATH="$LAMW_USER_HOME/.fpc.cfg"
 export FPC_CFG_PATH="$LAMW_USER_HOME/.fpc.cfg"
 export PPC_CONFIG_PATH="$FPC_CFG_PATH"
 LAZARUS_OLD_STABLE=(
-	"lazarus_1_8_4"
-	"lazarus_2_0_2"
 	"lazarus_2_0_4"
+	"lazarus_2_0_2"
+	"lazarus_1_8_4"
 )
 LAZARUS_OLD_STABLE_VERSION=(
-	"1.8.4"
-	"2.0.2"
 	"2.0.4"
+	"2.0.2"
+	"1.8.4"
 )
+	
 
 FPC_ID_DEFAULT=0
 FPC_CROSS_ARM_DEFAULT_PARAMETERS=('clean crossall crossinstall  CPU_TARGET=arm OS_TARGET=android OPT="-dFPC_ARMHF" SUBARCH="armv7a" INSTALL_PREFIX=/usr')
@@ -126,10 +120,10 @@ WR_GRADLE_HOME=""
 WR_ANDROID_HOME=""
 HOME_USER_SPLITTED_ARRAY=(${HOME//\// })
 HOME_STR_SPLITTED=""
-libs_android="libx11-dev libgtk2.0-dev libgdk-pixbuf2.0-dev libcairo2-dev libpango1.0-dev libxtst-dev libatk1.0-dev libghc-x11-dev freeglut3 freeglut3-dev "
-prog_tools="menu git subversion make build-essential zip unzip unrar android-tools-adb gdb wget "
-packs=()
-fpc_debian_backports=(
+LIBS_ANDROID="libx11-dev libgtk2.0-dev libgdk-pixbuf2.0-dev libcairo2-dev libpango1.0-dev libxtst-dev libatk1.0-dev libghc-x11-dev freeglut3 freeglut3-dev "
+PROG_TOOLS="menu git subversion make build-essential zip unzip unrar android-tools-adb gdb wget "
+PACKS=()
+FPC_DEBIAN_BACKPORTS=(
 	"# debian backports"  
 	"deb http://deb.debian.org/debian stretch-backports main contrib non-free" 
 	"deb-src http://deb.debian.org/debian stretch-backports main contrib non-free" 
@@ -145,11 +139,11 @@ TIME_WAIT=2
 
 #help of lamw 
 
-lamw_opts=(
+LAMW_OPTS=(
 	"syntax:\n"
 	"./lamw_manager\tor\t./lamw_manager\t${NEGRITO}[actions]${NORMAL} ${VERDE}[options]${NORMAL}\n"
 	"${NEGRITO}Usage${NORMAL}:\n"
-	"\t${NEGRITO}./lamw_manager${NORMAL}                              Install LAMW and dependecies¹\n"
+	"\t${NEGRITO}./lamw_manager${NORMAL}                              Install LAMW and dependencies¹\n"
 	"\t./lamw_manager\t${VERDE}--sdkmanager${NORMAL}                Install LAMW and Run Android SDK Manager²\n"
 	"\t./lamw_manager\t${VERDE}--update-lamw${NORMAL}               To just upgrade LAMW framework (with the latest version available in git)\n"
 	"\t./lamw_manager\t${VERDE}--reset${NORMAL}                     To clean and reinstall LAMW\n"
@@ -167,7 +161,7 @@ lamw_opts=(
 )
 
 
-magicTrapIndex=-1
+MAGICTRAPINDEX=-1
 export NEED_UPGRADE_FPC=0
 
 export ARM_ANDROID_TOOLS="$ROOT_LAMW/sdk/ndk-bundle/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin"

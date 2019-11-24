@@ -1,7 +1,7 @@
 # LAMW Manager Release Notes
 This page contains information about new features and bug fixes.
 
-v0.3.3 - October, 2019
+v0.3.3 - December, 2019
 ---
 <p>
 	<strong>NEWS:</strong>
@@ -9,7 +9,15 @@ v0.3.3 - October, 2019
 		<li>Introducing a new installer : <em>lamw_manager_setup.sh</em></li>
 		<li>Add support for non-sudo admin users</li>
 		<li>Fusion the lamw_manager and lamw-manager files.</li>
+		<li>Lazarus 2.0.6</li>
+		<li>Apache Ant 1.10-7</li>
+		<li>Gradle 4.10.3</li>
+		<li>Android NDK r20</li>
 	</ul>
+	<strong>FIXED:</strong>
+	<ul>
+		<li>Missing PPC_CONFIG_PATH with <em>fpc-laz</em></li>
+	</ul>	
 </p>
 
 v0.3.2 - R1 - September 8, 2019

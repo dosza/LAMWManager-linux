@@ -3,7 +3,7 @@
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
 #Version: 0.3.3
-#Date: 10/11/2019
+#Date: 11/23/2019
 #Description:The "cross-builder.sh" is part of the core of LAMW Manager.  This script contains crosscompile compiler generation routines for ARMv7 / AARCH64- Android
 #-------------------------------------------------------------------------------------------------#
 
@@ -11,7 +11,7 @@
 
 #detecta a versão do fpc instalada no PC  seta as váriavies de ambiente
 parseFPC(){ 	
-	dist_file=$(cat /etc/issue.net)
+	local dist_file=$(cat /etc/issue.net)
 	case "$dist_file" in 
 		*"Ubuntu 18."*)
 			export flag_new_ubuntu_lts=1
@@ -100,6 +100,9 @@ buildFPCTrunk(){
 		changeDirectory "$LAMW4LINUX_HOME/usr"
 		echo "$FPC_INSTALL_TRUNK_ZIP";
 		tar -zxvf "$FPC_INSTALL_TRUNK_ZIP"	
+		if [  -e "$FPC_INSTALL_TRUNK_ZIP" ]; then 
+			rm "$FPC_INSTALL_TRUNK_ZIP"
+		fi
 	fi
 }
 
@@ -141,8 +144,8 @@ wrapperBuildFPCCross(){
 #function to wrapper FPC
 wrapperParseFPC(){
 	SearchPackage $FPC_DEFAULT_DEB_PACK
-	index=$?
-	parseFPC ${packs[$index]}
+	local index=$?
+	parseFPC ${PACKS[$index]}
 	if [ $FLAG_FORCE_ANDROID_AARCH64 = 1 ]; then
 		parseFPCTrunk
 	fi
