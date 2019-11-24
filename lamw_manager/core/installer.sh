@@ -107,7 +107,7 @@ SearchPackage(){
 }
 
 CheckExistsFPCLaz(){
-	exec 2> /dev/null dpkg -l $FPC_ALTERNATIVE_DEB_PACK | grep '3.0.4'  > /dev/null
+	exec 2> /dev/null apt show -a  $FPC_ALTERNATIVE_DEB_PACK | grep 'Status: install'  > /dev/null
 	if [ $? = 0 ]; then
 		export FPC_DEFAULT_DEB_PACK=$FPC_ALTERNATIVE_DEB_PACK
 		return 1
