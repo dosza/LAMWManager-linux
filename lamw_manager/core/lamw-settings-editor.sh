@@ -97,7 +97,9 @@ changeOwnerAllLAMW(){
 	echo "Restoring directories ..."
 	for ((i=0;i<${#files_chown[*]};i++))
 	do
-		chown $LAMW_USER:$LAMW_USER -R ${files_chown[i]}
+		if [ -e  ${files_chown[i]} ]; then
+			chown $LAMW_USER:$LAMW_USER -R ${files_chown[i]}
+		fi
 	done
 }
 #write log lamw install 
@@ -124,7 +126,7 @@ writeLAMWLogInstall(){
 		"LAZARUS_VERSION=$LAZARUS_STABLE_VERSION"
 		"AARCH64_SUPPORT=$FLAG_FORCE_ANDROID_AARCH64"
 		"Install-date:$(date)"
-		)
+	)
 
 	NOTIFY_SEND_EXE=$(which notify-send)
 	WriterFileln "$LAMW4LINUX_HOME/lamw-install.log" "lamw_log_str"
