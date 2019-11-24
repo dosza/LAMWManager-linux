@@ -6,17 +6,19 @@ v0.3.3 - December, 2019
 <p>
 	<strong>NEWS:</strong>
 	<ul>
+		<li>Android NDK r20b</li>
+		<li>Apache Ant 1.10.7</li>
+		<li>Gradle 4.10.3</li>
+		<li>Lazarus 2.0.6</li>
 		<li>Introducing a new installer : <em>lamw_manager_setup.sh</em></li>
 		<li>Add support for non-sudo admin users</li>
 		<li>Fusion the lamw_manager and lamw-manager files.</li>
-		<li>Lazarus 2.0.6</li>
-		<li>Apache Ant 1.10-7</li>
-		<li>Gradle 4.10.3</li>
-		<li>Android NDK r20</li>
+		<li>Debian 10 is now Supported (note:with OpenJDK11)!</li>
 	</ul>
 	<strong>FIXED:</strong>
 	<ul>
-		<li>Missing PPC_CONFIG_PATH with <em>fpc-laz</em></li>
+		<li>Error run command:fpcmkcfg with <em>fpc-laz</em></li>
+		<li>Fix incompatibility with <em>fpc-laz</em> and <em>lazarus-project</em></li>   
 	</ul>	
 </p>
 
