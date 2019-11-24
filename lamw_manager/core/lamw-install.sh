@@ -20,7 +20,7 @@ source "$LAMW_MANAGER_MODULES_PATH/cross-builder.sh"
 
 TrapControlC(){
 	local sdk_tools_zip=$ANDROID_SDK
-	#echo "MAGICTRAPINDEX=$MAGICTRAPINDEX";read
+	#echo "MAGIC_TRAP_INDEX=$MAGIC_TRAP_INDEX";read
 	local magic_trap=(
 		"$ANT_TAR_FILE" #0 
 		"$ANT_HOME"		#1
@@ -32,8 +32,8 @@ TrapControlC(){
 		"$NDK_DIR_UNZIP" #7
 	)
 	
-	if [ "$MAGICTRAPINDEX" != "-1" ]; then
-		local file_deleted="${magic_trap[MAGICTRAPINDEX]}"
+	if [ "$MAGIC_TRAP_INDEX" != "-1" ]; then
+		local file_deleted="${magic_trap[MAGIC_TRAP_INDEX]}"
 		if [ -e "$file_deleted" ]; then
 			echo "deleting... $file_deleted"
 			rm  -rv $file_deleted
