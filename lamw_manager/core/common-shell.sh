@@ -3,15 +3,24 @@
 #Universidade federal de Mato Grosso (mater-alma)
 #Course: Science Computer
 #version: 0.0.1
-#Date: 10/15/19
+#Date: 11/23/19
 #Description: This script is not part of LAMW Manager! It is an external library that implements routines common to shell script.
 #-------------------------------------------------------------------------------------------------#
 
+#GLOBAL VARIABLES
+#----ColorTerm
+export VERDE=$'\e[1;32m'
+export AMARELO=$'\e[01;33m'
+export SUBLINHADO=$'4'
+export NEGRITO=$'\e[1m'
+export VERMELHO=$'\e[1;31m'
+export VERMELHO_SUBLINHADO=$'\e[1;4;31m'
+export AZUL=$'\e[1;34m'
+export NORMAL=$'\e[0m'
 
 shopt  -s expand_aliases
 alias newPtr='declare -n'
 alias delPtr='unset'
-
 #cd not a native command, is a systemcall used to exec, read more in exec man 
 changeDirectory(){
 	if [ "$1" != "" ] ; then
