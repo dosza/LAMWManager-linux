@@ -268,62 +268,41 @@ initParameters(){
 		fi
 	fi
 
+	SDK_LICENSES_PARAMETERS=(--licenses )
+	SDK_MANAGER_CMD_PARAMETERS=(
+		"platforms;android-$ANDROID_SDK_TARGET" 
+		"platform-tools"
+		"build-tools;$ANDROID_BUILD_TOOLS_TARGET" 
+		"tools" 
+		"ndk-bundle" 
+		"extras;android;m2repository"
+		"build-tools;$GRADLE_MIN_BUILD_TOOLS"
+	)
+	
+	SDK_MANAGER_CMD_PARAMETERS2=(
+		"android-$ANDROID_SDK_TARGET"
+		"platform-tools"
+		"build-tools-$ANDROID_BUILD_TOOLS_TARGET" 
+		"extra-google-google_play_services"
+		"extra-android-m2repository"
+		"extra-google-m2repository"
+		"extra-google-market_licensing"
+		"extra-google-market_apk_expansion"
+		"build-tools-$GRADLE_MIN_BUILD_TOOLS"
+	)
+	
 	if [ $USE_PROXY = 1 ]; then
-		SDK_MANAGER_CMD_PARAMETERS=(
-			"platforms;android-$ANDROID_SDK_TARGET" 
-			"platform-tools"
-			"build-tools;$ANDROID_BUILD_TOOLS_TARGET" 
-			"tools" 
-			"ndk-bundle" 
-			"extras;android;m2repository" 
-			"build-tools;$GRADLE_MIN_BUILD_TOOLS"
-			--no_https --proxy=http 
-			--proxy_host=$PROXY_SERVER 
-			--proxy_port=$PORT_SERVER 
-		)
-		SDK_MANAGER_CMD_PARAMETERS2=(
-			"android-$ANDROID_SDK_TARGET"
-			"platform-tools"
-			"build-tools-$ANDROID_BUILD_TOOLS_TARGET" 
-			"extra-google-google_play_services"
-			"extra-android-m2repository"
-			"extra-google-m2repository"
-			"extra-google-market_licensing"
-			"extra-google-market_apk_expansion"
-			"build-tools-$GRADLE_MIN_BUILD_TOOLS"
-		)
+		SDK_MANAGER_CMD_PARAMETERS[${#SDK_LICENSES_PARAMETERS[*]}]="--no_https --proxy=http"
+		SDK_MANAGER_CMD_PARAMETERS[${#SDK_LICENSES_PARAMETERS[*]}]="--proxy_host=$PROXY_SERVER"
+		SDK_MANAGER_CMD_PARAMETERS[${#SDK_LICENSES_PARAMETERS[*]}]="--proxy_port=$PORT_SERVER" 
 		SDK_MANAGER_CMD_PARAMETERS2_PROXY=(
-			--no_https 
-			#--proxy=http 
-			--proxy-host=$PROXY_SERVER 
-			--proxy-port=$PORT_SERVER 
+			'--no_https' 
+			"--proxy-host=$PROXY_SERVER" 
+			"--proxy-port=$PORT_SERVER" #'--proxy=http'
 		)
 		SDK_LICENSES_PARAMETERS=( --licenses --no_https --proxy=http --proxy_host=$PROXY_SERVER --proxy_port=$PORT_SERVER )
 		export http_proxy=$PROXY_URL
 		export https_proxy=$PROXY_URL
-#	ActiveProxy 1
-	else
-		SDK_MANAGER_CMD_PARAMETERS=(
-			"platforms;android-$ANDROID_SDK_TARGET" 
-			"platform-tools"
-			"build-tools;$ANDROID_BUILD_TOOLS_TARGET" 
-			"tools" 
-			"ndk-bundle" 
-			"extras;android;m2repository"
-			"build-tools;$GRADLE_MIN_BUILD_TOOLS"
-		)			#ActiveProxy 0
-		SDK_MANAGER_CMD_PARAMETERS2=(
-			"android-$ANDROID_SDK_TARGET"
-			"platform-tools"
-			"build-tools-$ANDROID_BUILD_TOOLS_TARGET" 
-			"extra-google-google_play_services"
-			"extra-android-m2repository"
-			"extra-google-m2repository"
-			"extra-google-market_licensing"
-			"extra-google-market_apk_expansion"
-			"build-tools-$GRADLE_MIN_BUILD_TOOLS"
-			)
-		SDK_LICENSES_PARAMETERS=(--licenses )
 	fi
 }
 #Get FPC Sources
@@ -423,11 +402,11 @@ getLAMWFramework(){
 AntTrigger(){
 	if [ $OLD_ANDROID_SDK = 1 ]; then 
 		if [ $OPENJDK_DEFAULT = $OPENJDK_LTS ]; then 
-			if [ "$ANDROID_SDK/tools/ant" ]; then 
+			if [ -e "$ANDROID_SDK/tools/ant" ]; then 
 				mv "$ANDROID_SDK/tools/ant" "$ANDROID_SDK/tools/.ant"
 			fi
 		else 
-			if [ "$ANDROID_SDK/tools/.ant" ]; then 
+			if [ -e "$ANDROID_SDK/tools/.ant" ]; then 
 				mv "$ANDROID_SDK/tools/.ant" "$ANDROID_SDK/tools/ant"
 			fi
 		fi
@@ -605,7 +584,7 @@ getOldAndroidSDK(){
 		changeDirectory $ANDROID_SDK/tools
 		if [ $NO_GUI_OLD_SDK = 0 ]; then
 			echo "before update-sdk"
-			./android update sdk
+			$ANDROID_SDK/tools/android  update sdk
 		else 
 			for((i=0;i<${#SDK_MANAGER_CMD_PARAMETERS2[*]};i++))
 			do

@@ -225,7 +225,6 @@ LAMW4LinuxPostConfig(){
 		"AntBuildMode=debug"
 		"NDK=5"
 		"PathToSmartDesigner=$ROOT_LAMW/lazandroidmodulewizard/android_wizard/smartdesigner"
-
 	)
 	local aux_str=''
 	if [ $FLAG_FORCE_ANDROID_AARCH64 = 1 ]; then
@@ -281,17 +280,17 @@ ActiveProxy(){
 }
 CleanOldCrossCompileBins(){
 	wrapperParseFPC
-	if [ -e $FPC_LIB_PATH/ppcrossarm ]; then
-		 rm $FPC_LIB_PATH/ppcrossarm
-	fi
-	
-	if [ -e /usr/lib/fpc/$FPC_VERSION/fpmkinst/arm-android ]; then
-		 rm -r /usr/lib/fpc/$FPC_VERSION/fpmkinst/arm-android
-	fi
-	if [ -e /usr/lib/fpc/$FPC_VERSION/units/arm-android ]; then
-		 rm -r /usr/lib/fpc/$FPC_VERSION/units/arm-android
-	fi
+	local clean_files=(
+		"$FPC_LIB_PATH/ppcrossarm"
+		"/usr/lib/fpc/$FPC_VERSION/fpmkinst/arm-android"
+		"/usr/local/lib/fpc/3.3.1"
+	)
 
+	for((i=0;i<${#clean_files[*]};i++)); do
+		if [  -e ${clean_files[i]} ]; then 
+			rm -rf ${clean_files[i]}
+		fi
+	done
 
 	if [  -e /usr/local/bin/fpc ]; then
 		local fpc_tmp_files=("bin2obj" "chmcmd" "chmls" "cldrparser" "compileserver" "cvsco.tdf" "cvsdiff.tdf" "cvsup.tdf" "data2inc" "delp" "fd2pascal" "fp" "fp.ans" "fpc" "fpcjres" "fpclasschart" "fpclasschart.rsj" "fpcmake" "fpcmkcfg" "fpcmkcfg.rsj" "fpcres" "fpcsubst" "fpcsubst.rsj" "fpdoc" "fppkg" "fprcp" "fp.rsj" "gplprog.pt" "gplunit.pt" "grab_vcsa" "grep.tdf" "h2pas" "h2paspp" "instantfpc" "json2pas" "makeskel" "makeskel.rsj" "mka64ins" "mkarmins" "mkinsadd" "mkx86ins" "pas2fpm" "pas2jni" "pas2js" "pas2ut" "pas2ut.rsj" "plex" "postw32" "ppdep" "ppudump" "ppufiles" "ppumove" "program.pt" "ptop" "ptop.rsj" "pyacc" "rmcvsdir" "rstconv" "rstconv.rsj" "tpgrep.tdf" "unihelper" "unitdiff" "unitdiff.rsj" "unit.pt" "webidl2pas")
@@ -301,9 +300,6 @@ CleanOldCrossCompileBins(){
 		done
 	fi
 	
-	if [  -e /usr/local/lib/fpc/3.3.1 ]; then
-		rm -rf /usr/local/lib/fpc/3.3.1
-	fi
 }
 
 	
