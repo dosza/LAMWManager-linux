@@ -205,3 +205,58 @@ IsUserRoot(){
 		exit 1
 	fi
 }
+
+Wget(){
+	if [ $1 = "" ]; then
+		echo "Wget needs a argument"
+		exit 1
+	fi
+	local wget_opts="-c --timeout=300"
+	wget $wget_opts $1
+	if [ $? != 0 ]; then
+		wget $wget_opts $1
+		if [ $? != 0 ]; then 
+			echo "possible network instability! Try later!"
+			exit 1
+		fi
+	fi
+}
+
+IsFileBusy(){
+	if [ $# = 0 ]; then
+		echo "IsFileBusy needs a argument"
+		exit 1;
+	fi
+
+	local args=($*)
+	echo ${args[*]}
+	unset args[0]
+	local msg=0
+	while fuser ${args[*]} > /dev/null 2<&1
+	do
+		
+		if  [ $msg = 0 ]; then 
+			echo "Wait for $1..."
+			msg=1;
+		fi
+	done
+
+}
+AptInstall(){
+	if [ $# = 0 ]; then
+		echo "AptInstall requires arguments"
+		exit 1
+	fi
+
+	local apt_opts=(-y --allow-unauthenticated)
+	local apt_opts_err=(--fix-missing)
+
+	apt-get install $* ${apt_opts[*]}
+	if [ "$?" != "0" ]; then
+		apt-get install $* ${apt_opts[*]} ${apt_opts_err[*]}
+		if [ $? = 0 ]; then 
+			echo "possible network instability! Try later!"
+			exit 1
+		fi
+	fi
+}

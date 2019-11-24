@@ -6,6 +6,22 @@
 #Date: 11/23/2019
 #Description: The "lamw-manager-settings-editor.sh" is part of the core of LAMW Manager. Responsible for managing LAMW Manager / LAMW configuration files..
 #-------------------------------------------------------------------------------------------------#
+#this function builds initial struct directory of LAMW env Development !
+initROOT_LAMW(){
+	if [ ! -e $ANDROID_SDK ]; then 
+		mkdir -p $ANDROID_SDK
+	fi
+
+	if  [ ! -e $LAMW_USER_HOME/.android ]; then
+		mkdir $LAMW_USER_HOME/.android 
+		echo "" > $LAMW_USER_HOME/.android/repositories.cfg
+	fi
+
+	if [ !  -e $HOME/.android ]; then
+		mkdir -p $HOME/.android 	
+		echo "" > $HOME/.android/repositories.cfg
+	fi 
+}
 
 enableADBtoUdev(){
 	  printf 'SUBSYSTEM=="usb", ATTR{idVendor}=="<VENDOR>", MODE="0666", GROUP="plugdev"\n'  |  tee /etc/udev/rules.d/51-android.rules
@@ -128,10 +144,9 @@ writeLAMWLogInstall(){
 		"Install-date:$(date)"
 	)
 
-	NOTIFY_SEND_EXE=$(which notify-send)
 	WriterFileln "$LAMW4LINUX_HOME/lamw-install.log" "lamw_log_str"
 	if [ "$NOTIFY_SEND_EXE" != "" ]; then
-		$NOTIFY_SEND_EXE  "Info:\nLAMW4Linux:$LAMW4LINUX_HOME\nLAMW workspace : $LAMW_WORKSPACE_HOME\nAndroid SDK:$ROOT_LAMW/sdk\nAndroid NDK:$ROOT_LAMW/ndk\nGradle:$GRADLE_HOME\nLOG:$LAMW4LINUX_HOME/lamw-install.log"
+		$NOTIFY_SEND_EXE    "Info:\nLAMW4Linux:$LAMW4LINUX_HOME\nLAMW workspace : $LAMW_WORKSPACE_HOME\nAndroid SDK:$ROOT_LAMW/sdk\nAndroid NDK:$ROOT_LAMW/ndk\nGradle:$GRADLE_HOME\nLOG:$LAMW4LINUX_HOME/lamw-install.log"
 	else
 		printf "Info:\nLAMW4Linux:$LAMW4LINUX_HOME\nLAMW workspace : $LAMW_USER_HOME/Dev/lamw_workspace\nAndroid SDK:$ROOT_LAMW/sdk\nAndroid NDK:$ROOT_LAMW/ndk\nGradle:$GRADLE_HOME\nLOG:$LAMW4LINUX_HOME/lamw-install.log\n"
 	fi		
