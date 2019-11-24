@@ -81,7 +81,7 @@ getStatusInstalation(){
 }
 
 SearchPackage(){
-	index=-1
+	local index=-1
 	#vetor que armazena informações sobre a intalação do pacote
 	if [ "$1" != "" ]  ; then
 		PACKS=( $(dpkg -l $1) )
@@ -190,6 +190,7 @@ setJava8asDefault(){
 		esac
 	done
 }
+
 #install deps
 installDependences(){
 	local fpc_files_tmp='/tmp/fpc_laz_PACKS'
@@ -205,16 +206,7 @@ installDependences(){
 			mkdir $fpc_files_tmp 
 			changeDirectory $fpc_files_tmp 
 			for ((i=0;i<${#FPC_LAZ_LINKS[*]};i++));do
-				wget -c ${FPC_LAZ_LINKS[i]} 
-
-				if [ $? != 0 ]; then
-					echo  -e "falls in try get ${FPC_LAZ_LINKS[i]}...\nTrying again..."
-					wget -c ${FPC_LAZ_LINKS[i]}
-					if [ $? != 0 ]; then
-						echo "possible network instability! Try later!"
-						exit 1
-					fi
-				fi
+				Wget ${FPC_LAZ_LINKS[i]} 
 			done
 			for i in $(ls $fpc_files_tmp)
 			do
@@ -230,28 +222,13 @@ installDependences(){
 
 	if [ $NEED_UPGRADE_FPC = 1 ]; then
 		enableUpgradeFPC
-		apt-get install  fpc/stretch-backports  -y --allow-unauthenticated
-		if [ $? != 0 ]; then 
-			apt-get install  fpc/stretch-backports  -y --allow-unauthenticated  --fix-missing
-			if [ $? != 0 ]; then
-				echo "possible network instability! Try later!"
-				exit 1
-			fi
-		fi
+		AptInstall fpc/stretch-backports
 		disableUpgradeFPC
 	fi
 
 	CheckOpenJDK8Support
 	CheckExistsFPCLaz
-	apt-get install $LIBS_ANDROID $PROG_TOOLS  openjdk-${OPENJDK_DEFAULT}-jdk $FPC_DEFAULT_DEB_PACK -y --allow-unauthenticated
-	if [ "$?" != "0" ]; then
-		apt-get install $LIBS_ANDROID $PROG_TOOLS openjdk-${OPENJDK_DEFAULT}-jdk $FPC_DEFAULT_DEB_PACK -y --allow-unauthenticated --fix-missing
-		if [ $? != 0 ]; then
-			echo "possible network instability! Try later!"
-			exit 1
-		fi
-	fi
-	
+	AptInstall $LIBS_ANDROID $PROG_TOOLS  openjdk-${OPENJDK_DEFAULT}-jdk $FPC_DEFAULT_DEB_PACK
 	apt-get clean
 	apt-get autoclean
 }
@@ -267,40 +244,19 @@ initParameters(){
 			printf "PROXY_SERVER=$2\nPORT_SERVER=$3\n"
 		fi
 	fi
-
-	SDK_LICENSES_PARAMETERS=(--licenses )
-	SDK_MANAGER_CMD_PARAMETERS=(
-		"platforms;android-$ANDROID_SDK_TARGET" 
-		"platform-tools"
-		"build-tools;$ANDROID_BUILD_TOOLS_TARGET" 
-		"tools" 
-		"ndk-bundle" 
-		"extras;android;m2repository"
-		"build-tools;$GRADLE_MIN_BUILD_TOOLS"
-	)
-	
-	SDK_MANAGER_CMD_PARAMETERS2=(
-		"android-$ANDROID_SDK_TARGET"
-		"platform-tools"
-		"build-tools-$ANDROID_BUILD_TOOLS_TARGET" 
-		"extra-google-google_play_services"
-		"extra-android-m2repository"
-		"extra-google-m2repository"
-		"extra-google-market_licensing"
-		"extra-google-market_apk_expansion"
-		"build-tools-$GRADLE_MIN_BUILD_TOOLS"
-	)
 	
 	if [ $USE_PROXY = 1 ]; then
+		SDK_LICENSES_PARAMETERS=( --licenses --no_https --proxy=http --proxy_host=$PROXY_SERVER --proxy_port=$PORT_SERVER )
 		SDK_MANAGER_CMD_PARAMETERS[${#SDK_LICENSES_PARAMETERS[*]}]="--no_https --proxy=http"
 		SDK_MANAGER_CMD_PARAMETERS[${#SDK_LICENSES_PARAMETERS[*]}]="--proxy_host=$PROXY_SERVER"
 		SDK_MANAGER_CMD_PARAMETERS[${#SDK_LICENSES_PARAMETERS[*]}]="--proxy_port=$PORT_SERVER" 
+
 		SDK_MANAGER_CMD_PARAMETERS2_PROXY=(
 			'--no_https' 
 			"--proxy-host=$PROXY_SERVER" 
 			"--proxy-port=$PORT_SERVER" #'--proxy=http'
 		)
-		SDK_LICENSES_PARAMETERS=( --licenses --no_https --proxy=http --proxy_host=$PROXY_SERVER --proxy_port=$PORT_SERVER )
+		
 		export http_proxy=$PROXY_URL
 		export https_proxy=$PROXY_URL
 	fi
@@ -419,18 +375,10 @@ getAnt(){
 	fi
 	changeDirectory "$ROOT_LAMW" 
 	if [ ! -e "$ANT_HOME" ]; then
-		MAGICTRAPINDEX=0 # preperando o indice do arquivo/diretório a ser removido
+		MAGIC_TRAP_INDEX=0 # preperando o indice do arquivo/diretório a ser removido
 		trap TrapControlC  2
-		wget -c $ANT_TAR_URL
-		if [ $? != 0 ] ; then
-			ANT_TAR_URL="https://www-eu.apache.org/dist/ant/binaries/apache-ant-${ANT_VERSION_STABLE}-bin.tar.xz"
-			wget -c $ANT_TAR_URL
-			if [ $? != 0 ]; then
-				echo "possible network instability! Try later!"
-				exit 1
-			fi
-		fi
-		MAGICTRAPINDEX=1
+		Wget $ANT_TAR_URL
+		MAGIC_TRAP_INDEX=1
 		trap TrapControlC 2
 		tar -xvf "$ANT_TAR_FILE"
 	fi
@@ -443,13 +391,10 @@ getAnt(){
 getGradle(){
 	changeDirectory $ROOT_LAMW
 	if [ ! -e "$GRADLE_HOME" ]; then
-		MAGICTRAPINDEX=2 #Set arquivo a ser removido
+		MAGIC_TRAP_INDEX=2 #Set arquivo a ser removido
 		trap TrapControlC  2 # set armadilha para o signal2 (siginterrupt)
-		wget -c $GRADLE_ZIP_LNK
-		if [ $? != 0 ] ; then
-			wget -c $GRADLE_ZIP_LNK
-		fi
-		MAGICTRAPINDEX=3
+		Wget $GRADLE_ZIP_LNK
+		MAGIC_TRAP_INDEX=3
 		trap TrapControlC 2
 		unzip $GRADLE_ZIP_FILE
 	fi
@@ -472,57 +417,40 @@ getNDK(){
 	fi
 
 	if [ ! -e ndk-bundle ] ; then
-		MAGICTRAPINDEX=6
+		MAGIC_TRAP_INDEX=6
 		trap TrapControlC 2 
-		wget -c $NDK_URL
-		if [ $? != 0 ]; then
-			wget -c $NDK_URL
-			if [ $? != 0 ]; then
-				echo "possible network instability! Try later!"
-				exit 1
-			fi
-		fi
-		MAGICTRAPINDEX=7
+		Wget $NDK_URL
+		
+		MAGIC_TRAP_INDEX=7
 		trap TrapControlC 2
 		unzip $NDK_ZIP
 		trap - SIGINT  #removendo a traps
-		MAGICTRAPINDEX=-1
+		MAGIC_TRAP_INDEX=-1
 		mv $NDK_DIR_UNZIP ndk-bundle
 		if [ -e $NDK_ZIP ]; then 
 			rm $NDK_ZIP
 		fi
 	fi
 	trap - SIGINT  #removendo a traps
-	MAGICTRAPINDEX=-1
+	MAGIC_TRAP_INDEX=-1
 }
 #Get Gradle and SDK Tools 
 getAndroidSDKTools(){
 	initROOT_LAMW
 	changeDirectory $ROOT_LAMW
 
-	if [ $OLD_ANDROID_SDK = 1 ]; then #mode OLD SDK (24 with ant support )
+	if [ $OLD_ANDROID_SDK = 1 ]; then #mode OLD SDK (2-4 with ant support )
 		export SDK_TOOLS_VERSION="r25.2.5"
 		export SDK_TOOLS_URL="https://dl.google.com/android/repository/tools_r25.2.5-linux.zip"
 		export SDK_TOOLS_ZIP="tools_r25.2.5-linux.zip"
 	fi
 
-	if [ ! -e $ANDROID_SDK ]; then 
-		mkdir -p $ANDROID_SDK
-	fi
-
 	changeDirectory $ANDROID_SDK
 	if [ ! -e tools ];then
-		MAGICTRAPINDEX=4
+		MAGIC_TRAP_INDEX=4
 		trap TrapControlC  2
-		wget -c $SDK_TOOLS_URL
-		if [ $? != 0 ]; then
-			wget -c $SDK_TOOLS_URL
-			if [ $? != 0 ]; then
-				echo "possible network instability! Try later!"
-				exit 1
-			fi
-		fi
-		MAGICTRAPINDEX=5
+		Wget $SDK_TOOLS_URL
+		MAGIC_TRAP_INDEX=5
 		trap TrapControlC 2 
 		unzip $SDK_TOOLS_ZIP
 		rm $SDK_TOOLS_ZIP
@@ -577,7 +505,6 @@ getOldAndroidSDK(){
 		"$ANDROID_SDK/extras/google/market_licensing" 
 		"$ANDROID_SDK/extras/google/market_apk_expansion"
 		"$ANDROID_SDK/build-tools/$GRADLE_MIN_BUILD_TOOLS"
-		
 	)
 
 	if [ -e $ANDROID_SDK/tools/android  ]; then 
@@ -826,26 +753,9 @@ getImplicitInstall(){
 	fi
 }
 
-initROOT_LAMW(){
-	if [ ! -e $ROOT_LAMW ]; then
-		mkdir -p $ROOT_LAMW
-	fi
-	if  [ ! -e $LAMW_USER_HOME/.android ]; then
-		mkdir $LAMW_USER_HOME/.android 
-		echo "" > $LAMW_USER_HOME/.android/repositories.cfg
-	fi
-
-	if [ !  -e $HOME/.android ]; then
-		mkdir -p $HOME/.android 	
-		echo "" > $HOME/.android/repositories.cfg
-	fi 
-
-	if [ ! -e $ROOT_LAMW ]; then
-		mkdir $ROOT_LAMW
-	fi
-}
 mainInstall(){
 	initROOT_LAMW
+	IsFileBusy apt ${APT_LOCKS[*]}
 	installDependences
 	checkProxyStatus
 	#configureFPC
