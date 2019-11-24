@@ -112,7 +112,7 @@ checkProxyStatus(){
 	fi
 }
 testLazarusProject(){
-	exec 2> /dev/null dpkg -s lazarus-project | grep lazarus-project > /dev/null #exec 2 redireciona a saída do stderror para /dev/null
+	exec 2> /dev/null dpkg -s lazarus-project | grep 'Status: install' > /dev/null #exec 2 redireciona a saída do stderror para /dev/null
 	if [ $? = 0 ]; then 
 		echo  -e "${VERMELHO}Warning: Lazarus Project Detected!!!${NORMAL}"  >&2
 		#echo -e "use ${NEGRITO}--force${NORMAL} parameter to force install compatible with lazarus-project\nExit..." >&2
