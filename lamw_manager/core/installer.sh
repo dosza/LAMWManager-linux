@@ -194,7 +194,6 @@ setJava8asDefault(){
 #install deps
 installDependences(){
 	local fpc_files_tmp='/tmp/fpc_laz_PACKS'
-	apt-get update;
 	if [ $FORCE_LAWM4INSTALL = 1 ]; then 
 		CheckExistsFPCLaz
 		if [ $? = 0 ]; then 
@@ -208,10 +207,10 @@ installDependences(){
 			for ((i=0;i<${#FPC_LAZ_LINKS[*]};i++));do
 				Wget ${FPC_LAZ_LINKS[i]} 
 			done
-			for i in $(ls $fpc_files_tmp)
-			do
-				sudo dpkg -i $fpc_files_tmp/$i
+			for i in $(ls $fpc_files_tmp) ; do 
+				sudo dpkg -i $fpc_files_tmp/$i; 
 			done
+	
 			changeDirectory $ROOT_LAMW
 			if [ -e $fpc_files_tmp ]; then
 				rm -rf $fpc_files_tmp
@@ -229,8 +228,7 @@ installDependences(){
 	CheckOpenJDK8Support
 	CheckExistsFPCLaz
 	AptInstall $LIBS_ANDROID $PROG_TOOLS  openjdk-${OPENJDK_DEFAULT}-jdk $FPC_DEFAULT_DEB_PACK
-	apt-get clean
-	apt-get autoclean
+	
 }
 
 #iniciandoparametros
@@ -752,7 +750,6 @@ getImplicitInstall(){
 
 mainInstall(){
 	initROOT_LAMW
-	IsFileBusy apt ${APT_LOCKS[*]}
 	installDependences
 	checkProxyStatus
 	#configureFPC
