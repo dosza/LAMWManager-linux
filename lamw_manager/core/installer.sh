@@ -3,7 +3,7 @@
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
 #Version: 0.3.3
-#Date: 11/23/2019
+#Date: 11/25/2019
 #Description: "installer.sh" is part of the core of LAMW Manager. Contains routines for installing LAMW development environment
 #-------------------------------------------------------------------------------------------------#
 
@@ -107,7 +107,7 @@ SearchPackage(){
 }
 
 CheckExistsFPCLaz(){
-	exec 2> /dev/null apt show -a  $FPC_ALTERNATIVE_DEB_PACK | grep 'Status: install'  > /dev/null
+	exec 2> /dev/null dpkg -s  $FPC_ALTERNATIVE_DEB_PACK | grep 'Status: install'  > /dev/null
 	if [ $? = 0 ]; then
 		export FPC_DEFAULT_DEB_PACK=$FPC_ALTERNATIVE_DEB_PACK
 		return 1
