@@ -48,11 +48,6 @@ export FPC_ALTERNATIVE_DEB_PACK='fpc-laz'
 export FORCE_LAWM4INSTALL=0
 WORK_HOME_DESKTOP=$(xdg-user-dir DESKTOP)
 APT_OPT=""
-APT_LOCKS=(
-	"/var/lib/dpkg/lock"
-	"/var/lib/apt/lists/lock"
-	"/var/cache/apt/archives/lock"
-)
 export PROXY_SERVER="internet.cua.ufmt.br"
 export PORT_SERVER=3128
 PROXY_URL="http://$PROXY_SERVER:$PORT_SERVER"

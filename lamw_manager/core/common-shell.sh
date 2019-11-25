@@ -17,7 +17,12 @@ export VERMELHO=$'\e[1;31m'
 export VERMELHO_SUBLINHADO=$'\e[1;4;31m'
 export AZUL=$'\e[1;34m'
 export NORMAL=$'\e[0m'
-
+APT_LOCKS=(
+	"/var/lib/dpkg/lock"
+	"/var/lib/apt/lists/lock"
+	"/var/cache/apt/archives/lock"
+	"/var/lib/dpkg/lock-frontend"
+)
 shopt  -s expand_aliases
 alias newPtr='declare -n'
 alias delPtr='unset'
@@ -222,6 +227,8 @@ Wget(){
 	fi
 }
 
+#Verifica se um ou mais arquivos estão sendo usados por processos, 
+#$1 é  mensagem que será exibida na espera ...
 IsFileBusy(){
 	if [ $# = 0 ]; then
 		echo "IsFileBusy needs a argument"
@@ -229,28 +236,29 @@ IsFileBusy(){
 	fi
 
 	local args=($*)
-	echo ${args[*]}
 	unset args[0]
 	local msg=0
-	while fuser ${args[*]} > /dev/null 2<&1
+	while fuser ${args[*]} > /dev/null 2<&1 #enquato os arquivos estiverem ocupados ....
 	do
-		
 		if  [ $msg = 0 ]; then 
 			echo "Wait for $1..."
 			msg=1;
 		fi
 	done
-
 }
+
+#Essa instala um ou mais pacotes from apt 
 AptInstall(){
+	
+	local apt_opts=(-y --allow-unauthenticated)
+	local apt_opts_err=(--fix-missing)
+
 	if [ $# = 0 ]; then
 		echo "AptInstall requires arguments"
 		exit 1
 	fi
-
-	local apt_opts=(-y --allow-unauthenticated)
-	local apt_opts_err=(--fix-missing)
-
+	IsFileBusy apt ${APT_LOCKS[*]}
+	apt-get update
 	apt-get install $* ${apt_opts[*]}
 	if [ "$?" != "0" ]; then
 		apt-get install $* ${apt_opts[*]} ${apt_opts_err[*]}
@@ -259,4 +267,6 @@ AptInstall(){
 			exit 1
 		fi
 	fi
+	apt-get clean
+	apt-get autoclean
 }
