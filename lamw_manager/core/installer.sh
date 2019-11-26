@@ -137,14 +137,6 @@ enableUpgradeFPC(){
 	cat  /etc/apt/sources.list | grep "${FPC_DEBIAN_BACKPORTS[1]}"
 	if [ $? != 0 ]; then
 		WriterFileln  "/etc/apt/sources.list.d/fpc-backports.list" "FPC_DEBIAN_BACKPORTS"
-		apt-get update
-		if [ $? != 0 ] ; then
-			apt-get update
-			if [ $? != 0 ]; then
-				echo "possible network instability! Try later!"
-				exit 1
-			fi
-		fi
 	fi
 }
 disableUpgradeFPC(){
@@ -207,6 +199,7 @@ installDependences(){
 			for ((i=0;i<${#FPC_LAZ_LINKS[*]};i++));do
 				Wget ${FPC_LAZ_LINKS[i]} 
 			done
+			IsFileBusy apt-get ${APT_LOCKS[*]}
 			for i in $(ls $fpc_files_tmp) ; do 
 				sudo dpkg -i $fpc_files_tmp/$i; 
 			done
@@ -415,12 +408,9 @@ getNDK(){
 	if [ ! -e ndk-bundle ] ; then
 		MAGIC_TRAP_INDEX=6
 		trap TrapControlC 2 
-		Wget $NDK_URL
-		
+		Wget $NDK_URL	
 		MAGIC_TRAP_INDEX=7
-		trap TrapControlC 2
 		unzip $NDK_ZIP
-		trap - SIGINT  #removendo a traps
 		MAGIC_TRAP_INDEX=-1
 		mv $NDK_DIR_UNZIP ndk-bundle
 		if [ -e $NDK_ZIP ]; then 
