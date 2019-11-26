@@ -25,7 +25,6 @@ APT_LOCKS=(
 )
 shopt  -s expand_aliases
 alias newPtr='declare -n'
-alias delPtr='unset'
 #cd not a native command, is a systemcall used to exec, read more in exec man 
 changeDirectory(){
 	if [ "$1" != "" ] ; then
