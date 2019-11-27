@@ -65,7 +65,7 @@ Getting Started!!
 <strong>Notes:</strong>
 <ol>
 	<li>Read more about new installer procedure in <a href="https://github.com/DanielOliveiraSouza/LAMWAutoRunScripts/blob/master/lamw_manager/docs/lamw_manager_setup.md"><em>LAMW Manager Setup</em></a></li>
-	<li>You can also install from sources read more in <a href="https://github.com/DanielOliveiraSouza/LAMWAutoRunScripts/blob/master/lamw_manager/docs/classic-install.md"><em>Classic Install</a></li>
+	<li>You can also install from sources read more in <a href="https://github.com/DanielOliveiraSouza/LAMWAutoRunScripts/blob/master/lamw_manager/docs/classic-install.md"><em>Classic Install</em></a></li>
 </ol>
 
 
