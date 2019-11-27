@@ -1,14 +1,14 @@
 LAMW Manager v0.3.3
 =======================================================================
 
-LAMW Manager is a command line tool,like *APT*, to automate the <strong>installation</strong>, <strong>configuration</strong> and <strong>upgrade</strong>  the framework  <a href="https://github.com/jmpessoa/lazandroidmodulewizard"><em>LAMW - Lazarus Android Module Wizard</em></a>
+LAMW Manager is a command line tool,like *APT*, to automate the <strong>installation</strong>, <strong>configuration</strong> and <strong>upgrade</strong>  the framework  <a href="https://github.com/jmpessoa/lazandroidmodulewizard">LAMW - Lazarus Android Module Wizard</a>
 
 
 What do you get?
 ----------------------------------------------------------------------
 
 <p>
-	A <strong><a href="http://www.lazarus-ide.org/">Lazarus  IDE </a></strong>ready to develop applications for Android !!
+	A <a href="http://www.lazarus-ide.org/">Lazarus  IDE </a> ready to develop applications for Android !!
 </p>
 
 <p> 
@@ -26,7 +26,7 @@ Linux Distro Supported:
 	<li>Ubuntu 18.04 LTS</li>
 	<li>Linux Mint 18 <strong>Cinnamon</strong></li>
 	<li>Linux Mint 19 <strong>Cinnamon</strong></li>
-	<li>Requirements for other <a href="https://github.com/DanielOliveiraSouza/LAMWAutoRunScripts/blob/master/lamw_manager/docs/other-distros-info.md"><strong>Linux</strong></a></li>
+	<li><a href="https://github.com/DanielOliveiraSouza/LAMWAutoRunScripts/blob/master/lamw_manager/docs/other-distros-info.md">Requirements for other Linux</a></li>
 </ul>		
 
 
@@ -73,7 +73,7 @@ Getting Started!!
 Release Notes:
 ----------------------------------------------------------------------
 <p>
-	For information on new features and bug fixes read the <a href="https://github.com/DanielOliveiraSouza/LAMWAutoRunScripts/blob/master/lamw_manager/docs/release_notes.md"><strong>Release Notes</strong></a>
+	For information on new features and bug fixes read the <a href="https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/blob/master/lamw_manager/docs/release_notes.md#v033---november-26-2019"><em>Release Notes</em></a>
 </p>
 
 Congratulations!!
@@ -85,4 +85,4 @@ Congratulations!!
 
 <p>
 	For more info read <a href="https://github.com/DanielOliveiraSouza/LAMWAutoRunScripts/blob/master/lamw_manager/docs/man.md"><strong>LAMW Manager v0.3.3 Manual</strong></a>
-</p>
+</p>	
