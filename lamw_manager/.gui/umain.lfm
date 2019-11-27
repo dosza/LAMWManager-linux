@@ -4,18 +4,18 @@ object Fmain: TFmain
   Top = 0
   Width = 1366
   Caption = 'LAMW Manager'
-  ClientHeight = 717
+  ClientHeight = 718
   ClientWidth = 1366
   Menu = MainMenu1
   OnCreate = FormCreate
-  LCLVersion = '1.8.4.0'
+  LCLVersion = '2.0.4.0'
   object Panel1: TPanel
     Left = 0
-    Height = 717
+    Height = 718
     Top = 0
     Width = 170
     Align = alLeft
-    ClientHeight = 717
+    ClientHeight = 718
     ClientWidth = 170
     TabOrder = 0
     OnClick = Panel1Click
@@ -704,7 +704,7 @@ object Fmain: TFmain
       Left = 32
       Height = 24
       Top = 304
-      Width = 128
+      Width = 137
       Caption = 'Clean Old Config *'
       OnChange = CheckBox1Change
       TabOrder = 0
@@ -712,11 +712,11 @@ object Fmain: TFmain
   end
   object Panel2: TPanel
     Left = 170
-    Height = 717
+    Height = 718
     Top = 0
     Width = 1196
     Align = alClient
-    ClientHeight = 717
+    ClientHeight = 718
     ClientWidth = 1196
     TabOrder = 1
     OnClick = Panel2Click
@@ -812,7 +812,7 @@ object Fmain: TFmain
   object UGLOBAL_SETTINGS: TSynIniSyn
     DefaultFilter = 'Arquivos INI (*.ini)|*.ini'
     Enabled = False
-    left = 111
-    top = 598
+    left = 32
+    top = 560
   end
 end

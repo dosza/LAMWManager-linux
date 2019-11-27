@@ -1,8 +1,31 @@
 #!/bin/bash
+#-------------------------------------------------------------------------------------------------#
+#Universidade federal de Mato Grosso (mater-alma)
+#Course: Science Computer
+#version: 0.0.1
+#Date: 11/23/19
+#Description: This script is not part of LAMW Manager! It is an external library that implements routines common to shell script.
+#-------------------------------------------------------------------------------------------------#
+
+#GLOBAL VARIABLES
+#----ColorTerm
+export VERDE=$'\e[1;32m'
+export AMARELO=$'\e[01;33m'
+export SUBLINHADO=$'4'
+export NEGRITO=$'\e[1m'
+export VERMELHO=$'\e[1;31m'
+export VERMELHO_SUBLINHADO=$'\e[1;4;31m'
+export AZUL=$'\e[1;34m'
+export NORMAL=$'\e[0m'
+APT_LOCKS=(
+	"/var/lib/dpkg/lock"
+	"/var/lib/apt/lists/lock"
+	"/var/cache/apt/archives/lock"
+	"/var/lib/dpkg/lock-frontend"
+)
 shopt  -s expand_aliases
 alias newPtr='declare -n'
-alias delPtr='unset'
-
+#cd not a native command, is a systemcall used to exec, read more in exec man 
 changeDirectory(){
 	if [ "$1" != "" ] ; then
 		if [ -e "$1"  ]; then
@@ -178,4 +201,71 @@ InsertUniqueBlankLine(){
 			fi
 		fi
 	fi
+}
+
+IsUserRoot(){
+	if  [  "$(whoami)" = "root" ];then #impede que o script seja executado pelo root 
+		printf "Error: \"$1\" was designed  to run without root privileges\nExiting...\n" >&2 # >&2 is a file descriptor to /dev/stderror
+		exit 1
+	fi
+}
+
+Wget(){
+	if [ $1 = "" ]; then
+		echo "Wget needs a argument"
+		exit 1
+	fi
+	local wget_opts="-c --timeout=300"
+	wget $wget_opts $1
+	if [ $? != 0 ]; then
+		wget $wget_opts $1
+		if [ $? != 0 ]; then 
+			echo "possible network instability! Try later!"
+			exit 1
+		fi
+	fi
+}
+
+#Verifica se um ou mais arquivos estão sendo usados por processos, 
+#$1 é  mensagem que será exibida na espera ...
+IsFileBusy(){
+	if [ $# = 0 ]; then
+		echo "IsFileBusy needs a argument"
+		exit 1;
+	fi
+
+	local args=($*)
+	unset args[0]
+	local msg=0
+	while fuser ${args[*]} > /dev/null 2<&1 #enquato os arquivos estiverem ocupados ....
+	do
+		if  [ $msg = 0 ]; then 
+			echo "Wait for $1..."
+			msg=1;
+		fi
+	done
+}
+
+#Essa instala um ou mais pacotes from apt 
+AptInstall(){
+	
+	local apt_opts=(-y --allow-unauthenticated)
+	local apt_opts_err=(--fix-missing)
+
+	if [ $# = 0 ]; then
+		echo "AptInstall requires arguments"
+		exit 1
+	fi
+	IsFileBusy apt ${APT_LOCKS[*]}
+	apt-get update
+	apt-get install $* ${apt_opts[*]}
+	if [ "$?" != "0" ]; then
+		apt-get install $* ${apt_opts[*]} ${apt_opts_err[*]}
+		if [ $? = 0 ]; then 
+			echo "possible network instability! Try later!"
+			exit 1
+		fi
+	fi
+	apt-get clean
+	apt-get autoclean
 }

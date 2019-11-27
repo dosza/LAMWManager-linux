@@ -1,10 +1,17 @@
 #!/bin/bash
+#-------------------------------------------------------------------------------------------------#
+#Universidade federal de Mato Grosso (Alma Mater)
+#Course: Science Computer
+#Version: 0.3.3
+#Date: 11/23/2019
+#Description:The "cross-builder.sh" is part of the core of LAMW Manager.  This script contains crosscompile compiler generation routines for ARMv7 / AARCH64- Android
+#-------------------------------------------------------------------------------------------------#
+
 
 
 #detecta a versão do fpc instalada no PC  seta as váriavies de ambiente
-
 parseFPC(){ 	
-	dist_file=$(cat /etc/issue.net)
+	local dist_file=$(cat /etc/issue.net)
 	case "$dist_file" in 
 		*"Ubuntu 18."*)
 			export flag_new_ubuntu_lts=1
@@ -45,6 +52,9 @@ parseFPC(){
 	export FPC_MKCFG_EXE=$(which fpcmkcfg-$FPC_VERSION)
 	if [ "$FPC_MKCFG_EXE" = "" ]; then
 		export FPC_MKCFG_EXE=$(which x86_64-linux-gnu-fpcmkcfg-$FPC_VERSION)
+		if [ "$FPC_MKCFG_EXE" = "" ]; then
+			export FPC_MKCFG_EXE=$(which fpcmkcfg)
+		fi
 	fi
 }
 
@@ -81,21 +91,35 @@ BuildCrossArm(){
 #BuildFPC to Trunk
 buildFPCTrunk(){
 	if [ -e "$FPC_TRUNK_SOURCE_PATH" ]; then
-		echo "$PATH"
 		changeDirectory "$FPC_TRUNK_SOURCE_PATH/$FPC_TRUNK_SVNTAG"
-		make clean all zipinstall
+		make clean all zipinstall "PP=$FPC_LIB_PATH/ppcx64"
+		if [ $? != 0 ]; then
+			echo "${VERMELHO}Fatal Error: Falls build FPC -x86_64-linux${NORMAL}" 
+			exit 1
+		fi
 		changeDirectory "$LAMW4LINUX_HOME/usr"
 		echo "$FPC_INSTALL_TRUNK_ZIP";
-		tar -zxvf "$FPC_INSTALL_TRUNK_ZIP" 	
+		tar -zxvf "$FPC_INSTALL_TRUNK_ZIP"	
+		if [  -e "$FPC_INSTALL_TRUNK_ZIP" ]; then 
+			rm "$FPC_INSTALL_TRUNK_ZIP"
+		fi
 	fi
 }
 
 #Function to build ARMv7 and AARCH64
 BuildCrossAArch64(){
 	changeDirectory "$LAMW4LINUX_HOME/usr/share/fpcsrc/$FPC_TRUNK_SVNTAG"
-	make clean crossall crossinstall  CPU_TARGET=aarch64 OS_TARGET=android OPT="-dFPC_ARMHF"  INSTALL_PREFIX=$LAMW4LINUX_HOME/usr
+	make clean crossall crossinstall  CPU_TARGET=aarch64 OS_TARGET=android OPT="-dFPC_ARMHF" INSTALL_PREFIX=$LAMW4LINUX_HOME/usr "PP=$FPC_LIB_PATH/ppcx64"
+	if [ $? != 0 ]; then 
+		echo "${VERMELHO}Fatal Error: Falls to build FPC to  Android/AARCH64${NORMAL}"
+		exit 1
+	fi
+	make clean crossall crossinstall CPU_TARGET=arm OPT="-dFPC_ARMEL" OS_TARGET=android CROSSOPT="-CpARMV7A -CfVFPV3" INSTALL_PREFIX=$LAMW4LINUX_HOME/usr "PP=$FPC_LIB_PATH/ppcx64"
 	#make clean crossall crossinstall  CPU_TARGET=arm OS_TARGET=android OPT="-dFPC_ARMEL" CROSSOPT="-Cpaarch64 -CfVFPv4" INSTALL_PREFIX=$LAMW4LINUX_HOME/usr;read
-	make clean crossall crossinstall CPU_TARGET=arm OPT="-dFPC_ARMEL" OS_TARGET=android CROSSOPT="-CpARMV7A -CfVFPV3" INSTALL_PREFIX=$LAMW4LINUX_HOME/usr
+	if [ $? != 0 ]; then 
+		echo "${VERMELHO}Fatal Error: Falls to build FPC  to Android/ARMv7${NORMAL}"
+		exit 1
+	fi
 	CreateFPCTrunkBootStrap
 }
 
@@ -119,9 +143,9 @@ wrapperBuildFPCCross(){
 }
 #function to wrapper FPC
 wrapperParseFPC(){
-	SearchPackage fpc
-	index=$?
-	parseFPC ${packs[$index]}
+	SearchPackage $FPC_DEFAULT_DEB_PACK
+	local index=$?
+	parseFPC ${PACKS[$index]}
 	if [ $FLAG_FORCE_ANDROID_AARCH64 = 1 ]; then
 		parseFPCTrunk
 	fi

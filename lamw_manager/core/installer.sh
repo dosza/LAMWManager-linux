@@ -1,13 +1,19 @@
 #!/bin/bash
+#-------------------------------------------------------------------------------------------------#
+#Universidade federal de Mato Grosso (Alma Mater)
+#Course: Science Computer
+#Version: 0.3.3
+#Date: 11/25/2019
+#Description: "installer.sh" is part of the core of LAMW Manager. Contains routines for installing LAMW development environment
+#-------------------------------------------------------------------------------------------------#
 
-#this function returns a version fpc 
 
 #prepare upgrade
 LAMWPackageManager(){
 	if [ $FLAG_FORCE_ANDROID_AARCH64 = 1 ]; then 
 		
-		old_lamw_ide_home="$LAMW4LINUX_HOME/lamw4linux"
-		old_fpc_src="$LAMW4LINUX_HOME/fpcsrc"
+		local old_lamw_ide_home="$LAMW4LINUX_HOME/lamw4linux"
+		local old_fpc_src="$LAMW4LINUX_HOME/fpcsrc"
 
 
 		if [ -e "$old_lamw_ide_home"  ]; then
@@ -17,7 +23,7 @@ LAMWPackageManager(){
 
 		for((i=0;i<${#LAZARUS_OLD_STABLE[*]};i++))
 		do
-			old_lazarus_home=$LAMW4LINUX_HOME/${LAZARUS_OLD_STABLE[i]}
+			local old_lazarus_home=$LAMW4LINUX_HOME/${LAZARUS_OLD_STABLE[i]}
 			if [ -e "$old_lazarus_home" ]; then
 				rm "$old_lazarus_home" -rf
 			fi
@@ -47,8 +53,21 @@ LAMWPackageManager(){
 			fi
 		fi
 
+		for ((i=0;i<${#OLD_GRADLE[*]};i++))
+		do
+			if [ -e ${OLD_GRADLE[i]} ]; then 
+				rm -rf ${OLD_GRADLE[i]} 
+			fi
+		done
 
+		for ((i=0;i<${#OLD_ANT[*]};i++))
+		do
+			if [ -e ${OLD_ANT[i]} ]; then 
+				rm -rf ${OLD_ANT[i]}
+			fi
+		done
 	fi
+
 }
 getStatusInstalation(){
 	if [  -e $LAMW4LINUX_HOME/lamw-install.log ]; then
@@ -62,24 +81,24 @@ getStatusInstalation(){
 }
 
 SearchPackage(){
-	index=-1
+	local index=-1
 	#vetor que armazena informações sobre a intalação do pacote
 	if [ "$1" != "" ]  ; then
-		packs=( $(dpkg -l $1) )
+		PACKS=( $(dpkg -l $1) )
 		
-		tam=${#packs[@]}
+		local tam=${#PACKS[@]}
 		if  [ $tam = 0 ] ; then
-			 apt-get install fpc -y
-			packs=( $(dpkg -l $1) )
+			apt-get install fpc -y
+			PACKS=( $(dpkg -l $1) )
 		fi
 
-		for (( i = 0 ; i < ${#packs[*]};i++))
+		for (( i = 0 ; i < ${#PACKS[*]};i++))
 		do
-			if [ "${packs[i]}" = "$1" ] ; then
+			if [ "${PACKS[i]}" = "$1" ] ; then
 				((index=i))
 				((index++))
-				FPC_VERSION=${packs[index]}
-				#echo "${packs[index]}"
+				FPC_VERSION=${PACKS[index]}
+				#echo "${PACKS[index]}"
 				break
 			fi
 		done
@@ -87,25 +106,37 @@ SearchPackage(){
 	return $index
 }
 
+CheckExistsFPCLaz(){
+	exec 2> /dev/null dpkg -s  $FPC_ALTERNATIVE_DEB_PACK | grep 'Status: install'  > /dev/null
+	if [ $? = 0 ]; then
+		export FPC_DEFAULT_DEB_PACK=$FPC_ALTERNATIVE_DEB_PACK
+		return 1
+	fi
+	return 0
+}
 CheckFPCSupport(){
-	apt show fpc | grep 'Version: 3.0.0' 
+	if [ $FPC_DEFAULT_DEB_PACK = $FPC_ALTERNATIVE_DEB_PACK ]; then
+		return
+	fi
+	exec 2> /dev/null apt show fpc | grep 'Version: 3.0.0'  > /dev/null 
 	if [ $? = 0 ]; then
 		export NEED_UPGRADE_FPC=1
 	fi
 }
 
+#Fix Debian 10/OpenJDK Support 
+CheckOpenJDK8Support(){
+	exec 2> /dev/null apt show  openjdk-8-jdk | grep 'Source: openjdk-8' > /dev/null
+	if [ $? != 0 ]; then 
+		printf "Warning:${VERMELHO}OpenJDK 8 is not supported, using OpenJDK11!${NORMAL}\n"
+		export OPENJDK_DEFAULT=$OPENJDK_LTS
+	fi
+}
+
 enableUpgradeFPC(){
-	cat  /etc/apt/sources.list | grep "${fpc_debian_backports[1]}"
+	cat  /etc/apt/sources.list | grep "${FPC_DEBIAN_BACKPORTS[1]}"
 	if [ $? != 0 ]; then
-		WriterFileln  "/etc/apt/sources.list.d/fpc-backports.list" "fpc_debian_backports"
-		apt-get update
-		if [ $? != 0 ] ; then
-			apt-get update
-			if [ $? != 0 ]; then
-				echo "possible network instability! Try later!"
-				exit 1
-			fi
-		fi
+		WriterFileln  "/etc/apt/sources.list.d/fpc-backports.list" "FPC_DEBIAN_BACKPORTS"
 	fi
 }
 disableUpgradeFPC(){
@@ -116,16 +147,26 @@ disableUpgradeFPC(){
 }
 #unistall java not supported
 unistallJavaUnsupported(){
+	#se o jdk > 8 nada  sai da funçao
+	if [ $OPENJDK_DEFAULT = $OPENJDK_LTS ]; then 
+		return 
+	fi
+
 	if [ $flag_new_ubuntu_lts = 1 ]; then
-		 apt-get remove --purge openjdk-9-* -y 
-		 apt-get remove --purge openjdk-11* -y
+		apt-get remove --purge openjdk-9-* -y 
+		apt-get remove --purge openjdk-11* -y
 	fi
 }
 
 #setJRE8 as default
 setJava8asDefault(){
-	path_java=($(dpkg -L openjdk-8-jre))
-	found_path=""
+	#se o jdk > 8 nada  sai da funçao
+	if [ $OPENJDK_DEFAULT = $OPENJDK_LTS ]; then 
+		return 
+	fi
+
+	local path_java=($(dpkg -L openjdk-8-jre))
+	local found_path=""
 	for((i = 0; i < ${#path_java[@]} ; i++ )); do
 		wi=${path_java[$i]}
 		case "$wi" in
@@ -141,35 +182,46 @@ setJava8asDefault(){
 		esac
 	done
 }
+
 #install deps
 installDependences(){
-	 apt-get update;
+	local fpc_files_tmp='/tmp/fpc_laz_PACKS'
 	if [ $FORCE_LAWM4INSTALL = 1 ]; then 
-		 apt-get remove --purge  lazarus* -y
-		 apt-get autoremove --purge -y
+		CheckExistsFPCLaz
+		if [ $? = 0 ]; then 
+			apt-get remove fpc*  --purge -y
+			apt-get autoremove --purge -y
+			if [ -e $fpc_files_tmp ]; then
+				rm -rf $fpc_files_tmp
+			fi
+			mkdir $fpc_files_tmp 
+			changeDirectory $fpc_files_tmp 
+			for ((i=0;i<${#FPC_LAZ_LINKS[*]};i++));do
+				Wget ${FPC_LAZ_LINKS[i]} 
+			done
+			IsFileBusy apt-get ${APT_LOCKS[*]}
+			for i in $(ls $fpc_files_tmp) ; do 
+				sudo dpkg -i $fpc_files_tmp/$i; 
+			done
+	
+			changeDirectory $ROOT_LAMW
+			if [ -e $fpc_files_tmp ]; then
+				rm -rf $fpc_files_tmp
+			fi
+		fi		
 	fi
 	CheckFPCSupport
 
 	if [ $NEED_UPGRADE_FPC = 1 ]; then
 		enableUpgradeFPC
-		apt-get install  fpc/stretch-backports  -y --allow-unauthenticated
-		if [ $? != 0 ]; then 
-			apt-get install  fpc/stretch-backports  -y --allow-unauthenticated  --fix-missing
-			if [ $? != 0 ]; then
-				echo "possible network instability! Try later!"
-				exit 1
-			fi
-		fi
+		AptInstall fpc/stretch-backports
 		disableUpgradeFPC
 	fi
-	apt-get install $libs_android $prog_tools  -y --allow-unauthenticated
-	if [ "$?" != "0" ]; then
-		apt-get install $libs_android $prog_tools  -y --allow-unauthenticated --fix-missing
-		if [ $? != 0 ]; then
-			echo "possible network instability! Try later!"
-			exit 1
-		fi
-	fi
+
+	CheckOpenJDK8Support
+	CheckExistsFPCLaz
+	AptInstall $LIBS_ANDROID $PROG_TOOLS  openjdk-${OPENJDK_DEFAULT}-jdk $FPC_DEFAULT_DEB_PACK
+	
 }
 
 #iniciandoparametros
@@ -183,63 +235,21 @@ initParameters(){
 			printf "PROXY_SERVER=$2\nPORT_SERVER=$3\n"
 		fi
 	fi
-
+	
 	if [ $USE_PROXY = 1 ]; then
-		SDK_MANAGER_CMD_PARAMETERS=(
-			"platforms;android-$ANDROID_SDK_TARGET" 
-			"platform-tools"
-			"build-tools;$ANDROID_BUILD_TOOLS_TARGET" 
-			"tools" 
-			"ndk-bundle" 
-			"extras;android;m2repository" 
-			"build-tools;$GRADLE_MIN_BUILD_TOOLS"
-			--no_https --proxy=http 
-			--proxy_host=$PROXY_SERVER 
-			--proxy_port=$PORT_SERVER 
-		)
-		SDK_MANAGER_CMD_PARAMETERS2=(
-			"android-$ANDROID_SDK_TARGET"
-			"platform-tools"
-			"build-tools-$ANDROID_BUILD_TOOLS_TARGET" 
-			"extra-google-google_play_services"
-			"extra-android-m2repository"
-			"extra-google-m2repository"
-			"extra-google-market_licensing"
-			"extra-google-market_apk_expansion"
-			"build-tools-$GRADLE_MIN_BUILD_TOOLS"
-		)
-		SDK_MANAGER_CMD_PARAMETERS2_PROXY=(
-			--no_https 
-			#--proxy=http 
-			--proxy-host=$PROXY_SERVER 
-			--proxy-port=$PORT_SERVER 
-		)
 		SDK_LICENSES_PARAMETERS=( --licenses --no_https --proxy=http --proxy_host=$PROXY_SERVER --proxy_port=$PORT_SERVER )
+		SDK_MANAGER_CMD_PARAMETERS[${#SDK_LICENSES_PARAMETERS[*]}]="--no_https --proxy=http"
+		SDK_MANAGER_CMD_PARAMETERS[${#SDK_LICENSES_PARAMETERS[*]}]="--proxy_host=$PROXY_SERVER"
+		SDK_MANAGER_CMD_PARAMETERS[${#SDK_LICENSES_PARAMETERS[*]}]="--proxy_port=$PORT_SERVER" 
+
+		SDK_MANAGER_CMD_PARAMETERS2_PROXY=(
+			'--no_https' 
+			"--proxy-host=$PROXY_SERVER" 
+			"--proxy-port=$PORT_SERVER" #'--proxy=http'
+		)
+		
 		export http_proxy=$PROXY_URL
 		export https_proxy=$PROXY_URL
-#	ActiveProxy 1
-	else
-		SDK_MANAGER_CMD_PARAMETERS=(
-			"platforms;android-$ANDROID_SDK_TARGET" 
-			"platform-tools"
-			"build-tools;$ANDROID_BUILD_TOOLS_TARGET" 
-			"tools" 
-			"ndk-bundle" 
-			"extras;android;m2repository"
-			"build-tools;$GRADLE_MIN_BUILD_TOOLS"
-		)			#ActiveProxy 0
-		SDK_MANAGER_CMD_PARAMETERS2=(
-			"android-$ANDROID_SDK_TARGET"
-			"platform-tools"
-			"build-tools-$ANDROID_BUILD_TOOLS_TARGET" 
-			"extra-google-google_play_services"
-			"extra-android-m2repository"
-			"extra-google-m2repository"
-			"extra-google-market_licensing"
-			"extra-google-market_apk_expansion"
-			"build-tools-$GRADLE_MIN_BUILD_TOOLS"
-			)
-		SDK_LICENSES_PARAMETERS=(--licenses )
 	fi
 }
 #Get FPC Sources
@@ -278,7 +288,7 @@ getFPCSourcesTrunk(){
 #wrapper to get FPC Sources 
 getWrapperFPCSources(){
 	if [ $FLAG_FORCE_ANDROID_AARCH64 = 1 ]; then
-		echo "Warming:mode experimental Android Aarch64!"
+		echo "Warning:mode experimental Android Aarch64!"
 		getFPCSourcesTrunk
 	else
 		getFPCSources
@@ -289,7 +299,7 @@ getLazarusSources(){
 	changeDirectory $LAMW4LINUX_HOME
 	svn co $LAZARUS_STABLE_SRC_LNK
 	if [ $? != 0 ]; then  #case fails last command , try svn chekout 
-		 rm -rf $LAZARUS_STABLE
+		rm -rf $LAZARUS_STABLE
 		svn co $LAZARUS_STABLE_SRC_LNK
 		if [ $? != 0 ]; then 
 			rm -rf $LAZARUS_STABLE
@@ -301,17 +311,25 @@ getLazarusSources(){
 
 #GET LAMW FrameWork
 getLAMWFramework(){
+	local git_param=("clone" "$LAMW_SRC_LNK")
 	changeDirectory $ROOT_LAMW
-	export git_param=("clone" "$LAMW_SRC_LNK")
+	#Remove LAMW  downloaded by SVN
+	if [ -e "$ROOT_LAMW/lazandroidmodulewizard.git" ]; then 
+		if [ -e "$ROOT_LAMW/lazandroidmodulewizard" ]; then 
+			rm -fr "$ROOT_LAMW/lazandroidmodulewizard"
+			rm -fr "$ROOT_LAMW/lazandroidmodulewizard.git"
+		fi
+	fi
+
 	if [ -e lazandroidmodulewizard/.git ]  ; then
 		changeDirectory "$ROOT_LAMW/lazandroidmodulewizard"
-		export git_param=("pull")
+		git_param=("pull")
 	fi
 	
 	git ${git_param[*]}
 	if [ $? != 0 ]; then #case fails last command , try svn chekout
 		
-		export git_param=("clone" "$LAMW_SRC_LNK")
+		git_param=("clone" "$LAMW_SRC_LNK")
 		changeDirectory $ROOT_LAMW
 		#chmod 777 -Rv lazandroidmodulewizard
 		if [ -e $ROOT_LAMW/lazandroidmodulewizard ]; then 
@@ -328,24 +346,30 @@ getLAMWFramework(){
 	fi
 	
 }
-#this function get ant 
-getAnt(){
-	changeDirectory $ROOT_LAMW 
-	
-	if [ ! -e $ANT_HOME ]; then
-		magicTrapIndex=-1 # preperando o indice do arquivo/diretório a ser removido
-		trap TrapControlC  2
-		wget -c $ANT_TAR_URL
-		if [ $? != 0 ] ; then
-			ANT_TAR_URL="https://www-eu.apache.org/dist/ant/binaries/apache-ant-1.10.5-bin.tar.xz"
-			wget -c $ANT_TAR_URL
-			if [ $? != 0 ]; then
-				echo "possible network instability! Try later!"
-				exit 1
+AntTrigger(){
+	if [ $OLD_ANDROID_SDK = 1 ]; then 
+		if [ $OPENJDK_DEFAULT = $OPENJDK_LTS ]; then 
+			if [ -e "$ANDROID_SDK/tools/ant" ]; then 
+				mv "$ANDROID_SDK/tools/ant" "$ANDROID_SDK/tools/.ant"
+			fi
+		else 
+			if [ -e "$ANDROID_SDK/tools/.ant" ]; then 
+				mv "$ANDROID_SDK/tools/.ant" "$ANDROID_SDK/tools/ant"
 			fi
 		fi
-		magicTrapIndex=1
-		trap TrapControlC 2
+	fi
+}
+#this function get ant 
+getAnt(){
+	if [ $OLD_ANDROID_SDK = 0 ]; then  #sem ação se ant nao é suportado
+		return
+	fi
+	changeDirectory "$ROOT_LAMW" 
+	if [ ! -e "$ANT_HOME" ]; then
+		MAGIC_TRAP_INDEX=0 # preperando o indice do arquivo/diretório a ser removido
+		trap TrapControlC  2
+		Wget $ANT_TAR_URL
+		MAGIC_TRAP_INDEX=1
 		tar -xvf "$ANT_TAR_FILE"
 	fi
 
@@ -353,108 +377,70 @@ getAnt(){
 		rm $ANT_TAR_FILE
 	fi
 }
-#Get Gradle and SDK Tools 
-getAndroidSDKTools(){
-	changeDirectory $LAMW_USER_HOME
-	if  [ ! -e $LAMW_USER_HOME/.android ]; then
-		mkdir $LAMW_USER_HOME/.android 
-		mkdir -p $HOME/.android 
-		echo "create file"
-		echo "" > $LAMW_USER_HOME/.android/repositories.cfg
-		echo "" > $HOME/.android/repositories.cfg
-	fi 
 
-	if [ ! -e $ROOT_LAMW ]; then
-		mkdir $ROOT_LAMW
-	fi
-	
+getGradle(){
 	changeDirectory $ROOT_LAMW
-	getAnt
-	
-	if [ ! -e $GRADLE_HOME ]; then
-		magicTrapIndex=-1 # Set arquivo a ser removido
+	if [ ! -e "$GRADLE_HOME" ]; then
+		MAGIC_TRAP_INDEX=2 #Set arquivo a ser removido
 		trap TrapControlC  2 # set armadilha para o signal2 (siginterrupt)
-		wget -c $GRADLE_ZIP_LNK
-		if [ $? != 0 ] ; then
-			wget -c $GRADLE_ZIP_LNK
-		fi
-		magicTrapIndex=3
-		trap TrapControlC 2
+		Wget $GRADLE_ZIP_LNK
+		MAGIC_TRAP_INDEX=3
 		unzip $GRADLE_ZIP_FILE
 	fi
-	
+
 	if [ -e  $GRADLE_ZIP_FILE ]; then
 		rm $GRADLE_ZIP_FILE
 	fi
-	#mode OLD SDK (24 with ant support )
-	if [ $OLD_ANDROID_SDK = 0 ]; then
-		mkdir -p $ANDROID_SDK
-		changeDirectory $ANDROID_SDK
- 
-		if [ ! -e tools ] ; then
-			magicTrapIndex=4
-			trap TrapControlC  2
-			wget -c $SDK_TOOLS_URL #getting sdk 
-			if [ $? != 0 ]; then 
-				wget -c $SDK_TOOLS_URL
-			fi
-			magicTrapIndex=5
-			trap TrapControlC 2
-			unzip sdk-tools-linux-4333796.zip
-			rm sdk-tools-linux-4333796.zip
-		fi
-	else
-		changeDirectory $ROOT_LAMW
-		getAnt
-		export SDK_TOOLS_VERSION="r25.2.5"
-		export SDK_TOOLS_URL="https://dl.google.com/android/repository/tools_r25.2.5-linux.zip"
-		export SDK_TOOLS_ZIP="tools_r25.2.5-linux.zip"
-		if [ ! -e sdk ]; then 
-			mkdir $ANDROID_SDK
-		fi
-		changeDirectory $ANDROID_SDK
-		if [ ! -e tools ];then
-			magicTrapIndex=-1
-			trap TrapControlC  2
-			wget -c $SDK_TOOLS_URL
-			if [ $? != 0 ]; then
-				wget -c $SDK_TOOLS_URL
-				if [ $? != 0 ]; then
-					echo "possible network instability! Try later!"
-					exit 1
-				fi
-			fi
-			magicTrapIndex=5
-			trap TrapControlC 2 
-			unzip $SDK_TOOLS_ZIP
-			rm $SDK_TOOLS_ZIP
-		fi
+}
 
-		changeDirectory $ANDROID_SDK
-		if [ ! -e ndk-bundle ] ; then
-			magicTrapIndex=-1
-			trap TrapControlC 2 
-			wget -c $NDK_URL
-			if [ $? != 0 ]; then
-				wget -c $NDK_URL
-				if [ $? != 0 ]; then
-					echo "possible network instability! Try later!"
-					exit 1
-				fi
-			fi
-			magicTrapIndex=7
-			trap TrapControlC 2
-			unzip android-ndk-r18b-linux-x86_64.zip
-			trap - SIGINT  #removendo a traps
-			magicTrapIndex=-1
-			mv android-ndk-r18b ndk-bundle
-			if [ -e android-ndk-r18b-linux-x86_64.zip ]; then 
-				rm android-ndk-r18b-linux-x86_64.zip
-			fi
+getNDK(){
+	if [ $OLD_ANDROID_SDK = 0 ]; then
+		return 
+	fi
+	changeDirectory "$ANDROID_SDK"
+	if [ -e  $LAMW4LINUX_HOME/lamw-install.log ]; then 
+		cat $LAMW4LINUX_HOME/lamw-install.log | grep $OLD_NDK_VERSION > /dev/null
+		if [ $? = 0 ]; then 
+			rm -rf $ANDROID_SDK/ndk-bundle
+		fi
+	fi
+
+	if [ ! -e ndk-bundle ] ; then
+		MAGIC_TRAP_INDEX=6
+		trap TrapControlC 2 
+		Wget $NDK_URL	
+		MAGIC_TRAP_INDEX=7
+		unzip $NDK_ZIP
+		MAGIC_TRAP_INDEX=-1
+		mv $NDK_DIR_UNZIP ndk-bundle
+		if [ -e $NDK_ZIP ]; then 
+			rm $NDK_ZIP
 		fi
 	fi
 	trap - SIGINT  #removendo a traps
-	magicTrapIndex=-1
+	MAGIC_TRAP_INDEX=-1
+}
+#Get Gradle and SDK Tools 
+getAndroidSDKTools(){
+	initROOT_LAMW
+	changeDirectory $ROOT_LAMW
+
+	if [ $OLD_ANDROID_SDK = 1 ]; then #mode OLD SDK (2-4 with ant support )
+		export SDK_TOOLS_VERSION="r25.2.5"
+		export SDK_TOOLS_URL="https://dl.google.com/android/repository/tools_r25.2.5-linux.zip"
+		export SDK_TOOLS_ZIP="tools_r25.2.5-linux.zip"
+	fi
+
+	changeDirectory $ANDROID_SDK
+	if [ ! -e tools ];then
+		trap TrapControlC  2
+		MAGIC_TRAP_INDEX=4
+		Wget $SDK_TOOLS_URL
+		MAGIC_TRAP_INDEX=5
+		unzip $SDK_TOOLS_ZIP
+		rm $SDK_TOOLS_ZIP
+		AntTrigger
+	fi
 }
 
 getSDKAndroid(){
@@ -491,11 +477,10 @@ getSDKAndroid(){
 			fi
 		fi
 	done
-
 }
 
 getOldAndroidSDK(){
-	SDK_MANAGER_SDK_PATHS=(
+	local sdk_manager_sdk_paths=(
 		"$ANDROID_SDK/platforms/android-$ANDROID_SDK_TARGET"
 		"$ANDROID_SDK/platform-tools"
 		"$ANDROID_SDK/build-tools/$ANDROID_BUILD_TOOLS_TARGET"
@@ -505,21 +490,20 @@ getOldAndroidSDK(){
 		"$ANDROID_SDK/extras/google/market_licensing" 
 		"$ANDROID_SDK/extras/google/market_apk_expansion"
 		"$ANDROID_SDK/build-tools/$GRADLE_MIN_BUILD_TOOLS"
-		
 	)
 
 	if [ -e $ANDROID_SDK/tools/android  ]; then 
 		changeDirectory $ANDROID_SDK/tools
 		if [ $NO_GUI_OLD_SDK = 0 ]; then
 			echo "before update-sdk"
-			./android update sdk
+			$ANDROID_SDK/tools/android  update sdk
 		else 
 			for((i=0;i<${#SDK_MANAGER_CMD_PARAMETERS2[*]};i++))
 			do
 				echo "Getting \"${SDK_MANAGER_CMD_PARAMETERS2[i]}\" ..."
 				#read;
-			#	ls "$ANDROID_SDK/${SDK_MANAGER_SDK_PATHS[i]}";read
-				if [ ! -e "${SDK_MANAGER_SDK_PATHS[i]}" ];then
+			#	ls "$ANDROID_SDK/${sdk_manager_sdk_paths[i]}";read
+				if [ ! -e "${sdk_manager_sdk_paths[i]}" ];then
 					echo "y" |   ./android update sdk --all --no-ui --filter ${SDK_MANAGER_CMD_PARAMETERS2[i]} ${SDK_MANAGER_CMD_PARAMETERS2_PROXY[*]}
 					if [ $? != 0 ]; then
 						echo "y" |   ./android update sdk --all --no-ui --filter ${SDK_MANAGER_CMD_PARAMETERS2[i]} ${SDK_MANAGER_CMD_PARAMETERS2_PROXY[*]}
@@ -535,7 +519,7 @@ getOldAndroidSDK(){
 }
 
 RepairOldSDKAndroid(){
-	SDK_MANAGER_FAILS=(
+	local sdk_manager_fails=(
 		"platforms"
 		"platform-tools"
 		"build-tools"
@@ -543,17 +527,17 @@ RepairOldSDKAndroid(){
 	)
 	echo "${VERMELHO}Warning:${NORMAL} All Android API'S will  be unistalled!"
 	echo "Only the default APIs will be reinstalled!"
-	for ((i=0;i<${#SDK_MANAGER_FAILS[*]};i++))
+	for ((i=0;i<${#sdk_manager_fails[*]};i++))
 	do
-		current_sdk_path="${ANDROID_SDK}/${SDK_MANAGER_FAILS[i]}"
+		local current_sdk_path="${ANDROID_SDK}/${sdk_manager_fails[i]}"
 		if [ -e $current_sdk_path ]; then
 			rm -rf $current_sdk_path
 		fi
 	done
 	getOldAndroidSDK
-	for ((i=0;i<${#SDK_MANAGER_FAILS[*]};i++))
+	for ((i=0;i<${#sdk_manager_fails[*]};i++))
 	do
-		current_sdk_path="${ANDROID_SDK}/${SDK_MANAGER_FAILS[i]}"
+		local current_sdk_path="${ANDROID_SDK}/${sdk_manager_fails[i]}"
 		if [ -e $current_sdk_path ]; then
 			chown $LAMW_USER:$LAMW_USER -R $current_sdk_path
 		fi
@@ -577,12 +561,12 @@ WrappergetAndroidSDK(){
 }
 
 Repair(){
-	flag_need_repair=0 # flag de reparo 
+	local flag_need_repair=0 # flag de reparo 
 	getStatusInstalation 
 	if [ $LAMW_INSTALL_STATUS = 1 ]; then # só executa essa funcao se o lamw tiver instalado
-		flag_old_fpc=""
-		fpc_exe=$(which fpc) #verifica se existe o executavel para o fpc
-		fpc_arm=$(which ppcarm )
+		local flag_old_fpc=""
+		local fpc_exe=$(which fpc) #verifica se existe o executavel para o fpc
+		local fpc_arm=$(which ppcarm )
 		if [ "$fpc_exe" = "" ]; then
 			flag_need_repair=1
 			installDependences # caso não exista -reinstale
@@ -603,9 +587,9 @@ Repair(){
 		if [ -e $LAMW4LINUX_HOME/fpcsrc ]; then 
 			# verifica se  a versao do codigo fonte do fpc casa com a versão do sistema
 			ls $LAMW4LINUX_HOME/fpcsrc | grep $FPC_RELEASE   
-			flag_old_fpc=$?
+			local flag_old_fpc=$?
 			#echo "flag_old_fpc=$flag_old_fpc";read
-			aux_path=""
+			local aux_path=""
 			if [ $flag_old_fpc != 0 ] ; then # caso o código fonte do fpc do LAMW4Linux não match com o do sistema, verifica se necessita fazer downgrade ou upgrade
 				if [ -e "$LAMW4LINUX_HOME/fpcsrc/release_3_0_0" ]; then
 					aux_path="$LAMW4LINUX_HOME/fpcsrc/release_3_0_0"  #faz downgrade
@@ -628,8 +612,8 @@ Repair(){
 		fi
 
 
-		expected_fpc_src_path="${LAMW4LINUX_HOME}/fpcsrc/"
-		expected_fpc_src_path="${expected_fpc_src_path}${FPC_RELEASE}"
+		local expected_fpc_src_path="${LAMW4LINUX_HOME}/fpcsrc/"
+		local expected_fpc_src_path="${expected_fpc_src_path}${FPC_RELEASE}"
 		#echo "$expected_fpc_src_path";read
 		if [ ! -e $expected_fpc_src_path ]; then
 		#	echo "expected_fpc_src_path does not exits"; read
@@ -656,16 +640,16 @@ Repair(){
 	fi
 }
 Repair1(){
-	flag_need_repair=0 # flag de reparo 
-	flag_upgrade_lazarus=0
-	aux_path="$LAMW4LINUX_HOME/fpcsrc"
-	expected_fpc_src_path="$FPC_TRUNK_SOURCE_PATH/${FPC_TRUNK_SVNTAG}"
+	local flag_need_repair=0 # flag de reparo 
+	local flag_upgrade_lazarus=0
+	local aux_path="$LAMW4LINUX_HOME/fpcsrc"
+	local expected_fpc_src_path="$FPC_TRUNK_SOURCE_PATH/${FPC_TRUNK_SVNTAG}"
 
 	getStatusInstalation 
 	if [ $LAMW_INSTALL_STATUS = 1 ]; then # só executa essa funcao se o lamw tiver instalado
-		flag_old_fpc=""
-		fpc_exe=$(which fpc) #verifica se existe o executavel para o fpc
-		fpc_aarch=$(which ppca64)	
+		local flag_old_fpc=""
+		local fpc_exe=$(which fpc) #verifica se existe o executavel para o fpc
+		local fpc_aarch=$(which ppca64)	
 		if [ "$fpc_exe" = "" ]; then
 			flag_need_repair=1
 			installDependences # caso não exista -reinstale
@@ -755,16 +739,20 @@ getImplicitInstall(){
 }
 
 mainInstall(){
-
+	initROOT_LAMW
 	installDependences
 	checkProxyStatus
 	#configureFPC
 	wrapperParseFPC
+	getAnt
+	getGradle
 	getAndroidSDKTools
+	getNDK
 	#unistallJavaUnsupported
 	setJava8asDefault
 	#getSDKAndroid
 	WrappergetAndroidSDK #temporariamente comentado
+	
 	#getFPCSources
 	getWrapperFPCSources
 	getLazarusSources

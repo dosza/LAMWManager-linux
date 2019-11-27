@@ -1,4 +1,27 @@
 #!/bin/bash
+#-------------------------------------------------------------------------------------------------#
+#Universidade federal de Mato Grosso (mater-alma)
+#Course: Science Computer
+#Version: 0.3.3
+#Date: 11/23/2019
+#Description: The "lamw-manager-settings-editor.sh" is part of the core of LAMW Manager. Responsible for managing LAMW Manager / LAMW configuration files..
+#-------------------------------------------------------------------------------------------------#
+#this function builds initial struct directory of LAMW env Development !
+initROOT_LAMW(){
+	if [ ! -e $ANDROID_SDK ]; then 
+		mkdir -p $ANDROID_SDK
+	fi
+
+	if  [ ! -e $LAMW_USER_HOME/.android ]; then
+		mkdir $LAMW_USER_HOME/.android 
+		echo "" > $LAMW_USER_HOME/.android/repositories.cfg
+	fi
+
+	if [ !  -e $HOME/.android ]; then
+		mkdir -p $HOME/.android 	
+		echo "" > $HOME/.android/repositories.cfg
+	fi 
+}
 
 enableADBtoUdev(){
 	  printf 'SUBSYSTEM=="usb", ATTR{idVendor}=="<VENDOR>", MODE="0666", GROUP="plugdev"\n'  |  tee /etc/udev/rules.d/51-android.rules
@@ -6,15 +29,15 @@ enableADBtoUdev(){
 }
 configureFPC(){
 	# parte do arquivo de configuração do fpc, 
-	SearchPackage fpc
-		index=$?
-		parseFPC ${packs[$index]}
+	SearchPackage $FPC_DEFAULT_DEB_PACK
+		local index=$?
+		parseFPC ${PACKS[$index]}
 	#	if [ ! -e $FPC_CFG_PATH ]; then
 			$FPC_MKCFG_EXE -d basepath=/usr/lib/fpc/$FPC_VERSION -o $FPC_CFG_PATH
 		#fi
 
 		#this config enable to crosscompile in fpc 
-		fpc_cfg_str=(
+		local fpc_cfg_str=(
 			"#IFDEF ANDROID"
 			"#IFDEF CPUARM"
 			"-CpARMV7A"
@@ -34,7 +57,7 @@ configureFPC(){
 
 		if [ -e $FPC_CFG_PATH ] ; then  # se exiir /etc/fpc.cfg
 			searchLineinFile $FPC_CFG_PATH  "${fpc_cfg_str[0]}"
-			flag_fpc_cfg=$?
+			local flag_fpc_cfg=$?
 
 			if [ $flag_fpc_cfg != 1 ]; then # caso o arquvo ainda não esteja configurado
 				AppendFileln "$FPC_CFG_PATH" "fpc_cfg_str"  
@@ -44,9 +67,9 @@ configureFPC(){
 
 
 AddSDKPathstoProfile(){
-	profile_file=$LAMW_USER_HOME/.bashrc
-	flag_profile_paths=0
-	profile_line_path='export PATH=$PATH:$GRADLE_HOME/bin'
+	local profile_file=$LAMW_USER_HOME/.bashrc
+	local flag_profile_paths=0
+	local profile_line_path='export PATH=$PATH:$GRADLE_HOME/bin'
 
 	InsertUniqueBlankLine "$LAMW_USER_HOME/.profile"
 	InsertUniqueBlankLine "$LAMW_USER_HOME/.bashrc"
@@ -70,55 +93,40 @@ AddSDKPathstoProfile(){
 changeOwnerAllLAMW(){
 	#case only update-lamw
 	if [ $# = 1 ]; then
-		echo "Restoring directories ..."
-		#sleep 2
-		if [ -e $LAMW4_LINUX_PATH_CFG ]; then
-			chown $LAMW_USER:$LAMW_USER -R $LAMW4_LINUX_PATH_CFG
-		fi
-
-		if [ -e $ROOT_LAMW/lazandroidmodulewizard ]; then 
-			chown $LAMW_USER:$LAMW_USER -R $ROOT_LAMW/lazandroidmodulewizard
-		fi
-		if [ -e $LAMW_IDE_HOME ];then
-			chown $LAMW_USER:$LAMW_USER -R $LAMW4LINUX_HOME/$LAZARUS_STABLE
-		fi 
+		local files_chown=(
+			"$LAMW4_LINUX_PATH_CFG"
+			"$ROOT_LAMW/lazandroidmodulewizard"
+			"$LAMW_IDE_HOME/$LAZARUS_STABLE"
+		)
 	else
-		echo "Restoring directories ..."
-		if [ -e $ROOT_LAMW ]; then
-			chown  -R $LAMW_USER:$LAMW_USER $ROOT_LAMW 
-		fi
-		if  [ -e $FPC_CFG_PATH ]; then 
-			chown $LAMW_USER:$LAMW_USER $FPC_CFG_PATH
-		fi
-		if [ -e $LAMW_USER_HOME/.profile ];then
-			chown $LAMW_USER:$LAMW_USER $LAMW_USER_HOME/.profile
-		fi
-		if [ -e $LAMW_USER_HOME/.bashrc ]; then
-			chown $LAMW_USER:$LAMW_USER $LAMW_USER_HOME/.bashrc
-		fi
-		if [ -e $LAMW_USER_HOME/.android ]; then
-			chown $LAMW_USER:$LAMW_USER  -R $LAMW_USER_HOME/.android
-		fi
-		if [ -e $LAMW_USER_HOME ]; then
-			chown $LAMW_USER:$LAMW_USER -R $LAMW_USER_HOME/.local/share
-		fi
-		if [ -e $LAMW4_LINUX_PATH_CFG ]; then
-			chown $LAMW_USER:$LAMW_USER -R $LAMW4_LINUX_PATH_CFG
-		fi
-		if [ -e $LAMW_USER_HOME/Dev ]; then
-			chown $LAMW_USER:$LAMW_USER -R  $LAMW_USER_HOME/Dev
-		fi
+		local files_chown=(
+			"$ROOT_LAMW"
+			"$FPC_CFG_PATH"
+			"$LAMW_USER_HOME/.profile"
+			"$LAMW_USER_HOME/.bashrc"
+			"$LAMW_USER_HOME/.android"
+			"$LAMW_USER_HOME/.local/share"
+			"$LAMW4_LINUX_PATH_CFG"
+			"$LAMW_USER_HOME/Dev"	
+		)		
 	fi
+	echo "Restoring directories ..."
+	for ((i=0;i<${#files_chown[*]};i++))
+	do
+		if [ -e  ${files_chown[i]} ]; then
+			chown $LAMW_USER:$LAMW_USER -R ${files_chown[i]}
+		fi
+	done
 }
 #write log lamw install 
 writeLAMWLogInstall(){
-	fpc_version=$FPC_VERSION
+	local fpc_version=$FPC_VERSION
 	if [ $FLAG_FORCE_ANDROID_AARCH64 = 1 ]; then
 		fpc_version=$FPC_TRUNK_VERSION
 
 	fi
 
-	lamw_log_str=(
+	local lamw_log_str=(
 		"Generate LAMW_INSTALL_VERSION=$LAMW_INSTALL_VERSION" 
 		"Info:"
 		"LAMW4Linux:$LAMW4LINUX_HOME"
@@ -134,14 +142,13 @@ writeLAMWLogInstall(){
 		"LAZARUS_VERSION=$LAZARUS_STABLE_VERSION"
 		"AARCH64_SUPPORT=$FLAG_FORCE_ANDROID_AARCH64"
 		"Install-date:$(date)"
-		)
+	)
 
-	NOTIFY_SEND_EXE=$(which notify-send)
 	WriterFileln "$LAMW4LINUX_HOME/lamw-install.log" "lamw_log_str"
 	if [ "$NOTIFY_SEND_EXE" != "" ]; then
-		$NOTIFY_SEND_EXE  "Info:\nLAMW4Linux:$LAMW4LINUX_HOME\nLAMW workspace : $LAMW_WORKSPACE_HOME\nAndroid SDK:$ROOT_LAMW/sdk\nAndroid NDK:$ROOT_LAMW/ndk\nGradle:$GRADLE_HOME\nLOG:$LAMW4LINUX_HOME/lamw-install.log"
+		$NOTIFY_SEND_EXE    "Info:\nLAMW4Linux:$LAMW4LINUX_HOME\nLAMW workspace : $LAMW_WORKSPACE_HOME\nAndroid SDK:$ROOT_LAMW/sdk\nAndroid NDK:$ROOT_LAMW/ndk\nGradle:$GRADLE_HOME\nLOG:$LAMW4LINUX_HOME/lamw-install.log"
 	else
-		printf "Info:\nLAMW4Linux:$LAMW4LINUX_HOME\nLAMW workspace : $LAMW_USER_HOME/Dev/lamw_workspace\nAndroid SDK:$ROOT_LAMW/sdk\nAndroid NDK:$ROOT_LAMW/ndk\nGradle:$GRADLE_HOME\nLOG:$LAMW4LINUX_HOME/lamw-install.log"
+		printf "Info:\nLAMW4Linux:$LAMW4LINUX_HOME\nLAMW workspace : $LAMW_USER_HOME/Dev/lamw_workspace\nAndroid SDK:$ROOT_LAMW/sdk\nAndroid NDK:$ROOT_LAMW/ndk\nGradle:$GRADLE_HOME\nLOG:$LAMW4LINUX_HOME/lamw-install.log\n"
 	fi		
 
 }
@@ -155,9 +162,10 @@ AddLAMWtoStartMenu(){
 		mkdir -p $LAMW_USER_HOME/.local/share/mime/packages
 	fi
 	
-	lamw_desktop_file_str=(
+	local lamw_desktop_file_str=(
 		"[Desktop Entry]"  
-		"Name=LAMW4Linux"   
+		"Name=LAMW4Linux"
+		"GenericName=LAMW4Linux"   
 		#Exec=$LAMW4LINUX_EXE_PATH --primary-config-path=$LAMW4_LINUX_PATH_CFG" 
 		"Exec=$LAMW_IDE_HOME/startlamw4linux"
 		"Icon=$LAMW_IDE_HOME/images/icons/lazarus_orange.ico"
@@ -176,7 +184,7 @@ AddLAMWtoStartMenu(){
 
 	WriterFileln "$LAMW_MENU_ITEM_PATH" "lamw_desktop_file_str"
 	chmod +x $LAMW_MENU_ITEM_PATH
-	cp $LAMW_MENU_ITEM_PATH "$work_home_desktop"
+	cp $LAMW_MENU_ITEM_PATH "$WORK_HOME_DESKTOP"
 	#mime association: ref https://help.gnome.org/admin/system-admin-guide/stable/mime-types-custom-user.html.en
 	cp $LAMW_IDE_HOME/install/lazarus-mime.xml $LAMW_USER_HOME/.local/share/mime/packages
 	update-mime-database   $LAMW_USER_HOME/.local/share/mime/
@@ -186,7 +194,7 @@ AddLAMWtoStartMenu(){
 
 #this  fuction create a INI file to config  all paths used in lamw framework 
 LAMW4LinuxPostConfig(){
-	old_lamw_workspace="$LAMW_USER_HOME/Dev/lamw_workspace"
+	local old_lamw_workspace="$LAMW_USER_HOME/Dev/lamw_workspace"
 	if [ ! -e $LAMW4_LINUX_PATH_CFG ] ; then
 		mkdir $LAMW4_LINUX_PATH_CFG
 	fi
@@ -198,10 +206,10 @@ LAMW4LinuxPostConfig(){
 		mkdir -p $LAMW_WORKSPACE_HOME
 	fi
 
-	java_versions=("/usr/lib/jvm/java-8-openjdk-amd64"  "/usr/lib/jvm/java-8-oracle"  "/usr/lib/jvm/java-8-openjdk-i386")
-	java_path=""
-	tam=${#java_versions[@]} #tam recebe o tamanho do vetor 
-	ant_path=$ANT_HOME/bin
+	local java_versions=("/usr/lib/jvm/java-${OPENJDK_DEFAULT}-openjdk-amd64" "/usr/lib/jvm/java-${OPENJDK_DEFAULT}-openjdk-i386")
+	local java_path=""
+	local tam=${#java_versions[@]} #tam recebe o tamanho do vetor 
+	local ant_path=$ANT_HOME/bin
 	ant_path=${ant_path%/ant*} #
 	for (( i = 0; i < tam ; i++ )) # Laço para percorrer o vetor 
 	do
@@ -214,7 +222,7 @@ LAMW4LinuxPostConfig(){
 
 
 # contem o arquivo de configuração do lamw
-	LAMW_init_str=(
+	local LAMW_init_str=(
 		"[NewProject]"
 		"PathToWorkspace=$LAMW_WORKSPACE_HOME"
 		"PathToJavaTemplates=$ROOT_LAMW/lazandroidmodulewizard/android_wizard/smartdesigner/java"
@@ -232,13 +240,12 @@ LAMW4LinuxPostConfig(){
 		"AntBuildMode=debug"
 		"NDK=5"
 		"PathToSmartDesigner=$ROOT_LAMW/lazandroidmodulewizard/android_wizard/smartdesigner"
-
 	)
-	aux_str=''
+	local aux_str=''
 	if [ $FLAG_FORCE_ANDROID_AARCH64 = 1 ]; then
 		aux_str="export PATH=$PATH"
 	fi
-	startlamw4linux_str=(
+	local startlamw4linux_str=(
 		'#!/bin/bash'
 		"export PPC_CONFIG_PATH=$PPC_CONFIG_PATH"
 		"$aux_str"
@@ -288,25 +295,29 @@ ActiveProxy(){
 }
 CleanOldCrossCompileBins(){
 	wrapperParseFPC
-	if [ -e $FPC_LIB_PATH/ppcrossarm ]; then
-		 rm $FPC_LIB_PATH/ppcrossarm
+	local clean_files=(
+		"$FPC_LIB_PATH/ppcrossarm"
+		"/usr/lib/fpc/$FPC_VERSION/fpmkinst/arm-android"
+		"/usr/local/lib/fpc/3.3.1"
+	)
+
+	for((i=0;i<${#clean_files[*]};i++)); do
+		if [  -e ${clean_files[i]} ]; then 
+			rm -rf ${clean_files[i]}
+		fi
+	done
+
+	if [  -e /usr/local/bin/fpc ]; then
+		local fpc_tmp_files=("bin2obj" "chmcmd" "chmls" "cldrparser" "compileserver" "cvsco.tdf" "cvsdiff.tdf" "cvsup.tdf" "data2inc" "delp" "fd2pascal" "fp" "fp.ans" "fpc" "fpcjres" "fpclasschart" "fpclasschart.rsj" "fpcmake" "fpcmkcfg" "fpcmkcfg.rsj" "fpcres" "fpcsubst" "fpcsubst.rsj" "fpdoc" "fppkg" "fprcp" "fp.rsj" "gplprog.pt" "gplunit.pt" "grab_vcsa" "grep.tdf" "h2pas" "h2paspp" "instantfpc" "json2pas" "makeskel" "makeskel.rsj" "mka64ins" "mkarmins" "mkinsadd" "mkx86ins" "pas2fpm" "pas2jni" "pas2js" "pas2ut" "pas2ut.rsj" "plex" "postw32" "ppdep" "ppudump" "ppufiles" "ppumove" "program.pt" "ptop" "ptop.rsj" "pyacc" "rmcvsdir" "rstconv" "rstconv.rsj" "tpgrep.tdf" "unihelper" "unitdiff" "unitdiff.rsj" "unit.pt" "webidl2pas")
+		for((i=0;i<${#fpc_tmp_files[*]};i++)); do
+			local aux="/usr/local/bin/${fpc_tmp_files[i]}"
+			if [ -e $aux ]; then  rm $aux ; fi
+		done
 	fi
 	
-	if [ -e /usr/lib/fpc/$FPC_VERSION/fpmkinst/arm-android ]; then
-		 rm -r /usr/lib/fpc/$FPC_VERSION/fpmkinst/arm-android
-	fi
-	if [ -e /usr/lib/fpc/$FPC_VERSION/units/arm-android ]; then
-		 rm -r /usr/lib/fpc/$FPC_VERSION/units/arm-android
-	fi
-
-	if [ -e /usr/local/bin/fpc ]; then
-		rm -rf  /usr/local/bin/fp*
-	fi
-
-	if [ -e /usr/local/lib/fpc/3.3.1 ]; then
-		rm -rf /usr/local/lib/fpc/3.3.1
-	fi
 }
+
+	
 
 cleanPATHS(){
 	sed -i "/export ANDROID_HOME=*/d"  $LAMW_USER_HOME/.bashrc
@@ -321,130 +332,94 @@ cleanPATHS(){
 #this function remove old config of lamw4linux  
 CleanOldConfig(){
 	wrapperParseFPC
+	local list_deleted_files=(
+		"/usr/bin/aarch64-linux-androideabi-as"
+		"/usr/bin/aarch64-linux-androideabi-ld"
+		"/usr/bin/ppca64"
+		"/usr/bin/ppcrossa64"
+		"/usr/bin/ppcarm"
+		"/usr/bin/ppcrossarm"
+		"/usr/bin/arm-linux-androideabi-ld"
+		"/usr/bin/arm-linux-as"
+		"/usr/lib/fpc/$FPC_VERSION/fpmkinst/arm-android"
+		"/usr/bin/arm-linux-androideabi-as"
+		"/usr/bin/arm-linux-ld"
+		"/usr/bin/startlamw4linux"
+		"$FPC_CFG_PATH"
+		"$LAMW4_LINUX_PATH_CFG"
+		"$ROOT_LAMW"
+		"$LAMW_MENU_ITEM_PATH"
+		"$GRADLE_CFG_HOME"
+		"$WORK_HOME_DESKTOP/lamw4linux.desktop"
+		"$LAMW_USER_HOME/.local/share/mime/packages/lazarus-mime.xml"
+		"$LAMW_USER_HOME/.android"
+		"/root/.android"
+		"$FPC_TRUNK_LIB_PATH"
+		"/root/.fpc.cfg"
+		"$OLD_FPC_CFG_PATH"
+	)
+
+	for((i=0;i<${#list_deleted_files[*]};i++))
+	do
+		if [ -e "${list_deleted_files[i]}" ]; then 
+			if [ -d  "${list_deleted_files[i]}" ]; then 
+				local rm_opts="-rf"
+			fi
+			rm  "${list_deleted_files[i]}" $rm_opts
+		fi
+	done
+	echo "Uninstall LAMW4Linux IDE ..."
 	CleanOldCrossCompileBins
-
-	if [ -e "/usr/bin/aarch64-linux-androideabi-as" ]; then
-		rm "/usr/bin/aarch64-linux-androideabi-as"
-	fi
-
-	if [ -e "/usr/bin/aarch64-linux-androideabi-ld" ] ; then
-		rm "/usr/bin/aarch64-linux-androideabi-ld"
-	fi
-
-	if  [ -e "/usr/bin/ppca64"  ]; then 
-		rm  -rf "/usr/bin/ppca64" 
-	fi
-	if  [ -e "/usr/bin/ppcrossa64" ]; then
-		rm  -rf "/usr/bin/ppcrossa64"
-	fi
-	if [ -e "/usr/bin/ppcarm"   ]; then
-		rm  -rf "/usr/bin/ppcarm"
-	fi	
-	if [ -e "/usr/bin/ppcrossarm"  ]; then
-		rm -rf "/usr/bin/ppcrossarm" 
-	fi
-
-	if [ -e  /usr/bin/arm-linux-androideabi-ld ]; then
-		  rm /usr/bin/arm-linux-androideabi-ld
-	fi
-
-	if [ -e /usr/bin/arm-linux-as ] ; then 
-	 	 rm  /usr/bin/arm-linux-as
-	fi
-	if [ -e /usr/lib/fpc/$FPC_VERSION/fpmkinst/arm-android ]; then
-		 rm -r /usr/lib/fpc/$FPC_VERSION/fpmkinst/arm-android
-	fi
-
-
-	if [ -e /usr/bin/arm-linux-androideabi-as ]; then
-		 rm /usr/bin/arm-linux-androideabi-as
-	fi
-	if [ -e /usr/bin/arm-linux-ld ] ; then 
-		 rm /usr/bin/arm-linux-ld
-	fi
-
-	if [ ! -e "/usr/bin/startlamw4linux" ]; then
-			rm "/usr/bin/startlamw4linux"
-	fi
-
-	if [ -e $FPC_CFG_PATH ]; then #remove local ppc config
-		rm $FPC_CFG_PATH
-	fi
-
-		echo "Uninstall LAMW4Linux IDE ..."
-	# if [ -e $LAMW4LINUX_HOME ] ; then
-	# 	 rm $LAMW4LINUX_HOME -rf
-	# fi
-
-	if [ -e $LAMW4_LINUX_PATH_CFG ]; then  rm -r $LAMW4_LINUX_PATH_CFG; fi
-
-	if [ -e $ROOT_LAMW ] ; then
-		 rm $ROOT_LAMW  -rf
-	fi
-
-
-	if [ -e $LAMW_MENU_ITEM_PATH ]; then
-		rm $LAMW_MENU_ITEM_PATH
-	fi
-
-	if [ -e $GRADLE_CFG_HOME ]; then
-		rm -r $GRADLE_CFG_HOME
-	fi
-	if [ -e "$work_home_desktop/lamw4linux.desktop" ]; then
-		rm "$work_home_desktop/lamw4linux.desktop"
-	fi
-	if [ -e $LAMW_USER_HOME/.local/share/mime/packages/lazarus-mime.xml ]; then
-		rm $LAMW_USER_HOME/.local/share/mime/packages/lazarus-mime.xml
-		update-mime-database   $LAMW_USER_HOME/.local/share/mime/
-		update-desktop-database $LAMW_USER_HOME/.local/share/applications
-		update-menus
-	fi
-
-
-	if  [  -e $LAMW_USER_HOME/.android ]; then
-		rm -r  $LAMW_USER_HOME/.android 
-	fi
-
-	if [ -e /root/.android ]; then 
-		rm -r /root/.android
-	fi
+	update-mime-database   $LAMW_USER_HOME/.local/share/mime/
+	update-desktop-database $LAMW_USER_HOME/.local/share/applications
 	cleanPATHS
-
-	if [ -e $FPC_TRUNK_LIB_PATH ]; then
-		rm -rf $FPC_TRUNK_LIB_PATH
-	fi
-
-	if [ -e $FPC_TRUNK_EXEC_PATH ]; then
-		rm $FPC_TRUNK_EXEC_PATH/fpc* 
-	fi
-
-	if [ -e /root/.fpc.cfg ]; then
-		rm /root/.fpc.cfg
-	fi
-	if [ -e $OLD_FPC_CFG_PATH ]; then
-		rm $OLD_FPC_CFG_PATH
-	fi
-	
 }
 
 #Create SDK simbolic links
 CreateSDKSimbolicLinks(){
-	ln -sf "$ROOT_LAMW/sdk/ndk-bundle" "$ROOT_LAMW/ndk"
-	ln -sf "$ARM_ANDROID_TOOLS" "$ROOT_LAMW/ndk-toolchain"
-	ln -sf "$ARM_ANDROID_TOOLS/arm-linux-androideabi-as" "$ROOT_LAMW/ndk-toolchain/arm-linux-as"
-	ln -sf "$ARM_ANDROID_TOOLS/arm-linux-androideabi-ld" "$ROOT_LAMW/ndk-toolchain/arm-linux-ld"
-	ln -sf "$ARM_ANDROID_TOOLS/arm-linux-androideabi-as" "/usr/bin/arm-linux-androideabi-as"
-	ln -sf "$ARM_ANDROID_TOOLS/arm-linux-androideabi-ld" "/usr/bin/arm-linux-androideabi-ld"
-	ln -sf "$ARM_ANDROID_TOOLS/arm-linux-androideabi-as" "/usr/bin/arm-linux-androideabi-as"
+	local real_ppcarm="$FPC_LIB_PATH/ppcrossarm"
 	if [  $FLAG_FORCE_ANDROID_AARCH64 = 1 ]; then 
-		ln -sf $FPC_TRUNK_LIB_PATH/ppcrossarm /usr/bin/ppcrossarm
-		ln -sf $FPC_TRUNK_LIB_PATH/ppcrossarm /usr/bin/ppcarm
-	else
-		ln -sf $FPC_LIB_PATH/ppcrossarm /usr/bin/ppcrossarm
-		ln -sf /usr/bin/ppcrossarm /usr/bin/ppcarm
+		local real_ppcarm="$FPC_TRUNK_LIB_PATH/ppcrossarm"	
 	fi
-	ln -sf "$ROOT_LAMW/sdk/ndk-bundle/toolchains/arm-linux-androideabi-4.9" "$ROOT_LAMW/sdk/ndk-bundle/toolchains/mips64el-linux-android-4.9"
-	ln -sf "$ROOT_LAMW/sdk/ndk-bundle/toolchains/arm-linux-androideabi-4.9" "$ROOT_LAMW/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9"
+
+	local tools_chains_orig=(
+		"$ROOT_LAMW/sdk/ndk-bundle"
+		"$ARM_ANDROID_TOOLS"
+		"$ARM_ANDROID_TOOLS/arm-linux-androideabi-as"
+		"$ARM_ANDROID_TOOLS/arm-linux-androideabi-ld"
+		"$ARM_ANDROID_TOOLS/arm-linux-androideabi-as"
+		"$ARM_ANDROID_TOOLS/arm-linux-androideabi-ld"
+		"$ARM_ANDROID_TOOLS/arm-linux-androideabi-as"
+		"$ROOT_LAMW/sdk/ndk-bundle/toolchains/arm-linux-androideabi-4.9"
+		"$ROOT_LAMW/sdk/ndk-bundle/toolchains/arm-linux-androideabi-4.9"
+		"$real_ppcarm"
+		"$real_ppcarm"
+	)
+
+
+	local tools_chains_s_links=(
+		"$ROOT_LAMW/ndk"
+		"$ROOT_LAMW/ndk-toolchain"
+		"$ROOT_LAMW/ndk-toolchain/arm-linux-as"
+		"$ROOT_LAMW/ndk-toolchain/arm-linux-ld"
+		"/usr/bin/arm-linux-androideabi-as"
+		"/usr/bin/arm-linux-androideabi-ld"
+		"/usr/bin/arm-linux-androideabi-as"
+		"$ROOT_LAMW/sdk/ndk-bundle/toolchains/mips64el-linux-android-4.9"
+		"$ROOT_LAMW/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9"
+		"/usr/bin/ppcrossarm"
+		"/usr/bin/ppcarm"
+	)
+
+
+	for ((i=0;i<${#tools_chains_orig[*]};i++))
+	do
+		if [  -e "${tools_chains_s_links[i]}" ]; then  
+			rm "${tools_chains_s_links[i]}"
+		fi		
+		ln -sf "${tools_chains_orig[i]}" "${tools_chains_s_links[i]}"	
+	done 
+
 }
 #--------------------------AARCH64 SETTINGS--------------------------
 
@@ -455,12 +430,12 @@ configureFPCTrunk(){
 	$FPC_MKCFG_EXE -d basepath=$FPC_TRUNK_LIB_PATH -o $FPC_CFG_PATH
 
 
-	fpc_trunk_parent=$FPC_TRUNK_LIB_PATH
+	local fpc_trunk_parent=$FPC_TRUNK_LIB_PATH
 	fpc_trunk_parent=$(echo $fpc_trunk_parent | sed "s/\/$_FPC_TRUNK_VERSION//g")
 	#ls $fpc_trunk_parent;echo $fpc_trunk_parent;read;
 
 	#this config enable to crosscompile in fpc 
-	fpc_cfg_str=(
+	local fpc_cfg_str=(
 		"#IFDEF ANDROID"
 		"#IFDEF CPUARM"
 		"-CpARMV7A"
@@ -512,11 +487,9 @@ CreateSimbolicLinksAndroidAARCH64(){
 }
 
 wrapperCreateSDKSimbolicLinks(){
+	CreateSDKSimbolicLinks
 	if [ $FLAG_FORCE_ANDROID_AARCH64 = 1 ]; then
-		CreateSDKSimbolicLinks
 		CreateSimbolicLinksAndroidAARCH64
-	else
-		CreateSDKSimbolicLinks
 	fi
 }
 
@@ -524,8 +497,8 @@ wrapperCreateSDKSimbolicLinks(){
 
 CreateFPCTrunkBootStrap(){
 
-	fpc_trunk_boostrap_path="$FPC_TRUNK_EXEC_PATH/fpc"
-	fpc_bootstrap_str=(
+	local fpc_trunk_boostrap_path="$FPC_TRUNK_EXEC_PATH/fpc"
+	local fpc_bootstrap_str=(
 		'#!/bin/bash'
 		"#Bootsrap(to FPC Trunk) generate by LAMW Manager"
 		"#### THIS FILE IS AUTOMATICALLY CONFIGURED"
@@ -565,22 +538,22 @@ CreateFPCTrunkBootStrap(){
 }
 
 initLAMw4LinuxConfig(){
-	lazarus_env_cfg_str=(
-	'<?xml version="1.0" encoding="UTF-8"?>'
-	'<CONFIG>'
-	'	<EnvironmentOptions>'
-	"		<LazarusDirectory Value=\"/home/danny/LAMW/lamw4linux/lamw4linux/\"/>"
-	"		<CompilerFilename Value=\"$FPC_TRUNK_EXEC_PATH/fpc\"/>"
-	"	</EnvironmentOptions>"
-	"</CONFIG>"
+	local lazarus_env_cfg_str=(
+		'<?xml version="1.0" encoding="UTF-8"?>'
+		'<CONFIG>'
+		'	<EnvironmentOptions>'
+		"		<LazarusDirectory Value=\"/home/danny/LAMW/lamw4linux/lamw4linux/\"/>"
+		"		<CompilerFilename Value=\"$FPC_TRUNK_EXEC_PATH/fpc\"/>"
+		"	</EnvironmentOptions>"
+		"</CONFIG>"
 	)
-	lazarus_env_cfg_path="$LAMW4_LINUX_PATH_CFG/environmentoptions.xml"
+	local lazarus_env_cfg_path="$LAMW4_LINUX_PATH_CFG/environmentoptions.xml"
 
 	if [ ! -e $LAMW4_LINUX_PATH_CFG ]; then
 		mkdir $LAMW4_LINUX_PATH_CFG
 		WriterFileln  "$lazarus_env_cfg_path" "lazarus_env_cfg_str"
 	else
-		fpc_splited=(
+		local fpc_splited=(
 			$(GenerateScapesStr "/usr/bin/fpc"					)				 		#0
 			$(GenerateScapesStr "/usr/share/fpcsrc/\$(FPCVer)"	) 						#1
 			$(GenerateScapesStr "/usr/local/bin/fpc"			)						#2
