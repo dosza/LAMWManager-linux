@@ -1,46 +1,58 @@
-**LAMW Manager Release Notes v.0.3.2**
+# LAMW Manager Release Notes
+This page contains information about new features and bug fixes.
 
+v0.3.3 - November 26, 2019
+---
 <p>
-	<pre>
-		<strong> LAMW Manager 0.3.2</strong>
-		August 19,2019
-	</pre>
-</p>	
+	<strong>NEWS:</strong>
+	<ul>
+		<li>Android NDK r20b</li>
+		<li>Apache Ant 1.10.7</li>
+		<li>Gradle 4.10.3</li>
+		<li>Lazarus 2.0.6</li>
+		<li>Introducing a new installer : <em>lamw_manager_setup.sh</em></li>
+		<li>Add support for non-sudo admin users</li>
+		<li>Fusion the lamw_manager and lamw-manager files.</li>
+	</ul>
+	<strong>FIXED:</strong>
+	<ul>
+		<li>Error run command:fpcmkcfg with <em>fpc-laz</em></li>
+		<li>Fix incompatibility with <em>fpc-laz</em> and <em>lazarus-project</em></li>   
+	</ul>	
+</p>
 
-**NEWS**
+v0.3.2 - R1 - September 8, 2019
+---
 <p>
+	<strong>FIXED:</strong>
+	<ul>
+		<li>Apache Ant URL</li>
+	</ul>	
+</p>
+
+v0.3.2 - August 19, 2019
+---
+<p>
+	<strong>NEWS:</strong>
 	<ul>
 		<li>FPC 3.2.0</li>
 		<li>Lazarus 2.0.4</li>
 		<li>Android API's platform 28</li>
 		<li>Android Build Tools 28.0.3</li>
-		<li>Your now open projects from LAMW4Linux</li>
+		<li>Your now open Projects from File Manager</li>
 		<li>Start LAMW4Linux from the terminal with the command: <em>startlamw4linux</em></li>
 	</ul>
-</p>
-
-
-**FIXED**
-<p>
+	<strong>FIXED:</strong>
 	<ul>
 		<li>PPC_CONFIG_PATH fixed</li>
 		<li>FPC <em>trunk</em> has replaced to FPC 3.2.0</li>
 	</ul>	
 </p>
 
-
-
-**LAMW Manager Release Notes v.0.3.1**
-
+v0.3.1 - August 1, 2019
+---
 <p>
-	<pre>
-		<strong> LAMW Manager 0.3.1</strong>
-		August 1,2019
-	</pre>
-</p>	
-
-**NEWS**
-<p>
+	<strong>NEWS:</strong>
 	<ul>
 		<li>FPC 3.3.1(trunk)</li>
 		<li>Build Freepascal - 3.3.1 x86_64/Linux</li>
@@ -50,39 +62,25 @@
 		<li>Clean CLI Messages</li>
 		<li>Add <em>--reset-aapis</em> command, to clean and Reinstall Android API's</li>
 	</ul>
-</p>
-
-
-**FIXED**
-<p>
+	<strong>FIXED:</strong>
 	<ul>
 		<li>FPC trunk has replace to FPC 3.2.0</li>
 		<li>Removed  unecessary messages!
 	</ul>	
 </p>
 
-**LAMW Manager Release Notes v.0.3.0**
+v0.3.0 - May 10, 2019
+---
 
 <p>
-	<pre>
-		<strong> LAMW Manager v0.3.0</strong>
-		May 10,2019
-	</pre>
-</p>	
-
-**NEWS**
-<p>
+	<strong>NEWS:</strong>
 	<ul>
 		<li>Update FPC to 3.0.0 to 3.0.4 on Ubuntu 16.04/Linux Mint 18</li>
 		<li>Add Auto Repair to fixs FPC</li>
 	</ul>
-</p>
-
-
-**FIXED**
-<p>
+	<strong>FIXED:</strong>
 	<ul>
 		<li>Fix Uninstaller</li>
-		<li>Fix missing ppcrossarm</li>
-	</ul>	
+	    <li>Fix missing ppcrossarm</li>
+	</ul>
 </p>
