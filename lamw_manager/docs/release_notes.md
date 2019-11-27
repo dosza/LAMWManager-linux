@@ -11,8 +11,13 @@ v0.3.3 - November 26, 2019
 		<li>Gradle 4.10.3</li>
 		<li>Lazarus 2.0.6</li>
 		<li>Introducing a new installer : <em>lamw_manager_setup.sh</em></li>
-		<li>Add support for non-sudo admin users</li>
+		<li>Add (transparent) support for non-sudo admin users</li>
+		<li>Now LAMW Manager wait conclusion of previous <strong>APT processes</strong> ( prevents APT/dpkg lock error )</li>
+		<li>Detect and uses fpc-laz to provide FPC compiler</li>
+		<li>Adds JDK 11 Support for systems without JDK8</li>
+		<li>Remove unnecessary files and rearrange directory structure</li>
 		<li>Fusion the lamw_manager and lamw-manager files.</li>
+		<li>"modules" directory has renamed to "core"</li>
 	</ul>
 	<strong>FIXED:</strong>
 	<ul>
