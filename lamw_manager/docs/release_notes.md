@@ -21,7 +21,7 @@ v0.3.3 - November 26, 2019
 	</ul>
 	<strong>FIXED:</strong>
 	<ul>
-		<li>Error run command:fpcmkcfg with <em>fpc-laz</em></li>
+		<li>Error run command : <em>fpcmkcfg</em> with <em>fpc-laz</em></li>
 		<li>Fix incompatibility with <em>fpc-laz</em> and <em>lazarus-project</em></li>   
 	</ul>	
 </p>
