@@ -1,7 +1,7 @@
 LAMW Manager v0.3.3
 =======================================================================
 
-LAMW Manager is a command line tool,like *APT*, to automate the <strong>installation</strong>, <strong>configuration</strong> and <strong>upgrade</strong>  the framework  <a href="https://github.com/jmpessoa/lazandroidmodulewizard"><strong>LAMW - Lazarus Android Module Wizard</strong></a>
+LAMW Manager is a command line tool,like *APT*, to automate the <strong>installation</strong>, <strong>configuration</strong> and <strong>upgrade</strong>  the framework  <a href="https://github.com/jmpessoa/lazandroidmodulewizard"><em>LAMW - Lazarus Android Module Wizard</em></a>
 
 
 What do you get?
@@ -25,7 +25,7 @@ Linux Distro Supported:
 	<li>Ubuntu 18.04 LTS</li>
 	<li>Linux Mint 18 <strong>Cinnamon</strong></li>
 	<li>Linux Mint 19 <strong>Cinnamon</strong></li>
-	<li><a href="https://github.com/DanielOliveiraSouza/LAMWAutoRunScripts/blob/master/lamw_manager/docs/other-distros-info.md"><strong>Requirements for other linux distributions</strong></a></li>
+	<li>Requirements for other <a href="https://github.com/DanielOliveiraSouza/LAMWAutoRunScripts/blob/master/lamw_manager/docs/other-distros-info.md"><strong>Linux</strong></a></li>
 </ul>		
 
 
@@ -55,7 +55,7 @@ Getting Started!!
 <p>
 	<strong>How to use LAMW Manager:</strong>
 	<ol>
-	<li>Click here to download <a href="https://raw.githubusercontent.com/DanielOliveiraSouza/LAMW4Linux-installer/master/lamw_manager/assets/lamw_manager_setup.sh"><strong>LAMW Manager Setup</strong></a></li> 
+	<li>Click here to download <a href="https://raw.githubusercontent.com/DanielOliveiraSouza/LAMW4Linux-installer/master/lamw_manager/assets/lamw_manager_setup.sh"><em>LAMW Manager Setup</em></a></li> 
 	<li>Go to download directory and right click <em>Open in Terminal</em></li>
 	<li>Run command : <em>bash lamw_manager_setup.sh¹</em></li>
 	</ol>
@@ -63,8 +63,8 @@ Getting Started!!
 
 <strong>Notes:</strong>
 <ol>
-	<li>Read more about new installer procedure in <a href="https://github.com/DanielOliveiraSouza/LAMWAutoRunScripts/blob/master/lamw_manager/docs/lamw_manager_setup.md"><strong>LAMW Manager Setup</a></strong></li>
-	<li>You can also install from sources read more in <a href="https://github.com/DanielOliveiraSouza/LAMWAutoRunScripts/blob/master/lamw_manager/docs/classic-install.md"><strong>Classic Install</a></strong></li>
+	<li>Read more about new installer procedure in <a href="https://github.com/DanielOliveiraSouza/LAMWAutoRunScripts/blob/master/lamw_manager/docs/lamw_manager_setup.md"><em>LAMW Manager Setup</em></a></li>
+	<li>You can also install from sources read more in <a href="https://github.com/DanielOliveiraSouza/LAMWAutoRunScripts/blob/master/lamw_manager/docs/classic-install.md"><em>Classic Install</em></strong></li>
 </ol>
 
 
@@ -83,5 +83,5 @@ Congratulations!!
 </p>
 
 <p>
-	For more info read <a href="https://github.com/DanielOliveiraSouza/LAMWAutoRunScripts/blob/master/lamw_manager/docs/man.md"><strong>LAMW Manager master Manual</strong></a>
+	For more info read <a href="https://github.com/DanielOliveiraSouza/LAMWAutoRunScripts/blob/master/lamw_manager/docs/man.md"><strong>LAMW Manager v0.3.3 Manual</strong></a>
 </p>
