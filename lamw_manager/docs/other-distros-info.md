@@ -29,7 +29,7 @@ How to Install OpenJDK8 on GNU/Debian 10
 <p>
 	Run this commands to enable OpenJDK8:
 	<ol>
-		<li>sudo echo "<a href="deb http://security.debian.org/ stretch/updates main contrib non-free">deb http://security.debian.org/ stretch/updates main contrib non-free</a>" | sudo tee /etc/apt/sources.list.d/jdk.list</li>
+		<li>sudo echo "deb http://security.debian.org/ stretch/updates main contrib non-free" | sudo tee /etc/apt/sources.list.d/jdk.list</li>
 		<li>sudo apt-get update;sudo apt-get openjdk-8-jdk -y</li>
 		<li>sudo rm /etc/apt/sources.list.d/jdk.list</li>
 	</ol>
