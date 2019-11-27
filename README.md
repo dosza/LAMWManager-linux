@@ -1,4 +1,4 @@
-LAMW Manager master
+LAMW Manager v0.3.3
 =======================================================================
 
 LAMW Manager is a command line tool,like *APT*, to automate the <strong>installation</strong>, <strong>configuration</strong> and <strong>upgrade</strong>  the framework  <a href="https://github.com/jmpessoa/lazandroidmodulewizard"><strong>LAMW - Lazarus Android Module Wizard</strong></a>
@@ -55,7 +55,7 @@ Getting Started!!
 <p>
 	<strong>How to use LAMW Manager:</strong>
 	<ol>
-	<li><a href="https://raw.githubusercontent.com/DanielOliveiraSouza/LAMW4Linux-installer/master/lamw_manager/assets/lamw_manager_setup.sh">Click here to download <em> LAMW Manager Setup</em></a></li> 
+	<li>Click here to download <a href="https://raw.githubusercontent.com/DanielOliveiraSouza/LAMW4Linux-installer/master/lamw_manager/assets/lamw_manager_setup.sh"><strong>LAMW Manager Setup</strong></a></li> 
 	<li>Go to download directory and right click <em>Open in Terminal</em></li>
 	<li>Run command : <em>bash lamw_manager_setup.sh¹</em></li>
 	</ol>
@@ -63,8 +63,8 @@ Getting Started!!
 
 <strong>Notes:</strong>
 <ol>
-	<li>Read more about new installer procedure in <a href="https://github.com/DanielOliveiraSouza/LAMWAutoRunScripts/blob/master/lamw_manager/docs/lamw_manager_setup.md">LAMW Manager Setup</a></li>
-	<li>You can also install from sources read more in <a href="https://github.com/DanielOliveiraSouza/LAMWAutoRunScripts/blob/master/lamw_manager/docs/classic-install.md">Classic Install</a></li>
+	<li>Read more about new installer procedure in <a href="https://github.com/DanielOliveiraSouza/LAMWAutoRunScripts/blob/master/lamw_manager/docs/lamw_manager_setup.md"><strong>LAMW Manager Setup</a></strong></li>
+	<li>You can also install from sources read more in <a href="https://github.com/DanielOliveiraSouza/LAMWAutoRunScripts/blob/master/lamw_manager/docs/classic-install.md"><strong>Classic Install</a></strong></li>
 </ol>
 
 
