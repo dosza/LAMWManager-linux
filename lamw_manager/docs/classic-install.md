@@ -9,7 +9,7 @@ Basic Tutorial
 	<li>Open a terminal and run ./lamw_manager</li>
 </ol>
 
-Example of installation from sources:
+Examples of installation from sources:
 ===
 <pre> 
 To install LAMW and dependencies:

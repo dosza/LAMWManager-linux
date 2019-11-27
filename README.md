@@ -61,7 +61,7 @@ Getting Started!!
 	</ol>
 </p>
 
-<strong>Note:</strong>You can also install from sources read more in <a href=https://github.com/DanielOliveiraSouza/LAMWAutoRunScripts/blob/master/lamw_manager/docs/classic-install.md">Classic Install</a>
+<strong>Note:</strong>You can also install from sources read more in <a href="https://github.com/DanielOliveiraSouza/LAMWAutoRunScripts/blob/master/lamw_manager/docs/classic-install.md">Classic Install</a>
 
 
 
