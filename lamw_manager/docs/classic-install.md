@@ -9,7 +9,7 @@ Basic Tutorial
 		<li>Clone this repository with command:
 		<pre><em>git clone</em> <a href="https://github.com/DanielOliveiraSouza/LAMW4Linux-installer.git">https://github.com/DanielOliveiraSouza/LAMW4Linux-installer.git</a></pre> 
 		Or Download 
-		<pre><a href="https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/archive/master.zip">https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/archive/master.zip.</a> and unzip.</pre></li>
+		<pre><a href="https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/archive/master.zip">https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/archive/master.zip</a> and unzip.</pre></li>
 		<li>Go to <em>lamw_manager</em> folder</li>
 		<li>Open a terminal and run <em>./lamw_manager</em></li>
 	</ol>
