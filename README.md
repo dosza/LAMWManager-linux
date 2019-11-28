@@ -60,10 +60,12 @@ Getting Started!!
 	<li>Go to download directory and right click <em>Open in Terminal</em></li>
 	<li>Run command : <em>bash lamw_manager_setup.sh¹</em></li>
 	</ol>
+
 </p>
 
 <strong>Notes:</strong>
 <ol>
+	<li>See the <a href="https://drive.google.com/open?id=1B6fvTgJ-W7OS7I4mGCZ4sH0U3GqyAeUg"><em>LAMW Manager Setup Guide</em></a></li>
 	<li>Read more about new installer procedure in <a href="https://github.com/DanielOliveiraSouza/LAMWAutoRunScripts/blob/master/lamw_manager/docs/lamw_manager_setup.md"><em>LAMW Manager Setup</em></a></li>
 	<li>You can also install from sources read more in <a href="https://github.com/DanielOliveiraSouza/LAMWAutoRunScripts/blob/master/lamw_manager/docs/classic-install.md"><em>Classic Install</em></a></li>
 </ol>
