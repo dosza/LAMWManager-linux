@@ -3,11 +3,17 @@ This page contains a tutorial to Install LAMW Manager
 
 Basic Tutorial
 ===
-<ol>
-	<li><a href="https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/archive/master.zip"> Download</a> and unzip or clone this repository  with command: git clone <a href="https://github.com/DanielOliveiraSouza/LAMW4Linux-installer.git">https://github.com/DanielOliveiraSouza/LAMW4Linux-installer.git</a></li>
-	<li>Go to lamw_manager folder</li>
-	<li>Open a terminal and run ./lamw_manager</li>
-</ol>
+<p>
+	Getting from sources:
+	<ol>
+		<li>Clone this repository with command:
+		<pre><em>git clone</em> <a href="https://github.com/DanielOliveiraSouza/LAMW4Linux-installer.git">https://github.com/DanielOliveiraSouza/LAMW4Linux-installer.git</a></pre> 
+		Or Download 
+		<pre><a href="https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/archive/master.zip">https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/archive/master.zip</a> and unzip.</pre></li>
+		<li>Go to <em>lamw_manager</em> folder</li>
+		<li>Open a terminal and run <em>./lamw_manager</em></li>
+	</ol>
+</p>
 
 Example of installation from sources:
 ===
