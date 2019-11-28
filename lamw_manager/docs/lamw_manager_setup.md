@@ -11,7 +11,7 @@ Example of installation from *lamw_manager_setup.sh*
 To install LAMW and dependencies:
 	<strong>bash lamw_manager_setup.sh</strong>
 	<br>To install LAMW and dependencies and Run <strong>Android  GUI SDK Manager</strong><sup>1</sup></br>
-	<strong>bash lamw_manager</strong>        <strong>--</strong>	<em>--sdkmanager</em>
+	<strong>bash lamw_manager_setup.sh</strong>        <strong>--</strong>	<em>--sdkmanager</em>
 <br>To just upgrade <strong>LAMW framework</strong> <em>(with the latest version available in git)</em></br>
 	<strong>bash lamw_manager_setup.sh</strong>        <strong>--</strong>        <em>--update_lamw</em>
 <br>Install with proxy:</br>
