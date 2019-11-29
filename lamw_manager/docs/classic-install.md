@@ -18,16 +18,22 @@ Basic Tutorial
 
 Example of installation from sources:
 ===
-<pre> 
-To install LAMW and dependencies:
-	<strong>./lamw_manager</strong>
-	<br>To install LAMW and dependencies and Run <strong>Android  GUI SDK Manager</strong><sup>1</sup></br>
-	<strong>./lamw_manager</strong>        <em>--sdkmanager</em>
-<br>To just upgrade <strong>LAMW framework</strong> <em>(with the latest version available in git)</em></br>
-	<strong>./lamw_manager</strong>        <em>--update_lamw</em>
-<br>Install with proxy:</br>
-	<strong>./lamw_manager        --use-proxy	--server</strong> <em>10.0.16.1</em>	<strong>--port</strong>	<em>3128</em> 
-<br>To clean and reinstall LAMW</br>
-	<strong>./lamw_manager</strong>        <em>--reset</em>
-<sup>1</sup>  If it is already installed, just run the Android SDK Tools
-</pre>
+<p>
+	<strong>To install LAMW and dependencies:</strong>
+	<pre>	./lamw_manager</pre>
+	<strong>To install LAMW and dependencies and Run Android  GUI SDK Manager</strong><sup>1</sup>
+	<pre>	./lamw_manager        		<em>--sdkmanager</em></pre>
+	<strong>To just upgrade LAMW framework</strong> <em>(with the latest version available in git)</em>
+	<pre>	./lamw_manager                <em>--update_lamw</em></pre>
+	<strong>Install with proxy:</strong>
+	<pre>	./lamw_manager               --use-proxy	--server <em>10.0.16.1</em>	<strong>--port</strong>	<em>3128</em></pre>
+	<strong>To just upgrade LAMW framework</strong> <em>(with the latest version available in git)</em>
+	<pre>	./lamw_manager               --use-proxy	--server <em>10.0.16.1</em>	<strong>--port</strong>	<em>3128</em></pre>
+	<strong>To just upgrade <strong>LAMW framework</strong> <em>(with the latest version available in git)</em>
+	<pre>	./lamw_manager               --use-proxy	--server</strong> <em>10.0.16.1</em>	<strong>--port</strong>	<em>3128</em></pre>
+	<strong>Install with proxy:</strong>
+	<pre>	./lamw_manager               --use-proxy	--server <em>10.0.16.1</em>	<strong>--port</strong>	<em>3128</em></pre>
+	<strong>To clean and reinstall LAMW</strong>
+	<pre>	./lamw_manager              <em> --reset</em></pre>
+	<sup>1</sup>  If it is already installed, just run the Android SDK Tools
+</p>
