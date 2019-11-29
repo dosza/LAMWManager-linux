@@ -13,8 +13,8 @@
               ./lamw_manager
               ./lamw_manager       [<strong>ACTION</strong>] [<strong>OPTIONS</strong>]
               ./lamw_manager       [<strong>OPTIONS</strong>]
-              ./lamw_manager       [<strong>uninstall</strong>]   [<strong>--reset</strong>]  [<strong>--reset-aapis</strong>] 
-                                   [<strong>--sdkmanager</strong>]  [<strong>--update-lamw</strong>] [<strong>--help</strong>]
+              ./lamw_manager       [<strong>uninstall</strong>] [<strong>--reset</strong>] [<strong>--reset-aapis</strong>] 
+                                   [<strong>--sdkmanager</strong>] [<strong>--update-lamw</strong>] [<strong>--help</strong>]
        </pre>
 </p>
 
