@@ -11,7 +11,8 @@ Basic Tutorial
 		Or Download 
 		<pre><a href="https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/archive/master.zip">https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/archive/master.zip</a> and unzip.</pre></li>
 		<li>Go to <em>lamw_manager</em> folder</li>
-		<li>Open a terminal and run <em>./lamw_manager</em></li>
+		<li>Open a terminal and run 
+		<pre>	<em>./lamw_manager</em></pre></li>
 	</ol>
 </p>
 
