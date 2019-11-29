@@ -11,18 +11,21 @@
 <p>
        <pre>
               ./lamw_manager
-              ./lamw_manger [<strong>ACTION</strong>] [<strong>OPTIONS</strong>]
-              ./lamw_manager [<strong>OPTIONS</strong>]
-              ./lamw_manager   [<strong>uninstall</strong>]   [<strong>--reset</strong>]  [<strong>--reset-aapis</strong>] [<strong>--sdkmanager</strong>]  [<strong>--update-lamw</strong>] [<strong>--help</strong>]
+              ./lamw_manager       [<strong>ACTION</strong>] [<strong>OPTIONS</strong>]
+              ./lamw_manager       [<strong>OPTIONS</strong>]
+              ./lamw_manager       [<strong>uninstall</strong>]   [<strong>--reset</strong>]  [<strong>--reset-aapis</strong>] 
+                                   [<strong>--sdkmanager</strong>]  [<strong>--update-lamw</strong>] [<strong>--help</strong>]
        </pre>
 </p>
 
 **DESCRIPTION**
+
 <p>
               LAMW Manager is a command line tool,like APT, to automate the installation,  configuration  and  upgrade the framework LAMW - Lazarus Android Module Wizard
 </p>
 
 **ACTIONS**
+
 <p>
        <pre>
               <strong>uninstall</strong>  Clean all LAMW</pre>
@@ -61,8 +64,13 @@
 </p>
 
 **BUGS**
-<p>If the LAMW4Linux launcher does not appear in the  start  menu,  simply restart the user session</p>
 
+<p>
+       <ol>
+              <li>If the LAMW4Linux launcher does not appear in the  start  menu,  simply restart the user session.</li>
+              <li>You can launch LAMW4Linux with commnad: <em>start_lamw4linux</em>.</li>
+       </ol>
+</p>
 
 **AUTHOR**
        Daniel Oliveira Souza 
