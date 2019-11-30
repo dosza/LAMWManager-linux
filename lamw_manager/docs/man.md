@@ -28,7 +28,7 @@
 
 <p>
        <pre>
-              <strong>uninstall</strong>  Clean all LAMW</pre>
+              <strong>uninstall</strong>         Clean all LAMW</pre>
 </p>
 
 **OPTIONS**
@@ -48,16 +48,16 @@
        <pre>
               ./lamw_manager  [ACTIONS]||[OPTIONS]  <strong>--use-proxy</strong>  <strong>--server</strong> [HOST] <strong>--port</strong>
               [NUMBER]
-              sample:
-              ./lamw_manager --update-lamw --use-proxy --server 10.0.16.1 --port 3128
+              <strong>sample:</strong>
+              ./lamw_manager --update-lamw <strong>--use-proxy</strong>  <strong>--server</strong>  10.0.16.1 --port 3128
         </pre>
  </p>
 
 **DEBUG=1**
 <p>
        <pre>
-              Use the <strong>DEBUG=1</strong> flag later in any position of ./lamw_manager 
-              (flag does not count as argument)
+              Use the <strong>DEBUG=1</strong> flag later in any position of ./lamw_manager (flag does 
+              not count as argument)
                      <strong>Sample:</strong>
               ./lamw_manager --reset <strong>DEBUG=1</strong>
               ./lamw_manager <strong>DEBUG=1</strong> --reset
@@ -67,10 +67,11 @@
 **BUGS**
 
 <p>
-       <ol>
-              <li>If the LAMW4Linux launcher does not appear in the  start  menu,  simply restart the user session.</li>
-              <li>You can launch LAMW4Linux with commnad: <em>start_lamw4linux</em>.</li>
-       </ol>
+       <pre>
+              1 If the LAMW4Linux launcher does not appear in the  start  menu, simply restart 
+       the user session.
+              2 You can launch LAMW4Linux with commnad: <em>start_lamw4linux</em>.
+       </pre></ol>
 </p>
 
 **AUTHOR**
