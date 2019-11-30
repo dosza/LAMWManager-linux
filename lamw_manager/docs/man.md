@@ -1,4 +1,4 @@
-**&nbsp;&nbsp;&nbsp;lamw_manager(1)&nbsp; 2019 Aug 18 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LAMW Manager man page&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lamw_manager(1)**
+**&nbsp;&nbsp;&nbsp;lamw_manager(1)&nbsp; 2019 Nov 28 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LAMW Manager man page&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lamw_manager(1)**
 
 **NAME**
 <p>
@@ -38,7 +38,8 @@
               <strong>--reset-aapis</strong>      Reset Android API's to default
               <strong>--help</strong>             Show this help
               <strong>--sdkmanager</strong>       Run Android SDK Manager
-              <strong>--update-lamw</strong>      Just upgrade LAMW Framework  (with  the  latest  version avaliable in git )
+              <strong>--update-lamw</strong>      Just upgrade LAMW Framework  (with 
+                                 the  latest  version avaliable in git )
        </pre>
 </p>
 
@@ -55,9 +56,9 @@
 **DEBUG=1**
 <p>
        <pre>
-              Use the <strong>DEBUG=1</strong> flag later in any position of ./lamw_manager (flag does not count as argument)
-              <strong>Sample:</strong>
-              sample:
+              Use the <strong>DEBUG=1</strong> flag later in any position of ./lamw_manager 
+              (flag does not count as argument)
+                     <strong>Sample:</strong>
               ./lamw_manager --reset <strong>DEBUG=1</strong>
               ./lamw_manager <strong>DEBUG=1</strong> --reset
        </pre>
