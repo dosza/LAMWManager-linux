@@ -48,7 +48,7 @@
               ./lamw_manager  [ACTIONS]||[OPTIONS]  <strong>--use-proxy</strong>  <strong>--server</strong> [HOST] <strong>--port</strong>
               [NUMBER]
               sample:
-              ./lamw_manger --update-lamw --use-proxy --server 10.0.16.1 --port 3128
+              ./lamw_manager --update-lamw --use-proxy --server 10.0.16.1 --port 3128
         </pre>
  </p>
 
