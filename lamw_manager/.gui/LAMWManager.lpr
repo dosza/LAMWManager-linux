@@ -8,7 +8,7 @@ uses
     cmem, // the c memory manager is on some systems much faster for multi-threading
     {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, umain, uglobal, uproxy
+  Forms, umain, uprocessos, uglobal, uproxy
   { you can add units after this };
 
 {$R *.res}
