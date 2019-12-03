@@ -83,6 +83,14 @@ Run(){
 	fi
 }
 
+getStatus(){
+	if [ -e ~/LAMW/lamw4linux/lamw-install.log ]; then
+		exit 0
+	else
+		exit 1
+	fi
+}
+
 #main function
 main(){
 	IsUserRoot "lamw_manager"
@@ -93,5 +101,10 @@ main(){
 	Run $ARGS
 	DelTempFiles
 }
+
+echo "$*" | grep "get-status" > /dev/null
+if [ $? = 0 ]; then
+	getStatus
+fi
 main $*
 exit $EXIT_STATUS 

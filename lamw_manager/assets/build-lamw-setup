@@ -17,6 +17,7 @@ LAMW_MANAGER_TMP_BUILD="/tmp/lamw_manager_build"
 LAMW_MANAGER_INSTALLER="lamw_manager_setup.sh"
 LAMW_MANAGER_FINAL_INSTALLER="$LAMW_MANAGER_TMP_BUILD/$LAMW_MANAGER_INSTALLER"
 START_LAMW_MANAGER_FILE='.start_lamw_manager'
+BUILD_GUI=0
 
 START_LAMW_MANAGER_STR=(
 	'#!/bin/bash'
@@ -41,16 +42,52 @@ files=(
 	".start_lamw_manager"
 	"../../Getting Started.txt"
 )
+
+CheckBuildFlag(){
+	if [ $BUILD_GUI = 1 ]; then 
+		files[${#files[*]}]="../.gui/images"
+		files[${#files[*]}]="../.gui/LAMWManager"
+		START_LAMW_MANAGER_FILE="LAMWManager"
+	fi
+}
+BuildGUI(){
+	export PATH=$PATH:~/lazarus
+	cd ../.gui
+	lazbuild --build-mode= LAMWManager.lpi
+	cd $AUX
+}
+CleanBuilGUI(){
+	cd ../.gui
+
+	local files=(
+		'LAMWManager'
+		'out.txt'
+		'units/backup'
+		lib/x86_64-linux/{LAMWManager.compiled,LAMWManager.or,uglobal.o,umain.lfm,umain.ppu,uprocessos.ppu,uproxy.o,LAMWManager.o,LAMWManager.res,uglobal.ppu,umain.o,uprocessos.o,uproxy.lfm,uproxy.ppu}
+	)
+
+	for((i=0;i<${#files[*]};i++))
+	do
+		if [ -d ${files[i]} ]; then
+			rm_args='-rf'
+		fi
+		if [ -e ${files[i]} ]; then 
+			rm ${files[i]} $rm_args
+		fi
+	done
+}
+WriterFileln "$AUX/.start_lamw_manager" "START_LAMW_MANAGER_STR"
+chmod +x "$AUX/.start_lamw_manager"
+CheckBuildFlag
 qt=${#files[*]}
 
-WriterFileln "$AUX/$START_LAMW_MANAGER_FILE" "START_LAMW_MANAGER_STR"
-chmod +x "$AUX/$START_LAMW_MANAGER_FILE"
+
 
 if [ ! -e $LAMW_MANAGER_TMP_BUILD ]
 then
 	mkdir $LAMW_MANAGER_TMP_BUILD
 fi
-
+BuildGUI
 #copy directorys and files to LAMW_MANAGER_TMP_BUILD
 for((i=0;i<qt;i++))
 do 
@@ -63,8 +100,9 @@ do
 	fi
 done
 
+CleanBuilGUI
 changeDirectory $LAMW_MANAGER_TMP_BUILD
-makeself  --quiet --gzip --copy --target '$HOME/lamw_manager' $PWD $LAMW_MANAGER_INSTALLER "LAMW Manager Setup"  ./.start_lamw_manager
+makeself  --quiet --xz --copy --target '$HOME/lamw_manager' $PWD $LAMW_MANAGER_INSTALLER "LAMW Manager Setup" "./${START_LAMW_MANAGER_FILE}"
 cp "$LAMW_MANAGER_FINAL_INSTALLER" "$AUX"
 
 changeDirectory $AUX
