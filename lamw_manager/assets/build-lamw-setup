@@ -89,6 +89,7 @@ RemoveTmpFiles(){
 	local del_files=(
 		"../.gui/LAMWManager"
 		"../.gui/out.txt"
+		"../.gui/err.txt"
 		"../.gui/units/backup"
 		"../.gui/backup"
 		"../.gui/lib"
@@ -115,4 +116,10 @@ main(){
 	cp "$LAMW_MANAGER_FINAL_INSTALLER" "$AUX"
 	RemoveTmpFiles
 }
+
+case "$1" in
+	"--gui")
+		BUILD_GUI=1
+	;;
+esac
 main
