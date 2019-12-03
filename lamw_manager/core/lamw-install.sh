@@ -239,11 +239,11 @@ case "$1" in
 	#"delete_paths")
 	#	cleanPATHS
 	#;;
-	"get-status")
-		getStatusInstalation
-		ret=$(echo "!$?" | bc) #nega o valor  usando o BC
-		exit $ret
-	;;
+	# "get-status")
+	# 	getStatusInstalation
+	# 	ret=$(echo "!$?" | bc) #nega o valor  usando o BC
+	# 	exit $ret
+	# ;;
 	"")
 		testImplicitInstall	
 	;;
