@@ -42,26 +42,26 @@
         <IsPartOfProject Value="True"/>
       </Unit0>
       <Unit1>
-        <Filename Value="units/umain.pas"/>
+        <Filename Value="units/uglobal.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="units/uprocessos.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="units/gui/umain.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="Fmain"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-      </Unit1>
-      <Unit2>
-        <Filename Value="units/uglobal.pas"/>
-        <IsPartOfProject Value="True"/>
-      </Unit2>
-      <Unit3>
-        <Filename Value="units/uproxy.pas"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="units/gui/uproxy.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="FormProxy"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-      </Unit3>
-      <Unit4>
-        <Filename Value="units/uprocessos.pas"/>
-        <IsPartOfProject Value="True"/>
       </Unit4>
     </Units>
   </ProjectOptions>
@@ -72,7 +72,7 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
-      <OtherUnitFiles Value="units"/>
+      <OtherUnitFiles Value="units;units/gui"/>
       <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Other>
