@@ -21,12 +21,12 @@ Linux Distro Supported:
 
 <ul>
 	<li>Debian/GNU Linux 9</li>
-	<li><a href="https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/blob/master/lamw_manager/wiki/other-distros-info.md#how-to-install-openjdk8-on-gnudebian-10">Debian/GNU Linux 10</a></li>
+	<li><a href="https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/blob/master/lamw_manager/docs/other-distros-info.md#how-to-install-openjdk8-on-gnudebian-10">Debian/GNU Linux 10</a></li>
 	<li>Ubuntu 16.04 LTS</li>
 	<li>Ubuntu 18.04 LTS</li>
 	<li>Linux Mint 18 <strong>Cinnamon</strong></li>
 	<li>Linux Mint 19 <strong>Cinnamon</strong></li>
-	<li><a href="https://github.com/DanielOliveiraSouza/LAMWAutoRunScripts/blob/master/lamw_manager/wiki/other-distros-info.md">Requirements for other Linux</a></li>
+	<li><a href="https://github.com/DanielOliveiraSouza/LAMWAutoRunScripts/blob/master/lamw_manager/docs/other-distros-info.md">Requirements for other Linux</a></li>
 </ul>		
 
 
@@ -66,8 +66,8 @@ Getting Started!!
 <strong>Notes:</strong>
 <ol>
 	<li>See the <a href="https://drive.google.com/open?id=1B6fvTgJ-W7OS7I4mGCZ4sH0U3GqyAeUg"><em>LAMW Manager Setup Guide</em></a></li>
-	<li>Read more about new installer procedure in <a href="https://github.com/DanielOliveiraSouza/LAMWAutoRunScripts/blob/master/lamw_manager/wiki/lamw_manager_setup.md"><em>LAMW Manager Setup</em></a></li>
-	<li>You can also install from sources read more in <a href="https://github.com/DanielOliveiraSouza/LAMWAutoRunScripts/blob/master/lamw_manager/wiki/classic-install.md"><em>Classic Install</em></a></li>
+	<li>Read more about new installer procedure in <a href="https://github.com/DanielOliveiraSouza/LAMWAutoRunScripts/blob/master/lamw_manager/docs/lamw_manager_setup.md"><em>LAMW Manager Setup</em></a></li>
+	<li>You can also install from sources read more in <a href="https://github.com/DanielOliveiraSouza/LAMWAutoRunScripts/blob/master/lamw_manager/docs/classic-install.md"><em>Classic Install</em></a></li>
 </ol>
 
 
@@ -75,7 +75,7 @@ Getting Started!!
 Release Notes:
 ----------------------------------------------------------------------
 <p>
-	For information on new features and bug fixes read the <a href="https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/blob/master/lamw_manager/wiki/release_notes.md#v033---november-26-2019"><em>Release Notes</em></a>
+	For information on new features and bug fixes read the <a href="https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/blob/master/lamw_manager/docs/release_notes.md#v033---november-26-2019"><em>Release Notes</em></a>
 </p>
 
 Congratulations!!
@@ -86,5 +86,5 @@ Congratulations!!
 </p>
 
 <p>
-	For more info read <a href="https://github.com/DanielOliveiraSouza/LAMWAutoRunScripts/blob/master/lamw_manager/wiki/man.md"><strong>LAMW Manager v0.3.3 Manual</strong></a>
+	For more info read <a href="https://github.com/DanielOliveiraSouza/LAMWAutoRunScripts/blob/master/lamw_manager/docs/man.md"><strong>LAMW Manager v0.3.3 Manual</strong></a>
 </p>	
