@@ -221,6 +221,7 @@ installDependences(){
 	CheckOpenJDK8Support
 	CheckExistsFPCLaz
 	AptInstall $LIBS_ANDROID $PROG_TOOLS  openjdk-${OPENJDK_DEFAULT}-jdk $FPC_DEFAULT_DEB_PACK
+	AptInstall $NON_FREE_TOOLS
 	
 }
 
