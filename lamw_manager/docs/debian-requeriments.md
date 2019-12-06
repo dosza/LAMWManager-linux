@@ -1,15 +1,13 @@
-# GNU/Debian Requeriments 
+# GNU/Debian Requerements 
 
 
 Enable  proprietary softwares in /etc/apt/sources.list
 ---
 <p>
-	By default Debian <a href=" https://wiki.debian.org/SourcesList">does not enable the sources for proprietary softwares</a>.
-	For to  enable you must add <strong>contrib non-free</strong> after official debian sources.
-	Read more DSFG in <a href="https://wiki.debian.org/DFSGLicenses">https://wiki.debian.org/DFSGLicenses</a>
+	By default Debian <a href="https://wiki.debian.org/SourcesList">does not enable the sources for proprietary softwares</a>.
+	<br>For to  enable you must add <strong>contrib non-free</strong> after official debian sources.</br>
+	<br>Read more about Debian Free Software Guidelines (DFSG) in <a href="https://wiki.debian.org/DFSGLicenses">https://wiki.debian.org/DFSGLicenses</a></br>
 </p>
-
-
 
 <p>
 	Follow this steps:
@@ -20,6 +18,7 @@ Enable  proprietary softwares in /etc/apt/sources.list
 		<li>Save the file.</li>
 	</ol>
 </p>
+
 <p>
 	The result is similar a this (sample of file /etc/apt/sources.list of Debian 10 /Buster):
 	<pre>
