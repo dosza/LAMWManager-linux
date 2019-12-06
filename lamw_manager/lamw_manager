@@ -3,7 +3,7 @@
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
 #Version: 0.3.3
-#Date: 10/15/2019
+#Date: 12/03/2019
 #Description:The "lamw_manager" is part of the core of LAMW Manager. This script is a wrapper for "core/lamw-instal.sh"
 #-------------------------------------------------------------------------------------------------#
 
@@ -72,8 +72,20 @@ RunAsPolkit(){
 	fi
 }
 
+#get install status and exit
+getStatus(){
+	if [ -e ~/LAMW/lamw4linux/lamw-install.log ]; then
+		exit 0
+	else
+		exit 1
+	fi
+}
 #Wrapper function to Run LAMW Manager
 Run(){
+	echo "$*" | grep "get-status" > /dev/null
+	if [ $? = 0 ]; then  #get-status is parameter call getStatus
+		getStatus
+	fi
 	echo "$USER" > /tmp/lamw-overrides.conf
 	getBashCMD
 	if [ $USE_PKEXEC = 1 ]; then
@@ -85,6 +97,7 @@ Run(){
 
 #main function
 main(){
+	
 	IsUserRoot "lamw_manager"
 	CheckFlags DEBUG "DEBUG=1"
 	CheckFlags USE_PKEXEC "PKEXEC=1"
@@ -93,5 +106,7 @@ main(){
 	Run $ARGS
 	DelTempFiles
 }
+
+
 main $*
 exit $EXIT_STATUS 
