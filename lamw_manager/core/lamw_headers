@@ -148,7 +148,8 @@ WR_ANDROID_HOME=""
 HOME_USER_SPLITTED_ARRAY=(${HOME//\// })
 HOME_STR_SPLITTED=""
 LIBS_ANDROID="libx11-dev libgtk2.0-dev libgdk-pixbuf2.0-dev libcairo2-dev libpango1.0-dev libxtst-dev libatk1.0-dev libghc-x11-dev freeglut3 freeglut3-dev "
-PROG_TOOLS="menu git subversion make build-essential zip unzip unrar android-tools-adb gdb wget "
+PROG_TOOLS="menu git subversion make build-essential zip unzip android-tools-adb gdb wget "
+NON_FREE_TOOLS="unrar"
 PACKS=()
 FPC_DEBIAN_BACKPORTS=(
 	"# debian backports"  
