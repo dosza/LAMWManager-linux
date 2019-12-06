@@ -20,8 +20,8 @@ Linux Distro Supported:
 ----------------------------------------------------------------------
 
 <ul>
-	<li>Debian/GNU Linux 9</li>
-	<li><a href="https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/blob/master/lamw_manager/docs/other-distros-info.md#how-to-install-openjdk8-on-gnudebian-10">Debian/GNU Linux 10</a></li>
+	<li><a href="https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/blob/v0.3.3/lamw_manager/docs/debian-requeriments.md#enable--property-softwares-in-etcaptsourceslist">Debian/GNU Linux 9</a></li>
+	<li><a href="https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/blob/v0.3.3/lamw_manager/docs/debian-requeriments.md#how-to-install-openjdk8-on-gnudebian-10">Debian/GNU Linux 10</a></li>
 	<li>Ubuntu 16.04 LTS</li>
 	<li>Ubuntu 18.04 LTS</li>
 	<li>Linux Mint 18 <strong>Cinnamon</strong></li>
