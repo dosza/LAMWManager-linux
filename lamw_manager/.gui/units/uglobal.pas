@@ -18,12 +18,12 @@ var
 
   // LAMW MANAGER DATA
   BRIDGE_ROOT : string = 'bridge-root.sh';
-  LAMW_MAIN_SCRIPT : string = 'lamw-manager';
-  LAMW_PACKAGE_SCRIPT:string = 'lamw-package';
+  LAMW_MAIN_SCRIPT : string = 'lamw_manager';
+  LAMW_PACKAGE_SCRIPT:string = 'lamw_package';
   CLEAN_INSTALL_FLAG : boolean = false;
   INSTALL_STATE : boolean = False;
   USE_OLD_SDK : boolean = true;
-  LAMW_MGR_VERSION: string = 'LAMW Manager v0.3.0-testing'+sLineBreak+sLineBreak+'LAMW Manager is a command line tool,like APT, to automate the installation, configuration and upgrade the framework LAMW - Lazarus Android Module Wizard'+ sLineBreak + sLineBreak + 'Created by Daniel Oliveira'+sLineBreak + '2018-2019';
+  LAMW_MGR_VERSION: string = 'LAMW Manager v0.3.4-testing'+sLineBreak+sLineBreak+'LAMW Manager is a command line tool,like APT, to automate the installation, configuration and upgrade the framework LAMW - Lazarus Android Module Wizard'+ sLineBreak + sLineBreak + 'Created by Daniel Oliveira'+sLineBreak + '2018-2019';
 
   // PROXY SETTINGS
   PROXY_SERVER : string  = '';
@@ -36,6 +36,7 @@ var
   TRANSPARENT_PROXY_FLAG : boolean  = false;
   ALTERNATIVE_PROXY_SET_FLAG : boolean = false;
   AUTENTICATION_PROXY_FLAG : boolean = false;
+
 
 
 

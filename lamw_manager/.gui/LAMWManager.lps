@@ -3,7 +3,7 @@
   <ProjectSession>
     <Version Value="11"/>
     <BuildModes Active="Default"/>
-    <Units Count="15">
+    <Units Count="17">
       <Unit0>
         <Filename Value="LAMWManager.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -13,44 +13,40 @@
       </Unit0>
       <Unit1>
         <Filename Value="units/umain.pas"/>
-        <IsPartOfProject Value="True"/>
         <ComponentName Value="Fmain"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="-1"/>
-        <CursorPos X="40" Y="8"/>
-        <UsageCount Value="20"/>
+        <TopLine Value="371"/>
+        <CursorPos X="6" Y="344"/>
+        <UsageCount Value="22"/>
       </Unit1>
       <Unit2>
         <Filename Value="units/uglobal.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <WindowIndex Value="-1"/>
-        <TopLine Value="-1"/>
-        <CursorPos X="-1" Y="-1"/>
-        <UsageCount Value="20"/>
+        <EditorIndex Value="1"/>
+        <TopLine Value="19"/>
+        <CursorPos X="49" Y="22"/>
+        <UsageCount Value="22"/>
+        <Loaded Value="True"/>
       </Unit2>
       <Unit3>
         <Filename Value="units/uproxy.pas"/>
-        <IsPartOfProject Value="True"/>
         <ComponentName Value="FormProxy"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <EditorIndex Value="-1"/>
-        <WindowIndex Value="-1"/>
-        <TopLine Value="-1"/>
-        <CursorPos X="-1" Y="-1"/>
-        <UsageCount Value="20"/>
+        <TopLine Value="76"/>
+        <CursorPos X="37" Y="9"/>
+        <UsageCount Value="22"/>
       </Unit3>
       <Unit4>
         <Filename Value="units/uprocessos.pas"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <WindowIndex Value="-1"/>
-        <TopLine Value="-1"/>
-        <CursorPos X="-1" Y="-1"/>
-        <UsageCount Value="20"/>
+        <IsVisibleTab Value="True"/>
+        <CursorPos X="3" Y="56"/>
+        <UsageCount Value="22"/>
+        <Loaded Value="True"/>
       </Unit4>
       <Unit5>
         <Filename Value="umain.pas"/>
@@ -127,11 +123,37 @@
         <UsageCount Value="10"/>
         <DefaultSyntaxHighlighter Value="XML"/>
       </Unit14>
+      <Unit15>
+        <Filename Value="units/gui/umain.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="Fmain"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <EditorIndex Value="-1"/>
+        <WindowIndex Value="-1"/>
+        <TopLine Value="-1"/>
+        <CursorPos X="-1" Y="-1"/>
+        <UsageCount Value="20"/>
+      </Unit15>
+      <Unit16>
+        <Filename Value="units/gui/uproxy.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FormProxy"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <EditorIndex Value="-1"/>
+        <WindowIndex Value="-1"/>
+        <TopLine Value="-1"/>
+        <CursorPos X="-1" Y="-1"/>
+        <UsageCount Value="20"/>
+      </Unit16>
     </Units>
-    <General>
-      <ActiveWindowIndexAtStart Value="-1"/>
-    </General>
-    <JumpHistory HistoryIndex="-1"/>
+    <JumpHistory Count="1">
+      <Position1>
+        <Filename Value="units/uprocessos.pas"/>
+        <Caret Line="31" Column="34" TopLine="20"/>
+      </Position1>
+    </JumpHistory>
     <RunParams>
       <FormatVersion Value="2"/>
       <Modes Count="0" ActiveMode="default"/>
