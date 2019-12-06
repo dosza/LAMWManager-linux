@@ -36,7 +36,7 @@ Enable  proprietary softwares in /etc/apt/sources.list
 How to Install OpenJDK8 on GNU/Debian 10
 ---
 <p>
-	<strong>Rembember</strong>: First enable proprietary sources!
+	<strong>Remember</strong>: First enable proprietary sources!
 	Run this commands to enable OpenJDK8:
 	<ol>
 		<li><pre>sudo echo "deb http://security.debian.org/ stretch/updates main contrib non-free" | sudo tee /etc/apt/sources.list.d/jdk.list</li></pre>
