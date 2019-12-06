@@ -3,7 +3,7 @@
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
 ##Version: 0.3.3
-#Date: 11/23/2019
+#Date: 12/03/2019
 #Description: The "lamw-install.sh" is part of the core of LAMW Manager. This script configures the development environment for LAMW
 #-------------------------------------------------------------------------------------------------#
 
@@ -235,14 +235,6 @@ case "$1" in
 		else
 			mainInstall
 		fi
-	;;
-	#"delete_paths")
-	#	cleanPATHS
-	#;;
-	"get-status")
-		getStatusInstalation
-		ret=$(echo "!$?" | bc) #nega o valor  usando o BC
-		exit $ret
 	;;
 	"")
 		testImplicitInstall	

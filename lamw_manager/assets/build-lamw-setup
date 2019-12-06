@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
@@ -17,6 +17,7 @@ LAMW_MANAGER_TMP_BUILD="/tmp/lamw_manager_build"
 LAMW_MANAGER_INSTALLER="lamw_manager_setup.sh"
 LAMW_MANAGER_FINAL_INSTALLER="$LAMW_MANAGER_TMP_BUILD/$LAMW_MANAGER_INSTALLER"
 START_LAMW_MANAGER_FILE='.start_lamw_manager'
+BUILD_GUI=0
 
 START_LAMW_MANAGER_STR=(
 	'#!/bin/bash'
@@ -41,38 +42,84 @@ files=(
 	".start_lamw_manager"
 	"../../Getting Started.txt"
 )
-qt=${#files[*]}
 
-WriterFileln "$AUX/$START_LAMW_MANAGER_FILE" "START_LAMW_MANAGER_STR"
-chmod +x "$AUX/$START_LAMW_MANAGER_FILE"
-
-if [ ! -e $LAMW_MANAGER_TMP_BUILD ]
-then
-	mkdir $LAMW_MANAGER_TMP_BUILD
-fi
-
-#copy directorys and files to LAMW_MANAGER_TMP_BUILD
-for((i=0;i<qt;i++))
-do 
-	if [ -e "${files[i]}" ]; then
-		if [ -d "${files[i]}" ]; then # if files[i] is a directory 
-			cp  -r "${files[i]}" "$LAMW_MANAGER_TMP_BUILD"
-		else
-			cp  "${files[i]}" "$LAMW_MANAGER_TMP_BUILD"
-		fi
+CheckBuildFlag(){
+	if [ $BUILD_GUI = 1 ]; then 
+		files[${#files[*]}]="../.gui/images"
+		files[${#files[*]}]="../.gui/LAMWManager"
+		START_LAMW_MANAGER_FILE="LAMWManager"
 	fi
-done
+}
+BuildGUI(){
+	if [ $BUILD_GUI = 0 ]; then
+		return 
+	fi
 
-changeDirectory $LAMW_MANAGER_TMP_BUILD
-makeself  --quiet --gzip --copy --target '$HOME/lamw_manager' $PWD $LAMW_MANAGER_INSTALLER "LAMW Manager Setup"  ./.start_lamw_manager
-cp "$LAMW_MANAGER_FINAL_INSTALLER" "$AUX"
+	export PATH=$PATH:~/lazarus
+	cd ../.gui
+	lazbuild --build-mode= LAMWManager.lpi
+	cd $AUX
+}
 
-changeDirectory $AUX
-if [ -e $LAMW_MANAGER_TMP_BUILD ]; then
-	rm -r $LAMW_MANAGER_TMP_BUILD
-fi
 
-#Remove tempfile
-if [ -e "$AUX/$START_LAMW_MANAGER_FILE" ]; then
-	rm "$AUX/$START_LAMW_MANAGER_FILE"
-fi
+initLAMWBuild(){
+	if [ ! -e $LAMW_MANAGER_TMP_BUILD ]
+	then
+		mkdir $LAMW_MANAGER_TMP_BUILD
+	fi
+	WriterFileln "$AUX/.start_lamw_manager" "START_LAMW_MANAGER_STR"
+	chmod +x "$AUX/.start_lamw_manager"
+}
+CopyFiles(){
+	#copy directorys and files to LAMW_MANAGER_TMP_BUILD
+	for((i=0;i<${#files[*]};i++))
+	do 
+		if [ -e "${files[i]}" ]; then
+			if [ -d "${files[i]}" ]; then # if files[i] is a directory 
+				cp  -r "${files[i]}" "$LAMW_MANAGER_TMP_BUILD"
+			else
+				cp  "${files[i]}" "$LAMW_MANAGER_TMP_BUILD"
+			fi
+		fi
+	done
+}
+
+RemoveTmpFiles(){
+	cd  $AUX
+	local del_files=(
+		"../.gui/LAMWManager"
+		"../.gui/out.txt"
+		"../.gui/err.txt"
+		"../.gui/units/backup"
+		"../.gui/backup"
+		"../.gui/lib"
+		"$AUX/$START_LAMW_MANAGER_FILE" 
+		"$AUX/.start_lamw_manager"
+		"$LAMW_MANAGER_TMP_BUILD"
+	)
+
+	for((i=0;i<${#del_files[*]};i++))
+	do
+		if [ -d ${del_files[i]} ]; then rm_args='-rf'; fi
+		if [ -e ${del_files[i]} ]; then 
+			rm ${del_files[i]} $rm_args
+		fi
+	done
+}
+main(){
+	initLAMWBuild
+	CheckBuildFlag
+	BuildGUI
+	CopyFiles
+	changeDirectory $LAMW_MANAGER_TMP_BUILD
+	makeself  --quiet --xz --copy --target '$HOME/lamw_manager' $PWD $LAMW_MANAGER_INSTALLER "LAMW Manager Setup" "./${START_LAMW_MANAGER_FILE}"
+	cp "$LAMW_MANAGER_FINAL_INSTALLER" "$AUX"
+	RemoveTmpFiles
+}
+
+case "$1" in
+	"--gui")
+		BUILD_GUI=1
+	;;
+esac
+main

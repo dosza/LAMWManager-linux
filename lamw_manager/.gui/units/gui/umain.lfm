@@ -1,21 +1,21 @@
 object Fmain: TFmain
   Left = 0
-  Height = 740
+  Height = 714
   Top = 0
   Width = 1366
   Caption = 'LAMW Manager'
-  ClientHeight = 718
+  ClientHeight = 693
   ClientWidth = 1366
   Menu = MainMenu1
   OnCreate = FormCreate
   LCLVersion = '2.0.4.0'
   object Panel1: TPanel
     Left = 0
-    Height = 718
+    Height = 693
     Top = 0
     Width = 170
     Align = alLeft
-    ClientHeight = 718
+    ClientHeight = 693
     ClientWidth = 170
     TabOrder = 0
     OnClick = Panel1Click
@@ -702,9 +702,9 @@ object Fmain: TFmain
     end
     object CheckBox1: TCheckBox
       Left = 32
-      Height = 24
+      Height = 21
       Top = 304
-      Width = 137
+      Width = 142
       Caption = 'Clean Old Config *'
       OnChange = CheckBox1Change
       TabOrder = 0
@@ -712,11 +712,11 @@ object Fmain: TFmain
   end
   object Panel2: TPanel
     Left = 170
-    Height = 718
+    Height = 693
     Top = 0
     Width = 1196
     Align = alClient
-    ClientHeight = 718
+    ClientHeight = 693
     ClientWidth = 1196
     TabOrder = 1
     OnClick = Panel2Click
@@ -747,7 +747,7 @@ object Fmain: TFmain
         OnClick = MenuItem4Click
       end
       object MenuItem5: TMenuItem
-        Caption = 'Install Laz4LAMW on LAMW'
+        Caption = 'Install LAMW4Linux'
         object MenuItem6: TMenuItem
           Caption = 'Clean and Install'
           OnClick = MenuItem6Click

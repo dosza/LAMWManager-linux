@@ -99,20 +99,14 @@ begin
       self.cmd_args := TStringList.Create;
       self.cmd_args.Add(uglobal.LAMW_MAIN_SCRIPT);
      if ( uglobal.CLEAN_INSTALL_FLAG ) then
-     begin
 //           WriteLn('');
-           str_action:='--reset';
-     end
-     else begin
-            //WriteLn('');
-            str_action := '';
-     end;
+           self.cmd_args.Add('--reset');
 
-
-     self.cmd_args.Add(str_action);
      if ( uglobal.USE_PROXY) then
         self.cmd_args.Add('--use-proxy');
 
+      self.cmd_args.add('PKEXEC=1');
+      self.cmd_args.add('ENTER=1');
       self.proc := RunnableScripts.Create(cmd_args);
       self.proc.RunProcessAsConsole();
       self.proc.Free;
@@ -135,7 +129,8 @@ begin
      self.max_images:= 32;
      self.current_image_index:=1;
      cmd_args:= TStringList.Create();
-     cmd_args.Add(uglobal.LAMW_PACKAGE_SCRIPT);
+     cmd_args.Add(uglobal.LAMW_MAIN_SCRIPT);
+     cmd_args.Add('get-status');
      self.proc:=RunnableScripts.Create(cmd_args);
      self.proc.RunProcess();
      //Self.MenuItem13.Checked := True;
@@ -184,6 +179,8 @@ begin
   self.cmd_args := TStringList.Create;
   self.cmd_args.add(uglobal.LAMW_MAIN_SCRIPT);
   self.cmd_args.add('--update-lamw');
+  self.cmd_args.add('PKEXEC=1');
+  self.cmd_args.add('ENTER=1');
   //mthread := TThread.Create(True);
   //mthread.ExecuteInThread(fmain.showLAMWtutorial);
   //TThreadExecuteCallBack(Self.showLAMWtutorial);
@@ -305,6 +302,8 @@ begin
   self.cmd_args := TStringList.Create;
   self.cmd_args.add(uglobal.LAMW_MAIN_SCRIPT);
   self.cmd_args.add('--update-lamw');
+  self.cmd_args.add('PKEXEC=1');
+  self.cmd_args.add('ENTER=1');
   //mthread := TThread.Create(True);
   //mthread.ExecuteInThread(fmain.showLAMWtutorial);
   //TThreadExecuteCallBack(Self.showLAMWtutorial);
@@ -325,15 +324,9 @@ begin    //clean and install
          //self.CheckBox1.Checked=true;
          uglobal.CLEAN_INSTALL_FLAG:=true;
       self.cmd_args.Add(uglobal.LAMW_MAIN_SCRIPT);
-     if ( uglobal.CLEAN_INSTALL_FLAG ) then
-     begin
+          if ( uglobal.CLEAN_INSTALL_FLAG ) then
 //           WriteLn('');
-           str_action:='--reset';
-     end
-     else begin
-            //WriteLn('');
-            str_action := '';
-     end;
+           self.cmd_args.Add('--reset');
 
 
      self.cmd_args.Add(str_action);
@@ -356,18 +349,14 @@ begin
      if ( uglobal.CLEAN_INSTALL_FLAG ) then
      begin
 //           WriteLn('');
-           str_action:='--reset';
-     end
-     else begin
-            //WriteLn('');
-            str_action := '';
+          self.cmd_args.Add('--reset');
      end;
 
-
-     self.cmd_args.Add(str_action);
      if ( uglobal.USE_PROXY) then
         self.cmd_args.Add('--use-proxy');
 
+       self.cmd_args.add('PKEXEC=1');
+       self.cmd_args.add('ENTER=1');
       self.proc := RunnableScripts.Create(cmd_args);
       self.proc.RunProcessAsConsole();
       self.proc.Free;
