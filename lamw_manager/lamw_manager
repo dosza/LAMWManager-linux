@@ -34,7 +34,7 @@ DelTempFiles(){
 
 #Check if $USER is a sudo member 
 CheckUserIsSudo(){
-	cat /etc/group | grep sudo | grep $USER > /dev/null
+	cat /etc/group | grep sudo | grep $USER > /dev/null 2>&1
 	if [ $? != 0 ]; then 
 		export USE_PKEXEC=1
 	fi
@@ -86,7 +86,13 @@ Run(){
 	if [ $? = 0 ]; then  #get-status is parameter call getStatus
 		getStatus
 	fi
+
 	echo "$USER" > /tmp/lamw-overrides.conf
+	if [ $? != 0 ]; then
+		echo "${VERMELHO}Exists lamw_manager lock!${NORMAL}"
+	 	exit 1
+	fi
+
 	getBashCMD
 	if [ $USE_PKEXEC = 1 ]; then
 		RunAsPolkit $*
