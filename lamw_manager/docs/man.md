@@ -70,7 +70,7 @@
        <pre>
               1 If the LAMW4Linux launcher does not appear in the  start  menu, simply restart 
        the user session.
-              2 You can launch LAMW4Linux with commnad: <em>start_lamw4linux</em>.
+              2 You can launch LAMW4Linux with commnad: <em>startlamw4linux</em>.
        </pre></ol>
 </p>
 

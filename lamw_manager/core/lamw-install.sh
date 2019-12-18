@@ -6,7 +6,6 @@
 #Date: 12/03/2019
 #Description: The "lamw-install.sh" is part of the core of LAMW Manager. This script configures the development environment for LAMW
 #-------------------------------------------------------------------------------------------------#
-
 LAMW_MANAGER_MODULES_PATH=$0
 LAMW_MANAGER_MODULES_PATH=${LAMW_MANAGER_MODULES_PATH%/lamw-install.sh*}
 
@@ -15,6 +14,8 @@ source "$LAMW_MANAGER_MODULES_PATH/lamw_headers"
 source "$LAMW_MANAGER_MODULES_PATH/installer.sh"
 source "$LAMW_MANAGER_MODULES_PATH/lamw-settings-editor.sh"
 source "$LAMW_MANAGER_MODULES_PATH/cross-builder.sh"
+
+chattr +i /tmp/lamw-overrides.conf
 
 #_------------ OS function t
 
@@ -251,3 +252,4 @@ case "$1" in
 		exit 1
 	;;
 esac
+chattr -i /tmp/lamw-overrides.conf
