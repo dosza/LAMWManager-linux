@@ -14,9 +14,12 @@ lamw_manager
  ./lamw_manager 	[\fBuninstall\fR] [\fB\-\-reset\fR] [\fB\-\-reset-aapis\fR]
  			 	[\fB\-\-sdkmanager\fR] [\fB\-\-update-lamw\fR] [\fB\-\-help\fR]
 .SH DESCRIPTION
-LAMW Manager is a command line tool,like APT, to automate the installation, configuration and upgrade the framework LAMW - Lazarus Android Module Wizard
+LAMW Manager is a command line tool,like APT, to automate the installation, configuration and upgrade the framework 
+\.br
+LAMW - Lazarus Android Module Wizard
+
 .SH ACTIONS
-\fBuninstall\fR 		Clean all LAMw
+\fBuninstall\fR 		Clean all LAMW
 .SH OPTIONS
 \fB\-\-reset\fR  			Clean and Install LAMW
 .br
@@ -43,7 +46,8 @@ sample:
  ./lamw_manager \fBDEBUG=1\fR --reset
 .SH BUGS
 	¹	If the LAMW4Linux launcher does not appear in the start menu, simply restart the user session.
-	²	You can launch LAMW4Linux with commnad: \fBstartlamw4linux\fR .
+.br
+	²	You can launch LAMW4Linux with command: \fBstartlamw4linux\fR .
 .SH AUTHOR
-Daniel Oliveira (daniel_o_1@hotmail.com)
+Daniel Oliveira 
 
