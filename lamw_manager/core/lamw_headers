@@ -10,6 +10,12 @@ if [ ! -e /tmp/lamw-overrides.conf ]; then
 	printf "${VERMELHO}Fatal Error: you need run lamw_manager first! ${NORMAL}\n"
 	exit 1
 fi
+
+ps ax | grep $PPID | grep 'lamw_manager' > /dev/null
+if [ $? != 0 ]; then
+	echo "${VERMELHO}Fatal Error: you need run lamw_manager first! ${NORMAL}"
+	exit 1
+fi
 NOTIFY_SEND_EXE=$(which notify-send)
 LAMW_USER=$(cat /tmp/lamw-overrides.conf)
 LAMW_USER_HOME=$(eval echo "~$LAMW_USER")
