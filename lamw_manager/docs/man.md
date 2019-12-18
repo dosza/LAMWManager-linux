@@ -75,4 +75,8 @@
 </p>
 
 **AUTHOR**
-       Daniel Oliveira Souza 
+<p>
+       <pre>
+              Daniel Oliveira Souza 
+       </pre>
+</p>

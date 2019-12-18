@@ -1,5 +1,5 @@
 .\" Manpage for lamw_manager
-.TH lamw_manager 8 "2019 Nov 20" "0.3.3" "LAMW manager man page"
+.TH lamw_manager 8 "2019 Nov 28" "0.3.3" "LAMW manager man page"
 .SH NAME
 lamw_manager -\ manager to LAMW framework
 .SH SINOPSIS
