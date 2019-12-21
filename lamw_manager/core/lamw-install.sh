@@ -15,11 +15,11 @@ source "$LAMW_MANAGER_MODULES_PATH/installer.sh"
 source "$LAMW_MANAGER_MODULES_PATH/lamw-settings-editor.sh"
 source "$LAMW_MANAGER_MODULES_PATH/cross-builder.sh"
 
-chattr +i /tmp/lamw-overrides.conf
-
+#chattr +i /tmp/lamw-overrides.conf
+#chown root:root /tmp/lamw-overrides.conf
 #_------------ OS function t
 
-TrapControlC(){
+TrapActions(){
 	local sdk_tools_zip=$ANDROID_SDK
 	#echo "MAGIC_TRAP_INDEX=$MAGIC_TRAP_INDEX";read
 	local magic_trap=(
@@ -40,9 +40,20 @@ TrapControlC(){
 			rm  -rv $file_deleted
 		fi
 	fi
-	exit 2
+#	chattr -i /tmp/lamw-overrides.conf
+	#exit 2
 }
 
+TrapTermProcess(){
+	#echo "Exec handler to signal 15"
+	TrapActions
+	#chattr -i /tmp/lamw-overrides.conf
+	exit 15
+}
+TrapControlC(){
+	TrapActions
+	exit 2
+}
 
 
 checkForceLAMW4LinuxInstall(){
@@ -170,6 +181,8 @@ fi
  
 GenerateScapesStr
 	
+trap TrapControlC 2
+trap TrapTermProcess 15
 
 #Parameters are useful for understanding script operation
 case "$1" in
@@ -252,4 +265,4 @@ case "$1" in
 		exit 1
 	;;
 esac
-chattr -i /tmp/lamw-overrides.conf
+#chattr -i /tmp/lamw-overrides.conf
