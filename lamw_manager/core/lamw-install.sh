@@ -45,9 +45,7 @@ TrapActions(){
 }
 
 TrapTermProcess(){
-	#echo "Exec handler to signal 15"
 	TrapActions
-	#chattr -i /tmp/lamw-overrides.conf
 	exit 15
 }
 TrapControlC(){
@@ -155,7 +153,8 @@ testImplicitInstall(){
 	fi				
 }
 
-
+#trap TrapTermProcess 15
+trap TrapControlC 2 
 checkForceLAMW4LinuxInstall $*
 	# echo "----------------------------------------------------------------------"
 	#printf "${LAMW_INSTALL_WELCOME[*]}"
@@ -180,9 +179,9 @@ else
 fi
  
 GenerateScapesStr
-	
-trap TrapControlC 2
-trap TrapTermProcess 15
+
+#instalando tratadores de sinal	
+
 
 #Parameters are useful for understanding script operation
 case "$1" in
