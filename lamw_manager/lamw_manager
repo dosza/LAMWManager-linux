@@ -42,7 +42,7 @@ CheckUserIsSudo(){
 
 CheckFlags(){
 	newPtr ref_flag="$1"
-	flagFind=$2
+	local flagFind=$2
 	echo "$ARGS" | grep "$flagFind" > /dev/null
 	if [ $? = 0 ]; then 
 		export ref_flag=1
@@ -86,12 +86,8 @@ Run(){
 	if [ $? = 0 ]; then  #get-status is parameter call getStatus
 		getStatus
 	fi
-
-	if [ -e /tmp/lamw-overrides.conf ]; then
-		echo "${VERMELHO}Exists lamw_manager lock!${NORMAL}"
-	 	exit 1
-	fi
 	
+
 	echo "$USER" > /tmp/lamw-overrides.conf
 	getBashCMD
 	if [ $USE_PKEXEC = 1 ]; then
