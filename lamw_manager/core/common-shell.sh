@@ -42,17 +42,17 @@ changeDirectory(){
 #$2 is a String to search 
 #this function return 0 if not found or 1  if found
 searchLineinFile(){
-	flag=0
-	line='NONE'
+	local flag=0
+	local line=''
 	if [ "$1" != "" ]; then
 		if [ "$2" != "" ]; then
-			for i in $(cat "$1")
+			while  read line 
 			do
-				if [ "$2" = "$i" ]; then
+				if [ "$line" = "$2" ]; then
 					flag=1
 					break
 				fi
-			done
+			done < "$1"
 		fi
 	fi
 	return $flag # return value 
@@ -61,12 +61,12 @@ searchLineinFile(){
 #args $2 is delimeter token 
 #call this function output=($(SplitStr $str $delimiter))
 splitStr(){
-	str=""
-	token=""
-	str_spl=()
+	local str=""
+	local token=""
+	local str_spl=()
 	if [ "$1" != "" ] && [ "$2" != "" ] ; then 
-		str="$1"
-		delimeter=$2
+		local str="$1"
+		local delimeter=$2
 		case "$delimeter" in 
 			"/")
 			str_spl=(${str//\// })
@@ -82,20 +82,20 @@ splitStr(){
 	fi
 }
 GenerateScapesStr(){
-	tam=${#HOME_USER_SPLITTED_ARRAY[@]}
-	str_scapes=""
+	local tam=${#HOME_USER_SPLITTED_ARRAY[@]}
+	local str_scapes=""
 	if [ "$1" = "" ] ; then
 		for ((i=0;i<tam;i++))
 		do
-			HOME_STR_SPLITTED=$HOME_STR_SPLITTED"\/"${HOME_USER_SPLITTED_ARRAY[i]}
+			local HOME_STR_SPLITTED=$HOME_STR_SPLITTED"\/"${HOME_USER_SPLITTED_ARRAY[i]}
 		#echo ${HOME_USER_SPLITTED_ARRAY[i]}
 		done
 	else
-		str_array=($(splitStr "$1" "/"))
-		tam=${#str_array[@]}
+		local str_array=($(splitStr "$1" "/"))
+		local tam=${#str_array[@]}
 		for ((i=0;i<tam;i++))
 		do
-			str_scapes=$str_scapes"\/"${str_array[i]}
+			local str_scapes=$str_scapes"\/"${str_array[i]}
 		done
 		echo "$str_scapes"
 	fi
@@ -109,13 +109,13 @@ GenerateScapesStr(){
 
 Split (){ 
     if [ $# = 3 ] ; then
-        str=$1;
-        delimiter=$2;
+        local str=$1;
+        local delimiter=$2;
         newPtr out=$3
         echo "$1" | grep "$2"  > /dev/null
         if [ $? = 0 ]; then 
-            new_str=${str//$delimiter/ };
-            out=($(echo $new_str))
+            local new_str=${str//$delimiter/ };
+            local out=($(echo $new_str))
             return 0
         fi   
     else
@@ -129,7 +129,7 @@ Split (){
 #note a stream must to be a formatted string
 WriterFile(){
 	if [ $# = 2 ]; then
-		filename="$1"
+		local filename="$1"
 		newPtr stream=$2
 		for((i=0;i<${#stream[*]};i++))
 		do
@@ -144,7 +144,7 @@ WriterFile(){
 
 WriterFileln(){
 	if [ $# = 2 ]; then
-		filename="$1"
+		local filename="$1"
 		newPtr stream=$2
 		for((i=0;i<${#stream[*]};i++))
 		do
@@ -164,7 +164,7 @@ WriterFileln(){
 #note a stream must to be a formatted string
 AppendFile(){
 	if [ $# = 2 ]; then
-		filename="$1"
+		local filename="$1"
 		newPtr stream=$2
 		if [  -e  $filename ]; then 
 			for((i=0;i<${#stream[*]};i++))
@@ -179,7 +179,7 @@ AppendFile(){
 
 AppendFileln(){
 	if [ $# = 2 ]; then
-		filename="$1"
+		local filename="$1"
 		newPtr stream=$2
 		if [  -e  "$filename" ]; then 
 			for((i=0;i<${#stream[*]};i++))
@@ -195,7 +195,7 @@ AppendFileln(){
 InsertUniqueBlankLine(){
 	if [ "$1" != "" ] ; then
 		if [ -e "$1" ] ; then 
-			aux=$(tail -1 "$1" )       #tail -1 mostra a última linha do arquivo 
+			local aux=$(tail -1 "$1" )       #tail -1 mostra a última linha do arquivo 
 			if [ "$aux" != "" ] ; then   # verifica se a última linha é vazia
 				sed  -i '$a\' "$1" #adiciona uma linha ao fim do arquivo
 			fi
