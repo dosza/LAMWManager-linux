@@ -22,7 +22,8 @@
 
 <p>
        <pre>
-              LAMW Manager is a command line tool,like APT, to automate the installation,  configuration  and  upgrade the framework LAMW - Lazarus Android Module Wizard
+              LAMW Manager is a command line tool,like APT, to automate the installation,
+              configuration  and  upgrade the framework LAMW - Lazarus Android Module Wizard.
        </pre>
 </p>
 
