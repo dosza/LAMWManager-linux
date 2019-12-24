@@ -42,6 +42,7 @@ TrapActions(){
 	fi
 #	chattr -i /tmp/lamw-overrides.conf
 	#exit 2
+	rm '/tmp/lamw-overrides.conf'
 }
 
 TrapTermProcess(){
@@ -219,7 +220,7 @@ case "$1" in
 			echo "Updating LAMW";
 			getLAMWFramework;
 			sleep 1;
-			BuildLazarusIDE 
+			BuildLazarusIDE "1"
 			changeOwnerAllLAMW "1";
 		fi
 	;;
