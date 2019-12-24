@@ -34,7 +34,7 @@ DelTempFiles(){
 
 #Check if $USER is a sudo member 
 CheckUserIsSudo(){
-	cat /etc/group | grep sudo | grep $USER > /dev/null
+	cat /etc/group | grep sudo | grep $USER > /dev/null 2>&1
 	if [ $? != 0 ]; then 
 		export USE_PKEXEC=1
 	fi
@@ -42,7 +42,7 @@ CheckUserIsSudo(){
 
 CheckFlags(){
 	newPtr ref_flag="$1"
-	flagFind=$2
+	local flagFind=$2
 	echo "$ARGS" | grep "$flagFind" > /dev/null
 	if [ $? = 0 ]; then 
 		export ref_flag=1
@@ -86,6 +86,8 @@ Run(){
 	if [ $? = 0 ]; then  #get-status is parameter call getStatus
 		getStatus
 	fi
+	
+
 	echo "$USER" > /tmp/lamw-overrides.conf
 	getBashCMD
 	if [ $USE_PKEXEC = 1 ]; then

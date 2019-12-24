@@ -6,7 +6,6 @@
 #Date: 12/03/2019
 #Description: The "lamw-install.sh" is part of the core of LAMW Manager. This script configures the development environment for LAMW
 #-------------------------------------------------------------------------------------------------#
-
 LAMW_MANAGER_MODULES_PATH=$0
 LAMW_MANAGER_MODULES_PATH=${LAMW_MANAGER_MODULES_PATH%/lamw-install.sh*}
 
@@ -16,9 +15,11 @@ source "$LAMW_MANAGER_MODULES_PATH/installer.sh"
 source "$LAMW_MANAGER_MODULES_PATH/lamw-settings-editor.sh"
 source "$LAMW_MANAGER_MODULES_PATH/cross-builder.sh"
 
+#chattr +i /tmp/lamw-overrides.conf
+#chown root:root /tmp/lamw-overrides.conf
 #_------------ OS function t
 
-TrapControlC(){
+TrapActions(){
 	local sdk_tools_zip=$ANDROID_SDK
 	#echo "MAGIC_TRAP_INDEX=$MAGIC_TRAP_INDEX";read
 	local magic_trap=(
@@ -39,9 +40,19 @@ TrapControlC(){
 			rm  -rv $file_deleted
 		fi
 	fi
-	exit 2
+#	chattr -i /tmp/lamw-overrides.conf
+	#exit 2
+	rm '/tmp/lamw-overrides.conf'
 }
 
+TrapTermProcess(){
+	TrapActions
+	exit 15
+}
+TrapControlC(){
+	TrapActions
+	exit 2
+}
 
 
 checkForceLAMW4LinuxInstall(){
@@ -143,7 +154,8 @@ testImplicitInstall(){
 	fi				
 }
 
-
+#trap TrapTermProcess 15
+trap TrapControlC 2 
 checkForceLAMW4LinuxInstall $*
 	# echo "----------------------------------------------------------------------"
 	#printf "${LAMW_INSTALL_WELCOME[*]}"
@@ -168,7 +180,9 @@ else
 fi
  
 GenerateScapesStr
-	
+
+#instalando tratadores de sinal	
+
 
 #Parameters are useful for understanding script operation
 case "$1" in
@@ -206,7 +220,7 @@ case "$1" in
 			echo "Updating LAMW";
 			getLAMWFramework;
 			sleep 1;
-			BuildLazarusIDE 
+			BuildLazarusIDE "1"
 			changeOwnerAllLAMW "1";
 		fi
 	;;
@@ -251,3 +265,4 @@ case "$1" in
 		exit 1
 	;;
 esac
+#chattr -i /tmp/lamw-overrides.conf

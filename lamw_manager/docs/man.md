@@ -21,7 +21,10 @@
 **DESCRIPTION**
 
 <p>
-              LAMW Manager is a command line tool,like APT, to automate the installation,  configuration  and  upgrade the framework LAMW - Lazarus Android Module Wizard
+       <pre>
+              LAMW Manager is a command line tool,like APT, to automate the installation,
+              configuration  and  upgrade the framework LAMW - Lazarus Android Module Wizard.
+       </pre>
 </p>
 
 **ACTIONS**
@@ -70,9 +73,13 @@
        <pre>
               1 If the LAMW4Linux launcher does not appear in the  start  menu, simply restart 
        the user session.
-              2 You can launch LAMW4Linux with commnad: <em>start_lamw4linux</em>.
+              2 You can launch LAMW4Linux with command: <em>startlamw4linux</em>.
        </pre></ol>
 </p>
 
 **AUTHOR**
-       Daniel Oliveira Souza 
+<p>
+       <pre>
+              Daniel Oliveira Souza 
+       </pre>
+</p>
