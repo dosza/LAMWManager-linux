@@ -69,8 +69,7 @@ v0.3.1 - August 1, 2019
 	</ul>
 	<strong>FIXED:</strong>
 	<ul>
-		<li>FPC trunk has replace to FPC 3.2.0</li>
-		<li>Removed  unecessary messages!
+		<li>Removed  unecessary messages!</li>
 	</ul>	
 </p>
 
