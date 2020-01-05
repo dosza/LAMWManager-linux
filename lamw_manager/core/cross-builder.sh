@@ -120,7 +120,7 @@ BuildCrossAArch64(){
 		echo "${VERMELHO}Fatal Error: Falls to build FPC  to Android/ARMv7${NORMAL}"
 		exit 1
 	fi
-	CreateFPCTrunkBootStrap
+	#CreateFPCTrunkBootStrap
 }
 
 #wrapper to configureFPC
