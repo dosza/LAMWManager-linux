@@ -3,7 +3,7 @@
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
 #Version: 0.3.3
-#Date: 11/25/2019
+#Date: 02/25/2020
 #Description: "installer.sh" is part of the core of LAMW Manager. Contains routines for installing LAMW development environment
 #-------------------------------------------------------------------------------------------------#
 
@@ -38,11 +38,7 @@ LAMWPackageManager(){
 		if [ -e "$OLD_FPC_CFG_PATH" ]; then
 			rm "$OLD_FPC_CFG_PATH"
 		fi
-
-		if [ -e "$PPC_CONFIG_PATH" ]; then
-			rm "$PPC_CONFIG_PATH"
-		fi
-
+	
 		#fixs 0.3.1 to 0.3.2
 		if [ -e $LAMW4LINUX_HOME/lamw-install.log ]; then
 			cat  $LAMW4LINUX_HOME/lamw-install.log | grep '0.3.1'
@@ -274,10 +270,10 @@ getFPCSources(){
 getFPCSourcesTrunk(){
 	mkdir -p $FPC_TRUNK_SOURCE_PATH
 	changeDirectory $FPC_TRUNK_SOURCE_PATH
-	svn checkout $FPC_TRUNK_URL
+	svn checkout $FPC_TRUNK_URL --force
 	if [ $? != 0 ]; then
 		rm -rf "$FPC_TRUNK_SVNTAG"
-		svn checkout "$FPC_TRUNK_URL"
+		svn checkout "$FPC_TRUNK_URL" --force
 		if [ $? != 0 ]; then 
 			rm -rf "$FPC_TRUNK_SVNTAG"
 			echo "possible network instability! Try later!"

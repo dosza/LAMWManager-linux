@@ -24,7 +24,7 @@ ANDROID_HOME=$LAMW_USER_HOME/LAMW
 ANDROID_SDK="$ROOT_LAMW/sdk"
 #--------------------------------------------------------------------------------------
 export XDG_DATA_DIRS="/usr/share:/usr/local/share:$LAMW_USER_HOME/.local/share"
-LAMW_INSTALL_VERSION="0.3.3"
+LAMW_INSTALL_VERSION="0.3.3r2"
 LAMW_INSTALL_WELCOME=(
 	"${NEGRITO}LAMW Manager v$LAMW_INSTALL_VERSION${NORMAL}\n"
 	#"\t\tPowerd by Daniel Oliveira Souza\n"
@@ -124,7 +124,7 @@ LAZARUS_STABLE="lazarus_"${LAZARUS_STABLE_VERSION//\./_} #expansão que remove t
 LAZARUS_STABLE_SRC_LNK="https://svn.freepascal.org/svn/lazarus/tags/${LAZARUS_STABLE}"
 OLD_FPC_CFG_PATH="$LAMW_USER_HOME/.fpc.cfg"
 export FPC_CFG_PATH="$LAMW_USER_HOME/.fpc.cfg"
-export PPC_CONFIG_PATH="$FPC_CFG_PATH"
+export PPC_CONFIG_PATH="$LAMW_USER_HOME"
 LAZARUS_OLD_STABLE=(
 	"lazarus_2_0_4"
 	"lazarus_2_0_2"
@@ -179,7 +179,7 @@ export FPC_CROSS_AARCH_DEFAULT_PARAMETERS=('clean crossall crossinstall  CPU_TAR
 export PATH=$PATH:$AARCH64_ANDROID_TOOLS
 export FLAG_FORCE_ANDROID_AARCH64=1
 export FPC_TRUNK_RELEASE=""
-export FPC_TRUNK_URL="https://svn.freepascal.org/svn/fpc/branches/fixes_3_2"
+export FPC_TRUNK_URL="https://svn.freepascal.org/svn/fpc/branches/fixes_3_2@43981"
 export FPC_TRUNK_VERSION=""
 export FPC_TRUNK_LIB_PATH=""
 export FPC_TRUNK_EXEC_PATH=""
