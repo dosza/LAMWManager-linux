@@ -1,6 +1,15 @@
 # LAMW Manager Release Notes
 This page contains information about new features and bug fixes.
 
+v0.3.3 -R1 - February 25, 2020
+---
+<p>
+	<strong>FIXED:</strong>
+	<ul>
+		<li>Error Build Lazarus with FPC 3.2.0</li>
+	</ul>
+</p>
+
 v0.3.3 - November 26, 2019
 ---
 <p>
