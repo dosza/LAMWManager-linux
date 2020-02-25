@@ -38,11 +38,7 @@ LAMWPackageManager(){
 		if [ -e "$OLD_FPC_CFG_PATH" ]; then
 			rm "$OLD_FPC_CFG_PATH"
 		fi
-
-		if [ -e "$PPC_CONFIG_PATH" ]; then
-			rm "$PPC_CONFIG_PATH"
-		fi
-
+	
 		#fixs 0.3.1 to 0.3.2
 		if [ -e $LAMW4LINUX_HOME/lamw-install.log ]; then
 			cat  $LAMW4LINUX_HOME/lamw-install.log | grep '0.3.1'
