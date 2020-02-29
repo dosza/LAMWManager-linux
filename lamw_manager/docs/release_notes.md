@@ -1,7 +1,7 @@
 # LAMW Manager Release Notes
 This page contains information about new features and bug fixes.
 
-v0.3.3 -R3 - February 29,2020
+v0.3.3 - R3 - February 29, 2020
 ---
 <p>
 	<strong>FIXED:</strong>
