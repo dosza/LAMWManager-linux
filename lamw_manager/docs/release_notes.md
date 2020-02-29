@@ -1,6 +1,16 @@
 # LAMW Manager Release Notes
 This page contains information about new features and bug fixes.
 
+v0.3.3 -R3 - February 29,2020
+---
+<p>
+	<strong>FIXED:</strong>
+	<ul>
+		<li>Error: Exit without Install APT Dependencies</li>
+		<li>Prevent error: install unrar packager</li>
+	</ul>
+</p>
+
 v0.3.3 - R2 - February 25, 2020
 ---
 <p>
@@ -28,6 +38,7 @@ v0.3.3 - November 26, 2019
 		<li>Apache Ant 1.10.7</li>
 		<li>Gradle 4.10.3</li>
 		<li>Lazarus 2.0.6</li>
+		<li>Install new LAMW package: <em>FCL Bridges</em>!</li>
 		<li>Introducing a new installer : <em>lamw_manager_setup.sh</em></li>
 		<li>Add (transparent) support for non-sudo admin users</li>
 		<li>Now LAMW Manager prevents <strong>APT/dpkg</strong> lock error</li>
