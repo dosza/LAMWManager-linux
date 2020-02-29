@@ -3,7 +3,7 @@
 #Universidade federal de Mato Grosso (mater-alma)
 #Course: Science Computer
 #version: 0.0.1
-#Date: 11/23/19
+#Date: 02/29/2020
 #Description: This script is not part of LAMW Manager! It is an external library that implements routines common to shell script.
 #-------------------------------------------------------------------------------------------------#
 
@@ -25,6 +25,7 @@ APT_LOCKS=(
 )
 shopt  -s expand_aliases
 alias newPtr='declare -n'
+
 #cd not a native command, is a systemcall used to exec, read more in exec man 
 changeDirectory(){
 	if [ "$1" != "" ] ; then
@@ -261,7 +262,7 @@ AptInstall(){
 	apt-get install $* ${apt_opts[*]}
 	if [ "$?" != "0" ]; then
 		apt-get install $* ${apt_opts[*]} ${apt_opts_err[*]}
-		if [ $? = 0 ]; then 
+		if [ $? != 0 ]; then 
 			echo "possible network instability! Try later!"
 			exit 1
 		fi
