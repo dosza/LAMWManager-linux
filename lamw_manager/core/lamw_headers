@@ -197,7 +197,7 @@ export OLD_ANT=(
 
 export FPC_LAZ_LINKS=(
 	"https://sourceforge.net/projects/lazarus/files/Lazarus%20Linux%20amd64%20DEB/Lazarus%20${LAZARUS_STABLE_VERSION}/fpc-laz_3.0.4-1_amd64.deb"
-	'https://sourceforge.net/projects/lazarus/files/Lazarus%20Linux%20amd64%20DEB/Lazarus%20${LAZARUS_STABLE_VERSION}/fpc-src_3.0.4-2_amd64.deb'
+	"https://sourceforge.net/projects/lazarus/files/Lazarus%20Linux%20amd64%20DEB/Lazarus%20${LAZARUS_STABLE_VERSION}/fpc-src_3.0.4-2_amd64.deb"
 )
 #---------------------------------------------------------------------------------------------------------------------
 
