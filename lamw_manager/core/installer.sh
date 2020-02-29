@@ -3,7 +3,7 @@
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
 #Version: 0.3.3
-#Date: 02/25/2020
+#Date: 02/29/2020
 #Description: "installer.sh" is part of the core of LAMW Manager. Contains routines for installing LAMW development environment
 #-------------------------------------------------------------------------------------------------#
 
@@ -217,7 +217,13 @@ installDependences(){
 	CheckOpenJDK8Support
 	CheckExistsFPCLaz
 	AptInstall $LIBS_ANDROID $PROG_TOOLS  openjdk-${OPENJDK_DEFAULT}-jdk $FPC_DEFAULT_DEB_PACK
-	AptInstall $NON_FREE_TOOLS
+	exec 2> /dev/null apt show $NON_FREE_TOOLS | grep 'Source: unrar-nonfree' > /dev/null
+	if [ $? = 0 ]; then
+		AptInstall $NON_FREE_TOOLS
+	else
+		printf "${VERMELHO}Warning: The unrar package isn't available!\nCheck your /etc/apt/sources.list file${NORMAL}\nIgnoring instalation of ${NEGRITO}unrar${NORMAL} package!\n"
+		sleep 1
+	fi
 	
 }
 
