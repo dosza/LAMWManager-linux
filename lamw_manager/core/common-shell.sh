@@ -82,23 +82,13 @@ splitStr(){
 		esac
 	fi
 }
+
 GenerateScapesStr(){
-	local tam=${#HOME_USER_SPLITTED_ARRAY[@]}
-	local str_scapes=""
 	if [ "$1" = "" ] ; then
-		for ((i=0;i<tam;i++))
-		do
-			local HOME_STR_SPLITTED=$HOME_STR_SPLITTED"\/"${HOME_USER_SPLITTED_ARRAY[i]}
-		#echo ${HOME_USER_SPLITTED_ARRAY[i]}
-		done
+		echo "There is no string to scape!"
+		exit 1 
 	else
-		local str_array=($(splitStr "$1" "/"))
-		local tam=${#str_array[@]}
-		for ((i=0;i<tam;i++))
-		do
-			local str_scapes=$str_scapes"\/"${str_array[i]}
-		done
-		echo "$str_scapes"
+		echo "$1" | sed 's|\/|\\\/|g'
 	fi
 }
 
