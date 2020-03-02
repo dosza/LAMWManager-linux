@@ -179,7 +179,6 @@ else
 	initParameters
 fi
  
-GenerateScapesStr
 
 #instalando tratadores de sinal	
 
