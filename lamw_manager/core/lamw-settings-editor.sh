@@ -542,8 +542,15 @@ initLAMw4LinuxConfig(){
 		'<?xml version="1.0" encoding="UTF-8"?>'
 		'<CONFIG>'
 		'	<EnvironmentOptions>'
-		"		<LazarusDirectory Value=\"/home/danny/LAMW/lamw4linux/lamw4linux/\"/>"
+		"		<Version Value=\"110\" Lazarus=\"${LAZARUS_STABLE_VERSION}\"/>"
+		"		<LazarusDirectory Value=\"${LAMW_IDE_HOME}/\"/>"
 		"		<CompilerFilename Value=\"$FPC_TRUNK_EXEC_PATH/fpc\"/>"
+		"		<FPCSourceDirectory Value=\"${FPC_TRUNK_SOURCE_PATH}/${FPC_TRUNK_SVNTAG}\">" 
+		"		</FPCSourceDirectory>"
+		"		<MakeFilename Value=\"$(which make)\">"
+		"		</MakeFilename>"
+		"		<TestBuildDirectory Value=\"/tmp\">"
+		"		</TestBuildDirectory>"
 		"	</EnvironmentOptions>"
 		"</CONFIG>"
 	)
