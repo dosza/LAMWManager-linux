@@ -581,7 +581,7 @@ initLAMw4LinuxConfig(){
 		fi
 
 		#caso FPCSource foi apontado para um arquivo inesperado
-		cat $lazarus_env_cfg_path | grep "FPCSourceDirectory=\"${fpc_splited[5]}\""
+		cat $lazarus_env_cfg_path | grep "FPCSourceDirectory Value=\"${fpc_splited[5]}\""
 		if [ $? != 0 ]; then 
 			local wrong_fpc_splited_path=$(cat $lazarus_env_cfg_path | grep 'FPCSourceDirectory' |sed -r 's/    //g' |sed  's/<FPCSourceDirectory Value=//g' | sed 's/\/>//g' | sed 's/"//g')
 			local wrong_fpc_splited_path=$(GenerateScapesStr $wrong_fpc_splited_path )
