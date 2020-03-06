@@ -1,5 +1,7 @@
-LAMW Manager v0.3.3
+LAMW Manager v0.3.4 
 =======================================================================
+
+[![Build-status)](https://img.shields.io/badge/build-uninstable-red)](https://raw.githubusercontent.com/DanielOliveiraSouza/LAMW4Linux-installer/v0.3.4/lamw_manager/assets/lamw_manager_setup.sh)
 
 LAMW Manager is a command line tool,like *APT*, to automate the <strong>installation</strong>, <strong>configuration</strong> and <strong>upgrade</strong>  the framework  <a href="https://github.com/jmpessoa/lazandroidmodulewizard">LAMW - Lazarus Android Module Wizard</a>
 
@@ -56,7 +58,7 @@ Getting Started!!
 <p>
 	<strong>How to use LAMW Manager:</strong>
 	<ol>
-	<li>Click here to download <a href="https://raw.githubusercontent.com/DanielOliveiraSouza/LAMW4Linux-installer/master/lamw_manager/assets/lamw_manager_setup.sh"><em>LAMW Manager Setup</em></a></li> 
+	<li>Click here to download <a href="https://raw.githubusercontent.com/DanielOliveiraSouza/LAMW4Linux-installer/v0.3.4/lamw_manager/assets/lamw_manager_setup.sh"><em>LAMW Manager Setup</em></a></li> 
 	<li>Go to download directory and right click <em>Open in Terminal</em></li>
 	<li>Run command : <em>bash lamw_manager_setup.sh¹</em></li>
 	</ol>
@@ -75,7 +77,7 @@ Getting Started!!
 Release Notes:
 ----------------------------------------------------------------------
 <p>
-	For information on new features and bug fixes read the <a href="https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/blob/master/lamw_manager/docs/release_notes.md#v033---november-26-2019"><em>Release Notes</em></a>
+	For information on new features and bug fixes read the <a href="https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/blob/v0.3.4/lamw_manager/docs/release_notes.md#v033---november-26-2019"><em>Release Notes</em></a>
 </p>
 
 Congratulations!!
@@ -86,5 +88,5 @@ Congratulations!!
 </p>
 
 <p>
-	For more info read <a href="https://github.com/DanielOliveiraSouza/LAMWAutoRunScripts/blob/master/lamw_manager/docs/man.md"><strong>LAMW Manager v0.3.3 Manual</strong></a>
+	For more info read <a href="https://github.com/DanielOliveiraSouza/LAMWAutoRunScripts/blob/v0.3.4/lamw_manager/docs/man.md"><strong>LAMW Manager v0.3.3 Manual</strong></a>
 </p>	
