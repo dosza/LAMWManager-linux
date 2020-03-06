@@ -88,5 +88,5 @@ Congratulations!!
 </p>
 
 <p>
-	For more info read <a href="https://github.com/DanielOliveiraSouza/LAMWAutoRunScripts/blob/v0.3.4/lamw_manager/docs/man.md"><strong>LAMW Manager v0.3.3 Manual</strong></a>
+	For more info read <a href="https://github.com/DanielOliveiraSouza/LAMWAutoRunScripts/blob/v0.3.4/lamw_manager/docs/man.md"><strong>LAMW Manager v0.3.4 Manual</strong></a>
 </p>	
