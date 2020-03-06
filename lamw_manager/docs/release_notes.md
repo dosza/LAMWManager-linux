@@ -1,6 +1,17 @@
 # LAMW Manager Release Notes
 This page contains information about new features and bug fixes.
 
+v0.3.4 - March, 31, 2020 (expected date)!
+---
+<p>
+	<strong> NEWS:</strong>
+	<ul>
+		<li>Add/fixs Path to FPCSourceDirectory  ~/.lamw4linux/environmentoptions.xml</li>
+		<li>Optmization code on core/common-shell.sh</li>
+	</ul>
+</p>
+
+
 v0.3.3 - R3 - February 29, 2020
 ---
 <p>
