@@ -2,7 +2,7 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (mater-alma)
 #Course: Science Computer
-#Version: 0.3.3
+#Version: 0.3.4
 #Date: 11/23/2019
 #Description: The "lamw-manager-settings-editor.sh" is part of the core of LAMW Manager. Responsible for managing LAMW Manager / LAMW configuration files..
 #-------------------------------------------------------------------------------------------------#
@@ -96,7 +96,7 @@ changeOwnerAllLAMW(){
 		local files_chown=(
 			"$LAMW4_LINUX_PATH_CFG"
 			"$ROOT_LAMW/lazandroidmodulewizard"
-			"$LAMW_IDE_HOME/$LAZARUS_STABLE"
+			"$LAMW_IDE_HOME/" #obs: $LAMW_IDE_HOME é um link simbólico, por isso deve ser usar / ao final para referir ao conteúdo da pasta.
 		)
 	else
 		local files_chown=(
@@ -542,8 +542,15 @@ initLAMw4LinuxConfig(){
 		'<?xml version="1.0" encoding="UTF-8"?>'
 		'<CONFIG>'
 		'	<EnvironmentOptions>'
-		"		<LazarusDirectory Value=\"/home/danny/LAMW/lamw4linux/lamw4linux/\"/>"
+		"		<Version Value=\"110\" Lazarus=\"${LAZARUS_STABLE_VERSION}\"/>"
+		"		<LazarusDirectory Value=\"${LAMW_IDE_HOME}/\"/>"
 		"		<CompilerFilename Value=\"$FPC_TRUNK_EXEC_PATH/fpc\"/>"
+		"		<FPCSourceDirectory Value=\"${FPC_TRUNK_SOURCE_PATH}/${FPC_TRUNK_SVNTAG}\">" 
+		"		</FPCSourceDirectory>"
+		"		<MakeFilename Value=\"$(which make)\">"
+		"		</MakeFilename>"
+		"		<TestBuildDirectory Value=\"/tmp\">"
+		"		</TestBuildDirectory>"
 		"	</EnvironmentOptions>"
 		"</CONFIG>"
 	)
@@ -572,5 +579,13 @@ initLAMw4LinuxConfig(){
 			sed -i "s/CompilerFilename Value=\"${fpc_splited[2]}\"/CompilerFilename Value=\"${fpc_splited[4]}\"/g" "$lazarus_env_cfg_path"
 			sed -i "s/FPCSourceDirectory Value=\"${fpc_splited[3]}\"/FPCSourceDirectory Value=\"${fpc_splited[5]}\"/g" "$lazarus_env_cfg_path"
 		fi
+
+		#caso FPCSource foi apontado para um arquivo inesperado
+		cat $lazarus_env_cfg_path | grep "FPCSourceDirectory Value=\"${fpc_splited[5]}\"" > /dev/null
+		if [ $? != 0 ]; then 
+			local wrong_fpc_splited_path=$(GenerateScapesStr $(cat $lazarus_env_cfg_path | grep 'FPCSourceDirectory' |sed -r 's/    //g' |sed  's/<FPCSourceDirectory Value=//g' | sed 's/\/>//g' | sed 's/"//g'))
+			sed -i "s/FPCSourceDirectory Value=\"${wrong_fpc_splited_path}\"/FPCSourceDirectory Value=\"${fpc_splited[5]}\"/g" "$lazarus_env_cfg_path"	
+		fi
+
 	fi
 }
