@@ -2,7 +2,7 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (mater-alma)
 #Course: Science Computer
-#Version: 0.3.3
+#Version: 0.3.4
 #Date: 11/23/2019
 #Description: The "lamw-manager-settings-editor.sh" is part of the core of LAMW Manager. Responsible for managing LAMW Manager / LAMW configuration files..
 #-------------------------------------------------------------------------------------------------#
@@ -96,7 +96,7 @@ changeOwnerAllLAMW(){
 		local files_chown=(
 			"$LAMW4_LINUX_PATH_CFG"
 			"$ROOT_LAMW/lazandroidmodulewizard"
-			"$LAMW_IDE_HOME"
+			"$LAMW_IDE_HOME/" #obs: $LAMW_IDE_HOME é um link simbólico, por isso deve ser usar / ao final para referir ao conteúdo da pasta.
 		)
 	else
 		local files_chown=(

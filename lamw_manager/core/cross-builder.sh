@@ -2,7 +2,7 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.3.3
+#Version: 0.3.4
 #Date: 11/23/2019
 #Description:The "cross-builder.sh" is part of the core of LAMW Manager.  This script contains crosscompile compiler generation routines for ARMv7 / AARCH64- Android
 #-------------------------------------------------------------------------------------------------#
@@ -143,6 +143,7 @@ wrapperBuildFPCCross(){
 }
 #function to wrapper FPC
 wrapperParseFPC(){
+	CheckExistsFPCLaz
 	SearchPackage $FPC_DEFAULT_DEB_PACK
 	local index=$?
 	parseFPC ${PACKS[$index]}
