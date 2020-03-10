@@ -2,7 +2,7 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-##Version: 0.3.3
+##Version: 0.3.4
 #Date: 12/03/2019
 #Description: The "lamw-install.sh" is part of the core of LAMW Manager. This script configures the development environment for LAMW
 #-------------------------------------------------------------------------------------------------#
@@ -160,7 +160,7 @@ checkForceLAMW4LinuxInstall $*
 	# echo "----------------------------------------------------------------------"
 	#printf "${LAMW_INSTALL_WELCOME[*]}"
 	# echo "----------------------------------------------------------------------"
-	
+CheckExistsFPCLaz	
 if [ $FORCE_LAWM4INSTALL = 1 ]; then
 	echo "${NEGRITO}Warning: Earlier versions of Lazarus (debian package) will be removed!${NORMAL}"
 else
@@ -179,7 +179,6 @@ else
 	initParameters
 fi
  
-GenerateScapesStr
 
 #instalando tratadores de sinal	
 
