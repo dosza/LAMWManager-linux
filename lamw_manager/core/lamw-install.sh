@@ -160,7 +160,7 @@ checkForceLAMW4LinuxInstall $*
 	# echo "----------------------------------------------------------------------"
 	#printf "${LAMW_INSTALL_WELCOME[*]}"
 	# echo "----------------------------------------------------------------------"
-	
+CheckExistsFPCLaz	
 if [ $FORCE_LAWM4INSTALL = 1 ]; then
 	echo "${NEGRITO}Warning: Earlier versions of Lazarus (debian package) will be removed!${NORMAL}"
 else
