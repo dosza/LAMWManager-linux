@@ -96,7 +96,7 @@ changeOwnerAllLAMW(){
 		local files_chown=(
 			"$LAMW4_LINUX_PATH_CFG"
 			"$ROOT_LAMW/lazandroidmodulewizard"
-			"$LAMW_IDE_HOME/$LAZARUS_STABLE"
+			"$LAMW_IDE_HOME"
 		)
 	else
 		local files_chown=(
