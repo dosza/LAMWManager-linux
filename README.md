@@ -61,7 +61,7 @@ Getting Started!!
 <p>
 	<strong>How to use LAMW Manager:</strong>
 	<ol>
-	<li>Click here to download <a href="https://raw.githubusercontent.com/DanielOliveiraSouza/LAMW4Linux-installer/v0.3.4/lamw_manager/assets/lamw_manager_setup.sh"><em>LAMW Manager Setup</em></a></li> 
+	<li>Click here to download <a href="https://raw.githubusercontent.com/DanielOliveiraSouza/LAMW4Linux-installer/master/lamw_manager/assets/lamw_manager_setup.sh"><em>LAMW Manager Setup</em></a></li> 
 	<li>Go to download directory and right click <em>Open in Terminal</em></li>
 	<li>Run command : <em>bash lamw_manager_setup.sh¹</em></li>
 	</ol>
