@@ -219,8 +219,13 @@ LAMW4LinuxPostConfig(){
 		fi
 	done
 
-
-
+	#testa modificação de workspace
+	if [ -e "$LAMW4_LINUX_PATH_CFG/LAMW.ini" ]; then 
+		local current_lamw_workspace=$(cat $LAMW4_LINUX_PATH_CFG/LAMW.ini | grep 'PathToWorkspace=' | sed 's/PathToWorkspace=//g')
+		if [ "$current_lamw_workspace" != "$LAMW_WORKSPACE_HOME" ]; then
+			LAMW_WORKSPACE_HOME=$current_lamw_workspace
+		fi
+	fi
 # contem o arquivo de configuração do lamw
 	local LAMW_init_str=(
 		"[NewProject]"
@@ -585,6 +590,16 @@ initLAMw4LinuxConfig(){
 		if [ $? != 0 ]; then 
 			local wrong_fpc_splited_path=$(GenerateScapesStr $(cat $lazarus_env_cfg_path | grep 'FPCSourceDirectory' |sed -r 's/    //g' |sed  's/<FPCSourceDirectory Value=//g' | sed 's/\/>//g' | sed 's/"//g'))
 			sed -i "s/FPCSourceDirectory Value=\"${wrong_fpc_splited_path}\"/FPCSourceDirectory Value=\"${fpc_splited[5]}\"/g" "$lazarus_env_cfg_path"	
+		fi
+
+		local old_lazarus_version_file=$(cat "$lazarus_env_cfg_path" | grep 'Lazarus=' | sed 's/<//g' | sed 's/Version//g'| sed 's/Value//g'  | sed 's/"110"//g' | sed 's/=//g' | sed 's/Lazarus//g' | sed 's/"//g' | sed 's/\/>//g' | sed 's/[[:space:]]//g' )
+		local old_stable_lazarus="lazarus_"${old_lazarus_version_file//\./_}
+		local old_lazarus_version_file_scap=${old_lazarus_version_file//\./\\\.}
+		local lazarus_stable_version_scap=${LAZARUS_STABLE_VERSION//\./\\\.}
+		
+		if [ "$old_stable_lazarus" != "$LAZARUS_STABLE" ]; then 
+			sed -i "s/Lazarus=\"$old_lazarus_version_file_scap\"/Lazarus=\"$lazarus_stable_version_scap\"/g" "$lazarus_env_cfg_path"
+			sed -i "s/$old_stable_lazarus/$LAZARUS_STABLE/g" "$lazarus_env_cfg_path"
 		fi
 
 	fi

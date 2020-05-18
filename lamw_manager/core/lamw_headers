@@ -2,20 +2,10 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.3.5
+#Version: 0.3.4-r1
 #Date: 05/17/2020
 #Description: The "lamw_headers" is part of the core of LAMW Manager. This script contains LAMW Manager variables.
 #-------------------------------------------------------------------------------------------------#
-if [ ! -e /tmp/lamw-overrides.conf ]; then
-	printf "${VERMELHO}Fatal Error: you need run lamw_manager first! ${NORMAL}\n"
-	exit 1
-fi
-
-ps ax | grep $PPID | grep 'lamw_manager' > /dev/null
-if [ $? != 0 ]; then
-	echo "${VERMELHO}Fatal Error: you need run lamw_manager first! ${NORMAL}"
-	exit 1
-fi
 NOTIFY_SEND_EXE=$(which notify-send)
 LAMW_USER=$(cat /tmp/lamw-overrides.conf)
 LAMW_USER_HOME=$(eval echo "~$LAMW_USER")
@@ -24,7 +14,7 @@ ANDROID_HOME=$LAMW_USER_HOME/LAMW
 ANDROID_SDK="$ROOT_LAMW/sdk"
 #--------------------------------------------------------------------------------------
 export XDG_DATA_DIRS="/usr/share:/usr/local/share:$LAMW_USER_HOME/.local/share"
-LAMW_INSTALL_VERSION="0.3.5"
+LAMW_INSTALL_VERSION="0.3.4r1"
 LAMW_INSTALL_WELCOME=(
 	"${NEGRITO}LAMW Manager v$LAMW_INSTALL_VERSION${NORMAL}\n"
 	#"\t\tPowerd by Daniel Oliveira Souza\n"
@@ -142,11 +132,11 @@ LAZARUS_OLD_STABLE_VERSION=(
 FPC_ID_DEFAULT=0
 FPC_CROSS_ARM_DEFAULT_PARAMETERS=('clean crossall crossinstall  CPU_TARGET=arm OS_TARGET=android OPT="-dFPC_ARMHF" SUBARCH="armv7a" INSTALL_PREFIX=/usr')
 #FPC_CROSS_AARCH_DEFAULT_PARAMETERS=(clean crossall crossinstall  CPU_TARGET=aarch64 OS_TARGET=android OPT="-dFPC_ARMHF"  INSTALL_PREFIX=/usr')
-LAZBUILD_PARAMETERS=(
-	"--build-ide= --add-package $ROOT_LAMW/lazandroidmodulewizard/android_bridges/tfpandroidbridge_pack.lpk --primary-config-path=$LAMW4_LINUX_PATH_CFG  --lazarusdir=$LAMW_IDE_HOME"
-	"--build-ide= --add-package $ROOT_LAMW/lazandroidmodulewizard/android_wizard/lazandroidwizardpack.lpk --primary-config-path=$LAMW4_LINUX_PATH_CFG --lazarusdir=$LAMW_IDE_HOME"
-	"--build-ide= --add-package $ROOT_LAMW/lazandroidmodulewizard/ide_tools/amw_ide_tools.lpk --primary-config-path=$LAMW4_LINUX_PATH_CFG --lazarusdir=$LAMW_IDE_HOME"
-	"--build-ide= --add-package $ROOT_LAMW/lazandroidmodulewizard/fcl_bridges/fcl_bridges_pack.lpk --primary-config-path=$LAMW4_LINUX_PATH_CFG --lazarusdir=$LAMW_IDE_HOME"
+LAMW_PACKAGES=(
+	"$ROOT_LAMW/lazandroidmodulewizard/android_bridges/tfpandroidbridge_pack.lpk"
+	"$ROOT_LAMW/lazandroidmodulewizard/android_wizard/lazandroidwizardpack.lpk"
+	"$ROOT_LAMW/lazandroidmodulewizard/ide_tools/amw_ide_tools.lpk"
+	"$ROOT_LAMW/lazandroidmodulewizard/fcl_bridges/fcl_bridges_pack.lpk"
 )
 
 #REGEX VARIABLES
