@@ -6,9 +6,13 @@
 #Date: 12/03/2019
 #Description: The "lamw-install.sh" is part of the core of LAMW Manager. This script configures the development environment for LAMW
 #-------------------------------------------------------------------------------------------------#
+
+# Verifica condicoes de inicializacao
+
 LAMW_MANAGER_MODULES_PATH=$0
 LAMW_MANAGER_MODULES_PATH=${LAMW_MANAGER_MODULES_PATH%/lamw-install.sh*}
 
+source "$LAMW_MANAGER_MODULES_PATH/.init_lamw_manager.sh"
 source "$LAMW_MANAGER_MODULES_PATH/common-shell.sh"
 source "$LAMW_MANAGER_MODULES_PATH/lamw_headers"
 source "$LAMW_MANAGER_MODULES_PATH/installer.sh"
@@ -101,11 +105,11 @@ BuildLazarusIDE(){
 	
 	initLAMw4LinuxConfig
 		#build ide  with lamw framework 
-	for((i=0;i< ${#LAZBUILD_PARAMETERS[@]};i++))
+	for((i=0;i< ${#LAMW_PACKAGES[@]};i++))
 	do
-		./lazbuild ${LAZBUILD_PARAMETERS[i]}
+		./lazbuild --build-ide= --add-package ${LAMW_PACKAGES[i]} --primary-config-path=$LAMW4_LINUX_PATH_CFG  --lazarusdir=$LAMW_IDE_HOME
 		if [ $? != 0 ]; then
-			./lazbuild ${LAZBUILD_PARAMETERS[i]}
+			./lazbuild --build-ide= --add-package  ${LAMW_PACKAGES[i]} --primary-config-path=$LAMW4_LINUX_PATH_CFG  --lazarusdir=$LAMW_IDE_HOME
 		fi
 	done
 
