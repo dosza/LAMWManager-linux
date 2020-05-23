@@ -80,7 +80,7 @@ Getting Started!!
 Release Notes:
 ----------------------------------------------------------------------
 <p>
-	For information on new features and bug fixes read the <a href="https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/blob/v0.3.4/lamw_manager/docs/release_notes.md#v034---march-10-2020"><em>Release Notes</em></a>
+	For information on new features and bug fixes read the <a href="https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/blob/v0.3.4/lamw_manager/docs/release_notes.md#v034---r1---may-20-2020"><em>Release Notes</em></a>
 </p>
 
 Congratulations!!
