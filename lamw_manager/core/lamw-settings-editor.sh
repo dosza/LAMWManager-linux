@@ -99,6 +99,7 @@ changeOwnerAllLAMW(){
 			"$LAMW_IDE_HOME/" #obs: $LAMW_IDE_HOME é um link simbólico, por isso deve ser usar / ao final para referir ao conteúdo da pasta.
 		)
 	else
+
 		local files_chown=(
 			"$ROOT_LAMW"
 			"$FPC_CFG_PATH"
@@ -108,6 +109,7 @@ changeOwnerAllLAMW(){
 			"$LAMW_USER_HOME/.local/share"
 			"$LAMW4_LINUX_PATH_CFG"
 			"$LAMW_USER_HOME/Dev"	
+		#	"$LAMW_WORKSPACE_HOME"
 		)		
 	fi
 	echo "Restoring directories ..."
@@ -219,12 +221,18 @@ LAMW4LinuxPostConfig(){
 		fi
 	done
 
-
-
+	#testa modificação de workspace
+	if [ -e "$LAMW4_LINUX_PATH_CFG/LAMW.ini" ]; then 
+		local current_lamw_workspace=$(cat $LAMW4_LINUX_PATH_CFG/LAMW.ini | grep 'PathToWorkspace=' | sed 's/PathToWorkspace=//g')
+		if [ "$current_lamw_workspace" != "$LAMW_WORKSPACE_HOME" ]; then
+			LAMW_WORKSPACE_HOME=$current_lamw_workspace
+		fi
+	fi
 # contem o arquivo de configuração do lamw
 	local LAMW_init_str=(
 		"[NewProject]"
 		"PathToWorkspace=$LAMW_WORKSPACE_HOME"
+		"PathToSmartDesigner=$ROOT_LAMW/lazandroidmodulewizard/android_wizard/smartdesigner"
 		"PathToJavaTemplates=$ROOT_LAMW/lazandroidmodulewizard/android_wizard/smartdesigner/java"
 		"PathToJavaJDK=$java_path"
 		"PathToAndroidNDK=$ROOT_LAMW/ndk"
@@ -239,7 +247,6 @@ LAMW4LinuxPostConfig(){
 		"AndroidPlatform=0"
 		"AntBuildMode=debug"
 		"NDK=5"
-		"PathToSmartDesigner=$ROOT_LAMW/lazandroidmodulewizard/android_wizard/smartdesigner"
 	)
 	local aux_str=''
 	if [ $FLAG_FORCE_ANDROID_AARCH64 = 1 ]; then
@@ -349,11 +356,11 @@ CleanOldConfig(){
 		"$LAMW4_LINUX_PATH_CFG"
 		"$ROOT_LAMW"
 		"$LAMW_MENU_ITEM_PATH"
-		"$GRADLE_CFG_HOME"
+		#"$GRADLE_CFG_HOME"
 		"$WORK_HOME_DESKTOP/lamw4linux.desktop"
 		"$LAMW_USER_HOME/.local/share/mime/packages/lazarus-mime.xml"
-		"$LAMW_USER_HOME/.android"
-		"/root/.android"
+		#"$LAMW_USER_HOME/.android"
+		#"/root/.android"
 		"$FPC_TRUNK_LIB_PATH"
 		"/root/.fpc.cfg"
 		"$OLD_FPC_CFG_PATH"
@@ -569,6 +576,11 @@ initLAMw4LinuxConfig(){
 			$(GenerateScapesStr "$FPC_TRUNK_SOURCE_PATH/${FPC_TRUNK_SVNTAG}")			#5
 		)
 		
+		local old_lazarus_version_file=$(cat "$lazarus_env_cfg_path" | grep 'Lazarus=' | sed 's/<//g' | sed 's/Version//g'| sed 's/Value//g'  | sed 's/"110"//g' | sed 's/=//g' | sed 's/Lazarus//g' | sed 's/"//g' | sed 's/\/>//g' | sed 's/[[:space:]]//g' ) # remove'	<Version Value=\"110\" Lazarus=X.Y.Z', restando  X.Y.Z
+		local old_stable_lazarus="lazarus_"${old_lazarus_version_file//\./_} #cria a string lazarus_X_Y_Z usando a expansao que substitui . por _
+		local old_lazarus_version_file_scap=${old_lazarus_version_file//\./\\\.} # substitui X.Y.Z por X\.Y\.Z na string
+		local lazarus_stable_version_scap=${LAZARUS_STABLE_VERSION//\./\\\.} # substitui X.Y.Z por X\.Y\.Z na string
+
 		cat $lazarus_env_cfg_path | grep 'CompilerFilename Value=\"\/usr\/bin\/fpc\"'
 		if [ $? = 0 ]; then
 			sed -i "s/CompilerFilename Value=\"${fpc_splited[0]}\"/CompilerFilename Value=\"${fpc_splited[4]}\"/g" "$lazarus_env_cfg_path"
@@ -585,6 +597,13 @@ initLAMw4LinuxConfig(){
 		if [ $? != 0 ]; then 
 			local wrong_fpc_splited_path=$(GenerateScapesStr $(cat $lazarus_env_cfg_path | grep 'FPCSourceDirectory' |sed -r 's/    //g' |sed  's/<FPCSourceDirectory Value=//g' | sed 's/\/>//g' | sed 's/"//g'))
 			sed -i "s/FPCSourceDirectory Value=\"${wrong_fpc_splited_path}\"/FPCSourceDirectory Value=\"${fpc_splited[5]}\"/g" "$lazarus_env_cfg_path"	
+		fi
+
+	
+		#altera as versoes do lazarus $lazarus_env_cfg_path
+		if [ "$old_stable_lazarus" != "$LAZARUS_STABLE" ]; then 
+			sed -i "s/Lazarus=\"$old_lazarus_version_file_scap\"/Lazarus=\"$lazarus_stable_version_scap\"/g" "$lazarus_env_cfg_path"
+			sed -i "s/$old_stable_lazarus/$LAZARUS_STABLE/g" "$lazarus_env_cfg_path"
 		fi
 
 	fi
