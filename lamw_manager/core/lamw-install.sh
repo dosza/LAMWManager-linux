@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-##Version: 0.3.4
-#Date: 12/03/2019
+##Version: 0.3.5
+#Date: 21/06/2020
 #Description: The "lamw-install.sh" is part of the core of LAMW Manager. This script configures the development environment for LAMW
 #-------------------------------------------------------------------------------------------------#
 
@@ -126,15 +126,7 @@ checkProxyStatus(){
 		ActiveProxy 0
 	fi
 }
-testLazarusProject(){
-	exec 2> /dev/null dpkg -s lazarus-project | grep 'Status: install' > /dev/null #exec 2 redireciona a saída do stderror para /dev/null
-	if [ $? = 0 ]; then 
-		echo  -e "${VERMELHO}Warning: Lazarus Project Detected!!!${NORMAL}"  >&2
-		#echo -e "use ${NEGRITO}--force${NORMAL} parameter to force install compatible with lazarus-project\nExit..." >&2
-		#export FORCE_LAWM4INSTALL=1
-		export FPC_DEFAULT_DEB_PACK=$FPC_ALTERNATIVE_DEB_PACK
-	fi
-}
+
 testImplicitInstall(){
 	getImplicitInstall
 	if [ $LAMW_IMPLICIT_ACTION_MODE = 0 ]; then
@@ -164,12 +156,6 @@ checkForceLAMW4LinuxInstall $*
 	# echo "----------------------------------------------------------------------"
 	#printf "${LAMW_INSTALL_WELCOME[*]}"
 	# echo "----------------------------------------------------------------------"
-CheckExistsFPCLaz	
-if [ $FORCE_LAWM4INSTALL = 1 ]; then
-	echo "${NEGRITO}Warning: Earlier versions of Lazarus (debian package) will be removed!${NORMAL}"
-else
-	testLazarusProject
-fi
 
 if [ $# = 6 ] || [ $# = 7 ]; then
 	if [ "$2" = "--use_proxy" ] ;then 

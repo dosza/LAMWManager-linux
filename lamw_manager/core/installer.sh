@@ -13,8 +13,6 @@ LAMWPackageManager(){
 	if [ $FLAG_FORCE_ANDROID_AARCH64 = 1 ]; then 
 		
 		local old_lamw_ide_home="$LAMW4LINUX_HOME/lamw4linux"
-		local old_fpc_src="$LAMW4LINUX_HOME/fpcsrc"
-
 
 		if [ -e "$old_lamw_ide_home"  ]; then
 			echo "Uninstalling  Old Lazarus ..."
@@ -29,25 +27,17 @@ LAMWPackageManager(){
 			fi
 		done
 		
-
-		if [ -e "$old_fpc_src" ]; then
-			echo "Uninstalling Old FPC Sources ..."
-			rm -rf "$old_fpc_src"
-		fi
-
 		if [ -e "$OLD_FPC_CFG_PATH" ]; then
 			rm "$OLD_FPC_CFG_PATH"
 		fi
 	
 		#fixs 0.3.1 to 0.3.2
-		if [ -e $LAMW4LINUX_HOME/lamw-install.log ]; then
-			cat  $LAMW4LINUX_HOME/lamw-install.log | grep '0.3.1'
-			if [ $? = 0 ]; then 
-				if [ -e "$LAMW4LINUX_HOME/usr" ]; then
-					rm -rf "$LAMW4LINUX_HOME/usr"
-				fi
+
+		for i  in ${!OLD_FPC_SOURCES[*]}; do
+			if [ -e ${OLD_FPC_SOURCES[i]} ]; then
+				rm  -rf ${OLD_FPC_SOURCES[i]}
 			fi
-		fi
+		done
 
 		for ((i=0;i<${#OLD_GRADLE[*]};i++))
 		do
@@ -181,49 +171,17 @@ setJava8asDefault(){
 
 #install deps
 installDependences(){
-	local fpc_files_tmp='/tmp/fpc_laz_PACKS'
-	if [ $FORCE_LAWM4INSTALL = 1 ]; then 
-		CheckExistsFPCLaz
-		if [ $? = 0 ]; then 
-			apt-get remove fpc*  --purge -y
-			apt-get autoremove --purge -y
-			if [ -e $fpc_files_tmp ]; then
-				rm -rf $fpc_files_tmp
-			fi
-			mkdir $fpc_files_tmp 
-			changeDirectory $fpc_files_tmp 
-			for ((i=0;i<${#FPC_LAZ_LINKS[*]};i++));do
-				Wget ${FPC_LAZ_LINKS[i]} 
-			done
-			IsFileBusy apt-get ${APT_LOCKS[*]}
-			for i in $(ls $fpc_files_tmp) ; do 
-				sudo dpkg -i $fpc_files_tmp/$i; 
-			done
-	
-			changeDirectory $ROOT_LAMW
-			if [ -e $fpc_files_tmp ]; then
-				rm -rf $fpc_files_tmp
-			fi
-		fi		
-	fi
-	CheckFPCSupport
-
-	if [ $NEED_UPGRADE_FPC = 1 ]; then
-		enableUpgradeFPC
-		AptInstall fpc/stretch-backports
-		disableUpgradeFPC
-	fi
 
 	CheckOpenJDK8Support
-	CheckExistsFPCLaz
-	AptInstall $LIBS_ANDROID $PROG_TOOLS  openjdk-${OPENJDK_DEFAULT}-jdk $FPC_DEFAULT_DEB_PACK
 	exec 2> /dev/null apt show $NON_FREE_TOOLS | grep 'Source: unrar-nonfree' > /dev/null
 	if [ $? = 0 ]; then
-		AptInstall $NON_FREE_TOOLS
+		PROG_TOOLS="$PROG_TOOLS$NON_FREE_TOOLS"
 	else
 		printf "${VERMELHO}Warning: The unrar package isn't available!\nCheck your /etc/apt/sources.list file${NORMAL}\nIgnoring instalation of ${NEGRITO}unrar${NORMAL} package!\n"
 		sleep 1
 	fi
+	AptInstall $LIBS_ANDROID $PROG_TOOLS  openjdk-${OPENJDK_DEFAULT}-jdk 
+		
 	
 }
 
@@ -287,6 +245,41 @@ getFPCSourcesTrunk(){
 		fi
 	fi
 	parseFPCTrunk
+}
+
+getFPCStable(){
+	local link="https://sourceforge.net/projects/lazarus/files/Lazarus%20Linux%20amd64%20DEB/Lazarus%202.0.8/fpc-laz_3.0.4-1_amd64.deb"
+	if [ ! -e "$LAMW4LINUX_HOME/usr" ]; then 
+		mkdir -p "$LAMW4LINUX_HOME/usr"
+	fi
+
+	cd "$LAMW4LINUX_HOME/usr"
+	if  [ ! -e "$FPC_LIB_PATH" ]; then
+		echo "doesn't exist $FPC_PATH"
+		Wget $link
+		if [ -e "$FPC_DEB" ]; then
+			local tmp_files=(
+				data.tar.xz
+				control.tar.gz
+				debian-binary
+				"$FPC_DEB"
+			)
+			ar x "$FPC_DEB"
+			if [ -e data.tar.xz ]; then 
+				tar -xvf data.tar.xz
+			fi
+			if [ -e $LAMW4LINUX_HOME/usr/usr ]; then
+				mv $LAMW4LINUX_HOME/usr/usr $LAMW4LINUX_HOME/usr/local
+			fi
+			for i in ${!tmp_files[@]}; do  
+				if [ -e ${tmp_files[i]} ]; then rm ${tmp_files[i]} ; fi
+			done
+			echo $FPC_MKCFG_EXE; read
+			
+		fi
+		export PPC_CONFIG_PATH=$FPC_LIB_PATH
+		$FPC_MKCFG_EXE -d basepath=$FPC_LIB_PATH -o $FPC_LIB_PATH/fpc.cfg;read
+	fi
 }
 #wrapper to get FPC Sources 
 getWrapperFPCSources(){
@@ -487,11 +480,14 @@ getOldAndroidSDK(){
 		"$ANDROID_SDK/platforms/android-$ANDROID_SDK_TARGET"
 		"$ANDROID_SDK/platform-tools"
 		"$ANDROID_SDK/build-tools/$ANDROID_BUILD_TOOLS_TARGET"
-		"$ANDROID_SDK/extras/google/google_play_services"  
-		"$ANDROID_SDK/extras/android/m2repository"
-		"$ANDROID_SDK/extras/google/m2repository" 
-		"$ANDROID_SDK/extras/google/market_licensing" 
-		"$ANDROID_SDK/extras/google/market_apk_expansion"
+		# # "$ANDROID_SDK/extras/google/google_play_services"  
+		# "$ANDROID_SDK/extras/android/m2repository"
+		# "$ANDROID_SDK/extras/google/m2repository" 
+		# "$ANDROID_SDK/extras/google/market_licensing" 
+		# "$ANDROID_SDK/extras/google/market_apk_expansion"
+		"$ANDROID_SDK/extras/google/google_play_services"
+		$ANDROID_SDK/extras/{android,google}/m2repository
+		$ANDROID_SDK/extras/google/market_{licensing,apk_expansion}
 		"$ANDROID_SDK/build-tools/$GRADLE_MIN_BUILD_TOOLS"
 	)
 
@@ -751,6 +747,7 @@ mainInstall(){
 	getGradle
 	getAndroidSDKTools
 	getNDK
+	getFPCStable
 	#unistallJavaUnsupported
 	setJava8asDefault
 	#getSDKAndroid
