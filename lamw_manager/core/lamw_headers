@@ -109,7 +109,7 @@ LAZARUS_STABLE_SRC_LNK="https://svn.freepascal.org/svn/lazarus/tags/${LAZARUS_ST
 OLD_FPC_CFG_PATH="$LAMW_USER_HOME/.fpc.cfg"
 export FPC_CFG_PATH="$LAMW_USER_HOME/.fpc.cfg"
 export PPC_CONFIG_PATH="$LAMW_USER_HOME"
-
+	
 export FPC_VERSION="3.0.4"
 export FPC_LIB_PATH="$LAMW4LINUX_HOME/usr/local/lib/fpc/${FPC_VERSION}"
 export FPC_MKCFG_EXE="$LAMW4LINUX_HOME/usr/local/bin/fpcmkcfg"

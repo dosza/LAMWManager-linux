@@ -273,12 +273,10 @@ getFPCStable(){
 			fi
 			for i in ${!tmp_files[@]}; do  
 				if [ -e ${tmp_files[i]} ]; then rm ${tmp_files[i]} ; fi
-			done
-			echo $FPC_MKCFG_EXE; read
-			
+			done	
 		fi
 		export PPC_CONFIG_PATH=$FPC_LIB_PATH
-		$FPC_MKCFG_EXE -d basepath=$FPC_LIB_PATH -o $FPC_LIB_PATH/fpc.cfg;read
+		$FPC_MKCFG_EXE -d basepath=$FPC_LIB_PATH -o $FPC_LIB_PATH/fpc.cfg;
 	fi
 }
 #wrapper to get FPC Sources 
