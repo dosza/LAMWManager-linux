@@ -20,42 +20,6 @@ parseFPC(){
 			export flag_new_ubuntu_lts=1
 		;;
 	esac
-
-	case "$1" in 
-		*"3.0.0"*)
-			export URL_FPC="https://svn.freepascal.org/svn/fpc/tags/release_3_0_0"
-			export FPC_LIB_PATH="/usr/lib/fpc"
-			#export FPC_CFG_PATH="/etc/fpc-3.0.0.cfg"
-			export FPC_RELEASE="release_3_0_0"
-			export FPC_VERSION="3.0.0"
-			export FPC_LIB_PATH="/usr/lib/fpc/$FPC_VERSION"
-		;;
-		*"3.0.4"*)
-			export URL_FPC="https://svn.freepascal.org/svn/fpc/tags/release_3_0_4"
-			export FPC_RELEASE="release_3_0_4"
-			export FPC_VERSION="3.0.4"
-
-			if [ -e /usr/lib/x86_64-linux-gnu/fpc/$FPC_VERSION ]; then #case new location fpc directory 
-				if [   -e /usr/lib/fpc  ]; then #para estar versão do fpc, obrigatóriamente /usr/lib/fpc dever ser um link simbólico
-					  rm -r /usr/lib/fpc
-				fi
-				 ln -s /usr/lib/x86_64-linux-gnu/fpc /usr/lib/fpc
-				export FPC_LIB_PATH="/usr/lib/fpc/$FPC_VERSION"
-			else
-				if [ -e /usr/lib/fpc/$FPC_VERSION ]; then
-					export FPC_LIB_PATH="/usr/lib/fpc/$FPC_VERSION"
-				fi
-			fi
-		;;
-	esac
-
-	export FPC_MKCFG_EXE=$(which fpcmkcfg-$FPC_VERSION)
-	if [ "$FPC_MKCFG_EXE" = "" ]; then
-		export FPC_MKCFG_EXE=$(which x86_64-linux-gnu-fpcmkcfg-$FPC_VERSION)
-		if [ "$FPC_MKCFG_EXE" = "" ]; then
-			export FPC_MKCFG_EXE=$(which fpcmkcfg)
-		fi
-	fi
 }
 
 
@@ -66,7 +30,7 @@ parseFPC(){
 #this function set env to FPC_TRUNK 
 parseFPCTrunk(){
 
-	export FPC_TRUNK_VERSION="3.2.0-beta"
+	export FPC_TRUNK_VERSION="3.2.0"
 	export _FPC_TRUNK_VERSION=${FPC_TRUNK_VERSION%\-*}
 	export FPC_INSTALL_TRUNK_ZIP="$LAMW4LINUX_HOME/usr/share/fpcsrc/${FPC_TRUNK_SVNTAG}/fpc-${FPC_TRUNK_VERSION}.x86_64-linux.tar.gz"
 	export FPC_TRUNK_LIB_PATH=$LAMW4LINUX_HOME/usr/lib/fpc/${_FPC_TRUNK_VERSION}
@@ -144,7 +108,6 @@ wrapperBuildFPCCross(){
 #function to wrapper FPC
 wrapperParseFPC(){
 	CheckExistsFPCLaz
-	SearchPackage $FPC_DEFAULT_DEB_PACK
 	local index=$?
 	parseFPC ${PACKS[$index]}
 	if [ $FLAG_FORCE_ANDROID_AARCH64 = 1 ]; then

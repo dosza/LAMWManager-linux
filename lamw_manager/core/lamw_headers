@@ -14,7 +14,7 @@ ANDROID_HOME=$LAMW_USER_HOME/LAMW
 ANDROID_SDK="$ROOT_LAMW/sdk"
 #--------------------------------------------------------------------------------------
 export XDG_DATA_DIRS="/usr/share:/usr/local/share:$LAMW_USER_HOME/.local/share"
-LAMW_INSTALL_VERSION="0.3.4r1"
+LAMW_INSTALL_VERSION="0.3.5	"
 LAMW_INSTALL_WELCOME=(
 	"${NEGRITO}LAMW Manager v$LAMW_INSTALL_VERSION${NORMAL}\n"
 	#"\t\tPowerd by Daniel Oliveira Souza\n"
@@ -31,13 +31,7 @@ LAMW_LINUX_SPP=(
 
 
 export DEBIAN_FRONTEND="gnome"
-export URL_FPC=""
-export FPC_VERSION=""
-export FPC_RELEASE=""
 export flag_new_ubuntu_lts=0
-export FPC_LIB_PATH=""
-export FPC_VERSION=""
-export FPC_MKCFG_EXE=""
 export FPC_DEFAULT_DEB_PACK='fpc'
 export FPC_ALTERNATIVE_DEB_PACK='fpc-laz'
 
@@ -109,25 +103,29 @@ REAL_LAMW_TOOLS="$ROOT_LAMW/.real"
 GRADLE_ZIP_LNK="https://services.gradle.org/distributions/gradle-${GRADLE_VERSION_STABLE}-bin.zip"
 GRADLE_ZIP_FILE="gradle-${GRADLE_VERSION_STABLE}-bin.zip"
 FPC_STABLE=""
-LAZARUS_STABLE_VERSION="2.0.8"
+LAZARUS_STABLE_VERSION="2.0.10"
 LAZARUS_STABLE="lazarus_"${LAZARUS_STABLE_VERSION//\./_} #expansão que remove todos '.' por _, obs '\.' barra invertida escapa '.'
 LAZARUS_STABLE_SRC_LNK="https://svn.freepascal.org/svn/lazarus/tags/${LAZARUS_STABLE}"
 OLD_FPC_CFG_PATH="$LAMW_USER_HOME/.fpc.cfg"
 export FPC_CFG_PATH="$LAMW_USER_HOME/.fpc.cfg"
 export PPC_CONFIG_PATH="$LAMW_USER_HOME"
-LAZARUS_OLD_STABLE=(
-	"lazarus_2_0_6"
-	"lazarus_2_0_4"
-	"lazarus_2_0_2"
-	"lazarus_1_8_4"
-)
+
+export FPC_VERSION="3.0.4"
+export FPC_LIB_PATH="$LAMW4LINUX_HOME/usr/local/lib/fpc/${FPC_VERSION}"
+export FPC_MKCFG_EXE="$LAMW4LINUX_HOME/usr/local/bin/fpcmkcfg"
+export FPC_DEB_LINK="https://sourceforge.net/projects/lazarus/files/Lazarus%20Linux%20amd64%20DEB/Lazarus%202.0.8/fpc-laz_3.0.4-1_amd64.deb"
+export FPC_DEB="fpc-laz_3.0.4-1_amd64.deb"
+
 LAZARUS_OLD_STABLE_VERSION=(
+	"2.0.8"
 	"2.0.6"
 	"2.0.4"
 	"2.0.2"
 	"1.8.4"
 )
-	
+LAZARUS_OLD_STABLE=(
+	$( for i in ${!LAZARUS_OLD_STABLE_VERSION[@]}; do echo "lazarus_${LAZARUS_OLD_STABLE_VERSION[i]//\./_}";done)
+)	
 
 FPC_ID_DEFAULT=0
 FPC_CROSS_ARM_DEFAULT_PARAMETERS=('clean crossall crossinstall  CPU_TARGET=arm OS_TARGET=android OPT="-dFPC_ARMHF" SUBARCH="armv7a" INSTALL_PREFIX=/usr')
@@ -171,12 +169,13 @@ export FPC_CROSS_AARCH_DEFAULT_PARAMETERS=('clean crossall crossinstall  CPU_TAR
 export PATH=$PATH:$AARCH64_ANDROID_TOOLS
 export FLAG_FORCE_ANDROID_AARCH64=1
 export FPC_TRUNK_RELEASE=""
-export FPC_TRUNK_URL="https://svn.freepascal.org/svn/fpc/branches/fixes_3_2@43981"
+export FPC_TRUNK_SVNTAG="release_3_2_0"
+export FPC_TRUNK_URL="https://svn.freepascal.org/svn/fpc/tags/${FPC_TRUNK_SVNTAG}"
 export FPC_TRUNK_VERSION=""
 export FPC_TRUNK_LIB_PATH=""
 export FPC_TRUNK_EXEC_PATH=""
 export FPC_TRUNK_SOURCE_PATH="$LAMW4LINUX_HOME/usr/share/fpcsrc"
-export FPC_TRUNK_SVNTAG="fixes_3_2"
+
 export OPENJDK_DEFAULT='8'
 export OPENJDK_LTS=11
 
@@ -187,9 +186,10 @@ export OLD_ANT=(
 	"$ROOT_LAMW/apache-ant-1.10.5"
 )
 
-export FPC_LAZ_LINKS=(
-	"https://sourceforge.net/projects/lazarus/files/Lazarus%20Linux%20amd64%20DEB/Lazarus%20${LAZARUS_STABLE_VERSION}/fpc-laz_3.0.4-1_amd64.deb"
-	"https://sourceforge.net/projects/lazarus/files/Lazarus%20Linux%20amd64%20DEB/Lazarus%20${LAZARUS_STABLE_VERSION}/fpc-src_3.0.4-2_amd64.deb"
+
+OLD_FPC_SOURCES=(
+	"$LAMW4LINUX_HOME/fpcsrc"
+	$LAMW4LINUX_HOME/usr/share/fpcsrc/{trunk,fixes_3_2}
 )
 #---------------------------------------------------------------------------------------------------------------------
 
