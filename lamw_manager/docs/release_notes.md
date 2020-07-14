@@ -1,17 +1,15 @@
 # LAMW Manager Release Notes
 This page contains information about new features and bug fixes.
 
-v0.3.4 - R1 - May 20, 2020
+
+
+v0.3.5 - July 20, 2020
 ---
 <p>
 	<strong> NEWS:</strong>
 	<ul>
-		<li>Lazarus 2.0.8</li>
-		<li>Update Lazarus version on ~/.lamw4linux/environmentoptions.xml</li>
-	</ul>
-	<strong>FIXED:</strong>
-	<ul>
-		<li>Fixed --reset and --uninstall commands</li>
+		<li>Lazarus 2.0.10</li>
+		<li>FPC 3.2.0 <em>stable</em></li>
 	</ul>
 </p>
 
