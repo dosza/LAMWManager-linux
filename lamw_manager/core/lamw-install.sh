@@ -3,7 +3,7 @@
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
 ##Version: 0.3.5
-#Date: 21/06/2020
+#Date: 07/14/2020
 #Description: The "lamw-install.sh" is part of the core of LAMW Manager. This script configures the development environment for LAMW
 #-------------------------------------------------------------------------------------------------#
 
@@ -40,7 +40,7 @@ TrapActions(){
 	if [ "$MAGIC_TRAP_INDEX" != "-1" ]; then
 		local file_deleted="${magic_trap[MAGIC_TRAP_INDEX]}"
 		if [ -e "$file_deleted" ]; then
-			echo "deleting... $file_deleted"
+			echo "deleting... $file_deleted"	
 			rm  -rv $file_deleted
 		fi
 	fi

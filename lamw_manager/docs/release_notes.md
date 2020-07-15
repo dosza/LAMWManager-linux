@@ -8,8 +8,11 @@ v0.3.5 - July 20, 2020
 <p>
 	<strong> NEWS:</strong>
 	<ul>
-		<li>Lazarus 2.0.10</li>
+		<li>Android NDK r21d</li>
+		<li>Apache Ant 1.10.8</li>
+		<li>Gradle 6.1.1</li>
 		<li>FPC 3.2.0 <em>beta</em> has replaced <em>stable</em></li>
+		<li>Lazarus 2.0.10</li>
 	</ul>
 </p>
 
