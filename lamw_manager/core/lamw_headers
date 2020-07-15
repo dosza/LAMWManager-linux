@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.3.4-r1
-#Date: 05/17/2020
+#Version: 0.3.5
+#Date: 07/14/2020
 #Description: The "lamw_headers" is part of the core of LAMW Manager. This script contains LAMW Manager variables.
 #-------------------------------------------------------------------------------------------------#
 NOTIFY_SEND_EXE=$(which notify-send)
@@ -44,8 +44,12 @@ PROXY_URL="http://$PROXY_SERVER:$PORT_SERVER"
 export USE_PROXY=0
 export JAVA_PATH=""
 export SDK_TOOLS_URL="https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip"
-export NDK_VERSION="r20b"
-export OLD_NDK_VERSION=r18b
+export NDK_VERSION="r21d"
+export NDK_VERSION_STR="21.3.6528147"
+export OLD_NDK_VERSION_STR=(
+	"20.1.5948944"
+	"18.1.5063045"
+)	
 export NDK_URL="https://dl.google.com/android/repository/android-ndk-${NDK_VERSION}-linux-x86_64.zip"
 export NDK_ZIP="android-ndk-${NDK_VERSION}-linux-x86_64.zip"
 export NDK_DIR_UNZIP="android-ndk-${NDK_VERSION}"
@@ -90,11 +94,11 @@ LAMW_IDE_HOME="$LAMW4LINUX_HOME/lamw4linux" # path to link-simbolic to ide
 LAMW_WORKSPACE_HOME="$LAMW_USER_HOME/Dev/LAMWProjects"  #path to lamw_workspace
 LAMW4LINUX_EXE_PATH="$LAMW_IDE_HOME/lamw4linux"
 LAMW_MENU_ITEM_PATH="$LAMW_USER_HOME/.local/share/applications/lamw4linux.desktop"
-GRADLE_VERSION="4.10.3"
-GRADLE_VERSION_STABLE='4.10.3'
+GRADLE_VERSION="6.1.1"
+GRADLE_VERSION_STABLE='6.1.1'
 GRADLE_HOME="$ROOT_LAMW/gradle-${GRADLE_VERSION_STABLE}"
-ANT_VERSION="1.10.7"
-ANT_VERSION_STABLE='1.10.7'
+ANT_VERSION="1.10.8"
+ANT_VERSION_STABLE='1.10.8'
 ANT_TAR_URL="https://archive.apache.org/dist/ant/binaries/apache-ant-${ANT_VERSION_STABLE}-bin.tar.xz"
 ANT_TAR_FILE="apache-ant-${ANT_VERSION_STABLE}-bin.tar.xz"
 ANT_HOME="$ROOT_LAMW/apache-ant-${ANT_VERSION_STABLE}"
@@ -180,9 +184,11 @@ export OPENJDK_DEFAULT='8'
 export OPENJDK_LTS=11
 
 export OLD_GRADLE=(
+	"$ROOT_LAMW/gradle-4.10.3"
 	"$ROOT_LAMW/gradle-4.4.1"
 )
 export OLD_ANT=(
+	"$ROOT_LAMW/apache-ant-1.10.7"
 	"$ROOT_LAMW/apache-ant-1.10.5"
 )
 

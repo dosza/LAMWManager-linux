@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.3.4
-#Date: 02/29/2020
+#Version: 0.3.5
+#Date: 07/14/2020
 #Description: "installer.sh" is part of the core of LAMW Manager. Contains routines for installing LAMW development environment
 #-------------------------------------------------------------------------------------------------#
 
@@ -392,11 +392,14 @@ getNDK(){
 		return 
 	fi
 	changeDirectory "$ANDROID_SDK"
-	if [ -e  $LAMW4LINUX_HOME/lamw-install.log ]; then 
-		cat $LAMW4LINUX_HOME/lamw-install.log | grep $OLD_NDK_VERSION > /dev/null
-		if [ $? = 0 ]; then 
-			rm -rf $ANDROID_SDK/ndk-bundle
-		fi
+	if [ -e  "$ANDROID_SDK/ndk-bundle" ]; then 
+		for i in ${!OLD_NDK_VERSION_STR[*]}; do
+			cat "$ANDROID_SDK/ndk-bundle/source.properties" | grep ${OLD_NDK_VERSION_STR[i]} > /dev/null
+			if [ $? = 0 ]; then 
+				rm -rf $ANDROID_SDK/ndk-bundle
+				break
+			fi
+		done
 	fi
 
 	if [ ! -e ndk-bundle ] ; then
