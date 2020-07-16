@@ -1,0 +1,5 @@
+#!/bin/bash
+source "$LAMW_MANAGER_MODULES_PATH/headers/.init_lamw_manager.sh"
+source "$LAMW_MANAGER_MODULES_PATH/headers/common-shell.sh"
+source "$LAMW_MANAGER_MODULES_PATH/headers/lamw_headers"
+source "$LAMW_MANAGER_MODULES_PATH/headers/parser.sh"
