@@ -43,14 +43,6 @@ parseFPCTrunk(){
 
 
 
-#to build FPC to ARMv7
-BuildCrossArm(){
-	changeDirectory $LAMW4LINUX_HOME/fpcsrc 
-	changeDirectory $FPC_RELEASE
-	make clean 
-	make crossall crossinstall  CPU_TARGET=arm OPT="-dFPC_ARMEL" OS_TARGET=android CROSSOPT="-CpARMV7A -CfVFPV3" INSTALL_PREFIX=/usr		
-}
-
 
 #BuildFPC to Trunk
 buildFPCTrunk(){
@@ -84,32 +76,29 @@ BuildCrossAArch64(){
 		echo "${VERMELHO}Fatal Error: Falls to build FPC  to Android/ARMv7${NORMAL}"
 		exit 1
 	fi
+
+	echo "cleaning sources..."
+	make clean > /dev/null
 	#CreateFPCTrunkBootStrap
 }
 
 #wrapper to configureFPC
-wrapperConfigureFPC(){
+ConfigureFPCCrossAndroid(){
 	if [ $FLAG_FORCE_ANDROID_AARCH64 = 1 ]; then
 		configureFPCTrunk
-	else
-		configureFPC
 	fi
 }
 
 #wrapper to BuilCrossArm
-wrapperBuildFPCCross(){
+buildCrossAndroid(){
 	if [ $FLAG_FORCE_ANDROID_AARCH64 = 1 ]; then
 		buildFPCTrunk
 		BuildCrossAArch64 
-	else
-		BuildCrossArm 
 	fi
 }
 #function to wrapper FPC
 wrapperParseFPC(){
-	CheckExistsFPCLaz
-	local index=$?
-	parseFPC ${PACKS[$index]}
+	parseFPC
 	if [ $FLAG_FORCE_ANDROID_AARCH64 = 1 ]; then
 		parseFPCTrunk
 	fi

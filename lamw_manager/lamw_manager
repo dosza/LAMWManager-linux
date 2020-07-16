@@ -9,7 +9,7 @@
 
 export DEBUG=0
 export ARGS="$*"
-export LAMW_MGR_INSTALL="core/lamw-install.sh"
+export LAMW_MGR_INSTALL="core/lamw-mgr.sh"
 export LAMW_MGR_CORE=""
 export USE_PKEXEC=0
 export ENTER_TO_EXIT=0
@@ -25,7 +25,7 @@ else
 fi
 
 export LAMW_MGR_INSTALL="$LAMW_MGR_CORE/$LAMW_MGR_INSTALL"
-source $LAMW_MGR_CORE/core/common-shell.sh
+source $LAMW_MGR_CORE/core/headers/common-shell.sh
 
 #Del lamw-overrides
 DelTempFiles(){ 
