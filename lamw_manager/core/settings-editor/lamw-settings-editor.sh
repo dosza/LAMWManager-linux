@@ -27,43 +27,6 @@ enableADBtoUdev(){
 	  printf 'SUBSYSTEM=="usb", ATTR{idVendor}=="<VENDOR>", MODE="0666", GROUP="plugdev"\n'  |  tee /etc/udev/rules.d/51-android.rules
 	  service udev restart
 }
-configureFPC(){
-	# parte do arquivo de configuração do fpc, 
-	SearchPackage $FPC_DEFAULT_DEB_PACK
-		local index=$?
-		parseFPC ${PACKS[$index]}
-	#	if [ ! -e $FPC_CFG_PATH ]; then
-			$FPC_MKCFG_EXE -d basepath=/usr/lib/fpc/$FPC_VERSION -o $FPC_CFG_PATH
-		#fi
-
-		#this config enable to crosscompile in fpc 
-		local fpc_cfg_str=(
-			"#IFDEF ANDROID"
-			"#IFDEF CPUARM"
-			"-CpARMV7A"
-			"-CfVFPV3"
-			"-Xd"
-			"-XParm-linux-androideabi-"
-			"-Fl$ROOT_LAMW/ndk/platforms/android-$SDK_VERSION/arch-arm/usr/lib"
-			"-FLlibdl.so"
-			
-			"-FD$ROOT_LAMW/ndk/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin"
-			'-Fu/usr/lib/fpc/$fpcversion/units/$fpctarget'
-			'-Fu/usr/lib/fpc/$fpcversion/units/$fpctarget/*'
-			'-Fu/usr/lib/fpc/$fpcversion/units/$fpctarget/rtl'
-			"#ENDIF"
-			"#ENDIF"
-		)
-
-		if [ -e $FPC_CFG_PATH ] ; then  # se exiir /etc/fpc.cfg
-			searchLineinFile $FPC_CFG_PATH  "${fpc_cfg_str[0]}"
-			local flag_fpc_cfg=$?
-
-			if [ $flag_fpc_cfg != 1 ]; then # caso o arquvo ainda não esteja configurado
-				AppendFileln "$FPC_CFG_PATH" "fpc_cfg_str"  
-			fi
-		fi
-}
 
 
 AddSDKPathstoProfile(){
@@ -493,7 +456,7 @@ CreateSimbolicLinksAndroidAARCH64(){
 	ln -sf "${FPC_TRUNK_LIB_PATH}/ppcrossa64" /usr/bin/ppca64
 }
 
-wrapperCreateSDKSimbolicLinks(){
+CreateBinutilsSimbolicLinks(){
 	CreateSDKSimbolicLinks
 	if [ $FLAG_FORCE_ANDROID_AARCH64 = 1 ]; then
 		CreateSimbolicLinksAndroidAARCH64
