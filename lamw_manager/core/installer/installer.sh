@@ -475,15 +475,13 @@ Repair(){
 	getStatusInstalation 
 	if [ $LAMW_INSTALL_STATUS = 1 ]; then # só executa essa funcao se o lamw tiver instalado
 		local flag_old_fpc=""
-		#local fpc_exe=$(which fpc) #verifica se existe o executavel para o fpc
-		local fpc_aarch=$(which ppca64)	
 
-		if [ "$fpc_aarch" = "" ];  then
+		if [ "$(which git)" = "" ]; then
+			echo "Missing git (required) command, starting install base Dependencies ..."
+			installDependences
 			flag_need_repair=1
 		fi
-
 		wrapperParseFPC
-
 		if [ ! -e $expected_fpc_src_path ]; then
 			getFPCSourcesTrunk
 			flag_need_repair=1
@@ -498,10 +496,6 @@ Repair(){
 			enableADBtoUdev
 			writeLAMWLogInstall
 			changeOwnerAllLAMW
-		fi
-		
-		if  [ -e $FPC_CFG_PATH ]; then 
-			chown $LAMW_USER:$LAMW_USER $FPC_CFG_PATH	
 		fi
 	fi
 }
@@ -539,7 +533,7 @@ BuildLazarusIDE(){
 	if [ $FLAG_FORCE_ANDROID_AARCH64 = 1 ]; then
 		wrapperParseFPC
 		if [ -e "$FPC_TRUNK_EXEC_PATH/fpc" ]; then
-			export PATH=$FPC_TRUNK_LIB_PATH:$FPC_TRUNK_EXEC_PATH/fpc:$PATH
+			export PATH=$FPC_TRUNK_LIB_PATH:$FPC_TRUNK_EXEC_PATH:$PATH
 			make_opts=(
 				"PP=${FPC_TRUNK_LIB_PATH}/ppcx64"
 				"FPC_VERSION=$_FPC_TRUNK_VERSION"

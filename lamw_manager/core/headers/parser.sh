@@ -78,7 +78,7 @@ startImplicitAction(){
 		printf "${NEGRITO}Implicit LAMW Framework update starting in $TIME_WAIT seconds ... ${NORMAL}...\n"
 		printf "Press control+c to exit ...\n"
 		sleep $TIME_WAIT 
-		wrapperRepair
+		Repair
 		checkProxyStatus;
 		echo "Updating LAMW";
 		getLAMWFramework;
