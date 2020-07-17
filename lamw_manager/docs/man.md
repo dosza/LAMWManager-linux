@@ -1,4 +1,4 @@
-**&nbsp;&nbsp;&nbsp;lamw_manager(1)&nbsp; 2019 Nov 28 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LAMW Manager man page&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lamw_manager(1)**
+**&nbsp;&nbsp;&nbsp;lamw_manager(1)&nbsp; 2020 Jul 17 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LAMW Manager man page&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lamw_manager(1)**
 
 **NAME**
 <p>
@@ -56,7 +56,7 @@
         </pre>
  </p>
 
-**DEBUG=1**
+**DEBUG**
 <p>
        <pre>
               Use the <strong>DEBUG=1</strong> flag later in any position of ./lamw_manager (flag does 
