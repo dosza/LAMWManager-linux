@@ -13,6 +13,25 @@ v0.3.5 - July 20, 2020
 		<li>Gradle 6.1.1</li>
 		<li>FPC 3.2.0 <em>beta</em> has replaced <em>stable</em></li>
 		<li>Lazarus 2.0.10</li>
+		<li>New FPC installation method without using APT!</li>
+	</ul>
+	<strong>FIXED:</strong>
+	<ul>
+		<li>Missing <em>fpcres</em></li>
+	</ul>
+</p>
+
+v0.3.4 - R1 - May 20, 2020
+---
+<p>
+	<strong> NEWS:</strong>
+	<ul>
+		<li>Lazarus 2.0.8</li>
+		<li>Update Lazarus version on ~/.lamw4linux/environmentoptions.xml</li>
+	</ul>
+	<strong>FIXED:</strong>
+	<ul>
+		<li>Fixed --reset and --uninstall commands</li>
 	</ul>
 </p>
 
@@ -28,19 +47,11 @@ v0.3.4 - March 10, 2020
 	<ul>
 		<li>Fix --update-lamw: cannot executable lamw4linux</li>
 		<li>Fix error: detect fpc-laz</li>
-	</ul>
-</p>
-
-
-v0.3.3 - R3 - February 29, 2020
----
-<p>
-	<strong>FIXED:</strong>
-	<ul>
 		<li>Error: Exit without Install APT Dependencies</li>
 		<li>Prevent error: install unrar packager</li>
 	</ul>
 </p>
+
 
 v0.3.3 - R2 - February 25, 2020
 ---
