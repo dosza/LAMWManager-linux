@@ -1,5 +1,9 @@
 # GNU/Debian Requerements 
 
+OpenJDK
+---
+For security reasons, LAMW Manager uses the Java development environment provided only by the official OpenJDK packages on your system.
+[GNU / Debian 10 *Buster*](https://www.debian.org/News/2019/20190706) provides only OpenJDK 11.
 
 Enable  proprietary softwares in /etc/apt/sources.list
 ---
@@ -19,28 +23,13 @@ Enable  proprietary softwares in /etc/apt/sources.list
 	</ol>
 </p>
 
-<p>
-	The result is similar a this (sample of file /etc/apt/sources.list of Debian 10 /Buster):
-	<pre>
-	deb http://ftp.br.debian.org/debian/ buster main <strong>contrib non-free</strong>
-	deb-src http://ftp.br.debian.org/debian/ buster main <strong>contrib non-free</strong> 
-	deb http://security.debian.org/ buster/updates main <strong>contrib non-free</strong> 
-	deb-src http://security.debian.org/ buster/updates main <strong>contrib non-free</strong> 
+The result is similar a this (sample of file /etc/apt/sources.list of Debian 10 /Buster):
+```sourceslist
+	deb http://ftp.br.debian.org/debian/ buster main contrib non-free
+	deb-src http://ftp.br.debian.org/debian/ buster main contrib non-free
+	deb http://security.debian.org/ buster/updates main contrib non-free
+	deb-src http://security.debian.org/ buster/updates main contrib non-free
 	#buster-updates, previously known as 'volatile'
-	deb http://ftp.br.debian.org/debian/ buster-updates main <strong>contrib non-free</strong> 
-	deb-src http://ftp.us.debian.org/debian/ buster-updates main <strong>contrib non-free</strong> 
-	</pre>
-</p>
-
-
-How to Install OpenJDK 8 on GNU/Debian 10
----
-<p>
-	<strong>Remember</strong>: First enable proprietary sources!
-	Run this commands to enable OpenJDK8:
-	<ol>
-		<li><pre>sudo echo "deb http://security.debian.org/ stretch/updates main contrib non-free" | sudo tee /etc/apt/sources.list.d/jdk.list</li></pre>
-		<li><pre>sudo apt-get update;sudo apt-get install openjdk-8-jdk -y</pre></li>
-		<li><pre>sudo rm /etc/apt/sources.list.d/jdk.list</pre></li>
-	</ol>
-</p>
+	deb http://ftp.br.debian.org/debian/ buster-updates main contrib non-free
+	deb-src http://ftp.us.debian.org/debian/ buster-updates main contrib non-free
+```
