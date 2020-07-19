@@ -329,6 +329,8 @@ CleanOldConfig(){
 		"$OLD_FPC_CFG_PATH"
 	)
 
+	echo "Uninstalling LAMW4Linux IDE ..."
+
 	for((i=0;i<${#list_deleted_files[*]};i++))
 	do
 		if [ -e "${list_deleted_files[i]}" ]; then 
@@ -338,7 +340,6 @@ CleanOldConfig(){
 			rm  "${list_deleted_files[i]}" $rm_opts
 		fi
 	done
-	echo "Uninstall LAMW4Linux IDE ..."
 	CleanOldCrossCompileBins
 	update-mime-database   $LAMW_USER_HOME/.local/share/mime/
 	update-desktop-database $LAMW_USER_HOME/.local/share/applications
