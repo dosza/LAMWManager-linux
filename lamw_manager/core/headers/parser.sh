@@ -70,6 +70,7 @@ startImplicitAction(){
 		echo "Please wait..."
 		printf "${NEGRITO}Implicit installation of LAMW starting in $TIME_WAIT seconds  ... ${NORMAL}\n"
 		printf "Press control+c to exit ...\n"
+		CheckUnsupporteFPC
 		sleep $TIME_WAIT
 		mainInstall
 		changeOwnerAllLAMW;
@@ -77,6 +78,7 @@ startImplicitAction(){
 		echo "Please wait ..."
 		printf "${NEGRITO}Implicit LAMW Framework update starting in $TIME_WAIT seconds ... ${NORMAL}...\n"
 		printf "Press control+c to exit ...\n"
+		CheckUnsupporteFPC
 		sleep $TIME_WAIT 
 		Repair
 		checkProxyStatus;
@@ -100,3 +102,4 @@ if [ $# = 6 ] || [ $# = 7 ]; then
 else
 	initParameters
 fi
+

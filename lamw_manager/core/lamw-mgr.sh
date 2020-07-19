@@ -19,6 +19,7 @@ source "$LAMW_MANAGER_MODULES_PATH/settings-editor/lamw-settings-editor.sh"
 source "$LAMW_MANAGER_MODULES_PATH/cross-builder/cross-builder.sh"
 
 
+
 #Parameters are useful for understanding script operation
 case "$1" in
 	"version")
@@ -68,6 +69,7 @@ case "$1" in
 
 	"--reset")
 		printf "Please wait ...\n"
+		getStatusInstalation
 		CleanOldConfig
 	#	printf "Mode SDKTOOLS=24 with ant support "
 		export OLD_ANDROID_SDK=1

@@ -3,7 +3,7 @@ This page contains information about new features and bug fixes.
 
 
 
-v0.3.5 - July 20, 2020
+v0.3.5 - July 19, 2020
 ---
 <p>
 	<strong> NEWS:</strong>
