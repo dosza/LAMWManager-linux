@@ -56,6 +56,7 @@ LAMWPackageManager(){
 
 }
 getStatusInstalation(){
+	CheckUnsupporteFPC
 	if [  -e $LAMW4LINUX_HOME/lamw-install.log ]; then
 		export LAMW_INSTALL_STATUS=1
 		return 1
@@ -93,10 +94,14 @@ SearchPackage(){
 }
 
 CheckUnsupporteFPC(){
-	exec 2> /dev/null dpkg -s  fpc | grep 'Status: install'  > /dev/null
-	if [ $? = 0 ]; then
-		echo "${VERMELHO}Warning:${NORMAL}Freepascal of fpc package detected!"
-		echo "We recommend uninstalling this with the command: sudo apt-get remove fpc --autoremove -y"
+	if [ $UNSUPPORTED_FPC_MSG = 0 ]; then
+		exec 2> /dev/null dpkg -s  fpc | grep 'Status: install'  > /dev/null
+		if [ $? = 0 ]; then
+			echo  -e "\n${VERMELHO}Warning:${NORMAL} Freepascal of fpc package detected!"
+			echo  -e "We recommend uninstalling this command: ${NEGRITO}sudo apt-get remove fpc --autoremove -y${NORMAL}\n"
+			export UNSUPPORTED_FPC_MSG=1	
+		fi
+		
 	fi
 }
 

@@ -11,7 +11,7 @@
 #----ColorTerm
 export VERDE=$'\e[1;32m'
 export AMARELO=$'\e[01;33m'
-export SUBLINHADO=$'4'
+export SUBLINHADO=$'\e[4'
 export NEGRITO=$'\e[1m'
 export VERMELHO=$'\e[1;31m'
 export VERMELHO_SUBLINHADO=$'\e[1;4;31m'

@@ -3,7 +3,7 @@
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
 #Version: 0.3.5
-#Date: 07/14/2020
+#Date: 07/19/2020
 #Description: The "lamw_headers" is part of the core of LAMW Manager. This script contains LAMW Manager variables.
 #-------------------------------------------------------------------------------------------------#
 NOTIFY_SEND_EXE=$(which notify-send)
@@ -29,11 +29,9 @@ LAMW_INSTALL_WELCOME=(
 )
 
 LAMW_LINUX_SPP=(
-	"\t*Debian 9\n"
+	"\t*Debian 10\n"
 	"\t*Ubuntu 16.04 LTS\n"
 	"\t*Ubuntu 18.04 LTS\n"
-	"\t*Linux Mint 18\n"
-	"\t*Linux Mint 19\n"
 )
 
 
@@ -186,6 +184,7 @@ export FPC_TRUNK_VERSION=""
 export FPC_TRUNK_LIB_PATH=""
 export FPC_TRUNK_EXEC_PATH=""
 export FPC_TRUNK_SOURCE_PATH="$LAMW4LINUX_HOME/usr/share/fpcsrc"
+export UNSUPPORTED_FPC_MSG=0
 
 export OPENJDK_DEFAULT='8'
 export OPENJDK_LTS=11
