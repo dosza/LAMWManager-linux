@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.3.4
-#Date: 02/29/2020
+#Version: 0.3.5
+#Date: 07/14/2020
 #Description: "installer.sh" is part of the core of LAMW Manager. Contains routines for installing LAMW development environment
 #-------------------------------------------------------------------------------------------------#
 
@@ -13,8 +13,6 @@ LAMWPackageManager(){
 	if [ $FLAG_FORCE_ANDROID_AARCH64 = 1 ]; then 
 		
 		local old_lamw_ide_home="$LAMW4LINUX_HOME/lamw4linux"
-		local old_fpc_src="$LAMW4LINUX_HOME/fpcsrc"
-
 
 		if [ -e "$old_lamw_ide_home"  ]; then
 			echo "Uninstalling  Old Lazarus ..."
@@ -29,25 +27,17 @@ LAMWPackageManager(){
 			fi
 		done
 		
-
-		if [ -e "$old_fpc_src" ]; then
-			echo "Uninstalling Old FPC Sources ..."
-			rm -rf "$old_fpc_src"
-		fi
-
 		if [ -e "$OLD_FPC_CFG_PATH" ]; then
 			rm "$OLD_FPC_CFG_PATH"
 		fi
 	
 		#fixs 0.3.1 to 0.3.2
-		if [ -e $LAMW4LINUX_HOME/lamw-install.log ]; then
-			cat  $LAMW4LINUX_HOME/lamw-install.log | grep '0.3.1'
-			if [ $? = 0 ]; then 
-				if [ -e "$LAMW4LINUX_HOME/usr" ]; then
-					rm -rf "$LAMW4LINUX_HOME/usr"
-				fi
+
+		for i  in ${!OLD_FPC_SOURCES[*]}; do
+			if [ -e ${OLD_FPC_SOURCES[i]} ]; then
+				rm  -rf ${OLD_FPC_SOURCES[i]}
 			fi
-		fi
+		done
 
 		for ((i=0;i<${#OLD_GRADLE[*]};i++))
 		do
@@ -66,6 +56,7 @@ LAMWPackageManager(){
 
 }
 getStatusInstalation(){
+	CheckUnsupporteFPC
 	if [  -e $LAMW4LINUX_HOME/lamw-install.log ]; then
 		export LAMW_INSTALL_STATUS=1
 		return 1
@@ -102,21 +93,15 @@ SearchPackage(){
 	return $index
 }
 
-CheckExistsFPCLaz(){
-	exec 2> /dev/null dpkg -s  $FPC_ALTERNATIVE_DEB_PACK | grep 'Status: install'  > /dev/null
-	if [ $? = 0 ]; then
-		export FPC_DEFAULT_DEB_PACK=$FPC_ALTERNATIVE_DEB_PACK
-		return 1
-	fi
-	return 0
-}
-CheckFPCSupport(){
-	if [ $FPC_DEFAULT_DEB_PACK = $FPC_ALTERNATIVE_DEB_PACK ]; then
-		return
-	fi
-	exec 2> /dev/null apt show fpc | grep 'Version: 3.0.0'  > /dev/null 
-	if [ $? = 0 ]; then
-		export NEED_UPGRADE_FPC=1
+CheckUnsupporteFPC(){
+	if [ $UNSUPPORTED_FPC_MSG = 0 ]; then
+		exec 2> /dev/null dpkg -s  fpc | grep 'Status: install'  > /dev/null
+		if [ $? = 0 ]; then
+			echo  -e "\n${VERMELHO}Warning:${NORMAL} Freepascal of fpc package detected!"
+			echo  -e "We recommend uninstalling this command: ${NEGRITO}sudo apt-get remove fpc --autoremove -y${NORMAL}\n"
+			export UNSUPPORTED_FPC_MSG=1	
+		fi
+		
 	fi
 }
 
@@ -126,31 +111,6 @@ CheckOpenJDK8Support(){
 	if [ $? != 0 ]; then 
 		printf "Warning:${VERMELHO}OpenJDK 8 is not supported, using OpenJDK11!${NORMAL}\n"
 		export OPENJDK_DEFAULT=$OPENJDK_LTS
-	fi
-}
-
-enableUpgradeFPC(){
-	cat  /etc/apt/sources.list | grep "${FPC_DEBIAN_BACKPORTS[1]}"
-	if [ $? != 0 ]; then
-		WriterFileln  "/etc/apt/sources.list.d/fpc-backports.list" "FPC_DEBIAN_BACKPORTS"
-	fi
-}
-disableUpgradeFPC(){
-	if [ -e /etc/apt/sources.list.d/fpc-backports.list ]; then
-		rm /etc/apt/sources.list.d/fpc-backports.list
-		rm  /var/lib/apt/lists/deb.debian.org_debian_dists_stretch-backports_*
-	fi
-}
-#unistall java not supported
-unistallJavaUnsupported(){
-	#se o jdk > 8 nada  sai da funçao
-	if [ $OPENJDK_DEFAULT = $OPENJDK_LTS ]; then 
-		return 
-	fi
-
-	if [ $flag_new_ubuntu_lts = 1 ]; then
-		apt-get remove --purge openjdk-9-* -y 
-		apt-get remove --purge openjdk-11* -y
 	fi
 }
 
@@ -181,96 +141,21 @@ setJava8asDefault(){
 
 #install deps
 installDependences(){
-	local fpc_files_tmp='/tmp/fpc_laz_PACKS'
-	if [ $FORCE_LAWM4INSTALL = 1 ]; then 
-		CheckExistsFPCLaz
-		if [ $? = 0 ]; then 
-			apt-get remove fpc*  --purge -y
-			apt-get autoremove --purge -y
-			if [ -e $fpc_files_tmp ]; then
-				rm -rf $fpc_files_tmp
-			fi
-			mkdir $fpc_files_tmp 
-			changeDirectory $fpc_files_tmp 
-			for ((i=0;i<${#FPC_LAZ_LINKS[*]};i++));do
-				Wget ${FPC_LAZ_LINKS[i]} 
-			done
-			IsFileBusy apt-get ${APT_LOCKS[*]}
-			for i in $(ls $fpc_files_tmp) ; do 
-				sudo dpkg -i $fpc_files_tmp/$i; 
-			done
-	
-			changeDirectory $ROOT_LAMW
-			if [ -e $fpc_files_tmp ]; then
-				rm -rf $fpc_files_tmp
-			fi
-		fi		
-	fi
-	CheckFPCSupport
-
-	if [ $NEED_UPGRADE_FPC = 1 ]; then
-		enableUpgradeFPC
-		AptInstall fpc/stretch-backports
-		disableUpgradeFPC
-	fi
 
 	CheckOpenJDK8Support
-	CheckExistsFPCLaz
-	AptInstall $LIBS_ANDROID $PROG_TOOLS  openjdk-${OPENJDK_DEFAULT}-jdk $FPC_DEFAULT_DEB_PACK
 	exec 2> /dev/null apt show $NON_FREE_TOOLS | grep 'Source: unrar-nonfree' > /dev/null
 	if [ $? = 0 ]; then
-		AptInstall $NON_FREE_TOOLS
+		echo "$PROG_TOOLS" | grep "$NON_FREE_TOOLS" > /dev/null
+		if [ $? != 0 ]; then 
+			PROG_TOOLS="$PROG_TOOLS$NON_FREE_TOOLS "
+		fi
 	else
 		printf "${VERMELHO}Warning: The unrar package isn't available!\nCheck your /etc/apt/sources.list file${NORMAL}\nIgnoring instalation of ${NEGRITO}unrar${NORMAL} package!\n"
 		sleep 1
 	fi
-	
-}
-
-#iniciandoparametros
-initParameters(){
-	if [ $# = 3 ] ; then 
-		if [ "$1" = "--use_proxy" ]; then 
-			export USE_PROXY=1
-			export PROXY_SERVER=$2
-			export PORT_SERVER=$3
-			export PROXY_URL="http://$2:$3"
-			printf "PROXY_SERVER=$2\nPORT_SERVER=$3\n"
-		fi
-	fi
-	
-	if [ $USE_PROXY = 1 ]; then
-		SDK_LICENSES_PARAMETERS=( --licenses --no_https --proxy=http --proxy_host=$PROXY_SERVER --proxy_port=$PORT_SERVER )
-		SDK_MANAGER_CMD_PARAMETERS[${#SDK_LICENSES_PARAMETERS[*]}]="--no_https --proxy=http"
-		SDK_MANAGER_CMD_PARAMETERS[${#SDK_LICENSES_PARAMETERS[*]}]="--proxy_host=$PROXY_SERVER"
-		SDK_MANAGER_CMD_PARAMETERS[${#SDK_LICENSES_PARAMETERS[*]}]="--proxy_port=$PORT_SERVER" 
-
-		SDK_MANAGER_CMD_PARAMETERS2_PROXY=(
-			'--no_https' 
-			"--proxy-host=$PROXY_SERVER" 
-			"--proxy-port=$PORT_SERVER" #'--proxy=http'
-		)
+	AptInstall $LIBS_ANDROID $PROG_TOOLS  openjdk-${OPENJDK_DEFAULT}-jdk 
 		
-		export http_proxy=$PROXY_URL
-		export https_proxy=$PROXY_URL
-	fi
-}
-#Get FPC Sources
-getFPCSources(){
-	changeDirectory $LAMW_USER_HOME
-	mkdir -p $LAMW4LINUX_HOME/fpcsrc
-	changeDirectory $LAMW4LINUX_HOME/fpcsrc
-	svn checkout $URL_FPC
-	if [ $? != 0 ]; then
-		# rm $FPC_RELEASE/.svn -r
-		 rm -rf $FPC_RELEASE
-		svn checkout $URL_FPC
-		if [ $? != 0 ]; then 
-			 rm -rf $FPC_RELEASE
-			echo "possible network instability! Try later!"
-			exit 1
-		fi
-	fi
+	
 }
 
 getFPCSourcesTrunk(){
@@ -288,13 +173,37 @@ getFPCSourcesTrunk(){
 	fi
 	parseFPCTrunk
 }
-#wrapper to get FPC Sources 
-getWrapperFPCSources(){
-	if [ $FLAG_FORCE_ANDROID_AARCH64 = 1 ]; then
-		echo "Warning:mode experimental Android Aarch64!"
-		getFPCSourcesTrunk
-	else
-		getFPCSources
+
+getFPCStable(){
+	local link="https://sourceforge.net/projects/lazarus/files/Lazarus%20Linux%20amd64%20DEB/Lazarus%202.0.8/fpc-laz_3.0.4-1_amd64.deb"
+	if [ ! -e "$LAMW4LINUX_HOME/usr" ]; then 
+		mkdir -p "$LAMW4LINUX_HOME/usr"
+	fi
+
+	cd "$LAMW4LINUX_HOME/usr"
+	if  [ ! -e "$FPC_LIB_PATH" ]; then
+		echo "doesn't exist $FPC_PATH"
+		Wget $link
+		if [ -e "$FPC_DEB" ]; then
+			local tmp_files=(
+				data.tar.xz
+				control.tar.gz
+				debian-binary
+				"$FPC_DEB"
+			)
+			ar x "$FPC_DEB"
+			if [ -e data.tar.xz ]; then 
+				tar -xvf data.tar.xz
+			fi
+			if [ -e $LAMW4LINUX_HOME/usr/usr ]; then
+				mv $LAMW4LINUX_HOME/usr/usr $LAMW4LINUX_HOME/usr/local
+			fi
+			for i in ${!tmp_files[@]}; do  
+				if [ -e ${tmp_files[i]} ]; then rm ${tmp_files[i]} ; fi
+			done	
+		fi
+		export PPC_CONFIG_PATH=$FPC_LIB_PATH
+		$FPC_MKCFG_EXE -d basepath=$FPC_LIB_PATH -o $FPC_LIB_PATH/fpc.cfg;
 	fi
 }
 #get Lazarus Sources
@@ -401,11 +310,14 @@ getNDK(){
 		return 
 	fi
 	changeDirectory "$ANDROID_SDK"
-	if [ -e  $LAMW4LINUX_HOME/lamw-install.log ]; then 
-		cat $LAMW4LINUX_HOME/lamw-install.log | grep $OLD_NDK_VERSION > /dev/null
-		if [ $? = 0 ]; then 
-			rm -rf $ANDROID_SDK/ndk-bundle
-		fi
+	if [ -e  "$ANDROID_SDK/ndk-bundle" ]; then 
+		for i in ${!OLD_NDK_VERSION_STR[*]}; do
+			cat "$ANDROID_SDK/ndk-bundle/source.properties" | grep ${OLD_NDK_VERSION_STR[i]} > /dev/null
+			if [ $? = 0 ]; then 
+				rm -rf $ANDROID_SDK/ndk-bundle
+				break
+			fi
+		done
 	fi
 
 	if [ ! -e ndk-bundle ] ; then
@@ -487,11 +399,9 @@ getOldAndroidSDK(){
 		"$ANDROID_SDK/platforms/android-$ANDROID_SDK_TARGET"
 		"$ANDROID_SDK/platform-tools"
 		"$ANDROID_SDK/build-tools/$ANDROID_BUILD_TOOLS_TARGET"
-		"$ANDROID_SDK/extras/google/google_play_services"  
-		"$ANDROID_SDK/extras/android/m2repository"
-		"$ANDROID_SDK/extras/google/m2repository" 
-		"$ANDROID_SDK/extras/google/market_licensing" 
-		"$ANDROID_SDK/extras/google/market_apk_expansion"
+		"$ANDROID_SDK/extras/google/google_play_services"
+		$ANDROID_SDK/extras/{android,google}/m2repository
+		$ANDROID_SDK/extras/google/market_{licensing,apk_expansion}
 		"$ANDROID_SDK/build-tools/$GRADLE_MIN_BUILD_TOOLS"
 	)
 
@@ -554,95 +464,14 @@ RepairOldSDKAndroid(){
 #Addd sdk to .bashrc and .profile
 
 
-WrappergetAndroidSDK(){
+getAndroidAPIS(){
 	if [ $OLD_ANDROID_SDK = 0 ]; then
 		getSDKAndroid
 	else
 		getOldAndroidSDK
 	fi
-
 }
-
 Repair(){
-	local flag_need_repair=0 # flag de reparo 
-	getStatusInstalation 
-	if [ $LAMW_INSTALL_STATUS = 1 ]; then # só executa essa funcao se o lamw tiver instalado
-		local flag_old_fpc=""
-		local fpc_exe=$(which fpc) #verifica se existe o executavel para o fpc
-		local fpc_arm=$(which ppcarm )
-		if [ "$fpc_exe" = "" ]; then
-			flag_need_repair=1
-			installDependences # caso não exista -reinstale
-			setJava8asDefault
-		fi
-		CheckFPCSupport
-		if [ $NEED_UPGRADE_FPC = 1 ]; then
-			installDependences
-			flag_need_repair=1
-			configureFPC
-		fi
-		if [ "$fpc_arm" = "" ]; then
-			flag_need_repair=1  # caso o  crosscompile para arm nao exista,  sinaliza reparo
-		fi
-		#searchLineinFile "$LAMW4LINUX_HOME/lamw-install.log" "FPC_VERSION=$FPC_VERSION
-		#configureFPC
-		wrapperParseFPC
-		if [ -e $LAMW4LINUX_HOME/fpcsrc ]; then 
-			# verifica se  a versao do codigo fonte do fpc casa com a versão do sistema
-			ls $LAMW4LINUX_HOME/fpcsrc | grep $FPC_RELEASE   
-			local flag_old_fpc=$?
-			#echo "flag_old_fpc=$flag_old_fpc";read
-			local aux_path=""
-			if [ $flag_old_fpc != 0 ] ; then # caso o código fonte do fpc do LAMW4Linux não match com o do sistema, verifica se necessita fazer downgrade ou upgrade
-				if [ -e "$LAMW4LINUX_HOME/fpcsrc/release_3_0_0" ]; then
-					aux_path="$LAMW4LINUX_HOME/fpcsrc/release_3_0_0"  #faz downgrade
-				else
-					if [ -e "$LAMW4LINUX_HOME/fpcsrc/release_3_0_4" ]; then
-						aux_path="$LAMW4LINUX_HOME/fpcsrc/release_3_0_4"
-					else
-						if [ -e "$FPC_TRUNK_SOURCE_PATH/trunk" ]; then
-							aux_path="$FPC_TRUNK_SOURCE_PATH/trunk"
-						fi
-					fi
-				fi
-				wrapperConfigureFPC
-				if [ -e $aux_path ]; then 
-					rm -rf $aux_path
-					flag_need_repair=1
-					getWrapperFPCSources
-				fi
-			fi
-		fi
-
-
-		local expected_fpc_src_path="${LAMW4LINUX_HOME}/fpcsrc/"
-		local expected_fpc_src_path="${expected_fpc_src_path}${FPC_RELEASE}"
-		#echo "$expected_fpc_src_path";read
-		if [ ! -e $expected_fpc_src_path ]; then
-		#	echo "expected_fpc_src_path does not exits"; read
-			getFPCSources
-			flag_need_repair=1
-		fi
-			
-		if [ $flag_need_repair = 1 ]; then
-			
-			CleanOldCrossCompileBins
-			BuildCrossArm $FPC_ID_DEFAULT
-			BuildLazarusIDE
-			CreateSDKSimbolicLinks
-			enableADBtoUdev
-			writeLAMWLogInstall
-			changeOwnerAllLAMW
-			#chown $LAMW_USER:$LAMW_USER -R $LAMW4LINUX_HOME
-		fi
-		
-		if  [ -e $FPC_CFG_PATH ]; then 
-			chown $LAMW_USER:$LAMW_USER $FPC_CFG_PATH
-			
-		fi
-	fi
-}
-Repair1(){
 	local flag_need_repair=0 # flag de reparo 
 	local flag_upgrade_lazarus=0
 	local aux_path="$LAMW4LINUX_HOME/fpcsrc"
@@ -651,71 +480,31 @@ Repair1(){
 	getStatusInstalation 
 	if [ $LAMW_INSTALL_STATUS = 1 ]; then # só executa essa funcao se o lamw tiver instalado
 		local flag_old_fpc=""
-		local fpc_exe=$(which fpc) #verifica se existe o executavel para o fpc
-		local fpc_aarch=$(which ppca64)	
-		if [ "$fpc_exe" = "" ]; then
-			flag_need_repair=1
-			installDependences # caso não exista -reinstale
-			setJava8asDefault
-		fi
 
-		if [ "$fpc_aarch" = "" ];  then
-			flag_need_repair=1
-		fi
-
-		CheckFPCSupport
-		if [ $NEED_UPGRADE_FPC = 1 ]; then
+		if [ "$(which git)" = "" ]; then
+			echo "Missing git (required) command, starting install base Dependencies ..."
 			installDependences
 			flag_need_repair=1
-			#configureFPC
-			wrapperConfigureFPC
 		fi
-
 		wrapperParseFPC
-		# verifica se  a versao do codigo fonte do fpc casa com a versão do sistema
-	
-		if [ -e "$aux_path" ]; then 
-			rm -rf $aux_path
-			flag_need_repair=1
-			getWrapperFPCSources
-		fi
-	
 		if [ ! -e $expected_fpc_src_path ]; then
-			getWrapperFPCSources
+			getFPCSourcesTrunk
 			flag_need_repair=1
 		fi
 			
 		if [ $flag_need_repair = 1 ]; then
-			wrapperConfigureFPC
+			ConfigureFPCCrossAndroid
 			CleanOldCrossCompileBins
-			#BuildCrossArm $FPC_ID_DEFAULT
-			wrapperBuildFPCCross
-			if [ -e "$LAMW4LINUX_HOME/${LAZARUS_OLD_STABLE[0]}" ]; then
-				rm -rf "$LAMW4LINUX_HOME/${LAZARUS_OLD_STABLE[0]}"
-				getLazarusSources
-			fi
+			buildCrossAndroid
 			BuildLazarusIDE
-			wrapperCreateSDKSimbolicLinks
+			CreateBinutilsSimbolicLinks
 			enableADBtoUdev
 			writeLAMWLogInstall
 			changeOwnerAllLAMW
 		fi
-		
-		if  [ -e $FPC_CFG_PATH ]; then 
-			chown $LAMW_USER:$LAMW_USER $FPC_CFG_PATH	
-		fi
 	fi
 }
 
-wrapperRepair(){
-	if [ $FLAG_FORCE_ANDROID_AARCH64 = 1 ]; then
-		#Repair1
-		Repair1
-		true
-	else
-		Repair
-	fi
-}
 #get implict install 
 getImplicitInstall(){
 	if [  -e $LAMW4LINUX_HOME/lamw-install.log ]; then
@@ -729,11 +518,25 @@ getImplicitInstall(){
 		if [ $? = 0 ]; then  
 			export LAMW_IMPLICIT_ACTION_MODE=1 #apenas atualiza o lamw 
 		else
-			echo "You need upgrade your LAMW4Linux!"
-			export LAMW_IMPLICIT_ACTION_MODE=0
-			export OLD_ANDROID_SDK=1 #obetem por padrão o old sdk 
-			export NO_GUI_OLD_SDK=1
-			LAMWPackageManager
+			local flag_is_old_lamw=0
+			for i  in ${!OLD_LAMW_INSTALL_VERSION[*]};
+			do
+				cat $LAMW4LINUX_HOME/lamw-install.log |  grep "Generate LAMW_INSTALL_VERSION=${OLD_LAMW_INSTALL_VERSION[i]}" > /dev/null
+				if [ $? = 0 ]; then 
+					flag_is_old_lamw=1
+					break
+				fi
+			done
+			if [ $flag_is_old_lamw = 1 ]; then 
+				echo "You need upgrade your LAMW4Linux!"
+				export LAMW_IMPLICIT_ACTION_MODE=0
+				export OLD_ANDROID_SDK=1 #obetem por padrão o old sdk 
+				export NO_GUI_OLD_SDK=1
+				LAMWPackageManager
+			else
+				echo "${VERMELHO}Your LAMW development environment was generated by a newer version of LAMW Manager!${NORMAL}"
+				exit 1
+			fi
 		fi
 	else
 		export OLD_ANDROID_SDK=1 #obetem por padrão o old sdk 
@@ -741,32 +544,83 @@ getImplicitInstall(){
 	fi
 }
 
+#Build lazarus ide
+BuildLazarusIDE(){
+	
+	local make_opts=()
+
+	if [ $FLAG_FORCE_ANDROID_AARCH64 = 1 ]; then
+		wrapperParseFPC
+		if [ -e "$FPC_TRUNK_EXEC_PATH/fpc" ]; then
+			export PATH=$FPC_TRUNK_LIB_PATH:$FPC_TRUNK_EXEC_PATH:$PATH
+			make_opts=(
+				"PP=${FPC_TRUNK_LIB_PATH}/ppcx64"
+				"FPC_VERSION=$_FPC_TRUNK_VERSION"
+			)
+		fi
+	fi
+
+
+	if [ ! -e "$LAMW_IDE_HOME" ]; then  
+		ln -sf $LAMW4LINUX_HOME/$LAZARUS_STABLE $LAMW_IDE_HOME # link to lamw4_home directory 
+	fi  
+
+	if [ ! -e "$LAMW4LINUX_EXE_PATH" ]; then 
+		ln -sf $LAMW_IDE_HOME/lazarus $LAMW4LINUX_EXE_PATH  #link  to lazarus executable
+	fi
+
+
+	changeDirectory $LAMW_IDE_HOME
+	if [ $# = 0 ]; then 
+		make clean all  ${make_opts[*]}
+	fi
+	
+	initLAMw4LinuxConfig
+		#build ide  with lamw framework 
+	for((i=0;i< ${#LAMW_PACKAGES[@]};i++))
+	do
+		./lazbuild --build-ide= --add-package ${LAMW_PACKAGES[i]} --primary-config-path=$LAMW4_LINUX_PATH_CFG  --lazarusdir=$LAMW_IDE_HOME
+		if [ $? != 0 ]; then
+			./lazbuild --build-ide= --add-package  ${LAMW_PACKAGES[i]} --primary-config-path=$LAMW4_LINUX_PATH_CFG  --lazarusdir=$LAMW_IDE_HOME
+		fi
+	done
+
+	if [ -e /root/.fpc.cfg ]; then
+		rm  -rf /root/.fpc.cfg
+	fi
+}
+
+#this code add support a proxy 
+checkProxyStatus(){
+	if [ $USE_PROXY = 1 ] ; then
+		ActiveProxy 1
+	else
+		ActiveProxy 0
+	fi
+}
+
+
+
 mainInstall(){
 	initROOT_LAMW
 	installDependences
 	checkProxyStatus
-	#configureFPC
 	wrapperParseFPC
 	getAnt
 	getGradle
 	getAndroidSDKTools
 	getNDK
-	#unistallJavaUnsupported
 	setJava8asDefault
-	#getSDKAndroid
-	WrappergetAndroidSDK #temporariamente comentado
-	
-	#getFPCSources
-	getWrapperFPCSources
+	getAndroidAPIS 
+	getFPCStable
+	getFPCSourcesTrunk
 	getLazarusSources
 	getLAMWFramework
-	#CreateSDKSimbolicLinks
-	wrapperCreateSDKSimbolicLinks
+	CreateBinutilsSimbolicLinks
 	AddSDKPathstoProfile
 	CleanOldCrossCompileBins
-	#BuildCrossArm 
-	wrapperBuildFPCCross
-	wrapperConfigureFPC
+	buildCrossAndroid
+	ConfigureFPCCrossAndroid
 	BuildLazarusIDE
 	changeDirectory $ROOT_LAMW
 	LAMW4LinuxPostConfig

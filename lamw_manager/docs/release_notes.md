@@ -1,6 +1,28 @@
 # LAMW Manager Release Notes
 This page contains information about new features and bug fixes.
 
+
+
+v0.3.5 - July 19, 2020
+---
+<p>
+	<strong> NEWS:</strong>
+	<ul>
+		<li>Android NDK r21d</li>
+		<li>Apache Ant 1.10.8</li>
+		<li>Gradle 6.1.1</li>
+		<li>FPC 3.2.0 <em>beta</em> has replaced <em>stable</em></li>
+		<li>Lazarus 2.0.10</li>
+		<li>New FPC installation method without using APT!</li>
+		<li>GNU / Debian 9 is no longer officially supported!</li>
+		<li>The <em><a href="https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/tree/v0.3.5/lamw_manager/core">core</a></em> module was divided into four sub-modules: <em> <a href="https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/tree/v0.3.5/lamw_manager/core/cross-builder">cross-builder</a>, <a href="https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/tree/v0.3.5/lamw_manager/core/headers">headers</a>, <a href="https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/tree/v0.3.5/lamw_manager/core/installer">installer</a></em> and <em> <a href="https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/tree/v0.3.5/lamw_manager/core/settings-editor">settings-editor</a> </em></li>	
+	</ul>
+	<strong>FIXED:</strong>
+	<ul>
+		<li>Missing <em>fpcres</em></li>
+	</ul>
+</p>
+
 v0.3.4 - R1 - May 20, 2020
 ---
 <p>
@@ -27,19 +49,11 @@ v0.3.4 - March 10, 2020
 	<ul>
 		<li>Fix --update-lamw: cannot executable lamw4linux</li>
 		<li>Fix error: detect fpc-laz</li>
-	</ul>
-</p>
-
-
-v0.3.3 - R3 - February 29, 2020
----
-<p>
-	<strong>FIXED:</strong>
-	<ul>
 		<li>Error: Exit without Install APT Dependencies</li>
 		<li>Prevent error: install unrar packager</li>
 	</ul>
 </p>
+
 
 v0.3.3 - R2 - February 25, 2020
 ---
