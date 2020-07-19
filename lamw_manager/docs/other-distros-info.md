@@ -7,17 +7,14 @@
 		<li>Compatibility with other linux distributions:</li>
 		<ol type="a">
 			<li>Ubuntu / Debian Based Linux Distribution</li>
-			<li>OpenJDK8 Available in Official Repository (from openjdk-8-jdk package) or OpenJDK11¹ (from openjdk-11-jdk package)</li>
-			<li>FreePascal Stable Available in Official Repository (from fpc package)² ³</li>
-			<li>Using OpenJDK is recommended instead of Oracle JDK</li>
-			<li>If the system does not comply with items i,ii and iii:
+			<li>OpenJDK 8 Available in Official Repository (from openjdk-8-jdk package) or OpenJDK 11¹ (from openjdk-11-jdk package)</li>
+			<li>If the system does not comply with items i and ii
 			It's the <strong>sole responsibility</strong> of the <strong>user</strong> to <strong>adapt</strong> the system to LAMW Manager.</li>
 		</ol>
 	</ol>
 	<Strong>Notes:</Strong>
 	<ol type="1">
 		<li>JDK11 does not support Apache Ant Scripts!</li>
-		<li>Freepascal distributed by third parties is not supported!</li>
 		<li>Freepascal Trunk is not supported!</li>
 	</ol>
 </p>

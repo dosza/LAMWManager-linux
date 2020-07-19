@@ -8,7 +8,7 @@
 #Note: This script requires makeself, read more in https://makeself.io/
 #-------------------------------------------------------------------------------------------------#
 
-source "../core/common-shell.sh"
+source "../core/headers/common-shell.sh"
 
 
 AUX=$PWD
