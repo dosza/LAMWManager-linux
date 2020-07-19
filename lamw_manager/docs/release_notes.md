@@ -3,7 +3,7 @@ This page contains information about new features and bug fixes.
 
 
 
-v0.3.5 - July 19, 2020
+v0.3.5 - July 20, 2020
 ---
 <p>
 	<strong> NEWS:</strong>
@@ -15,7 +15,7 @@ v0.3.5 - July 19, 2020
 		<li>Lazarus 2.0.10</li>
 		<li>New FPC installation method without using APT!</li>
 		<li>GNU / Debian 9 is no longer officially supported!</li>
-		<li>The <em><a href="https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/tree/v0.3.5/lamw_manager/core">core</a></em> module was divided into four sub-modules: <em> <a href="https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/tree/v0.3.5/lamw_manager/core/cross-builder">cross-builder</a>, <a href="https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/tree/v0.3.5/lamw_manager/core/headers">headers</a>, <a href="https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/tree/v0.3.5/lamw_manager/installer">installer</a></em> and <em> <a href="https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/tree/v0.3.5/lamw_manager/core/settings-editor">settings-editor</a> </em></li>	
+		<li>The <em><a href="https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/tree/v0.3.5/lamw_manager/core">core</a></em> module was divided into four sub-modules: <em> <a href="https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/tree/v0.3.5/lamw_manager/core/cross-builder">cross-builder</a>, <a href="https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/tree/v0.3.5/lamw_manager/core/headers">headers</a>, <a href="https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/tree/v0.3.5/lamw_manager/core/installer">installer</a></em> and <em> <a href="https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/tree/v0.3.5/lamw_manager/core/settings-editor">settings-editor</a> </em></li>	
 	</ul>
 	<strong>FIXED:</strong>
 	<ul>
