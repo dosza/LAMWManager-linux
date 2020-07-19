@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (mater-alma)
 #Course: Science Computer
-#Version: 0.3.4
-#Date: 11/23/2019
+#Version: 0.3.5
+#Date: 07/20/2020
 #Description: The "lamw-manager-settings-editor.sh" is part of the core of LAMW Manager. Responsible for managing LAMW Manager / LAMW configuration files..
 #-------------------------------------------------------------------------------------------------#
 #this function builds initial struct directory of LAMW env Development !
@@ -26,43 +26,6 @@ initROOT_LAMW(){
 enableADBtoUdev(){
 	  printf 'SUBSYSTEM=="usb", ATTR{idVendor}=="<VENDOR>", MODE="0666", GROUP="plugdev"\n'  |  tee /etc/udev/rules.d/51-android.rules
 	  service udev restart
-}
-configureFPC(){
-	# parte do arquivo de configuração do fpc, 
-	SearchPackage $FPC_DEFAULT_DEB_PACK
-		local index=$?
-		parseFPC ${PACKS[$index]}
-	#	if [ ! -e $FPC_CFG_PATH ]; then
-			$FPC_MKCFG_EXE -d basepath=/usr/lib/fpc/$FPC_VERSION -o $FPC_CFG_PATH
-		#fi
-
-		#this config enable to crosscompile in fpc 
-		local fpc_cfg_str=(
-			"#IFDEF ANDROID"
-			"#IFDEF CPUARM"
-			"-CpARMV7A"
-			"-CfVFPV3"
-			"-Xd"
-			"-XParm-linux-androideabi-"
-			"-Fl$ROOT_LAMW/ndk/platforms/android-$SDK_VERSION/arch-arm/usr/lib"
-			"-FLlibdl.so"
-			
-			"-FD$ROOT_LAMW/ndk/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin"
-			'-Fu/usr/lib/fpc/$fpcversion/units/$fpctarget'
-			'-Fu/usr/lib/fpc/$fpcversion/units/$fpctarget/*'
-			'-Fu/usr/lib/fpc/$fpcversion/units/$fpctarget/rtl'
-			"#ENDIF"
-			"#ENDIF"
-		)
-
-		if [ -e $FPC_CFG_PATH ] ; then  # se exiir /etc/fpc.cfg
-			searchLineinFile $FPC_CFG_PATH  "${fpc_cfg_str[0]}"
-			local flag_fpc_cfg=$?
-
-			if [ $flag_fpc_cfg != 1 ]; then # caso o arquvo ainda não esteja configurado
-				AppendFileln "$FPC_CFG_PATH" "fpc_cfg_str"  
-			fi
-		fi
 }
 
 
@@ -366,6 +329,8 @@ CleanOldConfig(){
 		"$OLD_FPC_CFG_PATH"
 	)
 
+	echo "Uninstalling LAMW4Linux IDE ..."
+
 	for((i=0;i<${#list_deleted_files[*]};i++))
 	do
 		if [ -e "${list_deleted_files[i]}" ]; then 
@@ -375,7 +340,6 @@ CleanOldConfig(){
 			rm  "${list_deleted_files[i]}" $rm_opts
 		fi
 	done
-	echo "Uninstall LAMW4Linux IDE ..."
 	CleanOldCrossCompileBins
 	update-mime-database   $LAMW_USER_HOME/.local/share/mime/
 	update-desktop-database $LAMW_USER_HOME/.local/share/applications
@@ -493,7 +457,7 @@ CreateSimbolicLinksAndroidAARCH64(){
 	ln -sf "${FPC_TRUNK_LIB_PATH}/ppcrossa64" /usr/bin/ppca64
 }
 
-wrapperCreateSDKSimbolicLinks(){
+CreateBinutilsSimbolicLinks(){
 	CreateSDKSimbolicLinks
 	if [ $FLAG_FORCE_ANDROID_AARCH64 = 1 ]; then
 		CreateSimbolicLinksAndroidAARCH64
@@ -595,7 +559,8 @@ initLAMw4LinuxConfig(){
 		#caso FPCSource foi apontado para um arquivo inesperado
 		cat $lazarus_env_cfg_path | grep "FPCSourceDirectory Value=\"${fpc_splited[5]}\"" > /dev/null
 		if [ $? != 0 ]; then 
-			local wrong_fpc_splited_path=$(GenerateScapesStr $(cat $lazarus_env_cfg_path | grep 'FPCSourceDirectory' |sed -r 's/    //g' |sed  's/<FPCSourceDirectory Value=//g' | sed 's/\/>//g' | sed 's/"//g'))
+			local wrong_fpc_splited_path=$(GenerateScapesStr $(cat $lazarus_env_cfg_path | grep 'FPCSourceDirectory' |sed -r 's/    //g' |sed  's/<FPCSourceDirectory Value=//g' | sed 's/\/>//g' | sed 's/>//g' | sed 's/"//g'))
+			echo "$wrong_fpc_splited_path"
 			sed -i "s/FPCSourceDirectory Value=\"${wrong_fpc_splited_path}\"/FPCSourceDirectory Value=\"${fpc_splited[5]}\"/g" "$lazarus_env_cfg_path"	
 		fi
 

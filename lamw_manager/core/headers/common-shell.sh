@@ -2,16 +2,16 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (mater-alma)
 #Course: Science Computer
-#version: 0.0.1
-#Date: 02/29/2020
-#Description: This script is not part of LAMW Manager! It is an external library that implements routines common to shell script.
+#version: 0.1.0	
+#Date: 19/06/2020
+#Description: Thi script provides common shell functions
 #-------------------------------------------------------------------------------------------------#
 
 #GLOBAL VARIABLES
 #----ColorTerm
 export VERDE=$'\e[1;32m'
 export AMARELO=$'\e[01;33m'
-export SUBLINHADO=$'4'
+export SUBLINHADO=$'\e[4'
 export NEGRITO=$'\e[1m'
 export VERMELHO=$'\e[1;31m'
 export VERMELHO_SUBLINHADO=$'\e[1;4;31m'
@@ -26,6 +26,7 @@ APT_LOCKS=(
 shopt  -s expand_aliases
 alias newPtr='declare -n'
 
+
 #cd not a native command, is a systemcall used to exec, read more in exec man 
 changeDirectory(){
 	if [ "$1" != "" ] ; then
@@ -38,6 +39,21 @@ changeDirectory(){
 	fi 
 }
 
+# Verify se user is sudo member (return  1 false, 0 to true 	yttttt)
+isUsersSudo(){
+	local ret=0
+	if [ "$1" = "" ]; then 
+		echo "$1 can't be empty"
+		ret=1
+	fi
+
+	grep sudo /etc/group  | grep $1 /dev/null 2>&1
+	if [ $? != 0 ]; then
+		ret=$?
+	fi
+	return $ret
+
+}
 # searchLineinFile(FILE *fp, char * str )
 #$1 is File Path
 #$2 is a String to search 
@@ -86,12 +102,34 @@ splitStr(){
 GenerateScapesStr(){
 	if [ "$1" = "" ] ; then
 		echo "There is no string to scape!"
-		exit 1 
+		return 1
 	else
-		echo "$1" | sed 's|\/|\\\/|g'
+		echo "$1" | grep '\\' > /dev/null
+		if [  $? != 0 ]; then 
+			echo "$1" | sed 's|\/|\\\/|g'  | sed "s|\.|\\\.|g" | sed "s|\-|\\\-|g" | sed "s|\"|\\\"|g" | sed "s/'/\\\'/g"
+		fi
 	fi
 }
 
+
+# Find and replace line an file 
+# $1 filepath
+# $2 string_to_find (scapped)
+# $3 string_to_replace(scapped)
+replaceLine(){
+	if [  $# -lt 3 ]; then 
+		echo "missing args! $1 filename,$2 string to find, $3 string to replace"
+		return 1
+	fi
+
+	if [ ! -e "$1" ]; then 
+		echo "There is no \"$1\" file"
+		return 1;
+	fi
+	local str_to_find="$2"
+	local str_to_replace="$3"
+	sed -i "s|${str_to_find}|${str_to_replace}|g" "$1"	
+}
 
 
 # this function split string and add a array
@@ -259,4 +297,20 @@ AptInstall(){
 	fi
 	apt-get clean
 	apt-get autoclean
+}
+
+
+#Retorna verdadeiro se o pacote $1 está instalado
+isDebPackInstalled(){
+	if [ "$1" = "" ]; then
+		echo "missing package name";
+		return 0;
+	fi
+	exec 2> /dev/null dpkg -s "$1" | grep 'Status: install' > /dev/null #exec 2 redireciona a saída do stderror para /dev/null
+	
+	if [ $?  = 0 ]; then
+		return 1
+	else
+		return 0;
+	fi
 }
