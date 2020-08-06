@@ -3,7 +3,7 @@
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
 #Version: 0.3.5
-#Date: 07/14/2020
+#Date: 08/06/2020
 #Description: "installer.sh" is part of the core of LAMW Manager. Contains routines for installing LAMW development environment
 #-------------------------------------------------------------------------------------------------#
 
@@ -418,9 +418,9 @@ getOldAndroidSDK(){
 			#	ls "$ANDROID_SDK/${sdk_manager_sdk_paths[i]}";read
 				if [ ! -e "${sdk_manager_sdk_paths[i]}" ];then
 					echo "y" |   ./android update sdk --all --no-ui --filter ${SDK_MANAGER_CMD_PARAMETERS2[i]} ${SDK_MANAGER_CMD_PARAMETERS2_PROXY[*]}
-					if [ $? != 0 ]; then
+					if [ ! -e "${sdk_manager_sdk_paths[i]}" ]; then
 						echo "y" |   ./android update sdk --all --no-ui --filter ${SDK_MANAGER_CMD_PARAMETERS2[i]} ${SDK_MANAGER_CMD_PARAMETERS2_PROXY[*]}
-						if [ $? != 0 ]; then
+						if [ ! -e "${sdk_manager_sdk_paths[i]}" ]; then
 							echo "possible network instability! Try later!"
 							exit 1
 						fi
