@@ -1,4 +1,4 @@
-**&nbsp;&nbsp;&nbsp;lamw_manager(1)&nbsp; 2020 July 17 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LAMW Manager man page&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lamw_manager(1)**
+**&nbsp;&nbsp;&nbsp;lamw_manager(1)&nbsp; 2020 Ago 2 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LAMW Manager man page&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lamw_manager(1)**
 
 **NAME**
 <p>
@@ -71,10 +71,11 @@
 
 <p>
        <pre>
-              1 If the LAMW4Linux launcher does not appear in the  start  menu, simply restart 
+              1 Fail! Folder/platforms is empty! Use command ./lamw_manager <strong>--reset-aapis</strong> to fix then.
+              2 If the LAMW4Linux launcher does not appear in the  start  menu, simply restart 
        the user session.
-              2 You can launch LAMW4Linux with command: <em>startlamw4linux</em>.
-       </pre></ol>
+              3 You can launch LAMW4Linux with command: <em>startlamw4linux</em>. 
+       </pre>
 </p>
 
 **AUTHOR**
