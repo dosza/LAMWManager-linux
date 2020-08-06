@@ -7,6 +7,7 @@ v0.3.5 -R1  August 6, 2020
 	<strong>FIXED:</strong>
 	<ul>
 		<li>Missing Android API's</em></li>
+		<li>Fix: <em>--reset-aapis</em></li>
 	</ul>
 </p>
 
