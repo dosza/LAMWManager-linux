@@ -85,6 +85,7 @@ case "$1" in
 			RepairOldSDKAndroid
 		else
 			mainInstall
+			changeOwnerAllLAMW
 		fi
 	;;
 	"")
