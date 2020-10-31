@@ -141,21 +141,9 @@ setJava8asDefault(){
 
 #install deps
 installDependences(){
-
 	CheckOpenJDK8Support
-	exec 2> /dev/null apt show $NON_FREE_TOOLS | grep 'Source: unrar-nonfree' > /dev/null
-	if [ $? = 0 ]; then
-		echo "$PROG_TOOLS" | grep "$NON_FREE_TOOLS" > /dev/null
-		if [ $? != 0 ]; then 
-			PROG_TOOLS="$PROG_TOOLS$NON_FREE_TOOLS "
-		fi
-	else
-		printf "${VERMELHO}Warning: The unrar package isn't available!\nCheck your /etc/apt/sources.list file${NORMAL}\nIgnoring instalation of ${NEGRITO}unrar${NORMAL} package!\n"
-		sleep 1
-	fi
 	AptInstall $LIBS_ANDROID $PROG_TOOLS  openjdk-${OPENJDK_DEFAULT}-jdk 
 		
-	
 }
 
 getFPCSourcesTrunk(){

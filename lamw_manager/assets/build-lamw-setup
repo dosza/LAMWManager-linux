@@ -11,6 +11,7 @@
 source "../core/headers/common-shell.sh"
 
 
+
 AUX=$PWD
 
 LAMW_MANAGER_TMP_BUILD="/tmp/lamw_manager_build"
@@ -85,7 +86,7 @@ CopyFiles(){
 }
 
 RemoveTmpFiles(){
-	cd  $AUX
+	cd  "$AUX"
 	local del_files=(
 		"../.gui/LAMWManager"
 		"../.gui/out.txt"
@@ -107,12 +108,19 @@ RemoveTmpFiles(){
 	done
 }
 main(){
+	which makeself > /dev/null
+	if [ $? != 0 ]; then
+		echo "${VERMELHO}Error${NORMAL}:Need install makeself!"
+		echo "Use command: ${VERDE}sudo apt-get install makeself -y${NORMAL}"
+		exit 1
+	fi
 	initLAMWBuild
 	CheckBuildFlag
 	BuildGUI
 	CopyFiles
 	changeDirectory $LAMW_MANAGER_TMP_BUILD
 	makeself  --quiet --xz --copy --target '$HOME/lamw_manager' $PWD $LAMW_MANAGER_INSTALLER "LAMW Manager Setup" "./${START_LAMW_MANAGER_FILE}"
+	chmod +x "$LAMW_MANAGER_FINAL_INSTALLER"
 	cp "$LAMW_MANAGER_FINAL_INSTALLER" "$AUX"
 	RemoveTmpFiles
 }
