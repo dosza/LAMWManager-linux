@@ -14,14 +14,12 @@ ANDROID_HOME=$LAMW_USER_HOME/LAMW
 ANDROID_SDK="$ROOT_LAMW/sdk"
 #--------------------------------------------------------------------------------------
 export XDG_DATA_DIRS="/usr/share:/usr/local/share:$LAMW_USER_HOME/.local/share"
-LAMW_INSTALL_VERSION="0.3.5r1"
+LAMW_INSTALL_VERSION="0.3.5r2"
 OLD_LAMW_INSTALL_VERSION=(
-	"0.3.5"
-	"0.3.4r1"
-	"0.3.4"
+	0.3.{5,4}{r1,}
 	"0.3.3r2"
 	"0.3."{3..0}
-	"0.2.1"	
+	"0.2.1"		
 )
 LAMW_INSTALL_WELCOME=(
 	"${NEGRITO}LAMW Manager v$LAMW_INSTALL_VERSION${NORMAL}\n"
@@ -100,8 +98,8 @@ LAMW_IDE_HOME="$LAMW4LINUX_HOME/lamw4linux" # path to link-simbolic to ide
 LAMW_WORKSPACE_HOME="$LAMW_USER_HOME/Dev/LAMWProjects"  #path to lamw_workspace
 LAMW4LINUX_EXE_PATH="$LAMW_IDE_HOME/lamw4linux"
 LAMW_MENU_ITEM_PATH="$LAMW_USER_HOME/.local/share/applications/lamw4linux.desktop"
-GRADLE_VERSION="6.1.1"
-GRADLE_VERSION_STABLE='6.1.1'
+GRADLE_VERSION="6.6.1"
+GRADLE_VERSION_STABLE='6.6.1'
 GRADLE_HOME="$ROOT_LAMW/gradle-${GRADLE_VERSION_STABLE}"
 ANT_VERSION="1.10.8"
 ANT_VERSION_STABLE='1.10.8'
@@ -127,10 +125,7 @@ export FPC_DEB_LINK="https://sourceforge.net/projects/lazarus/files/Lazarus%20Li
 export FPC_DEB="fpc-laz_3.0.4-1_amd64.deb"
 
 LAZARUS_OLD_STABLE_VERSION=(
-	"2.0.8"
-	"2.0.6"
-	"2.0.4"
-	"2.0.2"
+	2.0.{8,6,4,2}
 	"1.8.4"
 )
 LAZARUS_OLD_STABLE=(
@@ -139,7 +134,7 @@ LAZARUS_OLD_STABLE=(
 
 FPC_ID_DEFAULT=0
 FPC_CROSS_ARM_DEFAULT_PARAMETERS=('clean crossall crossinstall  CPU_TARGET=arm OS_TARGET=android OPT="-dFPC_ARMHF" SUBARCH="armv7a" INSTALL_PREFIX=/usr')
-#FPC_CROSS_AARCH_DEFAULT_PARAMETERS=(clean crossall crossinstall  CPU_TARGET=aarch64 OS_TARGET=android OPT="-dFPC_ARMHF"  INSTALL_PREFIX=/usr')
+
 LAMW_PACKAGES=(
 	"$ROOT_LAMW/lazandroidmodulewizard/android_bridges/tfpandroidbridge_pack.lpk"
 	"$ROOT_LAMW/lazandroidmodulewizard/android_wizard/lazandroidwizardpack.lpk"
@@ -157,12 +152,6 @@ LIBS_ANDROID="libx11-dev libgtk2.0-dev libgdk-pixbuf2.0-dev libcairo2-dev libpan
 PROG_TOOLS="menu git subversion make build-essential zip unzip android-tools-adb gdb wget "
 NON_FREE_TOOLS="unrar"
 PACKS=()
-FPC_DEBIAN_BACKPORTS=(
-	"# debian backports"  
-	"deb http://deb.debian.org/debian stretch-backports main contrib non-free" 
-	"deb-src http://deb.debian.org/debian stretch-backports main contrib non-free" 
-)
-#[[]
 
 export OLD_ANDROID_SDK=1
 export NO_GUI_OLD_SDK=0
@@ -191,12 +180,10 @@ export OPENJDK_DEFAULT='8'
 export OPENJDK_LTS=11
 
 export OLD_GRADLE=(
-	"$ROOT_LAMW/gradle-4.10.3"
-	"$ROOT_LAMW/gradle-4.4.1"
+	$ROOT_LAMW/gradle-{"6.1.1","4.10.3","4.4.1"}
 )
 export OLD_ANT=(
-	"$ROOT_LAMW/apache-ant-1.10.7"
-	"$ROOT_LAMW/apache-ant-1.10.5"
+	$ROOT_LAMW/apache-ant-{"1.10.7","1.10.5"}
 )
 
 
