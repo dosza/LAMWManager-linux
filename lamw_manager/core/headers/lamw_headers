@@ -2,7 +2,7 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.3.5-r1
+#Version: 0.3.6
 #Date: 08/06/2020
 #Description: The "lamw_headers" is part of the core of LAMW Manager. This script contains LAMW Manager variables.
 #-------------------------------------------------------------------------------------------------#
@@ -14,7 +14,7 @@ ANDROID_HOME=$LAMW_USER_HOME/LAMW
 ANDROID_SDK="$ROOT_LAMW/sdk"
 #--------------------------------------------------------------------------------------
 export XDG_DATA_DIRS="/usr/share:/usr/local/share:$LAMW_USER_HOME/.local/share"
-LAMW_INSTALL_VERSION="0.3.5r2"
+LAMW_INSTALL_VERSION="0.3.6"
 OLD_LAMW_INSTALL_VERSION=(
 	0.3.{5,4}{r1,}
 	"0.3.3r2"
@@ -149,7 +149,7 @@ WR_ANDROID_HOME=""
 HOME_USER_SPLITTED_ARRAY=(${HOME//\// })
 HOME_STR_SPLITTED=""
 LIBS_ANDROID="libx11-dev libgtk2.0-dev libgdk-pixbuf2.0-dev libcairo2-dev libpango1.0-dev libxtst-dev libatk1.0-dev libghc-x11-dev freeglut3 freeglut3-dev "
-PROG_TOOLS="menu git subversion make build-essential zip unzip android-tools-adb gdb wget "
+PROG_TOOLS="menu git subversion make build-essential zip unzip android-tools-adb gdb wget libjq1 "
 NON_FREE_TOOLS="unrar"
 PACKS=()
 
