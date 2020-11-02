@@ -528,7 +528,6 @@ setOldLAMW4LinuxActions(){
 
 #get implict install 
 getImplicitInstall(){
-	echo "starting getImplicitInstall ..."
 
 	local lamw_install_log_path="$LAMW4LINUX_HOME/lamw-install.log"
 
