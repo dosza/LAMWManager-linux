@@ -435,6 +435,8 @@ RepairOldSDKAndroid(){
 			rm -rf $current_sdk_path
 		fi
 	done
+
+	setLAMWDeps
 	getOldAndroidSDK
 	for ((i=0;i<${#sdk_manager_fails[*]};i++))
 	do
@@ -469,8 +471,8 @@ Repair(){
 	if [ $LAMW_INSTALL_STATUS = 1 ]; then # só executa essa funcao se o lamw tiver instalado
 		local flag_old_fpc=""
 
-		if [ "$(which git)" = "" ]; then
-			echo "Missing git (required) command, starting install base Dependencies ..."
+		if [ "$(which git)" = "" ] || [ "$(which wget)" = "" ] || [ "$(which jq)" = "" ]; then
+			echo "Missing lamw_manager required tools!, starting install base Dependencies ..."
 			installDependences
 			flag_need_repair=1
 		fi
@@ -494,11 +496,11 @@ Repair(){
 }
 
 setOldAndroidSDKStatus(){
-		if [ $? = $1 ]; then
-			export OLD_ANDROID_SDK=0
-		else 
-			export OLD_ANDROID_SDK=1
-		fi
+	if [  $1 = 0 ]; then
+		export OLD_ANDROID_SDK=0
+	else 
+		export OLD_ANDROID_SDK=1
+	fi
 }
 
 checkLAMWManagerVersion(){
@@ -526,6 +528,16 @@ setOldLAMW4LinuxActions(){
 	fi
 }
 
+checkChangeLAMWDeps(){
+	local flag_is_old_lamw=$(updateLAMWDeps)
+			
+	if [ $flag_is_old_lamw = 0 ]; then
+		export LAMW_IMPLICIT_ACTION_MODE=1
+	else
+		setOldLAMW4LinuxActions $flag_is_old_lamw
+	fi
+}
+
 #get implict install 
 getImplicitInstall(){
 
@@ -539,8 +551,8 @@ getImplicitInstall(){
 		
 		cat "$lamw_install_log_path" |  grep "Generate LAMW_INSTALL_VERSION=$LAMW_INSTALL_VERSION" > /dev/null
 		
-		if [ $? = 0 ]; then  
-			export LAMW_IMPLICIT_ACTION_MODE=1 #apenas atualiza o lamw 
+		if [ $? = 0 ]; then
+			checkChangeLAMWDeps
 		else
 			local flag_is_old_lamw=$(checkLAMWManagerVersion)
 			setOldLAMW4LinuxActions $flag_is_old_lamw
@@ -608,6 +620,7 @@ checkProxyStatus(){
 mainInstall(){
 	initROOT_LAMW
 	installDependences
+	setLAMWDeps
 	checkProxyStatus
 	wrapperParseFPC
 	getAnt
