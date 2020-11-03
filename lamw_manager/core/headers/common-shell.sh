@@ -245,9 +245,9 @@ Wget(){
 		exit 1
 	fi
 	local wget_opts="-c --timeout=300"
-	wget $wget_opts $1
+	wget $wget_opts $*
 	if [ $? != 0 ]; then
-		wget $wget_opts $1
+		wget $wget_opts $*
 		if [ $? != 0 ]; then 
 			echo "possible network instability! Try later!"
 			exit 1
