@@ -64,6 +64,7 @@ changeOwnerAllLAMW(){
 	else
 
 		local files_chown=(
+			"$LAMW_USER_HOME/Dev"
 			"$ROOT_LAMW"
 			"$FPC_CFG_PATH"
 			"$LAMW_USER_HOME/.profile"
@@ -71,15 +72,22 @@ changeOwnerAllLAMW(){
 			"$LAMW_USER_HOME/.android"
 			"$LAMW_USER_HOME/.local/share"
 			"$LAMW4_LINUX_PATH_CFG"
-			"$LAMW_USER_HOME/Dev"	
-		#	"$LAMW_WORKSPACE_HOME"
+				
+		#	
 		)		
 	fi
 	echo "Restoring directories ..."
 	for ((i=0;i<${#files_chown[*]};i++))
 	do
-		if [ -e  ${files_chown[i]} ]; then
-			chown $LAMW_USER:$LAMW_USER -R ${files_chown[i]}
+		if [ -e ${files_chown[i]} ] ; then
+			if [ $i = 0 ] ; then 
+				# caso $LAMW_USER não seja dono do diretório LAMW_USER_HOME/Dev ou $LAMW_WORKSPACE_HOME
+				if  [ $UID = 0 ] && ( [ -O ${files_chown[i]} ] || [ -O  "$LAMW_WORKSPACE_HOME" ] ); then 
+					chown $LAMW_USER:$LAMW_USER -R ${files_chown[i]}
+				fi
+			else 
+				chown $LAMW_USER:$LAMW_USER -R ${files_chown[i]}
+			fi
 		fi
 	done
 }
@@ -131,7 +139,6 @@ AddLAMWtoStartMenu(){
 		"[Desktop Entry]"  
 		"Name=LAMW4Linux"
 		"GenericName=LAMW4Linux"   
-		#Exec=$LAMW4LINUX_EXE_PATH --primary-config-path=$LAMW4_LINUX_PATH_CFG" 
 		"Exec=$LAMW_IDE_HOME/startlamw4linux"
 		"Icon=$LAMW_IDE_HOME/images/icons/lazarus_orange.ico"
 		"Terminal=false"

@@ -14,6 +14,7 @@ LAMW_MANAGER_MODULES_PATH=${LAMW_MANAGER_MODULES_PATH%/lamw-mgr.sh*}
 
 #importando modulos de headers 
 source "$LAMW_MANAGER_MODULES_PATH/headers/.index"
+source "$LAMW_MANAGER_MODULES_PATH/installer/api.sh"
 source "$LAMW_MANAGER_MODULES_PATH/installer/installer.sh"
 source "$LAMW_MANAGER_MODULES_PATH/settings-editor/lamw-settings-editor.sh"
 source "$LAMW_MANAGER_MODULES_PATH/cross-builder/cross-builder.sh"
@@ -51,7 +52,13 @@ case "$1" in
 			changeOwnerAllLAMW
 
 		else
+
 			Repair
+			if [ $(updateLAMWDeps) = 1 ]; then
+				echo "${VERMELHO}Warning:There are updates for LAMW4Linux${NORMAL}"
+				echo "run ${NEGRITO}./lamw_manager to update:${NORMAL}"
+			fi
+			
 			checkProxyStatus;
 			echo "Updating LAMW";
 			getLAMWFramework;
