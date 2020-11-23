@@ -285,7 +285,7 @@ getGradle(){
 		trap TrapControlC  2 # set armadilha para o signal2 (siginterrupt)
 		Wget $GRADLE_ZIP_LNK
 		MAGIC_TRAP_INDEX=3
-		unzip $GRADLE_ZIP_FILE
+		unzip -o  $GRADLE_ZIP_FILE
 	fi
 
 	if [ -e  $GRADLE_ZIP_FILE ]; then
@@ -313,7 +313,7 @@ getNDK(){
 		trap TrapControlC 2 
 		Wget $NDK_URL	
 		MAGIC_TRAP_INDEX=7
-		unzip $NDK_ZIP
+		unzip -o  $NDK_ZIP
 		MAGIC_TRAP_INDEX=-1
 		mv $NDK_DIR_UNZIP ndk-bundle
 		if [ -e $NDK_ZIP ]; then 
@@ -340,7 +340,7 @@ getAndroidSDKTools(){
 		MAGIC_TRAP_INDEX=4
 		Wget $SDK_TOOLS_URL
 		MAGIC_TRAP_INDEX=5
-		unzip $SDK_TOOLS_ZIP
+		unzip -o  $SDK_TOOLS_ZIP
 		rm $SDK_TOOLS_ZIP
 		AntTrigger
 	fi
