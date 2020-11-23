@@ -1,13 +1,18 @@
 # LAMW Manager Release Notes
 This page contains information about new features and bug fixes.
 
-v0.3.6 - November 2, 2020
+v0.3.6 - November 23, 2020
 ---
 <p>
 	<strong>NEWS:</strong>
 	<ul>
 		<li>Gradle 6.6.1</em></li>
 		<li>Updates minimum usage requirements.</li>
+		<li><strong>New:</strong> Detect and update: Android Dependencies without needs a new LAMW Manager version</li>
+	</ul>
+	<strong>FIXED:</strong>
+	<ul>
+		<li>Try run pkexec in tty</em></li>
 	</ul>
 </p>
 

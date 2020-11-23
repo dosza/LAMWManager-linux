@@ -13,16 +13,6 @@ initParameters(){
 	fi
 	
 	if [ $USE_PROXY = 1 ]; then
-		SDK_LICENSES_PARAMETERS=( --licenses --no_https --proxy=http --proxy_host=$PROXY_SERVER --proxy_port=$PORT_SERVER )
-		SDK_MANAGER_CMD_PARAMETERS[${#SDK_LICENSES_PARAMETERS[*]}]="--no_https --proxy=http"
-		SDK_MANAGER_CMD_PARAMETERS[${#SDK_LICENSES_PARAMETERS[*]}]="--proxy_host=$PROXY_SERVER"
-		SDK_MANAGER_CMD_PARAMETERS[${#SDK_LICENSES_PARAMETERS[*]}]="--proxy_port=$PORT_SERVER" 
-
-		SDK_MANAGER_CMD_PARAMETERS2_PROXY=(
-			'--no_https' 
-			"--proxy-host=$PROXY_SERVER" 
-			"--proxy-port=$PORT_SERVER" #'--proxy=http'
-		)
 		
 		export http_proxy=$PROXY_URL
 		export https_proxy=$PROXY_URL

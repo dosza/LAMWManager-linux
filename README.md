@@ -15,11 +15,6 @@ What do you get?
 	A <a href="http://www.lazarus-ide.org/">Lazarus  IDE </a> ready to develop applications for Android !!
 </p>
 
-<p> 
-	Windows user, please,  get here <em><a href="https://github.com/DanielOliveiraSouza/Laz4LAMW-win-installer"> LAMW Manager for Windows</a></em>
-</p>
-
-
 Linux Distro Supported:
 ----------------------------------------------------------------------
 
