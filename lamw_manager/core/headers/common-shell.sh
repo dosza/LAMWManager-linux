@@ -144,7 +144,7 @@ Split (){
         echo "$1" | grep "$2"  > /dev/null
         if [ $? = 0 ]; then 
             local new_str=${str//$delimiter/ };
-            local out=($(echo $new_str))
+            out=($(echo $new_str))
             return 0
         fi   
     else

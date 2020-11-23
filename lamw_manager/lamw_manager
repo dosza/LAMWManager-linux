@@ -91,7 +91,15 @@ Run(){
 	echo "$USER" > /tmp/lamw-overrides.conf
 	getBashCMD
 	if [ $USE_PKEXEC = 1 ]; then
-		RunAsPolkit $*
+		tty | grep 'tty[0-9]'>/dev/null
+		if [ $? != 0 ]; then 
+			RunAsPolkit $*
+		else
+			echo "${VERMELHO}FATAL ERROR: This tool cannot run in $(tty)${NORMAL}"
+			echo "" 
+			export EXIT_STATUS=2
+		fi
+
 	else
 		RunAsSudo $*
 	fi
