@@ -61,35 +61,11 @@ export NDK_DIR_UNZIP="android-ndk-${NDK_VERSION}"
 SDK_TOOLS_VERSION="r26.1.1"
 SDK_TOOLS_ZIP="sdk-tools-linux-4333796.zip"
 SDK_VERSION="28"
-
-export ANDROID_SDK_TARGET=28
-export ANDROID_BUILD_TOOLS_TARGET="28.0.3"
 export GRADLE_MIN_BUILD_TOOLS='27.0.3'
 
 SDK_MANAGER_CMD_PARAMETERS2_PROXY=()
 SDK_LICENSES_PARAMETERS=(--licenses )
 
-SDK_MANAGER_CMD_PARAMETERS=(
-	"platforms;android-$ANDROID_SDK_TARGET" 
-	"platform-tools"
-	"build-tools;$ANDROID_BUILD_TOOLS_TARGET" 
-	"tools" 
-	"ndk-bundle" 
-	"extras;android;m2repository"
-	"build-tools;$GRADLE_MIN_BUILD_TOOLS"
-)
-
-SDK_MANAGER_CMD_PARAMETERS2=(
-	"android-$ANDROID_SDK_TARGET"
-	"platform-tools"
-	"build-tools-$ANDROID_BUILD_TOOLS_TARGET" 
-	"extra-google-google_play_services"
-	"extra-android-m2repository"
-	"extra-google-m2repository"
-	"extra-google-market_licensing"
-	"extra-google-market_apk_expansion"
-	"build-tools-$GRADLE_MIN_BUILD_TOOLS"
-)
 
 LAMW_SRC_LNK="https://github.com/jmpessoa/lazandroidmodulewizard.git"
 LAMW4_LINUX_PATH_CFG="$LAMW_USER_HOME/.lamw4linux"
@@ -98,9 +74,7 @@ LAMW_IDE_HOME="$LAMW4LINUX_HOME/lamw4linux" # path to link-simbolic to ide
 LAMW_WORKSPACE_HOME="$LAMW_USER_HOME/Dev/LAMWProjects"  #path to lamw_workspace
 LAMW4LINUX_EXE_PATH="$LAMW_IDE_HOME/lamw4linux"
 LAMW_MENU_ITEM_PATH="$LAMW_USER_HOME/.local/share/applications/lamw4linux.desktop"
-GRADLE_VERSION="6.6.1"
-GRADLE_VERSION_STABLE='6.6.1'
-GRADLE_HOME="$ROOT_LAMW/gradle-${GRADLE_VERSION_STABLE}"
+
 ANT_VERSION="1.10.8"
 ANT_VERSION_STABLE='1.10.8'
 ANT_TAR_URL="https://archive.apache.org/dist/ant/binaries/apache-ant-${ANT_VERSION_STABLE}-bin.tar.xz"
@@ -108,8 +82,7 @@ ANT_TAR_FILE="apache-ant-${ANT_VERSION_STABLE}-bin.tar.xz"
 ANT_HOME="$ROOT_LAMW/apache-ant-${ANT_VERSION_STABLE}"
 GRADLE_CFG_HOME="$LAMW_USER_HOME/.gradle"
 REAL_LAMW_TOOLS="$ROOT_LAMW/.real"
-GRADLE_ZIP_LNK="https://services.gradle.org/distributions/gradle-${GRADLE_VERSION_STABLE}-bin.zip"
-GRADLE_ZIP_FILE="gradle-${GRADLE_VERSION_STABLE}-bin.zip"
+
 FPC_STABLE=""
 LAZARUS_STABLE_VERSION="2.0.10"
 LAZARUS_STABLE="lazarus_"${LAZARUS_STABLE_VERSION//\./_} #expansão que remove todos '.' por _, obs '\.' barra invertida escapa '.'
@@ -149,7 +122,7 @@ WR_ANDROID_HOME=""
 HOME_USER_SPLITTED_ARRAY=(${HOME//\// })
 HOME_STR_SPLITTED=""
 LIBS_ANDROID="libx11-dev libgtk2.0-dev libgdk-pixbuf2.0-dev libcairo2-dev libpango1.0-dev libxtst-dev libatk1.0-dev libghc-x11-dev freeglut3 freeglut3-dev "
-PROG_TOOLS="menu git subversion make build-essential zip unzip android-tools-adb gdb wget libjq1 "
+PROG_TOOLS="menu git subversion make build-essential zip unzip android-tools-adb gdb wget jq "
 NON_FREE_TOOLS="unrar"
 PACKS=()
 
@@ -191,6 +164,9 @@ OLD_FPC_SOURCES=(
 	"$LAMW4LINUX_HOME/fpcsrc"
 	$LAMW4LINUX_HOME/usr/share/fpcsrc/{trunk,fixes_3_2}
 )
+
+LAMW_PACKAGE_URL="https://raw.githubusercontent.com/jmpessoa/lazandroidmodulewizard/master/package.json"
+
 #---------------------------------------------------------------------------------------------------------------------
 
 #help of lamw 

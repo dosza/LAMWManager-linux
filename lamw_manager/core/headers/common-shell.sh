@@ -144,7 +144,7 @@ Split (){
         echo "$1" | grep "$2"  > /dev/null
         if [ $? = 0 ]; then 
             local new_str=${str//$delimiter/ };
-            local out=($(echo $new_str))
+            out=($(echo $new_str))
             return 0
         fi   
     else
@@ -245,9 +245,9 @@ Wget(){
 		exit 1
 	fi
 	local wget_opts="-c --timeout=300"
-	wget $wget_opts $1
+	wget $wget_opts $*
 	if [ $? != 0 ]; then
-		wget $wget_opts $1
+		wget $wget_opts $*
 		if [ $? != 0 ]; then 
 			echo "possible network instability! Try later!"
 			exit 1
