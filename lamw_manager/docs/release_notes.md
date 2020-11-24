@@ -8,7 +8,7 @@ v0.3.6 - November 23, 2020
 	<ul>
 		<li>Gradle 6.6.1</em></li>
 		<li>Updates minimum usage requirements.</li>
-		<li><strong>New:</strong> Detect and update: Android Dependencies without needs a new LAMW Manager version</li>
+		<li><strong>New:</strong> Detects and updates the minimum <strong>Android API's</strong> without the need to install a new version of LAMW Manager!</li>
 	</ul>
 	<strong>FIXED:</strong>
 	<ul>
