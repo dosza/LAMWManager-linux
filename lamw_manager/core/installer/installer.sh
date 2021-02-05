@@ -41,7 +41,8 @@ LAMWPackageManager(){
 
 		for ((i=0;i<${#OLD_GRADLE[*]};i++))
 		do
-			if [ -e ${OLD_GRADLE[i]} ]; then 
+			if [ -e ${OLD_GRADLE[i]} ]; then
+				./${OLD_GRADLE[i]} --stop
 				rm -rf ${OLD_GRADLE[i]} 
 			fi
 		done
