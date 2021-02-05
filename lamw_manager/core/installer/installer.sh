@@ -39,10 +39,11 @@ LAMWPackageManager(){
 			fi
 		done
 
-		for ((i=0;i<${#OLD_GRADLE[*]};i++))
+		for gradle in ${OLD_GRADLE[*]}
 		do
-			if [ -e ${OLD_GRADLE[i]} ]; then 
-				rm -rf ${OLD_GRADLE[i]} 
+			if [ -e "$gradle" ]; then
+				./$gradle/bin/gradle --stop
+				rm -rf $gradle 
 			fi
 		done
 
