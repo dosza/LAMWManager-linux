@@ -420,7 +420,7 @@ configureFPCTrunk(){
 		"-CfVFPV3"
 		"-Xd"
 		"-XParm-linux-androideabi-"
-		"-Fl$ROOT_LAMW/ndk/platforms/android-$SDK_VERSION/arch-arm/usr/lib"
+		"-Fl$ROOT_LAMW/ndk/platforms/android-$ANDROID_SDK_TARGET/arch-arm/usr/lib"
 		"-FLlibdl.so"
 		"-Fu${fpc_trunk_parent}/"'$fpcversion/units/$fpctarget'
 		"-Fu${fpc_trunk_parent}/"'$fpcversion/units/$fpctarget/*'
@@ -432,7 +432,7 @@ configureFPCTrunk(){
 		"#IFDEF CPUAARCH64"
 		"-Xd"
 		"-XPaarch64-linux-android-"
-		"-Fl$ROOT_LAMW/ndk/platforms/android-$SDK_VERSION/arch-arm64/usr/lib"
+		"-Fl$ROOT_LAMW/ndk/platforms/android-$ANDROID_SDK_TARGET/arch-arm64/usr/lib"
 		"-FLlibdl.so"
 		"-FD$ROOT_LAMW/ndk/toolchains/aarch64-linux-android-4.9/prebuilt/linux-x86_64/bin"
 		"-Fu${fpc_trunk_parent}/"'$fpcversion/units/$fpctarget'
