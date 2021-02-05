@@ -71,7 +71,7 @@ Getting Started!!
 Release Notes:
 ----------------------------------------------------------------------
 <p>
-	For information on new features and bug fixes read the <a href="https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/blob/v0.3.6/lamw_manager/docs/release_notes.md#v036---november-23-2020"><em>Release Notes</em></a>
+	For information on new features and bug fixes read the <a href="https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/blob/v0.3.6/lamw_manager/docs/release_notes.md#v0361---february-5-2021"><em>Release Notes</em></a>
 </p>
 
 Congratulations!!

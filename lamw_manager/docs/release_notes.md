@@ -1,6 +1,14 @@
 # LAMW Manager Release Notes
 This page contains information about new features and bug fixes.
 
+v0.3.6.1 - February 5, 2021
+---
+**Fixed**
++	Add minimal built tools requeried by Gradle
++	Setup android 29 libs on fpc.cfg
+
+
+
 v0.3.6 - November 23, 2020
 ---
 <p>
