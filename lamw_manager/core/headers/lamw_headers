@@ -14,8 +14,9 @@ ANDROID_HOME=$LAMW_USER_HOME/LAMW
 ANDROID_SDK="$ROOT_LAMW/sdk"
 #--------------------------------------------------------------------------------------
 export XDG_DATA_DIRS="/usr/share:/usr/local/share:$LAMW_USER_HOME/.local/share"
-LAMW_INSTALL_VERSION="0.3.6"
+LAMW_INSTALL_VERSION="0.3.6.1"
 OLD_LAMW_INSTALL_VERSION=(
+	"0.3.6"
 	0.3.{5,4}{r1,}
 	"0.3.3r2"
 	"0.3."{3..0}
@@ -60,8 +61,7 @@ export NDK_DIR_UNZIP="android-ndk-${NDK_VERSION}"
 
 SDK_TOOLS_VERSION="r26.1.1"
 SDK_TOOLS_ZIP="sdk-tools-linux-4333796.zip"
-SDK_VERSION="28"
-export GRADLE_MIN_BUILD_TOOLS='27.0.3'
+export GRADLE_MIN_BUILD_TOOLS='28.0.3'
 
 SDK_MANAGER_CMD_PARAMETERS2_PROXY=()
 SDK_LICENSES_PARAMETERS=(--licenses )
