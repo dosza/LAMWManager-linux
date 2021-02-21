@@ -101,7 +101,7 @@ case "$1" in
 	"--use_proxy")
 		startImplicitAction
 	;;
-	"--help") 
+	"--help"| "help") 
 		printf "${LAMW_OPTS[*]}" 
 	;;
 
