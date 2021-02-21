@@ -181,7 +181,7 @@ LAMW_OPTS=(
 	"\t./lamw_manager\t${VERDE}--reset${NORMAL}                     To clean and reinstall LAMW\n"
 	"\t./lamw_manager\t${VERDE}--reset-aapis${NORMAL}               Reset Android API's to default\n"
 	"\t./lamw_manager\t${NEGRITO}uninstall${NORMAL}                   To uninstall LAMW :(\n"
-	"\t./lamw_manager\t${VERDE}--help${NORMAL}                      Show help\n"                 
+	"\t./lamw_manager\t${VERDE}--help${NORMAL}, ${VERDE} help ${NORMAL}              Show help\n"                 
 	"\n"
 	"${NEGRITO}Proxy Options:${NORMAL}\n"
 	"\t./lamw_manager ${NEGRITO}[action]${NORMAL}  --use_proxy --server ${VERDE}[HOST]${NORMAL} --port ${VERDE}[NUMBER]${NORMAL}\n"
