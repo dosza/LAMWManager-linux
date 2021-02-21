@@ -359,7 +359,7 @@ getSDKAndroid(){
 	fi
 	for((i=0;i<${#SDK_MANAGER_CMD_PARAMETERS[*]};i++))
 	do
-		echo "Please wait, downloading \" ${SDK_MANAGER_CMD_PARAMETERS[i]}\"..."
+		echo "Please wait, downloading ${NEGRITO}${SDK_MANAGER_CMD_PARAMETERS[i]}${NORMAL}\"..."
 		if [ $i = 0 ]; then 
 			yes | ./sdkmanager ${SDK_MANAGER_CMD_PARAMETERS[i]}  # instala sdk sem intervenção humana 
 			if [ $? != 0 ]; then 
@@ -402,7 +402,7 @@ getOldAndroidSDK(){
 		else 
 			for((i=0;i<${#SDK_MANAGER_CMD_PARAMETERS2[*]};i++))
 			do
-				echo "Getting \"${SDK_MANAGER_CMD_PARAMETERS2[i]}\" ..."
+				echo "Getting ${NEGRITO}${SDK_MANAGER_CMD_PARAMETERS2[i]}${NORMAL} ..."
 				#read;
 			#	ls "$ANDROID_SDK/${sdk_manager_sdk_paths[i]}";read
 				if [ ! -e "${sdk_manager_sdk_paths[i]}" ];then
