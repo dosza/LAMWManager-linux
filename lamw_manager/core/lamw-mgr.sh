@@ -102,11 +102,11 @@ case "$1" in
 		startImplicitAction
 	;;
 	"--help"| "help") 
-		printf "${LAMW_OPTS[*]}" 
+		lamw_manager_help
 	;;
 
 	*)
-		printf "${VERMELHO}Invalid argument!${NORMAL}\n${LAMW_OPTS[*]}" >&2
+		printf "${VERMELHO}Invalid argument!${NORMAL}\n$(lamw_manager_help)" >&2
 		exit 1
 	;;
 esac
