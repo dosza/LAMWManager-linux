@@ -8,6 +8,7 @@ v0.3.6.2 - May 6, 2021
 
 **Fixed**
 +	Help menu fixed, to lamw_manager_setup.sh users!
++	Prevent multiple lamw_manager instances execution!
 
 
 v0.3.6.1 - February 5, 2021
