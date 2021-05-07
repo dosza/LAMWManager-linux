@@ -15,6 +15,7 @@ export USE_PKEXEC=0
 export ENTER_TO_EXIT=0
 export CALL_BASH="bash"
 export EXIT_STATUS=0
+export LAMW_MANAGER_ENV=()
 
 #Get Directory of LAMW Manager Core
 if [ -e "$PWD/$LAMW_MGR_INSTALL" ]; then
@@ -58,14 +59,26 @@ getBashCMD(){
 }
 
 #Run LAMW Manager as sudo (default)
+
+CheckUseLamw_manager_setup(){
+	if [ "$USE_SETUP" = "1" ];
+	then 
+		LAMW_MANAGER_ENV+=("USE_SETUP=1")
+	else
+		LAMW_MANAGER_ENV+=("USE_SETUP=0")
+	fi
+}
 RunAsSudo(){
-	sudo -i $CALL_BASH "$LAMW_MGR_INSTALL" $*
+	CheckUseLamw_manager_setup
+	sudo -i env ${LAMW_MANAGER_ENV[@]} $CALL_BASH "$LAMW_MGR_INSTALL" $*
 	export EXIT_STATUS=$?
 }
 
 #Run LAMW Manager as Police Kit
 RunAsPolkit(){
-	pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY  $CALL_BASH "$LAMW_MGR_INSTALL" $*
+	LAMW_MANAGER_ENV+=(DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY)
+	CheckUseLamw_manager_setup
+	pkexec  env ${LAMW_MANAGER_ENV[@]} $CALL_BASH  "$LAMW_MGR_INSTALL" $*
 	export EXIT_STATUS=$?
 	if [  $ENTER_TO_EXIT = 1 ]; then
 		echo "press enter to exit ...";read
@@ -87,8 +100,9 @@ Run(){
 		getStatus
 	fi
 	
-
-	echo "$USER" > /tmp/lamw-overrides.conf
+	IsFileBusy lamw_manager /tmp/lamw-overrides.conf
+	exec 3>/tmp/lamw-overrides.conf
+	echo "$USER" >&3
 	getBashCMD
 	if [ $USE_PKEXEC = 1 ]; then
 		tty | grep 'tty[0-9]'>/dev/null
@@ -120,3 +134,4 @@ main(){
 
 main $*
 exit $EXIT_STATUS 
+exec 3>&-
