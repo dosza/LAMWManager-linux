@@ -14,7 +14,7 @@ ANDROID_HOME=$LAMW_USER_HOME/LAMW
 ANDROID_SDK="$ROOT_LAMW/sdk"
 #--------------------------------------------------------------------------------------
 export XDG_DATA_DIRS="/usr/share:/usr/local/share:$LAMW_USER_HOME/.local/share"
-LAMW_INSTALL_VERSION="0.3.6.1"
+LAMW_INSTALL_VERSION="0.3.6.2"
 OLD_LAMW_INSTALL_VERSION=(
 	"0.3.6"
 	0.3.{5,4}{r1,}
@@ -84,7 +84,7 @@ GRADLE_CFG_HOME="$LAMW_USER_HOME/.gradle"
 REAL_LAMW_TOOLS="$ROOT_LAMW/.real"
 
 FPC_STABLE=""
-LAZARUS_STABLE_VERSION="2.0.10"
+LAZARUS_STABLE_VERSION="2.0.12"
 LAZARUS_STABLE="lazarus_"${LAZARUS_STABLE_VERSION//\./_} #expansão que remove todos '.' por _, obs '\.' barra invertida escapa '.'
 LAZARUS_STABLE_SRC_LNK="https://svn.freepascal.org/svn/lazarus/tags/${LAZARUS_STABLE}"
 OLD_FPC_CFG_PATH="$LAMW_USER_HOME/.fpc.cfg"
@@ -98,7 +98,7 @@ export FPC_DEB_LINK="https://sourceforge.net/projects/lazarus/files/Lazarus%20Li
 export FPC_DEB="fpc-laz_3.0.4-1_amd64.deb"
 
 LAZARUS_OLD_STABLE_VERSION=(
-	2.0.{8,6,4,2}
+	2.0.{10..2..2}
 	"1.8.4"
 )
 LAZARUS_OLD_STABLE=(
@@ -171,23 +171,3 @@ LAMW_PACKAGE_URL="https://raw.githubusercontent.com/jmpessoa/lazandroidmodulewiz
 
 #help of lamw 
 
-LAMW_OPTS=(
-	"syntax:\n"
-	"./lamw_manager\tor\t./lamw_manager\t${NEGRITO}[actions]${NORMAL} ${VERDE}[options]${NORMAL}\n"
-	"${NEGRITO}Usage${NORMAL}:\n"
-	"\t${NEGRITO}./lamw_manager${NORMAL}                              Install LAMW and dependencies¹\n"
-	"\t./lamw_manager\t${VERDE}--sdkmanager${NORMAL}                Install LAMW and Run Android SDK Manager²\n"
-	"\t./lamw_manager\t${VERDE}--update-lamw${NORMAL}               To just upgrade LAMW framework (with the latest version available in git)\n"
-	"\t./lamw_manager\t${VERDE}--reset${NORMAL}                     To clean and reinstall LAMW\n"
-	"\t./lamw_manager\t${VERDE}--reset-aapis${NORMAL}               Reset Android API's to default\n"
-	"\t./lamw_manager\t${NEGRITO}uninstall${NORMAL}                   To uninstall LAMW :(\n"
-	"\t./lamw_manager\t${VERDE}--help${NORMAL}                      Show help\n"                 
-	"\n"
-	"${NEGRITO}Proxy Options:${NORMAL}\n"
-	"\t./lamw_manager ${NEGRITO}[action]${NORMAL}  --use_proxy --server ${VERDE}[HOST]${NORMAL} --port ${VERDE}[NUMBER]${NORMAL}\n"
-	"sample:\n\t./lamw_manager --update-lamw --use_proxy --server 10.0.16.1 --port 3128\n"
-	"\n\n${NEGRITO}Note:\n${NORMAL}"
-	"\t¹ By default the installation waives the use of parameters, if LAMW is installed, it will only be updated!\n"
-	"\t² If it is already installed, just run the Android SDK Tools\n"
-	"\n"
-)

@@ -1,5 +1,36 @@
 #!/bin/bash
 
+
+lamw_manager_help(){
+	local lamw_mgr="./lamw_manager"
+	if [ "$USE_SETUP" = "1" ]; then
+		lamw_mgr="bash lamw_manager_setup.sh\t${VERDE}--${NORMAL}"
+	fi
+
+	LAMW_OPTS=(
+	"syntax:\n"
+	"${lamw_mgr//\-\-}\tor\t$lamw_mgr\t${NEGRITO}[actions]${NORMAL} ${VERDE}[options]${NORMAL}\n"
+	"${NEGRITO}Usage${NORMAL}:\n"
+	"\t${NEGRITO}${lamw_mgr//\-\-/'      '}${NORMAL}                              Install LAMW and dependencies¹\n"
+	"\t$lamw_mgr\t${VERDE}--sdkmanager${NORMAL}                Install LAMW and Run Android SDK Manager²\n"
+	"\t$lamw_mgr\t${VERDE}--update-lamw${NORMAL}               To just upgrade LAMW framework (with the latest version available in git)\n"
+	"\t$lamw_mgr\t${VERDE}--reset${NORMAL}                     To clean and reinstall LAMW\n"
+	"\t$lamw_mgr\t${VERDE}--reset-aapis${NORMAL}               Reset Android API's to default\n"
+	"\t${lamw_mgr//\-\-/}\t${NEGRITO}uninstall${NORMAL}                   To uninstall LAMW :(\n"
+	"\t$lamw_mgr\t${VERDE}--help${NORMAL}, ${NEGRITO} help ${NORMAL}              Show help\n"                 
+	"\n"
+	"${NEGRITO}Proxy Options:${NORMAL}\n"
+	"\t$lamw_manager\t${NEGRITO}[action]${NORMAL}  --use_proxy --server ${VERDE}[HOST]${NORMAL} --port ${VERDE}[NUMBER]${NORMAL}\n"
+	"sample:\n\t$lamw_mgr\t --update-lamw --use_proxy --server 10.0.16.1 --port 3128\n"
+	"\n\n${NEGRITO}Note:\n${NORMAL}"
+	"\t¹ By default the installation waives the use of parameters, if LAMW is installed, it will only be updated!\n"
+	"\t² If it is already installed, just run the Android SDK Tools\n"
+	"\n"
+	)
+
+	printf "${LAMW_OPTS[*]}" 
+
+}
 #iniciandoparametros
 initParameters(){
 	if [ $# = 3 ] ; then 

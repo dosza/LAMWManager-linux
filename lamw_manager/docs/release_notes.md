@@ -1,6 +1,16 @@
 # LAMW Manager Release Notes
 This page contains information about new features and bug fixes.
 
+v0.3.6.2 - May 6, 2021
+---
+**News**
++	Lazarus 2.0.12
+
+**Fixed**
++	Help menu fixed, to lamw_manager_setup.sh users!
++	Prevent multiple lamw_manager instances execution!
+
+
 v0.3.6.1 - February 5, 2021
 ---
 **Fixed**
