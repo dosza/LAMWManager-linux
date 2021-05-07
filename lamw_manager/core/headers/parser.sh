@@ -9,7 +9,7 @@ lamw_manager_help(){
 
 	LAMW_OPTS=(
 	"syntax:\n"
-	"./${lamw_mgr//\-\-}\tor\t./$lamw_mgr\t${NEGRITO}[actions]${NORMAL} ${VERDE}[options]${NORMAL}\n"
+	"${lamw_mgr//\-\-}\tor\t$lamw_mgr\t${NEGRITO}[actions]${NORMAL} ${VERDE}[options]${NORMAL}\n"
 	"${NEGRITO}Usage${NORMAL}:\n"
 	"\t${NEGRITO}${lamw_mgr//\-\-/'      '}${NORMAL}                              Install LAMW and dependencies¹\n"
 	"\t$lamw_mgr\t${VERDE}--sdkmanager${NORMAL}                Install LAMW and Run Android SDK Manager²\n"
@@ -20,7 +20,7 @@ lamw_manager_help(){
 	"\t$lamw_mgr\t${VERDE}--help${NORMAL}, ${NEGRITO} help ${NORMAL}              Show help\n"                 
 	"\n"
 	"${NEGRITO}Proxy Options:${NORMAL}\n"
-	"\t$lamw_mgr\t${NEGRITO}[action]${NORMAL}  --use_proxy --server ${VERDE}[HOST]${NORMAL} --port ${VERDE}[NUMBER]${NORMAL}\n"
+	"\t$lamw_manager\t${NEGRITO}[action]${NORMAL}  --use_proxy --server ${VERDE}[HOST]${NORMAL} --port ${VERDE}[NUMBER]${NORMAL}\n"
 	"sample:\n\t$lamw_mgr\t --update-lamw --use_proxy --server 10.0.16.1 --port 3128\n"
 	"\n\n${NEGRITO}Note:\n${NORMAL}"
 	"\t¹ By default the installation waives the use of parameters, if LAMW is installed, it will only be updated!\n"
