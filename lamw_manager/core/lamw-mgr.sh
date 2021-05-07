@@ -101,12 +101,12 @@ case "$1" in
 	"--use_proxy")
 		startImplicitAction
 	;;
-	"--help") 
-		printf "${LAMW_OPTS[*]}" 
+	"--help"| "help") 
+		lamw_manager_help
 	;;
 
 	*)
-		printf "${VERMELHO}Invalid argument!${NORMAL}\n${LAMW_OPTS[*]}" >&2
+		printf "${VERMELHO}Invalid argument!${NORMAL}\n$(lamw_manager_help)" >&2
 		exit 1
 	;;
 esac
