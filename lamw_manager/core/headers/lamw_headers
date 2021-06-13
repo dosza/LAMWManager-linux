@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.3.6
-#Date: 08/06/2020
+#Version: 0.4.0
+#Date: 06/12/2021
 #Description: The "lamw_headers" is part of the core of LAMW Manager. This script contains LAMW Manager variables.
 #-------------------------------------------------------------------------------------------------#
 NOTIFY_SEND_EXE=$(which notify-send)
@@ -14,8 +14,9 @@ ANDROID_HOME=$LAMW_USER_HOME/LAMW
 ANDROID_SDK="$ROOT_LAMW/sdk"
 #--------------------------------------------------------------------------------------
 export XDG_DATA_DIRS="/usr/share:/usr/local/share:$LAMW_USER_HOME/.local/share"
-LAMW_INSTALL_VERSION="0.3.6.2"
+LAMW_INSTALL_VERSION="0.4.0"
 OLD_LAMW_INSTALL_VERSION=(
+	"0.3.6.{1,2}"
 	"0.3.6"
 	0.3.{5,4}{r1,}
 	"0.3.3r2"
@@ -30,7 +31,6 @@ LAMW_INSTALL_WELCOME=(
 
 LAMW_LINUX_SPP=(
 	"\t*Debian 10\n"
-	"\t*Ubuntu 16.04 LTS\n"
 	"\t*Ubuntu 18.04 LTS\n"
 )
 
@@ -49,9 +49,10 @@ PROXY_URL="http://$PROXY_SERVER:$PORT_SERVER"
 export USE_PROXY=0
 export JAVA_PATH=""
 export SDK_TOOLS_URL="https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip"
-export NDK_VERSION="r21d"
-export NDK_VERSION_STR="21.3.6528147"
+export NDK_VERSION="r22b"
+export NDK_VERSION_STR="22.1.7171670"
 export OLD_NDK_VERSION_STR=(
+	"21.3.6528147"
 	"20.1.5948944"
 	"18.1.5063045"
 )	
@@ -138,7 +139,8 @@ export ARM_ANDROID_TOOLS="$ROOT_LAMW/sdk/ndk-bundle/toolchains/arm-linux-android
 #-------------------- AARCH64 SUPPORT HEADERS-------------------------------------------------------------
 export AARCH64_ANDROID_TOOLS="$ROOT_LAMW/sdk/ndk-bundle/toolchains/aarch64-linux-android-4.9/prebuilt/linux-x86_64/bin"
 export FPC_CROSS_AARCH_DEFAULT_PARAMETERS=('clean crossall crossinstall  CPU_TARGET=aarch64 OS_TARGET=android OPT="-dFPC_ARMHF"  INSTALL_PREFIX=/usr')
-export PATH=$PATH:$AARCH64_ANDROID_TOOLS
+export LLVM_ANDROID_TOOLCHAINS="$ROOT_LAMW/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/bin"
+export PATH=$PATH:$LLVM_ANDROID_TOOLCHAINS
 export FLAG_FORCE_ANDROID_AARCH64=1
 export FPC_TRUNK_RELEASE=""
 export FPC_TRUNK_SVNTAG="release_3_2_0"
