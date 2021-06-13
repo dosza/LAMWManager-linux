@@ -362,12 +362,12 @@ CreateSDKSimbolicLinks(){
 
 	local tools_chains_orig=(
 		"$ROOT_LAMW/sdk/ndk-bundle"
-		"$ARM_ANDROID_TOOLS"
-		"$ARM_ANDROID_TOOLS/arm-linux-androideabi-as"
-		"$ARM_ANDROID_TOOLS/arm-linux-androideabi-ld"
-		"$ARM_ANDROID_TOOLS/arm-linux-androideabi-as"
-		"$ARM_ANDROID_TOOLS/arm-linux-androideabi-ld"
-		"$ARM_ANDROID_TOOLS/arm-linux-androideabi-as"
+		"$LLVM_ANDROID_TOOLCHAINS"
+		"$LLVM_ANDROID_TOOLCHAINS/arm-linux-androideabi-as"
+		"$LLVM_ANDROID_TOOLCHAINS/arm-linux-androideabi-ld"
+		"$LLVM_ANDROID_TOOLCHAINS/arm-linux-androideabi-as"
+		"$LLVM_ANDROID_TOOLCHAINS/arm-linux-androideabi-ld"
+		"$LLVM_ANDROID_TOOLCHAINS/arm-linux-androideabi-as"
 		"$ROOT_LAMW/sdk/ndk-bundle/toolchains/arm-linux-androideabi-4.9"
 		"$ROOT_LAMW/sdk/ndk-bundle/toolchains/arm-linux-androideabi-4.9"
 		"$real_ppcarm"
@@ -420,21 +420,24 @@ configureFPCTrunk(){
 		"-CfVFPV3"
 		"-Xd"
 		"-XParm-linux-androideabi-"
-		"-Fl$ROOT_LAMW/ndk/platforms/android-$ANDROID_SDK_TARGET/arch-arm/usr/lib"
+		"-Fl$ROOT_LAMW/ndk/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/arm-linux-androideabi/$ANDROID_SDK_TARGET"
 		"-FLlibdl.so"
 		"-Fu${fpc_trunk_parent}/"'$fpcversion/units/$fpctarget'
 		"-Fu${fpc_trunk_parent}/"'$fpcversion/units/$fpctarget/*'
 		"-Fu${fpc_trunk_parent}/"'$fpcversion/units/$fpctarget/rtl'
 		
-		"-FD$ROOT_LAMW/ndk/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin"
+		#"-FD$ROOT_LAMW/ndk/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin"
+		"-FD${LLVM_ANDROID_TOOLCHAINS}"
 		"#ENDIF"
 
 		"#IFDEF CPUAARCH64"
 		"-Xd"
 		"-XPaarch64-linux-android-"
-		"-Fl$ROOT_LAMW/ndk/platforms/android-$ANDROID_SDK_TARGET/arch-arm64/usr/lib"
+		#"-Fl$ROOT_LAMW/ndk/platforms/android-$ANDROID_SDK_TARGET/arch-arm64/usr/lib"
+		"-Fl$ROOT_LAMW/ndk/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/aarch64-linux-android/$ANDROID_SDK_TARGET"
 		"-FLlibdl.so"
-		"-FD$ROOT_LAMW/ndk/toolchains/aarch64-linux-android-4.9/prebuilt/linux-x86_64/bin"
+		#"-FD$ROOT_LAMW/ndk/toolchains/aarch64-linux-android-4.9/prebuilt/linux-x86_64/bin"
+		"-FD${LLVM_ANDROID_TOOLCHAINS}"
 		"-Fu${fpc_trunk_parent}/"'$fpcversion/units/$fpctarget'
 		"-Fu${fpc_trunk_parent}/"'$fpcversion/units/$fpctarget/*'
 		"-Fu${fpc_trunk_parent}/"'$fpcversion/units/$fpctarget/rtl'
@@ -456,10 +459,10 @@ configureFPCTrunk(){
 
 
 CreateSimbolicLinksAndroidAARCH64(){
-	ln -sf "$AARCH64_ANDROID_TOOLS/aarch64-linux-android-as" "$AARCH64_ANDROID_TOOLS/aarch64-linux-as"
-	ln -sf "$AARCH64_ANDROID_TOOLS/aarch64-linux-android-ld" "$AARCH64_ANDROID_TOOLS/aarch64-linux-ld"
-	ln -sf "$AARCH64_ANDROID_TOOLS/aarch64-linux-android-as" "/usr/bin/aarch64-linux-android-as"
-	ln -sf "$AARCH64_ANDROID_TOOLS/aarch64-linux-android-ld" "/usr/bin/aarch64-linux-android-ld"
+	ln -sf "$LLVM_ANDROID_TOOLCHAINS/aarch64-linux-android-as" "$LLVM_ANDROID_TOOLCHAINS/aarch64-linux-as"
+	ln -sf "$LLVM_ANDROID_TOOLCHAINS/aarch64-linux-android-ld" "$LLVM_ANDROID_TOOLCHAINS/aarch64-linux-ld"
+	ln -sf "$LLVM_ANDROID_TOOLCHAINS/aarch64-linux-android-as" "/usr/bin/aarch64-linux-android-as"
+	ln -sf "$LLVM_ANDROID_TOOLCHAINS/aarch64-linux-android-ld" "/usr/bin/aarch64-linux-android-ld"
 	ln -sf "${FPC_TRUNK_LIB_PATH}/ppcrossa64" /usr/bin/ppcrossa64
 	ln -sf "${FPC_TRUNK_LIB_PATH}/ppcrossa64" /usr/bin/ppca64
 }

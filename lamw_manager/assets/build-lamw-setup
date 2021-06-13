@@ -33,7 +33,8 @@ START_LAMW_MANAGER_STR=(
 	''
 	"ARGS=\"\$*\""
 	'ARGS=${ARGS/\-\-/}  #This is expansion that removes the first occurrence --. \-  is the escape of -'
-	"env USE_SETUP=1 ./lamw_manager \$ARGS"
+	"export USE_SETUP=1" 
+	"./lamw_manager \$ARGS"
 )
 
 files=(
