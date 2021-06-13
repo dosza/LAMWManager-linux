@@ -4,7 +4,6 @@ v0.4.0 - Jun, 2021
 ---
 **News**
 +	Android NDK r22b
-+	Select Folder Install parameter
 
 v0.3.6.2 - May 6, 2021
 ---

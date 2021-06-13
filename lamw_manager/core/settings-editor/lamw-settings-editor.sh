@@ -216,7 +216,7 @@ LAMW4LinuxPostConfig(){
 		"AntPackageName=org.lamw"
 		"AndroidPlatform=0"
 		"AntBuildMode=debug"
-		"NDK=5"
+		"NDK=6"
 	)
 	local aux_str=''
 	if [ $FLAG_FORCE_ANDROID_AARCH64 = 1 ]; then
