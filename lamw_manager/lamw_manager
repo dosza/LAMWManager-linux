@@ -133,5 +133,5 @@ main(){
 
 
 main $*
-exit $EXIT_STATUS 
 exec 3>&-
+exit $EXIT_STATUS 

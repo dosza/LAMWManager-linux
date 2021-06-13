@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.3.5
-#Date: 08/06/2020
+#Version: 0.4.0
+#Date: 06/12/2021
 #Description: "installer.sh" is part of the core of LAMW Manager. Contains routines for installing LAMW development environment
 #-------------------------------------------------------------------------------------------------#
 
@@ -152,10 +152,10 @@ getFPCSourcesTrunk(){
 	changeDirectory $FPC_TRUNK_SOURCE_PATH
 	svn checkout $FPC_TRUNK_URL --force
 	if [ $? != 0 ]; then
-		rm -rf "$FPC_TRUNK_SVNTAG"
+		svn cleanup "$FPC_TRUNK_SVNTAG"
 		svn checkout "$FPC_TRUNK_URL" --force
 		if [ $? != 0 ]; then 
-			rm -rf "$FPC_TRUNK_SVNTAG"
+			svn cleanup "$FPC_TRUNK_SVNTAG"
 			echo "possible network instability! Try later!"
 			exit 1
 		fi
@@ -200,10 +200,10 @@ getLazarusSources(){
 	changeDirectory $LAMW4LINUX_HOME
 	svn co $LAZARUS_STABLE_SRC_LNK
 	if [ $? != 0 ]; then  #case fails last command , try svn chekout 
-		rm -rf $LAZARUS_STABLE
+		svn cleanup $LAZARUS_STABLE
 		svn co $LAZARUS_STABLE_SRC_LNK
 		if [ $? != 0 ]; then 
-			rm -rf $LAZARUS_STABLE
+			svn cleanup $LAZARUS_STABLE
 			echo "possible network instability! Try later!"
 			exit 1
 		fi
