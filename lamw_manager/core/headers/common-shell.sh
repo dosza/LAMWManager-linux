@@ -26,6 +26,12 @@ APT_LOCKS=(
 shopt  -s expand_aliases
 alias newPtr='declare -n'
 
+isVariabelDeclared(){
+	if [ "$1" = "" ]; then return 1; fi
+
+	declare -p "$1" &> /dev/null
+	return $?
+}
 
 #cd not a native command, is a systemcall used to exec, read more in exec man 
 changeDirectory(){
