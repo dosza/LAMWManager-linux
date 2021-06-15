@@ -32,7 +32,8 @@
 **INSTALLING LAMW ON CUSTOM DIRECTORY**
 <p>
        <pre>
-              To install LAMW environment on custom directory you need use **env LOCAL_ROOT_LAMW=path_your_directory** ./lamw_manager  [<strong>ACTION</strong>] [<strong>OPTIONS</strong>
+              To install LAMW environment on custom directory you need use 
+              <strong>env LOCAL_ROOT_LAMW=path_your_directory</strong> ./lamw_manager  [<strong>ACTION</strong>] [<strong>OPTIONS</strong>
                      <strong>sample:</strong>
               <strong>env LOCAL_ROOT_LAMW=/opt/LAMW</strong> ./lamw_manager
        </pre>
