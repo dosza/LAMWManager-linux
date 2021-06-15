@@ -10,7 +10,7 @@ Example of installation from *lamw_manager_setup.sh*
 
 <p>
 	<strong>New: install LAMW in custom directory<sup>1</sup></strong>
-	<pre><strong>env LOCAL_ROOT_LAMW=/opt/LAMW</strong> ./lamw_manager</pre>
+	<pre><strong>env LOCAL_ROOT_LAMW=/opt/LAMW</strong>	bash lamw_manager_setup.sh</pre>
 	<strong>To install LAMW and dependencies:</strong>
 	<pre>	bash lamw_manager_setup.sh</pre>
 	<strong>To install LAMW and dependencies and Run Android  GUI SDK Manager</strong><sup>1</sup>
