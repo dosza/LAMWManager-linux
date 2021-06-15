@@ -59,8 +59,11 @@ Getting Started!!
 </p>
 
 **New:Installing LAMW on custom directory**
-	Now you  can install LAMW on custom directory !!
-	You must use  the command: **env LOCAL_ROOT_LAMW=your_dir** bash lamw_manager_setup.sh in first instalation !
+
+<p>
+	Now you  can install LAMW on custom directory !!<br/>
+	You must use  the command: <strong>env LOCAL_ROOT_LAMW=your_dir</strong> bash lamw_manager_setup.sh in first instalation !
+</p>
 
 <strong>Notes:</strong>
 <ol>
