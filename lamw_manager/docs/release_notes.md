@@ -1,5 +1,6 @@
 # LAMW Manager Release Notes
 This page contains information about new features and bug fixes.
+
 v0.4.0 - Jun 19, 2021
 ---
 **News**
