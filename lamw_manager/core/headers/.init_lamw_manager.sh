@@ -23,15 +23,15 @@ fi
 checkisLocalRootLAMWInvalid(){
 	local invalid_paths=(
 		/bin /boot /dev   /lib64  /lib /lib32 /libx32   /proc  /sbin  /sys /var
-		/etc  /lost+found   /cdrom
-		/ /mnt    /home   /media  /root /tmp /opt /run /srv /usr{,/{bin,games,include,lib,lib32,libexec,libx32,local,sbin,share,src}}
+		/etc  /lost+found   /cdrom /snap
+		/ /mnt    /home   $LAMW_USER_HOME /media  /root /tmp /opt /run /srv /usr{,/{bin,games,include,lib,lib32,libexec,libx32,local,sbin,share,src}}
 	)
 
 	for ((i = 0 ; i < ${#invalid_paths[*]};i++))
 	do
 	 
-		if [ $i -lt 14 ]; then
-			echo "$LOCAL_ROOT_LAMW" | grep "${invalid_paths[i]}" >/dev/null
+		if [ $i -lt 15 ]; then
+			echo "$LOCAL_ROOT_LAMW" | grep "^${invalid_paths[i]}" >/dev/null
 			if [ $? = 0 ]; then 
 				echo "${VERMELHO}Fatal error: $LOCAL_ROOT_LAMW is a Filesystem Hierarchy Standard (FHS) folder!$NORMAL"
 				echo "${NEGRITO}You cannot install here!${NORMAL}"
@@ -46,7 +46,7 @@ checkisLocalRootLAMWInvalid(){
 		fi
 	done
 
-	[ "$LOCAL_ROOT_LAMW" != "" ] && mountpoint "$LOCAL_ROOT_LAMW" > /dev/null
+	[ -e "$LOCAL_ROOT_LAMW"  ] && mountpoint "$LOCAL_ROOT_LAMW" &> /dev/null
 	if [ $? = 0 ]; then
 		echo "${VERMELHO}Fatal error: ${LOCAL_ROOT_LAMW} is a mountpoint!! you need a subfolder!${NORMAL}"
 		echo "${NEGRITO}sample: LOCAL_ROOT_LAMW=$LOCAL_ROOT_LAMW/LAMW${NORMAL}"
@@ -58,8 +58,13 @@ checkisLocalRootLAMWInvalid(){
 setRootLAMW(){
 	if [ ! -e $LAMW_MANAGER_LOCAL_CONFIG_DIR ]; then 
 		if [ "$LOCAL_ROOT_LAMW" = "" ]; then 
-			ROOT_LAMW="$LAMW_USER_HOME/LAMW"
+			ROOT_LAMW="$DEFAULT_ROOT_LAMW"
 		else
+
+			if [ -e "$DEFAULT_ROOT_LAMW" ] && [   "$(ls -v $DEFAULT_ROOT_LAMW)" != "" ] ; then 
+				ROOT_LAMW=$DEFAULT_ROOT_LAMW
+				return 
+			fi
 			checkisLocalRootLAMWInvalid
 			mkdir $LAMW_MANAGER_LOCAL_CONFIG_DIR
 			echo "LOCAL_ROOT_LAMW=$LOCAL_ROOT_LAMW" > $LAMW_MANAGER_LOCAL_CONFIG_PATH
