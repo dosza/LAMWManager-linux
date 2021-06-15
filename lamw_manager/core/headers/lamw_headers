@@ -9,7 +9,9 @@
 NOTIFY_SEND_EXE=$(which notify-send)
 LAMW_USER=$(cat /tmp/lamw-overrides.conf)
 LAMW_USER_HOME=$(eval echo "~$LAMW_USER")
-ROOT_LAMW="$LAMW_USER_HOME/LAMW" #RAIZ DO AMBIENTE LAMW 
+LAMW_MANAGER_LOCAL_CONFIG_DIR="$LAMW_USER_HOME/.lamw_manager"
+LAMW_MANAGER_LOCAL_CONFIG_PATH="$LAMW_MANAGER_LOCAL_CONFIG_DIR/local_lamw_manager.cfg"
+setRootLAMW #RAIZ DO AMBIENTE LAMW 
 ANDROID_HOME=$LAMW_USER_HOME/LAMW
 ANDROID_SDK="$ROOT_LAMW/sdk"
 #--------------------------------------------------------------------------------------

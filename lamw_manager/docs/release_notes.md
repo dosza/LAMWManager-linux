@@ -4,6 +4,11 @@ v0.4.0 - Jun, 2021
 ---
 **News**
 +	Android NDK r22b
++	Support **Selected folder install**,  using enironment variable *LOCAL_ROOT_LAMW*'
+
+**Fixed**
++	Replace fpc/lazarus local sources folder to *svn cleanup*
+
 
 v0.3.6.2 - May 6, 2021
 ---
