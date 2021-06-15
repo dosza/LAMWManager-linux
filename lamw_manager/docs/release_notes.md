@@ -1,10 +1,10 @@
 # LAMW Manager Release Notes
 This page contains information about new features and bug fixes.
-v0.4.0 - Jun, 2021
+v0.4.0 - Jun 19, 2021
 ---
 **News**
 +	Android NDK r22b
-+	Support **Selected folder install**,  using enironment variable *LOCAL_ROOT_LAMW*'
++	Support **Selected folder install**,  using environment variable *LOCAL_ROOT_LAMW*'
 
 **Fixed**
 +	Replace fpc/lazarus local sources folder to *svn cleanup*
