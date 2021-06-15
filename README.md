@@ -58,7 +58,7 @@ Getting Started!!
 	</ol>
 </p>
 
-**New:Installing LAMW on custom directory**
+**New: Installing LAMW on custom directory**
 
 <p>
 	Now you  can install LAMW on custom directory !!<br/>
