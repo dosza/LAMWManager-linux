@@ -72,6 +72,7 @@ changeOwnerAllLAMW(){
 			"$LAMW_USER_HOME/.android"
 			"$LAMW_USER_HOME/.local/share"
 			"$LAMW4_LINUX_PATH_CFG"
+			"$LAMW_MANAGER_LOCAL_CONFIG_DIR"
 				
 		#	
 		)		

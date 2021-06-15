@@ -19,9 +19,11 @@ Basic Tutorial
 Example of installation from sources:
 ===
 <p>
-	<strong>To install LAMW and dependencies:</strong><sup>1</sup>
+	<strong>New: install LAMW in custom directory<sup>1</sup></strong>
+	<pre><strong>env LOCAL_ROOT_LAMW=/opt/LAMW</strong> ./lamw_manager</pre>
+	<strong>To install LAMW and dependencies:</strong><sup>2</sup>
 	<pre>	./lamw_manager</pre>
-	<strong>To install LAMW and dependencies and Run Android  GUI SDK Manager</strong><sup>2</sup>
+	<strong>To install LAMW and dependencies and Run Android  GUI SDK Manager</strong><sup>3</sup>
 	<pre>	./lamw_manager              <em>--sdkmanager</em></pre>
 	<strong>To clean and reinstall LAMW</strong>
 	<pre>	./lamw_manager              <em> --reset</em></pre>
@@ -32,6 +34,7 @@ Example of installation from sources:
 	<strong>To just upgrade LAMW framework with proxy</strong> <em>(with the latest version available in git)</em>
 	<pre>	./lamw_manager                <em>--update-lamw</em>		<strong>--use-proxy	--server</strong> <em>10.0.16.1</em>	<strong>--port</strong>	<em>3128</em></pre>
 	<ol>
+		<li>This is necessary in first install and <strong>only works on new fresh installation!</strong>
 		<li>If it is already installed, just upgrade LAMW framework</li>
 		<li>If it is already installed, just run the Android SDK Tools</li>
 	</ol>
