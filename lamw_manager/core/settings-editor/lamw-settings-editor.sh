@@ -219,14 +219,10 @@ LAMW4LinuxPostConfig(){
 		"AntBuildMode=debug"
 		"NDK=6"
 	)
-	local aux_str=''
-	if [ $FLAG_FORCE_ANDROID_AARCH64 = 1 ]; then
-		aux_str="export PATH=$PATH"
-	fi
 	local startlamw4linux_str=(
 		'#!/bin/bash'
 		"export PPC_CONFIG_PATH=$PPC_CONFIG_PATH"
-		"$aux_str"
+		"export PATH=$LLVM_ANDROID_TOOLCHAINS:$PPC_CONFIG_PATH:$ROOT_LAMW/lamw4linux/usr/bin:\$PATH"
 		"$LAMW4LINUX_EXE_PATH --primary-config-path=$LAMW4_LINUX_PATH_CFG \$*"
 	)
 
@@ -307,7 +303,22 @@ cleanPATHS(){
 	sed -i '/export PATH=$PATH:$ANDROID_HOME\/ndk-toolchain/d'  $LAMW_USER_HOME/.bashrc
 	sed -i '/export PATH=$PATH:$GRADLE_HOME/d'  $LAMW_USER_HOME/.bashrc
 }
-#this function remove old config of lamw4linux  
+#this function remove old config of lamw4linux   
+
+validate_is_file_create_by_lamw_manager(){
+	if [ $1 -lt 11 ]; then
+		ls -lah "$2" | grep "\->\s$ROOT_LAMW"
+	else 
+		local size_list_deleted_files=${#list_deleted_files[*]}
+		local last_index_deleted_files=$((size_list_deleted_files - 1))
+		local last_but_one_index_deleted_files=$((last_index_deleted_files-1))
+		if [ $1 = $last_index_deleted_files  ] || [ $1 = $last_but_one_index_deleted_files ]; then
+			grep "$ROOT_LAMW" "$2"
+		else
+			return 0;
+		fi
+	fi
+}
 CleanOldConfig(){
 	wrapperParseFPC
 	local list_deleted_files=(
@@ -319,10 +330,10 @@ CleanOldConfig(){
 		"/usr/bin/ppcrossarm"
 		"/usr/bin/arm-linux-androideabi-ld"
 		"/usr/bin/arm-linux-as"
-		"/usr/lib/fpc/$FPC_VERSION/fpmkinst/arm-android"
 		"/usr/bin/arm-linux-androideabi-as"
 		"/usr/bin/arm-linux-ld"
 		"/usr/bin/startlamw4linux"
+		"/usr/lib/fpc/$FPC_VERSION/fpmkinst/arm-android"
 		"$FPC_CFG_PATH"
 		"$LAMW4_LINUX_PATH_CFG"
 		"$ROOT_LAMW"
@@ -345,7 +356,10 @@ CleanOldConfig(){
 			if [ -d  "${list_deleted_files[i]}" ]; then 
 				local rm_opts="-rf"
 			fi
-			rm  "${list_deleted_files[i]}" $rm_opts
+			validate_is_file_create_by_lamw_manager $i "${list_deleted_files[i]}"
+			if [ $? = 0 ]; then 
+				rm  "${list_deleted_files[i]}" $rm_opts
+			fi
 		fi
 	done
 	CleanOldCrossCompileBins
@@ -381,13 +395,13 @@ CreateSDKSimbolicLinks(){
 		"$ROOT_LAMW/ndk-toolchain"
 		"$ROOT_LAMW/ndk-toolchain/arm-linux-as"
 		"$ROOT_LAMW/ndk-toolchain/arm-linux-ld"
-		"/usr/bin/arm-linux-androideabi-as"
-		"/usr/bin/arm-linux-androideabi-ld"
-		"/usr/bin/arm-linux-androideabi-as"
+		"$ROOT_LAMW/lamw4linux/usr/bin/arm-linux-androideabi-as"
+		"$ROOT_LAMW/lamw4linux/usr/bin/arm-linux-androideabi-ld"
+		"$ROOT_LAMW/lamw4linux/usr/bin/arm-linux-androideabi-as"
 		"$ROOT_LAMW/sdk/ndk-bundle/toolchains/mips64el-linux-android-4.9"
 		"$ROOT_LAMW/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9"
-		"/usr/bin/ppcrossarm"
-		"/usr/bin/ppcarm"
+		"$ROOT_LAMW/lamw4linux/usr/bin/ppcrossarm"
+		"$ROOT_LAMW/lamw4linux/usr/bin/ppcarm"
 	)
 
 
@@ -462,13 +476,16 @@ configureFPCTrunk(){
 CreateSimbolicLinksAndroidAARCH64(){
 	ln -sf "$LLVM_ANDROID_TOOLCHAINS/aarch64-linux-android-as" "$LLVM_ANDROID_TOOLCHAINS/aarch64-linux-as"
 	ln -sf "$LLVM_ANDROID_TOOLCHAINS/aarch64-linux-android-ld" "$LLVM_ANDROID_TOOLCHAINS/aarch64-linux-ld"
-	ln -sf "$LLVM_ANDROID_TOOLCHAINS/aarch64-linux-android-as" "/usr/bin/aarch64-linux-android-as"
-	ln -sf "$LLVM_ANDROID_TOOLCHAINS/aarch64-linux-android-ld" "/usr/bin/aarch64-linux-android-ld"
-	ln -sf "${FPC_TRUNK_LIB_PATH}/ppcrossa64" /usr/bin/ppcrossa64
-	ln -sf "${FPC_TRUNK_LIB_PATH}/ppcrossa64" /usr/bin/ppca64
+	ln -sf "$LLVM_ANDROID_TOOLCHAINS/aarch64-linux-android-as" "$ROOT_LAMW/lamw4linux/usr/bin/aarch64-linux-android-as"
+	ln -sf "$LLVM_ANDROID_TOOLCHAINS/aarch64-linux-android-ld" "$ROOT_LAMW/lamw4linux/usr/bin/aarch64-linux-android-ld"
+	ln -sf "${FPC_TRUNK_LIB_PATH}/ppcrossa64" $ROOT_LAMW/lamw4linux/usr/bin/ppcrossa64
+	ln -sf "${FPC_TRUNK_LIB_PATH}/ppcrossa64" $ROOT_LAMW/lamw4linux/usr/bin/ppca64
 }
 
 CreateBinutilsSimbolicLinks(){
+	if [ ! -e "$ROOT_LAMW/lamw4linux/usr/bin" ]; then 
+		mkdir -p "$ROOT_LAMW/lamw4linux/usr/bin"
+	fi
 	CreateSDKSimbolicLinks
 	if [ $FLAG_FORCE_ANDROID_AARCH64 = 1 ]; then
 		CreateSimbolicLinksAndroidAARCH64
