@@ -283,7 +283,7 @@ CleanOldCrossCompileBins(){
 	if [ $CURRENT_OLD_LAMW_INSTALL_INDEX -lt  0 ]; then
 		return 1
 	fi
-	
+
 	for((i=0;i<${#clean_files[*]};i++)); do
 		if [  -e ${clean_files[i]} ] && [ $i -lt  $index_clean_files_v031 ]  ; then 
 			rm -rf ${clean_files[i]}
@@ -294,7 +294,7 @@ CleanOldCrossCompileBins(){
 		fi
 	done
 
-	if [  -e /usr/local/bin/fpc ] &&  [ $CURRENT_OLD_LAMW_INSTALL_INDEX = $index_old_lamw_manager_v031 ]; then
+	if [  -e /usr/local/bin/fpc ] &&  [ $current_old_lamw_manager = $lamw_manager_v031 ]; then
 		local fpc_tmp_files=("bin2obj" "chmcmd" "chmls" "cldrparser" "compileserver" "cvsco.tdf" "cvsdiff.tdf" "cvsup.tdf" "data2inc" "delp" "fd2pascal" "fp" "fp.ans" "fpc" "fpcjres" "fpclasschart" "fpclasschart.rsj" "fpcmake" "fpcmkcfg" "fpcmkcfg.rsj" "fpcres" "fpcsubst" "fpcsubst.rsj" "fpdoc" "fppkg" "fprcp" "fp.rsj" "gplprog.pt" "gplunit.pt" "grab_vcsa" "grep.tdf" "h2pas" "h2paspp" "instantfpc" "json2pas" "makeskel" "makeskel.rsj" "mka64ins" "mkarmins" "mkinsadd" "mkx86ins" "pas2fpm" "pas2jni" "pas2js" "pas2ut" "pas2ut.rsj" "plex" "postw32" "ppdep" "ppudump" "ppufiles" "ppumove" "program.pt" "ptop" "ptop.rsj" "pyacc" "rmcvsdir" "rstconv" "rstconv.rsj" "tpgrep.tdf" "unihelper" "unitdiff" "unitdiff.rsj" "unit.pt" "webidl2pas")
 		for((i=0;i<${#fpc_tmp_files[*]};i++)); do
 			local aux="/usr/local/bin/${fpc_tmp_files[i]}"
