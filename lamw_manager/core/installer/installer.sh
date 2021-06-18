@@ -509,6 +509,7 @@ checkLAMWManagerVersion(){
 	for i  in ${!OLD_LAMW_INSTALL_VERSION[*]};do
 		cat $LAMW4LINUX_HOME/lamw-install.log |  grep "Generate LAMW_INSTALL_VERSION=${OLD_LAMW_INSTALL_VERSION[i]}" > /dev/null
 		if [ $? = 0 ]; then 
+			CURRENT_OLD_LAMW_INSTALL_INDEX=$i
 			ret=1;
 			break
 		fi

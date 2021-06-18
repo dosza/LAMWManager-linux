@@ -29,6 +29,11 @@ case "$1" in
 	;;
 
 	"uninstall")
+		getStatusInstalation
+		if [ $LAMW_INSTALL_STATUS = 1 ];then
+			checkLAMWManagerVersion
+		fi
+		
 		CleanOldConfig;
 		changeOwnerAllLAMW
 	;;
