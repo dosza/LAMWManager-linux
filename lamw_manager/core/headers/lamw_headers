@@ -19,13 +19,13 @@ ANDROID_SDK="$ROOT_LAMW/sdk"
 export XDG_DATA_DIRS="/usr/share:/usr/local/share:$LAMW_USER_HOME/.local/share"
 LAMW_INSTALL_VERSION="0.4.0"
 OLD_LAMW_INSTALL_VERSION=(
-	"0.3.6.{1,2}"
-	"0.3.6"
+	0.3.6{.{2,1},}
 	0.3.{5,4}{r1,}
 	"0.3.3r2"
 	"0.3."{3..0}
 	"0.2.1"		
 )
+
 LAMW_INSTALL_WELCOME=(
 	"${NEGRITO}LAMW Manager v$LAMW_INSTALL_VERSION${NORMAL}\n"
 	#"\t\tPowerd by Daniel Oliveira Souza\n"
@@ -171,6 +171,8 @@ OLD_FPC_SOURCES=(
 )
 
 LAMW_PACKAGE_URL="https://raw.githubusercontent.com/jmpessoa/lazandroidmodulewizard/master/package.json"
+
+CURRENT_OLD_LAMW_INSTALL_INDEX=-1
 
 #---------------------------------------------------------------------------------------------------------------------
 

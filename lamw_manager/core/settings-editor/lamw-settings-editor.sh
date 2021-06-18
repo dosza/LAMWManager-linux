@@ -303,37 +303,59 @@ cleanPATHS(){
 	sed -i '/export PATH=$PATH:$ANDROID_HOME\/ndk-toolchain/d'  $LAMW_USER_HOME/.bashrc
 	sed -i '/export PATH=$PATH:$GRADLE_HOME/d'  $LAMW_USER_HOME/.bashrc
 }
-#this function remove old config of lamw4linux   
 
+
+#adiciona criterios de validação para a desinstalação de arquivos criados pelo lamw_manager
+validate_last_files_created_by_lamw_manager(){
+	if [ $1 = $last_index_deleted_files  ] || [ $1 = $last_but_one_index_deleted_files ]; then
+		grep "$ROOT_LAMW" "$2"
+	else
+		return 0;
+	fi
+
+}
+#adiciona criterios de validação para a desinstalação de arquivos criados pelo lamw_manager
 validate_is_file_create_by_lamw_manager(){
-	if [ $1 -lt 11 ]; then
-		ls -lah "$2" | grep "\->\s$ROOT_LAMW"
-	else 
-		local size_list_deleted_files=${#list_deleted_files[*]}
-		local last_index_deleted_files=$((size_list_deleted_files - 1))
-		local last_but_one_index_deleted_files=$((last_index_deleted_files-1))
-		if [ $1 = $last_index_deleted_files  ] || [ $1 = $last_but_one_index_deleted_files ]; then
-			grep "$ROOT_LAMW" "$2"
-		else
-			return 0;
+	local very_old_lamw_manager_index=${#OLD_LAMW_INSTALL_VERSION[*]}
+	((very_old_lamw_manager_index-=2))
+
+	local size_list_deleted_files=${#list_deleted_files[*]}
+	local last_index_deleted_files=$((size_list_deleted_files - 1))
+	local last_but_one_index_deleted_files=$((last_index_deleted_files-1))
+	local system_index_deleted_files=11 #index de arquivos criados em /usr
+
+	if [ $CURRENT_OLD_LAMW_INSTALL_INDEX -lt 0 ] && [  $1 -lt $system_index_deleted_files ]; then  #ignora binarios fpc/arm  se o ambiente de desenvolvimento lamw não estiver instalado
+		return 1
+	fi
+
+	 #verifica se o arquivo é um arquivo do criado pelo lamw_manager
+	if [ $CURRENT_OLD_LAMW_INSTALL_INDEX -lt $very_old_lamw_manager_index ]; then 
+		if [ $1 -lt $system_index_deleted_files ] ; then
+			ls -lah "$2" | grep "\->\s$ROOT_LAMW" > /dev/null
+		else 
+			validate_last_files_created_by_lamw_manager "$1" "$2"
 		fi
+	else
+		validate_last_files_created_by_lamw_manager "$1" "$2"
 	fi
 }
 CleanOldConfig(){
+	getStatusInstalation
+	[ $LAMW_INSTALL_STATUS = 1 ] && checkLAMWManagerVersion
 	wrapperParseFPC
 	local list_deleted_files=(
-		"/usr/bin/aarch64-linux-androideabi-as"
-		"/usr/bin/aarch64-linux-androideabi-ld"
-		"/usr/bin/ppca64"
-		"/usr/bin/ppcrossa64"
 		"/usr/bin/ppcarm"
 		"/usr/bin/ppcrossarm"
 		"/usr/bin/arm-linux-androideabi-ld"
 		"/usr/bin/arm-linux-as"
 		"/usr/bin/arm-linux-androideabi-as"
 		"/usr/bin/arm-linux-ld"
-		"/usr/bin/startlamw4linux"
+		"/usr/bin/aarch64-linux-androideabi-as"
+		"/usr/bin/aarch64-linux-androideabi-ld"
+		"/usr/bin/ppca64"
+		"/usr/bin/ppcrossa64"
 		"/usr/lib/fpc/$FPC_VERSION/fpmkinst/arm-android"
+		"/usr/bin/startlamw4linux"
 		"$FPC_CFG_PATH"
 		"$LAMW4_LINUX_PATH_CFG"
 		"$ROOT_LAMW"
