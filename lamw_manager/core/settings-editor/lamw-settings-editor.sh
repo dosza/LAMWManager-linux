@@ -108,7 +108,7 @@ writeLAMWLogInstall(){
 		"Android SDK:$ROOT_LAMW/sdk" 
 		"Android NDK:$ROOT_LAMW/ndk\nGradle:$GRADLE_HOME"
 		"OLD_ANDROID_SDK=$OLD_ANDROID_SDK"
-		"ANT_VERSION=$ANT_VERSION"
+		"ANT_VERSION=$ANT_VERSION_STABLE"
 		"GRADLE_VERSION=$GRADLE_VERSION"
 		"SDK_TOOLS_VERSION=$SDK_TOOLS_VERSION"
 		"NDK_VERSION=$NDK_VERSION"
@@ -194,7 +194,7 @@ LAMW4LinuxPostConfig(){
 
 	#testa modificação de workspace
 	if [ -e "$LAMW4_LINUX_PATH_CFG/LAMW.ini" ]; then 
-		local current_lamw_workspace=$(cat $LAMW4_LINUX_PATH_CFG/LAMW.ini | grep 'PathToWorkspace=' | sed 's/PathToWorkspace=//g')
+		local current_lamw_workspace=$(grep '^PathToWorkspace=' $LAMW4_LINUX_PATH_CFG/LAMW.ini  | sed 's/PathToWorkspace=//g')
 		if [ "$current_lamw_workspace" != "$LAMW_WORKSPACE_HOME" ]; then
 			LAMW_WORKSPACE_HOME=$current_lamw_workspace
 		fi
@@ -222,7 +222,7 @@ LAMW4LinuxPostConfig(){
 	local startlamw4linux_str=(
 		'#!/bin/bash'
 		"export PPC_CONFIG_PATH=$PPC_CONFIG_PATH"
-		"export PATH=$LLVM_ANDROID_TOOLCHAINS:$PPC_CONFIG_PATH:$ROOT_LAMW/lamw4linux/usr/bin:\$PATH"
+		"export PATH=$ROOT_LAMW/lamw4linux/usr/bin:$PPC_CONFIG_PATH:\$PATH"
 		"$LAMW4LINUX_EXE_PATH --primary-config-path=$LAMW4_LINUX_PATH_CFG \$*"
 	)
 
@@ -603,26 +603,27 @@ initLAMw4LinuxConfig(){
 			$(GenerateScapesStr "$FPC_TRUNK_SOURCE_PATH/${FPC_TRUNK_SVNTAG}")			#5
 		)
 		
-		local old_lazarus_version_file=$(cat "$lazarus_env_cfg_path" | grep 'Lazarus=' | sed 's/<//g' | sed 's/Version//g'| sed 's/Value//g'  | sed 's/"110"//g' | sed 's/=//g' | sed 's/Lazarus//g' | sed 's/"//g' | sed 's/\/>//g' | sed 's/[[:space:]]//g' ) # remove'	<Version Value=\"110\" Lazarus=X.Y.Z', restando  X.Y.Z
+		local old_lazarus_version_file=$(grep 'Lazarus='  "$lazarus_env_cfg_path" | sed 's/<//g' | sed 's/Version//g'| sed 's/Value//g'  | sed 's/"110"//g' | sed 's/=//g' | sed 's/Lazarus//g' | sed 's/"//g' | sed 's/\/>//g' | sed 's/[[:space:]]//g' ) # remove'	<Version Value=\"110\" Lazarus=X.Y.Z', restando  X.Y.Z
 		local old_stable_lazarus="lazarus_"${old_lazarus_version_file//\./_} #cria a string lazarus_X_Y_Z usando a expansao que substitui . por _
 		local old_lazarus_version_file_scap=${old_lazarus_version_file//\./\\\.} # substitui X.Y.Z por X\.Y\.Z na string
 		local lazarus_stable_version_scap=${LAZARUS_STABLE_VERSION//\./\\\.} # substitui X.Y.Z por X\.Y\.Z na string
 
-		cat $lazarus_env_cfg_path | grep 'CompilerFilename Value=\"\/usr\/bin\/fpc\"'
+		grep 'CompilerFilename Value=\"\/usr\/bin\/fpc\"' $lazarus_env_cfg_path 
 		if [ $? = 0 ]; then
 			sed -i "s/CompilerFilename Value=\"${fpc_splited[0]}\"/CompilerFilename Value=\"${fpc_splited[4]}\"/g" "$lazarus_env_cfg_path"
 			sed -i "s/FPCSourceDirectory Value=\"${fpc_splited[1]}\"/FPCSourceDirectory Value=\"${fpc_splited[5]}\"/g" "$lazarus_env_cfg_path"
 		fi
-		cat $lazarus_env_cfg_path | grep 'CompilerFilename Value=\"\/usr\/local\/bin\/fpc\"'
+
+		grep 'CompilerFilename Value=\"\/usr\/local\/bin\/fpc\"' "$lazarus_env_cfg_path"
 		if [ $? = 0 ]; then
 			sed -i "s/CompilerFilename Value=\"${fpc_splited[2]}\"/CompilerFilename Value=\"${fpc_splited[4]}\"/g" "$lazarus_env_cfg_path"
 			sed -i "s/FPCSourceDirectory Value=\"${fpc_splited[3]}\"/FPCSourceDirectory Value=\"${fpc_splited[5]}\"/g" "$lazarus_env_cfg_path"
 		fi
 
 		#caso FPCSource foi apontado para um arquivo inesperado
-		cat $lazarus_env_cfg_path | grep "FPCSourceDirectory Value=\"${fpc_splited[5]}\"" > /dev/null
+		grep "FPCSourceDirectory\sValue=\"${fpc_splited[5]}\""  $lazarus_env_cfg_path  > /dev/null
 		if [ $? != 0 ]; then 
-			local wrong_fpc_splited_path=$(GenerateScapesStr $(cat $lazarus_env_cfg_path | grep 'FPCSourceDirectory' |sed -r 's/    //g' |sed  's/<FPCSourceDirectory Value=//g' | sed 's/\/>//g' | sed 's/>//g' | sed 's/"//g'))
+			local wrong_fpc_splited_path=$(GenerateScapesStr $(grep 'FPCSourceDirectory'  $lazarus_env_cfg_path  |sed -r 's/    //g' |sed  's/<FPCSourceDirectory Value=//g' | sed 's/\/>//g' | sed 's/>//g' | sed 's/"//g'))
 			echo "$wrong_fpc_splited_path"
 			sed -i "s/FPCSourceDirectory Value=\"${wrong_fpc_splited_path}\"/FPCSourceDirectory Value=\"${fpc_splited[5]}\"/g" "$lazarus_env_cfg_path"	
 		fi

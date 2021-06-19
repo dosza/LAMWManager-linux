@@ -10,7 +10,7 @@ getLAMWDep(){
 	fi
 
 	if [  "$LAMW_DEPENDENCIES" = "" ] ; then
-		LAMW_DEPENDENCIES=$(Wget -O- -q  "$LAMW_PACKAGE_URL" )
+		export LAMW_DEPENDENCIES="$(Wget -O- -q  "$LAMW_PACKAGE_URL" )"
 	fi
 	echo "$LAMW_DEPENDENCIES" | jq  "$1" | sed 's/"//g'
 }

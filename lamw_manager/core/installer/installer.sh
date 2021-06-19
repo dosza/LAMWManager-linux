@@ -301,7 +301,7 @@ getNDK(){
 	changeDirectory "$ANDROID_SDK"
 	if [ -e  "$ANDROID_SDK/ndk-bundle" ]; then 
 		for i in ${!OLD_NDK_VERSION_STR[*]}; do
-			cat "$ANDROID_SDK/ndk-bundle/source.properties" | grep ${OLD_NDK_VERSION_STR[i]} > /dev/null
+			 grep ${OLD_NDK_VERSION_STR[i]} "$ANDROID_SDK/ndk-bundle/source.properties" > /dev/null
 			if [ $? = 0 ]; then 
 				rm -rf $ANDROID_SDK/ndk-bundle
 				break
@@ -508,7 +508,7 @@ setOldAndroidSDKStatus(){
 checkLAMWManagerVersion(){
 	local ret=0
 	for i  in ${!OLD_LAMW_INSTALL_VERSION[*]};do
-		cat $LAMW4LINUX_HOME/lamw-install.log |  grep "Generate LAMW_INSTALL_VERSION=${OLD_LAMW_INSTALL_VERSION[i]}" > /dev/null
+		grep "^Generate LAMW_INSTALL_VERSION=${OLD_LAMW_INSTALL_VERSION[i]}"  "$ANDROID_SDK/ndk-bundle/source.properties" > /dev/null
 		if [ $? = 0 ]; then 
 			CURRENT_OLD_LAMW_INSTALL_INDEX=$i
 			ret=1;
@@ -549,10 +549,10 @@ getImplicitInstall(){
 	if [ ! -e "$lamw_install_log_path" ]; then
 		export NO_GUI_OLD_SDK=1
 	else
-		cat "$lamw_install_log_path" |  grep "OLD_ANDROID_SDK=0" > /dev/null
+		grep "OLD_ANDROID_SDK=0" "$lamw_install_log_path"  > /dev/null
 		setOldAndroidSDKStatus $?
 		
-		cat "$lamw_install_log_path" |  grep "Generate LAMW_INSTALL_VERSION=$LAMW_INSTALL_VERSION" > /dev/null
+		grep "Generate LAMW_INSTALL_VERSION=$LAMW_INSTALL_VERSION" "$lamw_install_log_path" 	> /dev/null
 		
 		if [ $? = 0 ]; then
 			checkChangeLAMWDeps
@@ -598,15 +598,12 @@ BuildLazarusIDE(){
 		#build ide  with lamw framework 
 	for((i=0;i< ${#LAMW_PACKAGES[@]};i++))
 	do
-		./lazbuild --build-ide= --add-package ${LAMW_PACKAGES[i]} --primary-config-path=$LAMW4_LINUX_PATH_CFG  --lazarusdir=$LAMW_IDE_HOME
+		local lamw_build_opts=(--build-ide= --add-package ${LAMW_PACKAGES[i]} --primary-config-path=$LAMW4_LINUX_PATH_CFG  --lazarusdir=$LAMW_IDE_HOME)
+		./lazbuild  ${lamw_build_opts[*]}
 		if [ $? != 0 ]; then
-			./lazbuild --build-ide= --add-package  ${LAMW_PACKAGES[i]} --primary-config-path=$LAMW4_LINUX_PATH_CFG  --lazarusdir=$LAMW_IDE_HOME
+			./lazbuild ${lamw_build_opts[*]}
 		fi
 	done
-
-	if [ -e /root/.fpc.cfg ]; then
-		rm  -rf /root/.fpc.cfg
-	fi
 }
 
 #this code add support a proxy 
