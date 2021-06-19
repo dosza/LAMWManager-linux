@@ -47,8 +47,8 @@ files=(
 
 CheckBuildFlag(){
 	if [ $BUILD_GUI = 1 ]; then 
-		files[${#files[*]}]="../.gui/images"
-		files[${#files[*]}]="../.gui/LAMWManager"
+		files+=("../.gui/images")
+		files+=("../.gui/LAMWManager")
 		START_LAMW_MANAGER_FILE="LAMWManager"
 	fi
 }
