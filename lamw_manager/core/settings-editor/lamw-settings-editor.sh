@@ -353,9 +353,9 @@ validate_is_file_create_by_lamw_manager(){
 	((very_old_lamw_manager_index-=2))
 
 	local size_list_deleted_files=${#list_deleted_files[*]}
+	local system_index_deleted_files=11 #index de arquivos criados em /usr
 	local last_index_deleted_files=$((size_list_deleted_files - 1))
 	local last_but_one_index_deleted_files=$((last_index_deleted_files-1))
-	local system_index_deleted_files=11 #index de arquivos criados em /usr
 
 	if [ $CURRENT_OLD_LAMW_INSTALL_INDEX -lt 0 ] && [  $1 -lt $system_index_deleted_files ]; then  #ignora binarios fpc/arm  se o ambiente de desenvolvimento lamw não estiver instalado
 		return 1

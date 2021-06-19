@@ -510,7 +510,7 @@ setOldAndroidSDKStatus(){
 checkLAMWManagerVersion(){
 	local ret=0
 	for i  in ${!OLD_LAMW_INSTALL_VERSION[*]};do
-		grep "^Generate LAMW_INSTALL_VERSION=${OLD_LAMW_INSTALL_VERSION[i]}"  "$ANDROID_SDK/ndk-bundle/source.properties" > /dev/null
+		grep "^Generate LAMW_INSTALL_VERSION=${OLD_LAMW_INSTALL_VERSION[i]}"  $lamw_install_log_path > /dev/null
 		if [ $? = 0 ]; then 
 			CURRENT_OLD_LAMW_INSTALL_INDEX=$i
 			ret=1;
