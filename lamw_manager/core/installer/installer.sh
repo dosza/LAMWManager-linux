@@ -156,6 +156,7 @@ getFPCSourcesTrunk(){
 		svn checkout "$FPC_TRUNK_URL" --force
 		if [ $? != 0 ]; then 
 			svn cleanup "$FPC_TRUNK_SVNTAG"
+			[ $? != 0 ] && rm -rf $FPC_TRUNK_SVNTAG
 			echo "possible network instability! Try later!"
 			exit 1
 		fi
@@ -204,6 +205,7 @@ getLazarusSources(){
 		svn co $LAZARUS_STABLE_SRC_LNK
 		if [ $? != 0 ]; then 
 			svn cleanup $LAZARUS_STABLE
+			[ $? != 0 ] && rm -rf $LAZARUS_STABLE
 			echo "possible network instability! Try later!"
 			exit 1
 		fi

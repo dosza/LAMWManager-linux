@@ -276,6 +276,20 @@ CleanOldCrossCompileBins(){
 		"/usr/local/lib/fpc/3.3.1"
 	)
 
+	local list_deleted_files=(	
+		"/usr/bin/ppcarm"
+		"/usr/bin/ppcrossarm"
+		"/usr/bin/arm-linux-androideabi-ld"
+		"/usr/bin/arm-linux-as"
+		"/usr/bin/arm-linux-androideabi-as"
+		"/usr/bin/arm-linux-ld"
+		"/usr/bin/aarch64-linux-androideabi-as"
+		"/usr/bin/aarch64-linux-androideabi-ld"
+		"/usr/bin/ppca64"
+		"/usr/bin/ppcrossa64"
+	)
+
+
 	local index_clean_files_v031=${#clean_files[*]}
 	local current_old_lamw_manager=${OLD_LAMW_INSTALL_VERSION[$CURRENT_OLD_LAMW_INSTALL_INDEX]}
 	((index_clean_files_v031-=1))
@@ -283,6 +297,12 @@ CleanOldCrossCompileBins(){
 	if [ $CURRENT_OLD_LAMW_INSTALL_INDEX -lt  0 ]; then
 		return 1
 	fi
+
+
+	for((i=0;i<${#list_deleted_files[*]};i++)); do 
+		validate_is_file_create_by_lamw_manager $i ${list_deleted_files[i]}
+		[ -e ${list_deleted_files[i]} ] && [ $? = 0 ] && rm ${list_deleted_files[i]}
+	done
 
 	for((i=0;i<${#clean_files[*]};i++)); do
 		if [  -e ${clean_files[i]} ] && [ $i -lt  $index_clean_files_v031 ]  ; then 
@@ -487,7 +507,7 @@ configureFPCTrunk(){
 		"-Fl$ROOT_LAMW/ndk/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/aarch64-linux-android/$ANDROID_SDK_TARGET"
 		"-FLlibdl.so"
 		#"-FD$ROOT_LAMW/ndk/toolchains/aarch64-linux-android-4.9/prebuilt/linux-x86_64/bin"
-		"-FD${LLVM_ANDROID_TOOLCHAINS}"
+		"-FD${AARCH64_ANDROID_TOOLS}"
 		"-Fu${fpc_trunk_parent}/"'$fpcversion/units/$fpctarget'
 		"-Fu${fpc_trunk_parent}/"'$fpcversion/units/$fpctarget/*'
 		"-Fu${fpc_trunk_parent}/"'$fpcversion/units/$fpctarget/rtl'
@@ -509,10 +529,10 @@ configureFPCTrunk(){
 
 
 CreateSimbolicLinksAndroidAARCH64(){
-	ln -sf "$LLVM_ANDROID_TOOLCHAINS/aarch64-linux-android-as" "$LLVM_ANDROID_TOOLCHAINS/aarch64-linux-as"
-	ln -sf "$LLVM_ANDROID_TOOLCHAINS/aarch64-linux-android-ld" "$LLVM_ANDROID_TOOLCHAINS/aarch64-linux-ld"
-	ln -sf "$LLVM_ANDROID_TOOLCHAINS/aarch64-linux-android-as" "$ROOT_LAMW/lamw4linux/usr/bin/aarch64-linux-android-as"
-	ln -sf "$LLVM_ANDROID_TOOLCHAINS/aarch64-linux-android-ld" "$ROOT_LAMW/lamw4linux/usr/bin/aarch64-linux-android-ld"
+	ln -sf "$AARCH64_ANDROID_TOOLS/aarch64-linux-android-as" "$LLVM_ANDROID_TOOLCHAINS/aarch64-linux-as"
+	ln -sf "$AARCH64_ANDROID_TOOLS/aarch64-linux-android-ld" "$LLVM_ANDROID_TOOLCHAINS/aarch64-linux-ld"
+	ln -sf "$AARCH64_ANDROID_TOOLS/aarch64-linux-android-as" "$ROOT_LAMW/lamw4linux/usr/bin/aarch64-linux-android-as"
+	ln -sf "$AARCH64_ANDROID_TOOLS/aarch64-linux-android-ld" "$ROOT_LAMW/lamw4linux/usr/bin/aarch64-linux-android-ld"
 	ln -sf "${FPC_TRUNK_LIB_PATH}/ppcrossa64" $ROOT_LAMW/lamw4linux/usr/bin/ppcrossa64
 	ln -sf "${FPC_TRUNK_LIB_PATH}/ppcrossa64" $ROOT_LAMW/lamw4linux/usr/bin/ppca64
 }
