@@ -1,14 +1,16 @@
 # LAMW Manager Release Notes
 This page contains information about new features and bug fixes.
 
-v0.4.0 - Jun 19, 2021
+v0.4.0 - Jun 20, 2021
 ---
 **News**
 +	Android NDK r22b
++	FPC 3.2.2
 +	Support **Selected folder install**,  using environment variable *LOCAL_ROOT_LAMW*'
 
 **Fixed**
 +	Replace fpc/lazarus local sources folder to *svn cleanup*
++	Add validation before delete files created by LAMW Manager
 
 
 v0.3.6.2 - May 6, 2021

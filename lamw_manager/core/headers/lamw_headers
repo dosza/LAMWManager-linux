@@ -94,11 +94,11 @@ OLD_FPC_CFG_PATH="$LAMW_USER_HOME/.fpc.cfg"
 export FPC_CFG_PATH="$LAMW_USER_HOME/.fpc.cfg"
 export PPC_CONFIG_PATH="$LAMW_USER_HOME"
 	
-export FPC_VERSION="3.0.4"
+export FPC_VERSION="3.2.0"	
 export FPC_LIB_PATH="$LAMW4LINUX_HOME/usr/local/lib/fpc/${FPC_VERSION}"
 export FPC_MKCFG_EXE="$LAMW4LINUX_HOME/usr/local/bin/fpcmkcfg"
-export FPC_DEB_LINK="https://sourceforge.net/projects/lazarus/files/Lazarus%20Linux%20amd64%20DEB/Lazarus%202.0.8/fpc-laz_3.0.4-1_amd64.deb"
-export FPC_DEB="fpc-laz_3.0.4-1_amd64.deb"
+export FPC_DEB_LINK="https://sourceforge.net/projects/lazarus/files/Lazarus%20Linux%20amd64%20DEB/Lazarus%202.0.12/fpc-laz_${FPC_VERSION}-1_amd64.deb"
+export FPC_DEB="fpc-laz_${FPC_VERSION}-1_amd64.deb"
 
 LAZARUS_OLD_STABLE_VERSION=(
 	2.0.{10..2..2}
@@ -145,7 +145,7 @@ export LLVM_ANDROID_TOOLCHAINS="$ROOT_LAMW/sdk/ndk-bundle/toolchains/llvm/prebui
 export PATH=$PATH:$LLVM_ANDROID_TOOLCHAINS
 export FLAG_FORCE_ANDROID_AARCH64=1
 export FPC_TRUNK_RELEASE=""
-export FPC_TRUNK_SVNTAG="release_3_2_0"
+export FPC_TRUNK_SVNTAG="release_3_2_2"
 export FPC_TRUNK_URL="https://svn.freepascal.org/svn/fpc/tags/${FPC_TRUNK_SVNTAG}"
 export FPC_TRUNK_VERSION=""
 export FPC_TRUNK_LIB_PATH=""
@@ -166,7 +166,12 @@ export OLD_ANT=(
 
 OLD_FPC_SOURCES=(
 	"$LAMW4LINUX_HOME/fpcsrc"
-	$LAMW4LINUX_HOME/usr/share/fpcsrc/{trunk,fixes_3_2}
+	$LAMW4LINUX_HOME/usr/share/fpcsrc/{trunk,fixes_3_2,release_3_2_0}
+)
+
+OLD_FPC_STABLE=(
+	$LAMW4LINUX_HOME/usr/local/lib/fpc/3.0.4
+	$LAMW4LINUX_HOME/usr/lib/$FPC_VERSION
 )
 
 LAMW_PACKAGE_URL="https://raw.githubusercontent.com/jmpessoa/lazandroidmodulewizard/master/package.json"
