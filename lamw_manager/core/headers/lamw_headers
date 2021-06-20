@@ -79,7 +79,6 @@ LAMW_WORKSPACE_HOME="$LAMW_USER_HOME/Dev/LAMWProjects"  #path to lamw_workspace
 LAMW4LINUX_EXE_PATH="$LAMW_IDE_HOME/lamw4linux"
 LAMW_MENU_ITEM_PATH="$LAMW_USER_HOME/.local/share/applications/lamw4linux.desktop"
 
-ANT_VERSION="1.10.8"
 ANT_VERSION_STABLE='1.10.8'
 ANT_TAR_URL="https://archive.apache.org/dist/ant/binaries/apache-ant-${ANT_VERSION_STABLE}-bin.tar.xz"
 ANT_TAR_FILE="apache-ant-${ANT_VERSION_STABLE}-bin.tar.xz"
@@ -172,7 +171,7 @@ OLD_FPC_SOURCES=(
 
 LAMW_PACKAGE_URL="https://raw.githubusercontent.com/jmpessoa/lazandroidmodulewizard/master/package.json"
 
-CURRENT_OLD_LAMW_INSTALL_INDEX=-1
+export CURRENT_OLD_LAMW_INSTALL_INDEX=-1
 
 #---------------------------------------------------------------------------------------------------------------------
 

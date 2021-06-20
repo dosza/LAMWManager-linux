@@ -485,7 +485,7 @@ Repair(){
 			getFPCSourcesTrunk
 			flag_need_repair=1
 		fi
-			
+			checkLAMWManagerVersion
 		if [ $flag_need_repair = 1 ]; then
 			ConfigureFPCCrossAndroid
 			CleanOldCrossCompileBins
@@ -510,7 +510,7 @@ setOldAndroidSDKStatus(){
 checkLAMWManagerVersion(){
 	local ret=0
 	for i  in ${!OLD_LAMW_INSTALL_VERSION[*]};do
-		grep "^Generate LAMW_INSTALL_VERSION=${OLD_LAMW_INSTALL_VERSION[i]}"  $lamw_install_log_path > /dev/null
+		grep "^Generate LAMW_INSTALL_VERSION=${OLD_LAMW_INSTALL_VERSION[i]}"  "$LAMW4LINUX_HOME/lamw-install.log" > /dev/null
 		if [ $? = 0 ]; then 
 			CURRENT_OLD_LAMW_INSTALL_INDEX=$i
 			ret=1;
@@ -518,7 +518,12 @@ checkLAMWManagerVersion(){
 		fi
 	done
 
-	echo $ret;
+	if [  "$1"  != "" ]; then 
+		newPtr ref_ret=$1
+		ref_ret=$ret
+	else 
+		echo "$ret"
+	fi
 }
 
 setOldLAMW4LinuxActions(){
@@ -559,7 +564,8 @@ getImplicitInstall(){
 		if [ $? = 0 ]; then
 			checkChangeLAMWDeps
 		else
-			local flag_is_old_lamw=$(checkLAMWManagerVersion)
+			local flag_is_old_lamw=0
+			checkLAMWManagerVersion flag_is_old_lamw
 			setOldLAMW4LinuxActions $flag_is_old_lamw
 		fi
 	fi
@@ -620,6 +626,7 @@ checkProxyStatus(){
 
 
 mainInstall(){
+	checkLAMWManagerVersion
 	initROOT_LAMW
 	installDependences
 	setLAMWDeps
