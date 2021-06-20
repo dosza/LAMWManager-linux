@@ -171,7 +171,7 @@ OLD_FPC_SOURCES=(
 
 OLD_FPC_STABLE=(
 	$LAMW4LINUX_HOME/usr/local/lib/fpc/3.0.4
-	$LAMW4LINUX_HOME/usr/lib/$FPC_VERSION
+	$LAMW4LINUX_HOME/usr/lib/fpc/$FPC_VERSION
 )
 
 LAMW_PACKAGE_URL="https://raw.githubusercontent.com/jmpessoa/lazandroidmodulewizard/master/package.json"
