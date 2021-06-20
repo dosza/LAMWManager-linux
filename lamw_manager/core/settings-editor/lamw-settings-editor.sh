@@ -283,8 +283,8 @@ CleanOldCrossCompileBins(){
 		"/usr/bin/arm-linux-as"
 		"/usr/bin/arm-linux-androideabi-as"
 		"/usr/bin/arm-linux-ld"
-		"/usr/bin/aarch64-linux-androideabi-as"
-		"/usr/bin/aarch64-linux-androideabi-ld"
+		"/usr/bin/aarch64-linux-android-as"
+		"/usr/bin/aarch64-linux-android-ld"
 		"/usr/bin/ppca64"
 		"/usr/bin/ppcrossa64"
 	)
@@ -294,14 +294,17 @@ CleanOldCrossCompileBins(){
 	local current_old_lamw_manager=${OLD_LAMW_INSTALL_VERSION[$CURRENT_OLD_LAMW_INSTALL_INDEX]}
 	((index_clean_files_v031-=1))
 
+	
 	if [ $CURRENT_OLD_LAMW_INSTALL_INDEX -lt  0 ]; then
 		return 1
 	fi
 
 
 	for((i=0;i<${#list_deleted_files[*]};i++)); do 
-		validate_is_file_create_by_lamw_manager $i ${list_deleted_files[i]}
-		[ -e ${list_deleted_files[i]} ] && [ $? = 0 ] && rm ${list_deleted_files[i]}
+		if [ -e ${list_deleted_files[i]} ]; then 
+			validate_is_file_create_by_lamw_manager $i ${list_deleted_files[i]}
+			[ $? = 0 ] && rm ${list_deleted_files[i]}
+		fi
 	done
 
 	for((i=0;i<${#clean_files[*]};i++)); do
@@ -383,8 +386,8 @@ CleanOldConfig(){
 		"/usr/bin/arm-linux-as"
 		"/usr/bin/arm-linux-androideabi-as"
 		"/usr/bin/arm-linux-ld"
-		"/usr/bin/aarch64-linux-androideabi-as"
-		"/usr/bin/aarch64-linux-androideabi-ld"
+		"/usr/bin/aarch64-linux-android-as"
+		"/usr/bin/aarch64-linux-android-ld"
 		"/usr/bin/ppca64"
 		"/usr/bin/ppcrossa64"
 		"/usr/lib/fpc/$FPC_VERSION/fpmkinst/arm-android"
