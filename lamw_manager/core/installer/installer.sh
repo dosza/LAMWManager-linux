@@ -39,6 +39,8 @@ LAMWPackageManager(){
 			fi
 		done
 
+
+
 		for gradle in ${OLD_GRADLE[*]}
 		do
 			if [ -e "$gradle" ]; then
@@ -53,7 +55,13 @@ LAMWPackageManager(){
 				rm -rf ${OLD_ANT[i]}
 			fi
 		done
+
+		for old_fpc_stable in ${OLD_FPC_STABLE[*]}; do 
+			[ -e $old_fpc_stable ] && rm -rf $old_fpc_stable
+		done
 	fi
+
+
 
 }
 getStatusInstalation(){
@@ -165,15 +173,14 @@ getFPCSourcesTrunk(){
 }
 
 getFPCStable(){
-	local link="https://sourceforge.net/projects/lazarus/files/Lazarus%20Linux%20amd64%20DEB/Lazarus%202.0.8/fpc-laz_3.0.4-1_amd64.deb"
 	if [ ! -e "$LAMW4LINUX_HOME/usr" ]; then 
 		mkdir -p "$LAMW4LINUX_HOME/usr"
 	fi
 
 	cd "$LAMW4LINUX_HOME/usr"
 	if  [ ! -e "$FPC_LIB_PATH" ]; then
-		echo "doesn't exist $FPC_PATH"
-		Wget $link
+		echo "doesn't exist $FPC_LIB_PATH"
+		Wget $FPC_DEB_LINK
 		if [ -e "$FPC_DEB" ]; then
 			local tmp_files=(
 				data.tar.xz
@@ -183,16 +190,16 @@ getFPCStable(){
 			)
 			ar x "$FPC_DEB"
 			if [ -e data.tar.xz ]; then 
-				tar -xvf data.tar.xz
-			fi
-			if [ -e $LAMW4LINUX_HOME/usr/usr ]; then
-				mv $LAMW4LINUX_HOME/usr/usr $LAMW4LINUX_HOME/usr/local
+				tar -xvf data.tar.xz 
+				rm -rf $LAMW4LINUX_HOME/usr/local
+				[ -e $LAMW4LINUX_HOME/usr/usr ] && mv $LAMW4LINUX_HOME/usr/usr/ $LAMW4LINUX_HOME/usr/local
 			fi
 			for i in ${!tmp_files[@]}; do  
 				if [ -e ${tmp_files[i]} ]; then rm ${tmp_files[i]} ; fi
 			done	
 		fi
 		export PPC_CONFIG_PATH=$FPC_LIB_PATH
+
 		$FPC_MKCFG_EXE -d basepath=$FPC_LIB_PATH -o $FPC_LIB_PATH/fpc.cfg;
 	fi
 }
