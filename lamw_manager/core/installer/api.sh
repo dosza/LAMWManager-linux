@@ -10,7 +10,7 @@ getLAMWDep(){
 	fi
 
 	if [  "$LAMW_DEPENDENCIES" = "" ] ; then
-		LAMW_DEPENDENCIES=$(Wget -O- -q  "$LAMW_PACKAGE_URL" )
+		export LAMW_DEPENDENCIES="$(Wget -O- -q  "$LAMW_PACKAGE_URL" )"
 	fi
 	echo "$LAMW_DEPENDENCIES" | jq  "$1" | sed 's/"//g'
 }
@@ -40,9 +40,7 @@ setAndroidSDKCMDParameters(){
 
 	if [ $USE_PROXY = 1 ]; then
 		SDK_LICENSES_PARAMETERS=( --licenses --no_https --proxy=http --proxy_host=$PROXY_SERVER --proxy_port=$PORT_SERVER )
-		SDK_MANAGER_CMD_PARAMETERS[${#SDK_LICENSES_PARAMETERS[*]}]="--no_https --proxy=http"
-		SDK_MANAGER_CMD_PARAMETERS[${#SDK_LICENSES_PARAMETERS[*]}]="--proxy_host=$PROXY_SERVER"
-		SDK_MANAGER_CMD_PARAMETERS[${#SDK_LICENSES_PARAMETERS[*]}]="--proxy_port=$PORT_SERVER" 
+		SDK_MANAGER_CMD_PARAMETERS+=("--no_https --proxy=http" "--proxy_host=$PROXY_SERVER" "--proxy_port=$PORT_SERVER")
 
 		SDK_MANAGER_CMD_PARAMETERS2_PROXY=(
 			'--no_https' 

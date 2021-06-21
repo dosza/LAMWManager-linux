@@ -1,8 +1,12 @@
 .\" Manpage for lamw_manager
-.TH lamw_manager 8 "2020 Nov 2" "0.3.6" "LAMW manager man page"
+.TH lamw_manager 8 "2021 Jun 17 " "0.4.0" "LAMW manager man page"
 .SH NAME
 lamw_manager -\ manager to LAMW framework
 .SH SINOPSIS
+\fBenv LOCAL_ROOT_LAMW=[dir]\fR ./lamw_manager
+.br
+\fBenv LOCAL_ROOT_LAMW=[dir]\fR ./lamw_manager   [\fBACTION\fR] [\fBOPTIONS\fR]
+.br
 lamw_manager
 .br
  ./lamw_manager 	[\fBACTION\fR] [\fBOPTIONS\fR]
@@ -17,6 +21,12 @@ lamw_manager
 LAMW Manager is a command line tool,like APT, to automate the installation, configuration and upgrade the framework 
 \.br
 LAMW - Lazarus Android Module Wizard
+.SH INSTALLING LAMW ON CUSTOM DIRECTORY
+To install LAMW environment on custom directory you need use \fBenv LOCAL_ROOT_LAMW=path_your_directory\fR ./lamw_manager  [\fBACTION\fR] [\fBOPTIONS\fR]
+.br
+sample:
+.br
+\fBenv LOCAL_ROOT_LAMW=/opt/LAMW\fR ./lamw_manager
 
 .SH ACTIONS
 \fBuninstall\fR 		Clean all LAMW
@@ -35,7 +45,7 @@ lamw_manager [ACTIONS]||[OPTIONS] \fB\-\-use-proxy\fR \fB\-\-server\fR [HOST] \f
 .br
 sample:
 .br
- ./lamw_manger --update-lamw --use-proxy --server 10.0.16.1 --port 3128
+ ./lamw_manager --update-lamw --use-proxy --server 10.0.16.1 --port 3128
 .SH DEBUG
  Use the \fBDEBUG=1\fR flag later in any position of ./lamw_manager (flag does not count as argument)
 .br

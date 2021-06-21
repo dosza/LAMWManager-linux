@@ -3,7 +3,7 @@
 #Universidade federal de Mato Grosso (mater-alma)
 #Course: Science Computer
 #version: 0.1.0	
-#Date: 19/06/2020
+#Date: 06/12/2021
 #Description: Thi script provides common shell functions
 #-------------------------------------------------------------------------------------------------#
 
@@ -26,6 +26,12 @@ APT_LOCKS=(
 shopt  -s expand_aliases
 alias newPtr='declare -n'
 
+isVariabelDeclared(){
+	if [ "$1" = "" ]; then return 1; fi
+
+	declare -p "$1" &> /dev/null
+	return $?
+}
 
 #cd not a native command, is a systemcall used to exec, read more in exec man 
 changeDirectory(){

@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.3.4
-#Date: 12/03/2019
+#Version: 0.4.0
+#Date: 06/17/2021
 #Description:The "lamw_manager" is part of the core of LAMW Manager. This script is a wrapper for "core/lamw-instal.sh"
 #-------------------------------------------------------------------------------------------------#
 
@@ -30,12 +30,12 @@ source $LAMW_MGR_CORE/core/headers/common-shell.sh
 
 #Del lamw-overrides
 DelTempFiles(){ 
-	if [ -e /tmp/lamw-overrides.conf ];then rm /tmp/lamw-overrides.conf ;fi
+	[ -e /tmp/lamw-overrides.conf ] &&  rm /tmp/lamw-overrides.conf
 }
 
 #Check if $USER is a sudo member 
 CheckUserIsSudo(){
-	cat /etc/group | grep sudo | grep $USER > /dev/null 2>&1
+	grep sudo /etc/group  | grep $USER > /dev/null 2>&1
 	if [ $? != 0 ]; then 
 		export USE_PKEXEC=1
 	fi
@@ -68,6 +68,20 @@ CheckUseLamw_manager_setup(){
 		LAMW_MANAGER_ENV+=("USE_SETUP=0")
 	fi
 }
+
+CheckLocalRootLAMW(){
+	if [ "$LOCAL_ROOT_LAMW" != "" ]; then
+		LAMW_MANAGER_ENV+=("LOCAL_ROOT_LAMW=$LOCAL_ROOT_LAMW")
+
+	else 
+		isVariabelDeclared LOCAL_ROOT_LAMW
+		if [ $? = 0 ]; then
+			echo "${VERMELHO}Fatal error: LOCAL_ROOT_LAMW is declared as empty!${NORMAL}"
+			exit 1
+		fi
+	fi 
+}
+
 RunAsSudo(){
 	CheckUseLamw_manager_setup
 	sudo -i env ${LAMW_MANAGER_ENV[@]} $CALL_BASH "$LAMW_MGR_INSTALL" $*
@@ -127,11 +141,12 @@ main(){
 	CheckFlags USE_PKEXEC "PKEXEC=1"
 	CheckFlags ENTER_TO_EXIT "ENTER=1"
 	CheckUserIsSudo
+	CheckLocalRootLAMW
 	Run $ARGS
 	DelTempFiles
 }
 
 
 main $*
-exit $EXIT_STATUS 
 exec 3>&-
+exit $EXIT_STATUS 
