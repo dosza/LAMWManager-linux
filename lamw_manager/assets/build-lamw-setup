@@ -33,7 +33,8 @@ START_LAMW_MANAGER_STR=(
 	''
 	"ARGS=\"\$*\""
 	'ARGS=${ARGS/\-\-/}  #This is expansion that removes the first occurrence --. \-  is the escape of -'
-	"env USE_SETUP=1 ./lamw_manager \$ARGS"
+	"export USE_SETUP=1" 
+	"./lamw_manager \$ARGS"
 )
 
 files=(
@@ -46,8 +47,8 @@ files=(
 
 CheckBuildFlag(){
 	if [ $BUILD_GUI = 1 ]; then 
-		files[${#files[*]}]="../.gui/images"
-		files[${#files[*]}]="../.gui/LAMWManager"
+		files+=("../.gui/images")
+		files+=("../.gui/LAMWManager")
 		START_LAMW_MANAGER_FILE="LAMWManager"
 	fi
 }

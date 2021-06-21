@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.3.5
-#Date: 07/14/2020
+#Version: 0.4.0
+#Date: 06/12/2021
 #Description:The "cross-builder.sh" is part of the core of LAMW Manager.  This script contains crosscompile compiler generation routines for ARMv7 / AARCH64- Android
 #-------------------------------------------------------------------------------------------------#
 
@@ -30,7 +30,7 @@ parseFPC(){
 #this function set env to FPC_TRUNK 
 parseFPCTrunk(){
 
-	export FPC_TRUNK_VERSION="3.2.0"
+	export FPC_TRUNK_VERSION="3.2.2"
 	export _FPC_TRUNK_VERSION=${FPC_TRUNK_VERSION%\-*}
 	export FPC_INSTALL_TRUNK_ZIP="$LAMW4LINUX_HOME/usr/share/fpcsrc/${FPC_TRUNK_SVNTAG}/fpc-${FPC_TRUNK_VERSION}.x86_64-linux.tar.gz"
 	export FPC_TRUNK_LIB_PATH=$LAMW4LINUX_HOME/usr/lib/fpc/${_FPC_TRUNK_VERSION}

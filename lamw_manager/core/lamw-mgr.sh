@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-##Version: 0.3.5
-#Date: 07/14/2020
+#Version: 0.4.0
+#Date: 06/12/2021
 #Description: The "lamw-install.sh" is part of the core of LAMW Manager. This script configures the development environment for LAMW
 #-------------------------------------------------------------------------------------------------#
 
@@ -29,6 +29,11 @@ case "$1" in
 	;;
 
 	"uninstall")
+		getStatusInstalation
+		if [ $LAMW_INSTALL_STATUS = 1 ];then
+			checkLAMWManagerVersion
+		fi
+		
 		CleanOldConfig;
 		changeOwnerAllLAMW
 	;;
