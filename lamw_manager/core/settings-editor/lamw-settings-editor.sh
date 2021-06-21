@@ -377,7 +377,7 @@ validate_is_file_create_by_lamw_manager(){
 }
 CleanOldConfig(){
 	getStatusInstalation
-	[ $LAMW_INSTALL_STATUS = 1 ] && checkLAMWManagerVersion
+	[ $LAMW_INSTALL_STATUS = 1 ] && checkLAMWManagerVersion > /dev/null
 	wrapperParseFPC
 	local list_deleted_files=(
 		"/usr/bin/ppcarm"
@@ -436,11 +436,11 @@ CreateSDKSimbolicLinks(){
 	local tools_chains_orig=(
 		"$ROOT_LAMW/sdk/ndk-bundle"
 		"$LLVM_ANDROID_TOOLCHAINS"
-		"$LLVM_ANDROID_TOOLCHAINS/arm-linux-androideabi-as"
-		"$LLVM_ANDROID_TOOLCHAINS/arm-linux-androideabi-ld"
-		"$LLVM_ANDROID_TOOLCHAINS/arm-linux-androideabi-as"
-		"$LLVM_ANDROID_TOOLCHAINS/arm-linux-androideabi-ld"
-		"$LLVM_ANDROID_TOOLCHAINS/arm-linux-androideabi-as"
+		"$ARM_ANDROID_TOOLS/arm-linux-androideabi-as"
+		"$ARM_ANDROID_TOOLS/arm-linux-androideabi-ld"
+		"$ARM_ANDROID_TOOLS/arm-linux-androideabi-as"
+		"$ARM_ANDROID_TOOLS/arm-linux-androideabi-ld"
+		"$ARM_ANDROID_TOOLS/arm-linux-androideabi-as"
 		"$ROOT_LAMW/sdk/ndk-bundle/toolchains/arm-linux-androideabi-4.9"
 		"$ROOT_LAMW/sdk/ndk-bundle/toolchains/arm-linux-androideabi-4.9"
 		"$real_ppcarm"
@@ -498,18 +498,13 @@ configureFPCTrunk(){
 		"-Fu${fpc_trunk_parent}/"'$fpcversion/units/$fpctarget'
 		"-Fu${fpc_trunk_parent}/"'$fpcversion/units/$fpctarget/*'
 		"-Fu${fpc_trunk_parent}/"'$fpcversion/units/$fpctarget/rtl'
-		
-		#"-FD$ROOT_LAMW/ndk/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin"
-		"-FD${LLVM_ANDROID_TOOLCHAINS}"
+		"-FD${ARM_ANDROID_TOOLS}"
 		"#ENDIF"
-
 		"#IFDEF CPUAARCH64"
 		"-Xd"
 		"-XPaarch64-linux-android-"
-		#"-Fl$ROOT_LAMW/ndk/platforms/android-$ANDROID_SDK_TARGET/arch-arm64/usr/lib"
 		"-Fl$ROOT_LAMW/ndk/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/aarch64-linux-android/$ANDROID_SDK_TARGET"
 		"-FLlibdl.so"
-		#"-FD$ROOT_LAMW/ndk/toolchains/aarch64-linux-android-4.9/prebuilt/linux-x86_64/bin"
 		"-FD${AARCH64_ANDROID_TOOLS}"
 		"-Fu${fpc_trunk_parent}/"'$fpcversion/units/$fpctarget'
 		"-Fu${fpc_trunk_parent}/"'$fpcversion/units/$fpctarget/*'
