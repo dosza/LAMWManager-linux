@@ -30,12 +30,12 @@ source $LAMW_MGR_CORE/core/headers/common-shell.sh
 
 #Del lamw-overrides
 DelTempFiles(){ 
-	if [ -e /tmp/lamw-overrides.conf ];then rm /tmp/lamw-overrides.conf ;fi
+	[ -e /tmp/lamw-overrides.conf ] &&  rm /tmp/lamw-overrides.conf
 }
 
 #Check if $USER is a sudo member 
 CheckUserIsSudo(){
-	cat /etc/group | grep sudo | grep $USER > /dev/null 2>&1
+	grep sudo /etc/group  | grep $USER > /dev/null 2>&1
 	if [ $? != 0 ]; then 
 		export USE_PKEXEC=1
 	fi
