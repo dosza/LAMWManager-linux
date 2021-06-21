@@ -633,7 +633,7 @@ checkProxyStatus(){
 
 
 mainInstall(){
-	checkLAMWManagerVersion
+	checkLAMWManagerVersion > /dev/null
 	initROOT_LAMW
 	installDependences
 	setLAMWDeps
