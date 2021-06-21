@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.3.5
-#Date: 08/06/2020
+#Version: 0.4.0
+#Date: 06/12/2021
 #Description: "installer.sh" is part of the core of LAMW Manager. Contains routines for installing LAMW development environment
 #-------------------------------------------------------------------------------------------------#
 
@@ -39,6 +39,8 @@ LAMWPackageManager(){
 			fi
 		done
 
+
+
 		for gradle in ${OLD_GRADLE[*]}
 		do
 			if [ -e "$gradle" ]; then
@@ -53,7 +55,13 @@ LAMWPackageManager(){
 				rm -rf ${OLD_ANT[i]}
 			fi
 		done
+
+		for old_fpc_stable in ${OLD_FPC_STABLE[*]}; do 
+			[ -e $old_fpc_stable ] && rm -rf $old_fpc_stable
+		done
 	fi
+
+
 
 }
 getStatusInstalation(){
@@ -152,10 +160,11 @@ getFPCSourcesTrunk(){
 	changeDirectory $FPC_TRUNK_SOURCE_PATH
 	svn checkout $FPC_TRUNK_URL --force
 	if [ $? != 0 ]; then
-		rm -rf "$FPC_TRUNK_SVNTAG"
+		svn cleanup "$FPC_TRUNK_SVNTAG"
 		svn checkout "$FPC_TRUNK_URL" --force
 		if [ $? != 0 ]; then 
-			rm -rf "$FPC_TRUNK_SVNTAG"
+			svn cleanup "$FPC_TRUNK_SVNTAG"
+			[ $? != 0 ] && rm -rf $FPC_TRUNK_SVNTAG
 			echo "possible network instability! Try later!"
 			exit 1
 		fi
@@ -164,15 +173,14 @@ getFPCSourcesTrunk(){
 }
 
 getFPCStable(){
-	local link="https://sourceforge.net/projects/lazarus/files/Lazarus%20Linux%20amd64%20DEB/Lazarus%202.0.8/fpc-laz_3.0.4-1_amd64.deb"
 	if [ ! -e "$LAMW4LINUX_HOME/usr" ]; then 
 		mkdir -p "$LAMW4LINUX_HOME/usr"
 	fi
 
 	cd "$LAMW4LINUX_HOME/usr"
 	if  [ ! -e "$FPC_LIB_PATH" ]; then
-		echo "doesn't exist $FPC_PATH"
-		Wget $link
+		echo "doesn't exist $FPC_LIB_PATH"
+		Wget $FPC_DEB_LINK
 		if [ -e "$FPC_DEB" ]; then
 			local tmp_files=(
 				data.tar.xz
@@ -182,16 +190,16 @@ getFPCStable(){
 			)
 			ar x "$FPC_DEB"
 			if [ -e data.tar.xz ]; then 
-				tar -xvf data.tar.xz
-			fi
-			if [ -e $LAMW4LINUX_HOME/usr/usr ]; then
-				mv $LAMW4LINUX_HOME/usr/usr $LAMW4LINUX_HOME/usr/local
+				tar -xvf data.tar.xz 
+				rm -rf $LAMW4LINUX_HOME/usr/local
+				[ -e $LAMW4LINUX_HOME/usr/usr ] && mv $LAMW4LINUX_HOME/usr/usr/ $LAMW4LINUX_HOME/usr/local
 			fi
 			for i in ${!tmp_files[@]}; do  
 				if [ -e ${tmp_files[i]} ]; then rm ${tmp_files[i]} ; fi
 			done	
 		fi
 		export PPC_CONFIG_PATH=$FPC_LIB_PATH
+
 		$FPC_MKCFG_EXE -d basepath=$FPC_LIB_PATH -o $FPC_LIB_PATH/fpc.cfg;
 	fi
 }
@@ -200,10 +208,11 @@ getLazarusSources(){
 	changeDirectory $LAMW4LINUX_HOME
 	svn co $LAZARUS_STABLE_SRC_LNK
 	if [ $? != 0 ]; then  #case fails last command , try svn chekout 
-		rm -rf $LAZARUS_STABLE
+		svn cleanup $LAZARUS_STABLE
 		svn co $LAZARUS_STABLE_SRC_LNK
 		if [ $? != 0 ]; then 
-			rm -rf $LAZARUS_STABLE
+			svn cleanup $LAZARUS_STABLE
+			[ $? != 0 ] && rm -rf $LAZARUS_STABLE
 			echo "possible network instability! Try later!"
 			exit 1
 		fi
@@ -301,7 +310,7 @@ getNDK(){
 	changeDirectory "$ANDROID_SDK"
 	if [ -e  "$ANDROID_SDK/ndk-bundle" ]; then 
 		for i in ${!OLD_NDK_VERSION_STR[*]}; do
-			cat "$ANDROID_SDK/ndk-bundle/source.properties" | grep ${OLD_NDK_VERSION_STR[i]} > /dev/null
+			 grep ${OLD_NDK_VERSION_STR[i]} "$ANDROID_SDK/ndk-bundle/source.properties" > /dev/null
 			if [ $? = 0 ]; then 
 				rm -rf $ANDROID_SDK/ndk-bundle
 				break
@@ -471,6 +480,7 @@ Repair(){
 	getStatusInstalation 
 	if [ $LAMW_INSTALL_STATUS = 1 ]; then # só executa essa funcao se o lamw tiver instalado
 		local flag_old_fpc=""
+		checkLAMWManagerVersion
 
 		if [ "$(which git)" = "" ] || [ "$(which wget)" = "" ] || [ "$(which jq)" = "" ]; then
 			echo "Missing lamw_manager required tools!, starting install base Dependencies ..."
@@ -482,7 +492,7 @@ Repair(){
 			getFPCSourcesTrunk
 			flag_need_repair=1
 		fi
-			
+			checkLAMWManagerVersion
 		if [ $flag_need_repair = 1 ]; then
 			ConfigureFPCCrossAndroid
 			CleanOldCrossCompileBins
@@ -506,15 +516,21 @@ setOldAndroidSDKStatus(){
 
 checkLAMWManagerVersion(){
 	local ret=0
-	for i  in ${!OLD_LAMW_INSTALL_VERSION[*]};do
-		cat $LAMW4LINUX_HOME/lamw-install.log |  grep "Generate LAMW_INSTALL_VERSION=${OLD_LAMW_INSTALL_VERSION[i]}" > /dev/null
+	[ -e "$LAMW4LINUX_HOME/lamw-install.log" ] && for i  in ${!OLD_LAMW_INSTALL_VERSION[*]};do
+		grep "^Generate LAMW_INSTALL_VERSION=${OLD_LAMW_INSTALL_VERSION[i]}"  "$LAMW4LINUX_HOME/lamw-install.log" > /dev/null
 		if [ $? = 0 ]; then 
+			CURRENT_OLD_LAMW_INSTALL_INDEX=$i
 			ret=1;
 			break
 		fi
 	done
 
-	echo $ret;
+	if [  "$1"  != "" ]; then 
+		newPtr ref_ret=$1
+		ref_ret=$ret
+	else 
+		echo "$ret"
+	fi
 }
 
 setOldLAMW4LinuxActions(){
@@ -547,15 +563,16 @@ getImplicitInstall(){
 	if [ ! -e "$lamw_install_log_path" ]; then
 		export NO_GUI_OLD_SDK=1
 	else
-		cat "$lamw_install_log_path" |  grep "OLD_ANDROID_SDK=0" > /dev/null
+		grep "OLD_ANDROID_SDK=0" "$lamw_install_log_path"  > /dev/null
 		setOldAndroidSDKStatus $?
 		
-		cat "$lamw_install_log_path" |  grep "Generate LAMW_INSTALL_VERSION=$LAMW_INSTALL_VERSION" > /dev/null
+		grep "Generate LAMW_INSTALL_VERSION=$LAMW_INSTALL_VERSION" "$lamw_install_log_path" 	> /dev/null
 		
 		if [ $? = 0 ]; then
 			checkChangeLAMWDeps
 		else
-			local flag_is_old_lamw=$(checkLAMWManagerVersion)
+			local flag_is_old_lamw=0
+			checkLAMWManagerVersion flag_is_old_lamw
 			setOldLAMW4LinuxActions $flag_is_old_lamw
 		fi
 	fi
@@ -596,15 +613,12 @@ BuildLazarusIDE(){
 		#build ide  with lamw framework 
 	for((i=0;i< ${#LAMW_PACKAGES[@]};i++))
 	do
-		./lazbuild --build-ide= --add-package ${LAMW_PACKAGES[i]} --primary-config-path=$LAMW4_LINUX_PATH_CFG  --lazarusdir=$LAMW_IDE_HOME
+		local lamw_build_opts=(--build-ide= --add-package ${LAMW_PACKAGES[i]} --primary-config-path=$LAMW4_LINUX_PATH_CFG  --lazarusdir=$LAMW_IDE_HOME)
+		./lazbuild  ${lamw_build_opts[*]}
 		if [ $? != 0 ]; then
-			./lazbuild --build-ide= --add-package  ${LAMW_PACKAGES[i]} --primary-config-path=$LAMW4_LINUX_PATH_CFG  --lazarusdir=$LAMW_IDE_HOME
+			./lazbuild ${lamw_build_opts[*]}
 		fi
 	done
-
-	if [ -e /root/.fpc.cfg ]; then
-		rm  -rf /root/.fpc.cfg
-	fi
 }
 
 #this code add support a proxy 
@@ -619,6 +633,7 @@ checkProxyStatus(){
 
 
 mainInstall(){
+	checkLAMWManagerVersion > /dev/null
 	initROOT_LAMW
 	installDependences
 	setLAMWDeps

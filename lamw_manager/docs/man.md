@@ -1,4 +1,4 @@
-**&nbsp;&nbsp;&nbsp;lamw_manager(1)&nbsp; 2020 Nov 2 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LAMW Manager man page&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lamw_manager(1)**
+**&nbsp;&nbsp;&nbsp;lamw_manager(1)&nbsp; 2021 Jun 17 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LAMW Manager man page&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lamw_manager(1)**
 
 **NAME**
 <p>
@@ -10,6 +10,8 @@
 **SINOPSIS**
 <p>
        <pre>
+              <strong>env LOCAL_ROOT_LAMW=[dir]</strong> ./lamw_manager  [<strong>ACTION</strong>] [<strong>OPTIONS</strong>]
+              <strong>env LOCAL_ROOT_LAMW=[dir]</strong> ./lamw_manager  [<strong>ACTION</strong>] [<strong>OPTIONS</strong>]
               ./lamw_manager
               ./lamw_manager       [<strong>ACTION</strong>] [<strong>OPTIONS</strong>]
               ./lamw_manager       [<strong>OPTIONS</strong>]
@@ -26,6 +28,17 @@
               configuration  and  upgrade the framework LAMW - Lazarus Android Module Wizard.
        </pre>
 </p>
+
+**INSTALLING LAMW ON CUSTOM DIRECTORY**
+<p>
+       <pre>
+              To install LAMW environment on custom directory you need use 
+              <strong>env LOCAL_ROOT_LAMW=path_your_directory</strong> ./lamw_manager  [<strong>ACTION</strong>] [<strong>OPTIONS</strong>
+                     <strong>sample:</strong>
+              <strong>env LOCAL_ROOT_LAMW=/opt/LAMW</strong> ./lamw_manager
+       </pre>
+</p>
+
 
 **ACTIONS**
 

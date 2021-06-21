@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (mater-alma)
 #Course: Science Computer
-#Version: 0.3.5
-#Date: 07/20/2020
+#Version: 0.4.0
+#Date: 06/12/2021
 #Description: The "lamw-manager-settings-editor.sh" is part of the core of LAMW Manager. Responsible for managing LAMW Manager / LAMW configuration files..
 #-------------------------------------------------------------------------------------------------#
 #this function builds initial struct directory of LAMW env Development !
@@ -72,6 +72,7 @@ changeOwnerAllLAMW(){
 			"$LAMW_USER_HOME/.android"
 			"$LAMW_USER_HOME/.local/share"
 			"$LAMW4_LINUX_PATH_CFG"
+			"$LAMW_MANAGER_LOCAL_CONFIG_DIR"
 				
 		#	
 		)		
@@ -107,7 +108,7 @@ writeLAMWLogInstall(){
 		"Android SDK:$ROOT_LAMW/sdk" 
 		"Android NDK:$ROOT_LAMW/ndk\nGradle:$GRADLE_HOME"
 		"OLD_ANDROID_SDK=$OLD_ANDROID_SDK"
-		"ANT_VERSION=$ANT_VERSION"
+		"ANT_VERSION=$ANT_VERSION_STABLE"
 		"GRADLE_VERSION=$GRADLE_VERSION"
 		"SDK_TOOLS_VERSION=$SDK_TOOLS_VERSION"
 		"NDK_VERSION=$NDK_VERSION"
@@ -193,7 +194,7 @@ LAMW4LinuxPostConfig(){
 
 	#testa modificação de workspace
 	if [ -e "$LAMW4_LINUX_PATH_CFG/LAMW.ini" ]; then 
-		local current_lamw_workspace=$(cat $LAMW4_LINUX_PATH_CFG/LAMW.ini | grep 'PathToWorkspace=' | sed 's/PathToWorkspace=//g')
+		local current_lamw_workspace=$(grep '^PathToWorkspace=' $LAMW4_LINUX_PATH_CFG/LAMW.ini  | sed 's/PathToWorkspace=//g')
 		if [ "$current_lamw_workspace" != "$LAMW_WORKSPACE_HOME" ]; then
 			LAMW_WORKSPACE_HOME=$current_lamw_workspace
 		fi
@@ -216,16 +217,12 @@ LAMW4LinuxPostConfig(){
 		"AntPackageName=org.lamw"
 		"AndroidPlatform=0"
 		"AntBuildMode=debug"
-		"NDK=5"
+		"NDK=6"
 	)
-	local aux_str=''
-	if [ $FLAG_FORCE_ANDROID_AARCH64 = 1 ]; then
-		aux_str="export PATH=$PATH"
-	fi
 	local startlamw4linux_str=(
 		'#!/bin/bash'
 		"export PPC_CONFIG_PATH=$PPC_CONFIG_PATH"
-		"$aux_str"
+		"export PATH=$ROOT_LAMW/lamw4linux/usr/bin:$PPC_CONFIG_PATH:\$PATH"
 		"$LAMW4LINUX_EXE_PATH --primary-config-path=$LAMW4_LINUX_PATH_CFG \$*"
 	)
 
@@ -272,19 +269,55 @@ ActiveProxy(){
 }
 CleanOldCrossCompileBins(){
 	wrapperParseFPC
+	local lamw_manager_v031=0.3.1
 	local clean_files=(
 		"$FPC_LIB_PATH/ppcrossarm"
 		"/usr/lib/fpc/$FPC_VERSION/fpmkinst/arm-android"
 		"/usr/local/lib/fpc/3.3.1"
 	)
 
-	for((i=0;i<${#clean_files[*]};i++)); do
-		if [  -e ${clean_files[i]} ]; then 
-			rm -rf ${clean_files[i]}
+	local list_deleted_files=(	
+		"/usr/bin/ppcarm"
+		"/usr/bin/ppcrossarm"
+		"/usr/bin/arm-linux-androideabi-ld"
+		"/usr/bin/arm-linux-as"
+		"/usr/bin/arm-linux-androideabi-as"
+		"/usr/bin/arm-linux-ld"
+		"/usr/bin/aarch64-linux-android-as"
+		"/usr/bin/aarch64-linux-android-ld"
+		"/usr/bin/ppca64"
+		"/usr/bin/ppcrossa64"
+	)
+
+
+	local index_clean_files_v031=${#clean_files[*]}
+	local current_old_lamw_manager=${OLD_LAMW_INSTALL_VERSION[$CURRENT_OLD_LAMW_INSTALL_INDEX]}
+	((index_clean_files_v031-=1))
+
+	
+	if [ $CURRENT_OLD_LAMW_INSTALL_INDEX -lt  0 ]; then
+		return 1
+	fi
+
+
+	for((i=0;i<${#list_deleted_files[*]};i++)); do 
+		if [ -e ${list_deleted_files[i]} ]; then 
+			validate_is_file_create_by_lamw_manager $i ${list_deleted_files[i]}
+			[ $? = 0 ] && rm ${list_deleted_files[i]}
 		fi
 	done
 
-	if [  -e /usr/local/bin/fpc ]; then
+	for((i=0;i<${#clean_files[*]};i++)); do
+		if [  -e ${clean_files[i]} ] && [ $i -lt  $index_clean_files_v031 ]  ; then 
+			rm -rf ${clean_files[i]}
+		else 
+			if [ -e ${clean_files[i]} ]  && [ $current_old_lamw_manager  = $lamw_manager_v031 ];then
+				rm -rf ${clean_files[i]}
+			fi
+		fi
+	done
+
+	if [  -e /usr/local/bin/fpc ] &&  [ $current_old_lamw_manager = $lamw_manager_v031 ]; then
 		local fpc_tmp_files=("bin2obj" "chmcmd" "chmls" "cldrparser" "compileserver" "cvsco.tdf" "cvsdiff.tdf" "cvsup.tdf" "data2inc" "delp" "fd2pascal" "fp" "fp.ans" "fpc" "fpcjres" "fpclasschart" "fpclasschart.rsj" "fpcmake" "fpcmkcfg" "fpcmkcfg.rsj" "fpcres" "fpcsubst" "fpcsubst.rsj" "fpdoc" "fppkg" "fprcp" "fp.rsj" "gplprog.pt" "gplunit.pt" "grab_vcsa" "grep.tdf" "h2pas" "h2paspp" "instantfpc" "json2pas" "makeskel" "makeskel.rsj" "mka64ins" "mkarmins" "mkinsadd" "mkx86ins" "pas2fpm" "pas2jni" "pas2js" "pas2ut" "pas2ut.rsj" "plex" "postw32" "ppdep" "ppudump" "ppufiles" "ppumove" "program.pt" "ptop" "ptop.rsj" "pyacc" "rmcvsdir" "rstconv" "rstconv.rsj" "tpgrep.tdf" "unihelper" "unitdiff" "unitdiff.rsj" "unit.pt" "webidl2pas")
 		for((i=0;i<${#fpc_tmp_files[*]};i++)); do
 			local aux="/usr/local/bin/${fpc_tmp_files[i]}"
@@ -306,21 +339,58 @@ cleanPATHS(){
 	sed -i '/export PATH=$PATH:$ANDROID_HOME\/ndk-toolchain/d'  $LAMW_USER_HOME/.bashrc
 	sed -i '/export PATH=$PATH:$GRADLE_HOME/d'  $LAMW_USER_HOME/.bashrc
 }
-#this function remove old config of lamw4linux  
+
+
+#adiciona criterios de validação para a desinstalação de arquivos criados pelo lamw_manager
+validate_last_files_created_by_lamw_manager(){
+	if [ $1 = $last_index_deleted_files  ] || [ $1 = $last_but_one_index_deleted_files ]; then
+		grep "$ROOT_LAMW" "$2"
+	else
+		return 0;
+	fi
+
+}
+#adiciona criterios de validação para a desinstalação de arquivos criados pelo lamw_manager
+validate_is_file_create_by_lamw_manager(){
+	local very_old_lamw_manager_index=${#OLD_LAMW_INSTALL_VERSION[*]}
+	((very_old_lamw_manager_index-=2))
+
+	local size_list_deleted_files=${#list_deleted_files[*]}
+	local system_index_deleted_files=11 #index de arquivos criados em /usr
+	local last_index_deleted_files=$((size_list_deleted_files - 1))
+	local last_but_one_index_deleted_files=$((last_index_deleted_files-1))
+
+	if [ $CURRENT_OLD_LAMW_INSTALL_INDEX -lt 0 ] && [  $1 -lt $system_index_deleted_files ]; then  #ignora binarios fpc/arm  se o ambiente de desenvolvimento lamw não estiver instalado
+		return 1
+	fi
+
+	 #verifica se o arquivo é um arquivo do criado pelo lamw_manager
+	if [ $CURRENT_OLD_LAMW_INSTALL_INDEX -lt $very_old_lamw_manager_index ]; then 
+		if [ $1 -lt $system_index_deleted_files ] ; then
+			ls -lah "$2" | grep "\->\s$ROOT_LAMW" > /dev/null
+		else 
+			validate_last_files_created_by_lamw_manager "$1" "$2"
+		fi
+	else
+		validate_last_files_created_by_lamw_manager "$1" "$2"
+	fi
+}
 CleanOldConfig(){
+	getStatusInstalation
+	[ $LAMW_INSTALL_STATUS = 1 ] && checkLAMWManagerVersion > /dev/null
 	wrapperParseFPC
 	local list_deleted_files=(
-		"/usr/bin/aarch64-linux-androideabi-as"
-		"/usr/bin/aarch64-linux-androideabi-ld"
-		"/usr/bin/ppca64"
-		"/usr/bin/ppcrossa64"
 		"/usr/bin/ppcarm"
 		"/usr/bin/ppcrossarm"
 		"/usr/bin/arm-linux-androideabi-ld"
 		"/usr/bin/arm-linux-as"
-		"/usr/lib/fpc/$FPC_VERSION/fpmkinst/arm-android"
 		"/usr/bin/arm-linux-androideabi-as"
 		"/usr/bin/arm-linux-ld"
+		"/usr/bin/aarch64-linux-android-as"
+		"/usr/bin/aarch64-linux-android-ld"
+		"/usr/bin/ppca64"
+		"/usr/bin/ppcrossa64"
+		"/usr/lib/fpc/$FPC_VERSION/fpmkinst/arm-android"
 		"/usr/bin/startlamw4linux"
 		"$FPC_CFG_PATH"
 		"$LAMW4_LINUX_PATH_CFG"
@@ -344,7 +414,10 @@ CleanOldConfig(){
 			if [ -d  "${list_deleted_files[i]}" ]; then 
 				local rm_opts="-rf"
 			fi
-			rm  "${list_deleted_files[i]}" $rm_opts
+			validate_is_file_create_by_lamw_manager $i "${list_deleted_files[i]}"
+			if [ $? = 0 ]; then 
+				rm  "${list_deleted_files[i]}" $rm_opts
+			fi
 		fi
 	done
 	CleanOldCrossCompileBins
@@ -362,7 +435,7 @@ CreateSDKSimbolicLinks(){
 
 	local tools_chains_orig=(
 		"$ROOT_LAMW/sdk/ndk-bundle"
-		"$ARM_ANDROID_TOOLS"
+		"$LLVM_ANDROID_TOOLCHAINS"
 		"$ARM_ANDROID_TOOLS/arm-linux-androideabi-as"
 		"$ARM_ANDROID_TOOLS/arm-linux-androideabi-ld"
 		"$ARM_ANDROID_TOOLS/arm-linux-androideabi-as"
@@ -380,13 +453,13 @@ CreateSDKSimbolicLinks(){
 		"$ROOT_LAMW/ndk-toolchain"
 		"$ROOT_LAMW/ndk-toolchain/arm-linux-as"
 		"$ROOT_LAMW/ndk-toolchain/arm-linux-ld"
-		"/usr/bin/arm-linux-androideabi-as"
-		"/usr/bin/arm-linux-androideabi-ld"
-		"/usr/bin/arm-linux-androideabi-as"
+		"$ROOT_LAMW/lamw4linux/usr/bin/arm-linux-androideabi-as"
+		"$ROOT_LAMW/lamw4linux/usr/bin/arm-linux-androideabi-ld"
+		"$ROOT_LAMW/lamw4linux/usr/bin/arm-linux-androideabi-as"
 		"$ROOT_LAMW/sdk/ndk-bundle/toolchains/mips64el-linux-android-4.9"
 		"$ROOT_LAMW/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9"
-		"/usr/bin/ppcrossarm"
-		"/usr/bin/ppcarm"
+		"$ROOT_LAMW/lamw4linux/usr/bin/ppcrossarm"
+		"$ROOT_LAMW/lamw4linux/usr/bin/ppcarm"
 	)
 
 
@@ -420,21 +493,19 @@ configureFPCTrunk(){
 		"-CfVFPV3"
 		"-Xd"
 		"-XParm-linux-androideabi-"
-		"-Fl$ROOT_LAMW/ndk/platforms/android-$ANDROID_SDK_TARGET/arch-arm/usr/lib"
+		"-Fl$ROOT_LAMW/ndk/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/arm-linux-androideabi/$ANDROID_SDK_TARGET"
 		"-FLlibdl.so"
 		"-Fu${fpc_trunk_parent}/"'$fpcversion/units/$fpctarget'
 		"-Fu${fpc_trunk_parent}/"'$fpcversion/units/$fpctarget/*'
 		"-Fu${fpc_trunk_parent}/"'$fpcversion/units/$fpctarget/rtl'
-		
-		"-FD$ROOT_LAMW/ndk/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin"
+		"-FD${ARM_ANDROID_TOOLS}"
 		"#ENDIF"
-
 		"#IFDEF CPUAARCH64"
 		"-Xd"
 		"-XPaarch64-linux-android-"
-		"-Fl$ROOT_LAMW/ndk/platforms/android-$ANDROID_SDK_TARGET/arch-arm64/usr/lib"
+		"-Fl$ROOT_LAMW/ndk/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/aarch64-linux-android/$ANDROID_SDK_TARGET"
 		"-FLlibdl.so"
-		"-FD$ROOT_LAMW/ndk/toolchains/aarch64-linux-android-4.9/prebuilt/linux-x86_64/bin"
+		"-FD${AARCH64_ANDROID_TOOLS}"
 		"-Fu${fpc_trunk_parent}/"'$fpcversion/units/$fpctarget'
 		"-Fu${fpc_trunk_parent}/"'$fpcversion/units/$fpctarget/*'
 		"-Fu${fpc_trunk_parent}/"'$fpcversion/units/$fpctarget/rtl'
@@ -456,15 +527,18 @@ configureFPCTrunk(){
 
 
 CreateSimbolicLinksAndroidAARCH64(){
-	ln -sf "$AARCH64_ANDROID_TOOLS/aarch64-linux-android-as" "$AARCH64_ANDROID_TOOLS/aarch64-linux-as"
-	ln -sf "$AARCH64_ANDROID_TOOLS/aarch64-linux-android-ld" "$AARCH64_ANDROID_TOOLS/aarch64-linux-ld"
-	ln -sf "$AARCH64_ANDROID_TOOLS/aarch64-linux-android-as" "/usr/bin/aarch64-linux-android-as"
-	ln -sf "$AARCH64_ANDROID_TOOLS/aarch64-linux-android-ld" "/usr/bin/aarch64-linux-android-ld"
-	ln -sf "${FPC_TRUNK_LIB_PATH}/ppcrossa64" /usr/bin/ppcrossa64
-	ln -sf "${FPC_TRUNK_LIB_PATH}/ppcrossa64" /usr/bin/ppca64
+	ln -sf "$AARCH64_ANDROID_TOOLS/aarch64-linux-android-as" "$LLVM_ANDROID_TOOLCHAINS/aarch64-linux-as"
+	ln -sf "$AARCH64_ANDROID_TOOLS/aarch64-linux-android-ld" "$LLVM_ANDROID_TOOLCHAINS/aarch64-linux-ld"
+	ln -sf "$AARCH64_ANDROID_TOOLS/aarch64-linux-android-as" "$ROOT_LAMW/lamw4linux/usr/bin/aarch64-linux-android-as"
+	ln -sf "$AARCH64_ANDROID_TOOLS/aarch64-linux-android-ld" "$ROOT_LAMW/lamw4linux/usr/bin/aarch64-linux-android-ld"
+	ln -sf "${FPC_TRUNK_LIB_PATH}/ppcrossa64" $ROOT_LAMW/lamw4linux/usr/bin/ppcrossa64
+	ln -sf "${FPC_TRUNK_LIB_PATH}/ppcrossa64" $ROOT_LAMW/lamw4linux/usr/bin/ppca64
 }
 
 CreateBinutilsSimbolicLinks(){
+	if [ ! -e "$ROOT_LAMW/lamw4linux/usr/bin" ]; then 
+		mkdir -p "$ROOT_LAMW/lamw4linux/usr/bin"
+	fi
 	CreateSDKSimbolicLinks
 	if [ $FLAG_FORCE_ANDROID_AARCH64 = 1 ]; then
 		CreateSimbolicLinksAndroidAARCH64
@@ -547,26 +621,27 @@ initLAMw4LinuxConfig(){
 			$(GenerateScapesStr "$FPC_TRUNK_SOURCE_PATH/${FPC_TRUNK_SVNTAG}")			#5
 		)
 		
-		local old_lazarus_version_file=$(cat "$lazarus_env_cfg_path" | grep 'Lazarus=' | sed 's/<//g' | sed 's/Version//g'| sed 's/Value//g'  | sed 's/"110"//g' | sed 's/=//g' | sed 's/Lazarus//g' | sed 's/"//g' | sed 's/\/>//g' | sed 's/[[:space:]]//g' ) # remove'	<Version Value=\"110\" Lazarus=X.Y.Z', restando  X.Y.Z
+		local old_lazarus_version_file=$(grep 'Lazarus='  "$lazarus_env_cfg_path" | sed 's/<//g' | sed 's/Version//g'| sed 's/Value//g'  | sed 's/"110"//g' | sed 's/=//g' | sed 's/Lazarus//g' | sed 's/"//g' | sed 's/\/>//g' | sed 's/[[:space:]]//g' ) # remove'	<Version Value=\"110\" Lazarus=X.Y.Z', restando  X.Y.Z
 		local old_stable_lazarus="lazarus_"${old_lazarus_version_file//\./_} #cria a string lazarus_X_Y_Z usando a expansao que substitui . por _
 		local old_lazarus_version_file_scap=${old_lazarus_version_file//\./\\\.} # substitui X.Y.Z por X\.Y\.Z na string
 		local lazarus_stable_version_scap=${LAZARUS_STABLE_VERSION//\./\\\.} # substitui X.Y.Z por X\.Y\.Z na string
 
-		cat $lazarus_env_cfg_path | grep 'CompilerFilename Value=\"\/usr\/bin\/fpc\"'
+		grep 'CompilerFilename Value=\"\/usr\/bin\/fpc\"' $lazarus_env_cfg_path 
 		if [ $? = 0 ]; then
 			sed -i "s/CompilerFilename Value=\"${fpc_splited[0]}\"/CompilerFilename Value=\"${fpc_splited[4]}\"/g" "$lazarus_env_cfg_path"
 			sed -i "s/FPCSourceDirectory Value=\"${fpc_splited[1]}\"/FPCSourceDirectory Value=\"${fpc_splited[5]}\"/g" "$lazarus_env_cfg_path"
 		fi
-		cat $lazarus_env_cfg_path | grep 'CompilerFilename Value=\"\/usr\/local\/bin\/fpc\"'
+
+		grep 'CompilerFilename Value=\"\/usr\/local\/bin\/fpc\"' "$lazarus_env_cfg_path"
 		if [ $? = 0 ]; then
 			sed -i "s/CompilerFilename Value=\"${fpc_splited[2]}\"/CompilerFilename Value=\"${fpc_splited[4]}\"/g" "$lazarus_env_cfg_path"
 			sed -i "s/FPCSourceDirectory Value=\"${fpc_splited[3]}\"/FPCSourceDirectory Value=\"${fpc_splited[5]}\"/g" "$lazarus_env_cfg_path"
 		fi
 
 		#caso FPCSource foi apontado para um arquivo inesperado
-		cat $lazarus_env_cfg_path | grep "FPCSourceDirectory Value=\"${fpc_splited[5]}\"" > /dev/null
+		grep "FPCSourceDirectory\sValue=\"${fpc_splited[5]}\""  $lazarus_env_cfg_path  > /dev/null
 		if [ $? != 0 ]; then 
-			local wrong_fpc_splited_path=$(GenerateScapesStr $(cat $lazarus_env_cfg_path | grep 'FPCSourceDirectory' |sed -r 's/    //g' |sed  's/<FPCSourceDirectory Value=//g' | sed 's/\/>//g' | sed 's/>//g' | sed 's/"//g'))
+			local wrong_fpc_splited_path=$(GenerateScapesStr $(grep 'FPCSourceDirectory'  $lazarus_env_cfg_path  |sed -r 's/    //g' |sed  's/<FPCSourceDirectory Value=//g' | sed 's/\/>//g' | sed 's/>//g' | sed 's/"//g'))
 			echo "$wrong_fpc_splited_path"
 			sed -i "s/FPCSourceDirectory Value=\"${wrong_fpc_splited_path}\"/FPCSourceDirectory Value=\"${fpc_splited[5]}\"/g" "$lazarus_env_cfg_path"	
 		fi
