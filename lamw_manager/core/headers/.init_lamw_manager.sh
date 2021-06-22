@@ -75,7 +75,7 @@ setRootLAMW(){
 		if [ -e $LAMW_MANAGER_LOCAL_CONFIG_PATH ]; then
 			CURRENT_LOCAL_ROOT_LAMW=$(grep "^LOCAL_ROOT_LAMW=" $LAMW_MANAGER_LOCAL_CONFIG_PATH | sed 's|LOCAL_ROOT_LAMW=||g')
 
-			if [ "$LOCAL_ROOT_LAMW" = "" ];then 
+			if [ "$LOCAL_ROOT_LAMW" = "" ] && [ $CURRENT_LOCAL_ROOT_LAMW != "" ];then 
 				LOCAL_ROOT_LAMW=$CURRENT_LOCAL_ROOT_LAMW
 			fi
 
@@ -91,5 +91,12 @@ setRootLAMW(){
 			fi
 		fi
 
+	fi
+}
+
+unsetLocalRootLAMW(){
+	isVariabelDeclared UNINSTALL_LAMW
+	if [ $? = 0 ] &&  [ -e $LAMW_MANAGER_LOCAL_CONFIG_PATH ]; then
+		sed -i '^LOCAL_ROOT_LAMW=*/d' $LAMW_MANAGER_LOCAL_CONFIG_PATH
 	fi
 }
