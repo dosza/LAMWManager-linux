@@ -424,6 +424,7 @@ CleanOldConfig(){
 	update-mime-database   $LAMW_USER_HOME/.local/share/mime/
 	update-desktop-database $LAMW_USER_HOME/.local/share/applications
 	cleanPATHS
+	unsetLocalRootLAMW
 }
 
 #Create SDK simbolic links
