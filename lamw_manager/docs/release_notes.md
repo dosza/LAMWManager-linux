@@ -5,11 +5,13 @@ v0.4.0 - Jun 20, 2021
 ---
 **News**
 +	Android NDK r22b
-+	FPC 3.2.2
++	FPC 3.2.0 has replaced to FPC 3.2.2
 +	Support **Selected folder install**,  using environment variable *LOCAL_ROOT_LAMW*'
++ 	Ubuntu 16.04 LTS is no longer officially supported!
+
 
 **Fixed**
-+	Replace fpc/lazarus local sources folder to *svn cleanup*
++	Fix deleted unnecessary delete fpc/lazarus sources folder to *svn cleanup*
 +	Add validation before delete files created by LAMW Manager
 
 

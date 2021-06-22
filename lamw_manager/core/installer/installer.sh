@@ -480,7 +480,7 @@ Repair(){
 	getStatusInstalation 
 	if [ $LAMW_INSTALL_STATUS = 1 ]; then # só executa essa funcao se o lamw tiver instalado
 		local flag_old_fpc=""
-		checkLAMWManagerVersion
+		checkLAMWManagerVersion > /dev/null
 
 		if [ "$(which git)" = "" ] || [ "$(which wget)" = "" ] || [ "$(which jq)" = "" ]; then
 			echo "Missing lamw_manager required tools!, starting install base Dependencies ..."
@@ -590,7 +590,7 @@ BuildLazarusIDE(){
 			make_opts=(
 				"PP=${FPC_TRUNK_LIB_PATH}/ppcx64"
 				"FPC_VERSION=$_FPC_TRUNK_VERSION"
-			)
+	+		)
 		fi
 	fi
 
