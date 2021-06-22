@@ -97,6 +97,6 @@ setRootLAMW(){
 unsetLocalRootLAMW(){
 	isVariabelDeclared UNINSTALL_LAMW
 	if [ $? = 0 ] &&  [ -e $LAMW_MANAGER_LOCAL_CONFIG_PATH ]; then
-		sed -i '^LOCAL_ROOT_LAMW=*/d' $LAMW_MANAGER_LOCAL_CONFIG_PATH
+		sed -i '/^LOCAL_ROOT_LAMW=*/d' $LAMW_MANAGER_LOCAL_CONFIG_PATH
 	fi
 }
