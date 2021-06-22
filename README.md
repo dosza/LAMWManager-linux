@@ -66,8 +66,8 @@ Getting Started!!
 
 
 ```console 
-#env LOCAL_ROOT_LAMW=your_dir bash lamw_manager_setup.sh
-#Sample:
+user@pc:~$ #env LOCAL_ROOT_LAMW=your_dir bash lamw_manager_setup.sh
+user@pc:~$ #Sample:
 user@pc:~$ env LOCAL_ROOT_LAMW=/opt/LAMW bash lamw_manager_setup.sh
 ```
 
