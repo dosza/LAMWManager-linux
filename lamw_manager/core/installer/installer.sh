@@ -490,7 +490,7 @@ Repair(){
 			getFPCSourcesTrunk
 			flag_need_repair=1
 		fi
-			checkLAMWManagerVersion
+		
 		if [ $flag_need_repair = 1 ]; then
 			ConfigureFPCCrossAndroid
 			CleanOldCrossCompileBins
