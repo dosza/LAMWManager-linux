@@ -11,7 +11,7 @@ v0.4.0 - Jun 20, 2021
 
 
 **Fixed**
-+	Fix deleted unnecessary delete fpc/lazarus sources folder to *svn cleanup*
++	Fix unnecessary delete fpc/lazarus sources folder to *svn cleanup*
 +	Add validation before delete files created by LAMW Manager
 
 
