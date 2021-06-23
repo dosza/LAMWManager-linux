@@ -76,17 +76,13 @@ setRootLAMW(){
 			CURRENT_LOCAL_ROOT_LAMW="$(grep "^LOCAL_ROOT_LAMW=" $LAMW_MANAGER_LOCAL_CONFIG_PATH | sed 's|LOCAL_ROOT_LAMW=||g')"
 		
 
-			if [ "$CURRENT_LOCAL_ROOT_LAMW" != "" ] && ([ -e "$CURRENT_LOCAL_ROOT_LAMW/lamw4linux/lamw4linux.log" ] ||  [ "$CURRENT_LOCAL_ROOT_LAMW" != "$LOCAL_ROOT_LAMW" ] && [ -e "$CURRENT_LOCAL_ROOT_LAMW" ] && [ ! "$(ls -v "$CURRENT_LOCAL_ROOT_LAMW")" = "" ]); then
+		if [ -e "$CURRENT_LOCAL_ROOT_LAMW/lamw4linux/lamw4linux.log" ] ||  [ "$CURRENT_LOCAL_ROOT_LAMW" != "$LOCAL_ROOT_LAMW" ] && [ -e "$CURRENT_LOCAL_ROOT_LAMW" ] && [ ! "$(ls -v "$CURRENT_LOCAL_ROOT_LAMW")" = "" ]; then
 				echo "${VERMELHO}Error: You cannot override ROOT_LAMW, before uninstall LAMW4Linux$NORMAL"
 				echo "${NEGRITO} Ignoring  new LOCAL_ROOT_LAMW${NORMAL}"
 				ROOT_LAMW=$CURRENT_LOCAL_ROOT_LAMW
 			else
-				if [ "$LOCAL_ROOT_LAMW" = "" ]; then
-					ROOT_LAMW=$DEFAULT_ROOT_LAMW
-				else	
-					sed  -i "s|LOCAL_ROOT_LAMW=$CURRENT_LOCAL_ROOT_LAMW|LOCAL_ROOT_LAMW=$LOCAL_ROOT_LAMW|g" $LAMW_MANAGER_LOCAL_CONFIG_PATH
-					ROOT_LAMW=$LOCAL_ROOT_LAMW
-				fi
+				sed  -i "s|LOCAL_ROOT_LAMW=$CURRENT_LOCAL_ROOT_LAMW|LOCAL_ROOT_LAMW=$LOCAL_ROOT_LAMW|g" $LAMW_MANAGER_LOCAL_CONFIG_PATH
+				ROOT_LAMW=$LOCAL_ROOT_LAMW
 			fi
 		fi
 
@@ -95,7 +91,7 @@ setRootLAMW(){
 
 unsetLocalRootLAMW(){
 	isVariabelDeclared UNINSTALL_LAMW
-	if [ $? = 0 ] &&  [ -e $LAMW_MANAGER_LOCAL_CONFIG_PATH ]; then
-		sed -i '/^LOCAL_ROOT_LAMW=*/d' $LAMW_MANAGER_LOCAL_CONFIG_PATH
+	if [ $? = 0 ] &&  [ -e $LAMW_MANAGER_LOCAL_CONFIG_DIR ]; then
+		rm -rf $LAMW_MANAGER_LOCAL_CONFIG_DIR
 	fi
 }
