@@ -222,8 +222,8 @@ LAMW4LinuxPostConfig(){
 	local startlamw4linux_str=(
 		'#!/bin/bash'
 		"export PPC_CONFIG_PATH=$PPC_CONFIG_PATH"
-		"export PATH=$ROOT_LAMW/lamw4linux/usr/bin:$PPC_CONFIG_PATH:\$PATH"
-		"$LAMW4LINUX_EXE_PATH --primary-config-path=$LAMW4_LINUX_PATH_CFG \$*"
+		"export PATH=$ROOT_LAMW/lamw4linux/usr/bin:\$PPC_CONFIG_PATH:\$PATH"
+		"$LAMW4LINUX_EXE_PATH --pcp=$LAMW4_LINUX_PATH_CFG \$*"
 	)
 
 	WriterFileln "$LAMW4_LINUX_PATH_CFG/LAMW.ini" "LAMW_init_str"
@@ -429,11 +429,8 @@ CleanOldConfig(){
 
 #Create SDK simbolic links
 CreateSDKSimbolicLinks(){
-	local real_ppcarm="$FPC_LIB_PATH/ppcrossarm"
-	if [  $FLAG_FORCE_ANDROID_AARCH64 = 1 ]; then 
-		local real_ppcarm="$FPC_TRUNK_LIB_PATH/ppcrossarm"	
-	fi
 
+	local real_ppcarm="$FPC_TRUNK_LIB_PATH/ppcrossarm"	
 	local tools_chains_orig=(
 		"$ROOT_LAMW/sdk/ndk-bundle"
 		"$LLVM_ANDROID_TOOLCHAINS"
@@ -446,6 +443,9 @@ CreateSDKSimbolicLinks(){
 		"$ROOT_LAMW/sdk/ndk-bundle/toolchains/arm-linux-androideabi-4.9"
 		"$real_ppcarm"
 		"$real_ppcarm"
+		"$FPC_TRUNK_EXEC_PATH/fpc"
+		"$FPC_TRUNK_EXEC_PATH/ppcx64"
+
 	)
 
 
@@ -461,6 +461,8 @@ CreateSDKSimbolicLinks(){
 		"$ROOT_LAMW/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9"
 		"$ROOT_LAMW/lamw4linux/usr/bin/ppcrossarm"
 		"$ROOT_LAMW/lamw4linux/usr/bin/ppcarm"
+		"$ROOT_LAMW/lamw4linux/usr/bin/fpc"
+		"$ROOT_LAMW/lamw4linux/usr/bin/ppcx64"
 	)
 
 
