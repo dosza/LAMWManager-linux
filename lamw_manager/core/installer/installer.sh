@@ -51,9 +51,7 @@ LAMWPackageManager(){
 
 		for ((i=0;i<${#OLD_ANT[*]};i++))
 		do
-			if [ -e ${OLD_ANT[i]} ]; then 
-				rm -rf ${OLD_ANT[i]}
-			fi
+			[ -e ${OLD_ANT[i]} ] && rm -rf ${OLD_ANT[i]}
 		done
 
 		for old_fpc_stable in ${OLD_FPC_STABLE[*]}; do 
@@ -581,19 +579,13 @@ getImplicitInstall(){
 #Build lazarus ide
 BuildLazarusIDE(){
 	
-	local make_opts=()
-
-	if [ $FLAG_FORCE_ANDROID_AARCH64 = 1 ]; then
-		wrapperParseFPC
-		if [ -e "$FPC_TRUNK_EXEC_PATH/fpc" ]; then
-			export PATH=$FPC_TRUNK_LIB_PATH:$FPC_TRUNK_EXEC_PATH:$PATH
-			make_opts=(
-				"PP=${FPC_TRUNK_LIB_PATH}/ppcx64"
-				"FPC_VERSION=$_FPC_TRUNK_VERSION"
-	+		)
-		fi
-	fi
-
+	wrapperParseFPC
+	local lamw_build_opts=(--build-ide= --add-package ${LAMW_PACKAGES[i]} --pcp=$LAMW4_LINUX_PATH_CFG  --lazarusdir=$LAMW_IDE_HOME)
+	export PATH=$FPC_TRUNK_LIB_PATH:$FPC_TRUNK_EXEC_PATH:$PATH
+	local make_opts=(
+		"PP=${FPC_TRUNK_LIB_PATH}/ppcx64"
+		"FPC_VERSION=$_FPC_TRUNK_VERSION"
+	)
 
 	if [ ! -e "$LAMW_IDE_HOME" ]; then  
 		ln -sf $LAMW4LINUX_HOME/$LAZARUS_STABLE $LAMW_IDE_HOME # link to lamw4_home directory 
@@ -613,7 +605,6 @@ BuildLazarusIDE(){
 		#build ide  with lamw framework 
 	for((i=0;i< ${#LAMW_PACKAGES[@]};i++))
 	do
-		local lamw_build_opts=(--build-ide= --add-package ${LAMW_PACKAGES[i]} --primary-config-path=$LAMW4_LINUX_PATH_CFG  --lazarusdir=$LAMW_IDE_HOME)
 		./lazbuild  ${lamw_build_opts[*]}
 		if [ $? != 0 ]; then
 			./lazbuild ${lamw_build_opts[*]}
