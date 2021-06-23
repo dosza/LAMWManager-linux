@@ -443,8 +443,7 @@ CreateSDKSimbolicLinks(){
 		"$ROOT_LAMW/sdk/ndk-bundle/toolchains/arm-linux-androideabi-4.9"
 		"$real_ppcarm"
 		"$real_ppcarm"
-		"$FPC_TRUNK_EXEC_PATH/fpc"
-		"$FPC_TRUNK_EXEC_PATH/ppcx64"
+		"$FPC_TRUNK_LIB_PATH/ppcx64"
 
 	)
 
@@ -461,7 +460,6 @@ CreateSDKSimbolicLinks(){
 		"$ROOT_LAMW/sdk/ndk-bundle/toolchains/mipsel-linux-android-4.9"
 		"$ROOT_LAMW/lamw4linux/usr/bin/ppcrossarm"
 		"$ROOT_LAMW/lamw4linux/usr/bin/ppcarm"
-		"$ROOT_LAMW/lamw4linux/usr/bin/fpc"
 		"$ROOT_LAMW/lamw4linux/usr/bin/ppcx64"
 	)
 
