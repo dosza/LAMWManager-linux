@@ -75,6 +75,10 @@ setRootLAMW(){
 		if [ -e $LAMW_MANAGER_LOCAL_CONFIG_PATH ]; then
 			CURRENT_LOCAL_ROOT_LAMW="$(grep "^LOCAL_ROOT_LAMW=" $LAMW_MANAGER_LOCAL_CONFIG_PATH | sed 's|LOCAL_ROOT_LAMW=||g')"
 		
+		if [ "$LOCAL_ROOT_LAMW" = "" ];then   
+			LOCAL_ROOT_LAMW=$CURRENT_LOCAL_ROOT_LAMW
+		fi				     
+				
 
 		if [ -e "$CURRENT_LOCAL_ROOT_LAMW/lamw4linux/lamw4linux.log" ] ||  [ "$CURRENT_LOCAL_ROOT_LAMW" != "$LOCAL_ROOT_LAMW" ] && [ -e "$CURRENT_LOCAL_ROOT_LAMW" ] && [ ! "$(ls -v "$CURRENT_LOCAL_ROOT_LAMW")" = "" ]; then
 				echo "${VERMELHO}Error: You cannot override ROOT_LAMW, before uninstall LAMW4Linux$NORMAL"
@@ -92,6 +96,6 @@ setRootLAMW(){
 unsetLocalRootLAMW(){
 	isVariabelDeclared UNINSTALL_LAMW
 	if [ $? = 0 ] &&  [ -e $LAMW_MANAGER_LOCAL_CONFIG_DIR ]; then
-		rm -rf $LAMW_MANAGER_LOCAL_CONFIG_DIR
+		rm -rf $LAMW_MANAGER_LOCAL_CONFIG_DIR	
 	fi
 }
