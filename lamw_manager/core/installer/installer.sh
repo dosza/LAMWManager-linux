@@ -580,7 +580,7 @@ getImplicitInstall(){
 BuildLazarusIDE(){
 	
 	wrapperParseFPC
-	local lamw_build_opts=(--build-ide= --add-package ${LAMW_PACKAGES[i]} --pcp=$LAMW4_LINUX_PATH_CFG  --lazarusdir=$LAMW_IDE_HOME)
+	
 	export PATH=$FPC_TRUNK_LIB_PATH:$FPC_TRUNK_EXEC_PATH:$PATH
 	local make_opts=(
 		"PP=${FPC_TRUNK_LIB_PATH}/ppcx64"
@@ -605,6 +605,7 @@ BuildLazarusIDE(){
 		#build ide  with lamw framework 
 	for((i=0;i< ${#LAMW_PACKAGES[@]};i++))
 	do
+		local lamw_build_opts=(--build-ide= --add-package ${LAMW_PACKAGES[i]} --pcp=$LAMW4_LINUX_PATH_CFG  --lazarusdir=$LAMW_IDE_HOME)
 		./lazbuild  ${lamw_build_opts[*]}
 		if [ $? != 0 ]; then
 			./lazbuild ${lamw_build_opts[*]}
