@@ -45,6 +45,30 @@ setAndroidSDKCMDParameters(){
 		)
 	fi
 }
+
+setJDKDeps(){
+	ZULU_JDK_JSON="$(Wget -O- -q  "$ZULU_API_JDK_URL")"
+	ZULU_JDK_URL="$(echo $ZULU_JDK_JSON | jq '.[0].url' | sed 's/"//g')"
+	ZULU_JDK_TAR="$(echo $ZULU_JDK_JSON | jq '.[0].name' | sed 's/"//g' )"
+	ZULU_JDK_FILE="$(echo $ZULU_JDK_TAR | sed 's/.tar.gz//g')"
+	JAVA_VERSION="1.8.0_$(echo $ZULU_JDK_JSON | jq '.[0].java_version[2]'| sed 's/"//g')"
+}
+
+checkJDKVersionStatus(){
+	setJDKDeps
+	JDK_STATUS=0
+	if [ ! -e $JAVA_HOME ]; then
+		JDK_STATUS=1
+		return 
+	else 
+		grep $JAVA_VERSION $JAVA_HOME/release
+		if  [ $? != 0 ]; then
+			JDK_STATUS=1
+			return
+		fi
+	fi
+}
+
 setLAMWDeps(){
 
 	[  "$LAMW_DEPENDENCIES" = "" ] && LAMW_DEPENDENCIES="$(Wget -O- -q  "$LAMW_PACKAGE_URL" )"
