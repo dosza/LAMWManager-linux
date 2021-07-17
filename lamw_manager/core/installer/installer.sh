@@ -568,7 +568,6 @@ mainInstall(){
 	getGradle
 	getAndroidSDKTools
 	getNDK
-	setJava8asDefault
 	getAndroidAPIS 
 	getFPCStable
 	getFPCSourcesTrunk
