@@ -54,7 +54,7 @@ v0.3.6 - November 23, 2020
 		<li>Gradle 6.6.1</em></li>
 		<li>Updates minimum usage requirements.</li>
 		<li><strong>New:</strong> Detects and updates the minimum <strong>Android API's</strong> without the need to install a new version of LAMW Manager!</li>
-		<li>Add New module <a href="https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/tree/v0.3.5/lamw_manager/core/installer/api.sh">api.sh</a> to get Gradle and Android APIS</li>
+		<li>Add New module <a href="https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/tree/v0.3.6/lamw_manager/core/installer/api.sh">api.sh</a> to get Gradle and Android APIS</li>
 	</ul>
 	<strong>FIXED:</strong>
 	<ul>
