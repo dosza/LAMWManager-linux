@@ -19,7 +19,7 @@ Linux Distro Supported:
 ----------------------------------------------------------------------
 
 <ul>
-	<li><a href="https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/blob/v0.4.0/lamw_manager/docs/debian-requerements.md#openjdk-on-debian-10">Debian/GNU Linux 10</a></li>
+	<li>Debian/GNU Linux 10</li>
 	<li>Ubuntu 18.04 LTS</li>
 	<li><a href="https://github.com/DanielOliveiraSouza/LAMWAutoRunScripts/blob/master/lamw_manager/docs/other-distros-info.md">Requirements for other Linux</a></li>
 </ul>		
