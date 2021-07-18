@@ -84,7 +84,7 @@ user@pc:~$ env LOCAL_ROOT_LAMW=/opt/LAMW bash lamw_manager_setup.sh
 Release Notes:
 ----------------------------------------------------------------------
 <p>
-	For information on new features and bug fixes read the <a hrefhttps://github.com/dosza/LAMW4Linux-installer/blob/v0.4.0/lamw_manager/docs/release_notes.md#v0401---jul-18-2021"><em>Release Notes</em></a>
+	For information on new features and bug fixes read the <a href="https://github.com/dosza/LAMW4Linux-installer/blob/v0.4.0/lamw_manager/docs/release_notes.md#v0401---jul-18-2021"><em>Release Notes</em></a>
 </p>
 
 Congratulations!!
