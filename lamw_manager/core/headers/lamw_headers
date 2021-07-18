@@ -124,7 +124,6 @@ HOME_USER_SPLITTED_ARRAY=(${HOME//\// })
 HOME_STR_SPLITTED=""
 LIBS_ANDROID="libx11-dev libgtk2.0-dev libgdk-pixbuf2.0-dev libcairo2-dev libpango1.0-dev libxtst-dev libatk1.0-dev libghc-x11-dev freeglut3 freeglut3-dev "
 PROG_TOOLS="menu git subversion make build-essential zip unzip android-tools-adb gdb wget jq "
-NON_FREE_TOOLS="unrar"
 PACKS=()
 
 export OLD_ANDROID_SDK=1
