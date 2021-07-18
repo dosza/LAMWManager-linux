@@ -1,6 +1,18 @@
 # LAMW Manager Release Notes
 This page contains information about new features and bug fixes.
 
+v0.4.0.1 - Jul 19, 2021
+---
+
+**News**
++	LAMW Manager now supports JDK 8 on Debian GNU/Linux 
++	Now LAMW Manager installs OpenJDK in *$ROOT_LAMW/jdk*
++	Now the default OpenJDK distribution is ZuluOpenjdk and the default version is JDK 8 
+
+**Fixed**
++	update-alternatives --config java no longer run on the system
++ 	*$LAMW_USER* and *$LAMW_USER_HOME* is passed by env command.
+
 v0.4.0 - Jun 20, 2021
 ---
 **News**
