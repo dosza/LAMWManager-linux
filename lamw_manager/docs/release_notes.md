@@ -1,17 +1,18 @@
 # LAMW Manager Release Notes
 This page contains information about new features and bug fixes.
 
-v0.4.0.1 - Jul 19, 2021
+v0.4.0.1 - Jul 18, 2021
 ---
 
 **News**
 +	LAMW Manager now supports JDK 8 on Debian GNU/Linux 
 +	Now LAMW Manager installs OpenJDK in *$ROOT_LAMW/jdk*
 +	Now the default OpenJDK distribution is ZuluOpenjdk and the default version is JDK 8 
++	The [*api*](https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/tree/v0.4.0/lamw_manager/core/installer/api.sh) submodule has been updated to support getting the latest version of JDK8
 
 **Fixed**
 +	update-alternatives --config java no longer run on the system
-+ 	*$LAMW_USER* and *$LAMW_USER_HOME* is passed by env command.
++ 	*\$LAMW_USER* and *\$LAMW_USER_HOME* is passed by env command.
 
 v0.4.0 - Jun 20, 2021
 ---
@@ -53,6 +54,7 @@ v0.3.6 - November 23, 2020
 		<li>Gradle 6.6.1</em></li>
 		<li>Updates minimum usage requirements.</li>
 		<li><strong>New:</strong> Detects and updates the minimum <strong>Android API's</strong> without the need to install a new version of LAMW Manager!</li>
+		<li>Add New module <a href="https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/tree/v0.3.5/lamw_manager/core/installer/api.sh">api.sh</a> to get Gradle and Android APIS</li>
 	</ul>
 	<strong>FIXED:</strong>
 	<ul>
