@@ -7,7 +7,6 @@
 		<li>Compatibility with other linux distributions:</li>
 		<ol type="a">
 			<li><a href="https://wiki.debian.org/DebianStable">Debian Stable</a> Based Linux Distribution or <a href="https://ubuntu.com/about/release-cycle">Ubuntu LTS</a></li>
-			<li>OpenJDK 8 Available in Official Repository (from openjdk-8-jdk package) or OpenJDK 11¹ (from openjdk-11-jdk package)</li>
 			<li>If the system does not comply with items i and ii
 			It's the <strong>sole responsibility</strong> of the <strong>user</strong> to <strong>adapt</strong> the system to LAMW Manager.</li>
 		</ol>
