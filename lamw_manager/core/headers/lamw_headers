@@ -7,8 +7,6 @@
 #Description: The "lamw_headers" is part of the core of LAMW Manager. This script contains LAMW Manager variables.
 #-------------------------------------------------------------------------------------------------#
 NOTIFY_SEND_EXE=$(which notify-send)
-LAMW_USER=$(cat /tmp/lamw-overrides.conf)
-LAMW_USER_HOME=$(eval echo "~$LAMW_USER")
 LAMW_MANAGER_LOCAL_CONFIG_DIR="$LAMW_USER_HOME/.lamw_manager"
 LAMW_MANAGER_LOCAL_CONFIG_PATH="$LAMW_MANAGER_LOCAL_CONFIG_DIR/local_lamw_manager.cfg"
 DEFAULT_ROOT_LAMW="$LAMW_USER_HOME/LAMW"
@@ -17,8 +15,9 @@ ANDROID_HOME=$ROOT_LAMW
 ANDROID_SDK="$ROOT_LAMW/sdk"
 #--------------------------------------------------------------------------------------
 export XDG_DATA_DIRS="/usr/share:/usr/local/share:$LAMW_USER_HOME/.local/share"
-LAMW_INSTALL_VERSION="0.4.0"
+LAMW_INSTALL_VERSION="0.4.0.1"
 OLD_LAMW_INSTALL_VERSION=(
+	"0.4.0"
 	0.3.6{.{2,1},}
 	0.3.{5,4}{r1,}
 	"0.3.3r2"
@@ -40,9 +39,6 @@ LAMW_LINUX_SPP=(
 
 export DEBIAN_FRONTEND="gnome"
 export flag_new_ubuntu_lts=0
-export FPC_DEFAULT_DEB_PACK='fpc'
-export FPC_ALTERNATIVE_DEB_PACK='fpc-laz'
-
 export FORCE_LAWM4INSTALL=0
 WORK_HOME_DESKTOP=$(xdg-user-dir DESKTOP)
 APT_OPT=""
@@ -50,7 +46,7 @@ export PROXY_SERVER="internet.cua.ufmt.br"
 export PORT_SERVER=3128
 PROXY_URL="http://$PROXY_SERVER:$PORT_SERVER"
 export USE_PROXY=0
-export JAVA_PATH=""
+
 export SDK_TOOLS_URL="https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip"
 export NDK_VERSION="r22b"
 export NDK_VERSION_STR="22.1.7171670"
@@ -128,7 +124,6 @@ HOME_USER_SPLITTED_ARRAY=(${HOME//\// })
 HOME_STR_SPLITTED=""
 LIBS_ANDROID="libx11-dev libgtk2.0-dev libgdk-pixbuf2.0-dev libcairo2-dev libpango1.0-dev libxtst-dev libatk1.0-dev libghc-x11-dev freeglut3 freeglut3-dev "
 PROG_TOOLS="menu git subversion make build-essential zip unzip android-tools-adb gdb wget jq "
-NON_FREE_TOOLS="unrar"
 PACKS=()
 
 export OLD_ANDROID_SDK=1
@@ -144,19 +139,14 @@ export ARM_ANDROID_TOOLS="$ROOT_LAMW/sdk/ndk-bundle/toolchains/arm-linux-android
 export AARCH64_ANDROID_TOOLS="$ROOT_LAMW/sdk/ndk-bundle/toolchains/aarch64-linux-android-4.9/prebuilt/linux-x86_64/bin"
 export FPC_CROSS_AARCH_DEFAULT_PARAMETERS=('clean crossall crossinstall  CPU_TARGET=aarch64 OS_TARGET=android OPT="-dFPC_ARMHF"  INSTALL_PREFIX=/usr')
 export LLVM_ANDROID_TOOLCHAINS="$ROOT_LAMW/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/bin"
-export PATH=$PATH:$LLVM_ANDROID_TOOLCHAINS
 export FLAG_FORCE_ANDROID_AARCH64=1
 export FPC_TRUNK_RELEASE=""
 export FPC_TRUNK_VERSION="3.2.2"
-export FPC_TRUNK_SVNTAG="release_3_2_2"
+export FPC_TRUNK_SVNTAG="release_${FPC_TRUNK_VERSION//\./_}"
 export FPC_TRUNK_URL="https://svn.freepascal.org/svn/fpc/tags/${FPC_TRUNK_SVNTAG}"
 export FPC_TRUNK_LIB_PATH=""
 export FPC_TRUNK_EXEC_PATH=""
 export FPC_TRUNK_SOURCE_PATH="$LAMW4LINUX_HOME/usr/share/fpcsrc"
-export UNSUPPORTED_FPC_MSG=0
-
-export OPENJDK_DEFAULT='8'
-export OPENJDK_LTS=11
 
 export OLD_GRADLE=(
 	$ROOT_LAMW/gradle-{"6.1.1","4.10.3","4.4.1"}
@@ -180,6 +170,13 @@ LAMW_PACKAGE_URL="https://raw.githubusercontent.com/jmpessoa/lazandroidmodulewiz
 
 export CURRENT_OLD_LAMW_INSTALL_INDEX=-1
 
+
+OPENJDK_DEFAULT='8'
+export JAVA_HOME="$ROOT_LAMW/jdk/zulu-$OPENJDK_DEFAULT"
+export JAVA_PATH="$JAVA_HOME/bin"
+ZULU_API_JDK_URL="https://api.azul.com/zulu/download/community/v1.0/bundles/?java_version=$OPENJDK_DEFAULT&jdk_version=$OPENJDK_LTS&zulu_version=$OPENJDK_DEFAULT&os=linux&arch=x86&hw_bitness=64&ext=tar.gz&bundle_type=jdk&javafx=false&latest=true&support_term=lts"
+
+export PATH=$JAVA_PATH:$PATH:$LLVM_ANDROID_TOOLCHAINS
 #---------------------------------------------------------------------------------------------------------------------
 
 #help of lamw 

@@ -8,7 +8,7 @@
 #-------------------------------------------------------------------------------------------------#
 
 # Verifica condicoes de inicializacao
-if [ ! -e /tmp/lamw-overrides.conf ]; then
+if [ ! -e "$LAMW_MANAGER_LOCK" ]; then
 	printf "${VERMELHO}Fatal Error: you need run lamw_manager first! ${NORMAL}\n"
 	exit 1
 fi
