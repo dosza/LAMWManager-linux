@@ -12,6 +12,8 @@ initROOT_LAMW(){
 		mkdir -p $ANDROID_SDK
 	fi
 
+	[ ! -e "$ROOT_LAMW/jdk" ] && mkdir "$ROOT_LAMW/jdk"
+
 	if  [ ! -e $LAMW_USER_HOME/.android ]; then
 		mkdir $LAMW_USER_HOME/.android 
 		echo "" > $LAMW_USER_HOME/.android/repositories.cfg
@@ -178,19 +180,8 @@ LAMW4LinuxPostConfig(){
 	if [ ! -e $LAMW_WORKSPACE_HOME ] ; then
 		mkdir -p $LAMW_WORKSPACE_HOME
 	fi
-
-	local java_versions=("/usr/lib/jvm/java-${OPENJDK_DEFAULT}-openjdk-amd64" "/usr/lib/jvm/java-${OPENJDK_DEFAULT}-openjdk-i386")
-	local java_path=""
-	local tam=${#java_versions[@]} #tam recebe o tamanho do vetor 
 	local ant_path=$ANT_HOME/bin
 	ant_path=${ant_path%/ant*} #
-	for (( i = 0; i < tam ; i++ )) # Laço para percorrer o vetor 
-	do
-		if [ -e ${java_versions[i]} ]; then
-			java_path=${java_versions[i]}
-			break;
-		fi
-	done
 
 	#testa modificação de workspace
 	if [ -e "$LAMW4_LINUX_PATH_CFG/LAMW.ini" ]; then 
@@ -205,7 +196,7 @@ LAMW4LinuxPostConfig(){
 		"PathToWorkspace=$LAMW_WORKSPACE_HOME"
 		"PathToSmartDesigner=$ROOT_LAMW/lazandroidmodulewizard/android_wizard/smartdesigner"
 		"PathToJavaTemplates=$ROOT_LAMW/lazandroidmodulewizard/android_wizard/smartdesigner/java"
-		"PathToJavaJDK=$java_path"
+		"PathToJavaJDK=$JAVA_HOME"
 		"PathToAndroidNDK=$ROOT_LAMW/ndk"
 		"PathToAndroidSDK=$ROOT_LAMW/sdk"
 		"PathToAntBin=$ant_path"
@@ -222,7 +213,8 @@ LAMW4LinuxPostConfig(){
 	local startlamw4linux_str=(
 		'#!/bin/bash'
 		"export PPC_CONFIG_PATH=$PPC_CONFIG_PATH"
-		"export PATH=$ROOT_LAMW/lamw4linux/usr/bin:\$PPC_CONFIG_PATH:\$PATH"
+		"export JAVA_HOME=$JAVA_HOME"
+		"export PATH=$ROOT_LAMW/lamw4linux/usr/bin:\$PPC_CONFIG_PATH:\$JAVA_HOME/bin:\$PATH"
 		"$LAMW4LINUX_EXE_PATH --pcp=$LAMW4_LINUX_PATH_CFG \$*"
 	)
 
