@@ -7,8 +7,6 @@
 #Description: The "lamw_headers" is part of the core of LAMW Manager. This script contains LAMW Manager variables.
 #-------------------------------------------------------------------------------------------------#
 NOTIFY_SEND_EXE=$(which notify-send)
-LAMW_USER=$(cat /tmp/lamw-overrides.conf)
-LAMW_USER_HOME=$(eval echo "~$LAMW_USER")
 LAMW_MANAGER_LOCAL_CONFIG_DIR="$LAMW_USER_HOME/.lamw_manager"
 LAMW_MANAGER_LOCAL_CONFIG_PATH="$LAMW_MANAGER_LOCAL_CONFIG_DIR/local_lamw_manager.cfg"
 DEFAULT_ROOT_LAMW="$LAMW_USER_HOME/LAMW"
