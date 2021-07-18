@@ -63,7 +63,6 @@ LAMWPackageManager(){
 
 }
 getStatusInstalation(){
-	CheckUnsupporteFPC
 	if [  -e $LAMW4LINUX_HOME/lamw-install.log ]; then
 		export LAMW_INSTALL_STATUS=1
 		return 1
@@ -74,85 +73,25 @@ getStatusInstalation(){
 	fi
 }
 
-SearchPackage(){
-	local index=-1
-	#vetor que armazena informações sobre a intalação do pacote
-	if [ "$1" != "" ]  ; then
-		PACKS=( $(dpkg -l $1) )
-		
-		local tam=${#PACKS[@]}
-		if  [ $tam = 0 ] ; then
-			apt-get install fpc -y
-			PACKS=( $(dpkg -l $1) )
-		fi
-
-		for (( i = 0 ; i < ${#PACKS[*]};i++))
-		do
-			if [ "${PACKS[i]}" = "$1" ] ; then
-				((index=i))
-				((index++))
-				FPC_VERSION=${PACKS[index]}
-				#echo "${PACKS[index]}"
-				break
-			fi
-		done
-	fi
-	return $index
-}
-
-CheckUnsupporteFPC(){
-	if [ $UNSUPPORTED_FPC_MSG = 0 ]; then
-		exec 2> /dev/null dpkg -s  fpc | grep 'Status: install'  > /dev/null
-		if [ $? = 0 ]; then
-			echo  -e "\n${VERMELHO}Warning:${NORMAL} Freepascal of fpc package detected!"
-			echo  -e "We recommend uninstalling this command: ${NEGRITO}sudo apt-get remove fpc --autoremove -y${NORMAL}\n"
-			export UNSUPPORTED_FPC_MSG=1	
-		fi
-		
-	fi
-}
-
-#Fix Debian 10/OpenJDK Support 
-CheckOpenJDK8Support(){
-	exec 2> /dev/null apt show  openjdk-8-jdk | grep 'Source: openjdk-8' > /dev/null
-	if [ $? != 0 ]; then 
-		printf "Warning:${VERMELHO}OpenJDK 8 is not supported, using OpenJDK11!${NORMAL}\n"
-		export OPENJDK_DEFAULT=$OPENJDK_LTS
-	fi
-}
-
-#setJRE8 as default
-setJava8asDefault(){
-	#se o jdk > 8 nada  sai da funçao
-	if [ $OPENJDK_DEFAULT = $OPENJDK_LTS ]; then 
-		return 
-	fi
-
-	local path_java=($(dpkg -L openjdk-8-jre))
-	local found_path=""
-	for((i = 0; i < ${#path_java[@]} ; i++ )); do
-		wi=${path_java[$i]}
-		case "$wi" in
-			*"jre"*)
-				if [ -e $wi/bin/java ]; then
-					#printf "found: i=$i $wi\nStopping search ...\n"
-					found_path=$wi
-					export JAVA_PATH="$found_path/bin/java"
-					update-alternatives --set java $JAVA_PATH
-					break;
-				fi
-			;;
-		esac
-	done
-}
 
 #install deps
 installDependences(){
-	CheckOpenJDK8Support
-	AptInstall $LIBS_ANDROID $PROG_TOOLS  openjdk-${OPENJDK_DEFAULT}-jdk 
+	AptInstall $LIBS_ANDROID $PROG_TOOLS
 		
 }
 
+
+getJDK(){
+	checkJDKVersionStatus
+	if [ $JDK_STATUS = 1 ]; then 
+		changeDirectory "$ROOT_LAMW/jdk"
+		[ -e "$JAVA_HOME" ] && rm -r "$JAVA_HOME"
+		Wget "$ZULU_JDK_URL"
+		tar -zxvf "$ZULU_JDK_TAR"
+		mv "$ZULU_JDK_FILE" "zulu-8"
+		[ -e "$ZULU_JDK_TAR" ] && rm $ZULU_JDK_TAR
+	fi
+}
 getFPCSourcesTrunk(){
 	mkdir -p $FPC_TRUNK_SOURCE_PATH
 	changeDirectory $FPC_TRUNK_SOURCE_PATH
@@ -255,18 +194,11 @@ getLAMWFramework(){
 	
 }
 AntTrigger(){
-	if [ $OLD_ANDROID_SDK = 1 ]; then 
-		if [ $OPENJDK_DEFAULT = $OPENJDK_LTS ]; then 
-			if [ -e "$ANDROID_SDK/tools/ant" ]; then 
-				mv "$ANDROID_SDK/tools/ant" "$ANDROID_SDK/tools/.ant"
-			fi
-		else 
-			if [ -e "$ANDROID_SDK/tools/.ant" ]; then 
-				mv "$ANDROID_SDK/tools/.ant" "$ANDROID_SDK/tools/ant"
-			fi
-		fi
+	if [ -e "$ANDROID_SDK/tools/.ant" ]; then 
+		mv "$ANDROID_SDK/tools/.ant" "$ANDROID_SDK/tools/ant"
 	fi
 }
+
 #this function get ant 
 getAnt(){
 	if [ $OLD_ANDROID_SDK = 0 ]; then  #sem ação se ant nao é suportado
@@ -631,11 +563,11 @@ mainInstall(){
 	setLAMWDeps
 	checkProxyStatus
 	wrapperParseFPC
+	getJDK
 	getAnt
 	getGradle
 	getAndroidSDKTools
 	getNDK
-	setJava8asDefault
 	getAndroidAPIS 
 	getFPCStable
 	getFPCSourcesTrunk

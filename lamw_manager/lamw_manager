@@ -15,7 +15,9 @@ export USE_PKEXEC=0
 export ENTER_TO_EXIT=0
 export CALL_BASH="bash"
 export EXIT_STATUS=0
-export LAMW_MANAGER_ENV=()
+export LAMW_MANAGER_LOCK=/tmp/lamw_manager.lock
+export LAMW_MANAGER_ENV=(LAMW_USER=$USER LAMW_USER_HOME=$HOME LAMW_MANAGER_LOCK=$LAMW_MANAGER_LOCK)
+
 
 #Get Directory of LAMW Manager Core
 if [ -e "$PWD/$LAMW_MGR_INSTALL" ]; then
@@ -30,7 +32,7 @@ source $LAMW_MGR_CORE/core/headers/common-shell.sh
 
 #Del lamw-overrides
 DelTempFiles(){ 
-	[ -e /tmp/lamw-overrides.conf ] &&  rm /tmp/lamw-overrides.conf
+	[ -e $LAMW_MANAGER_LOCK ] &&  rm $LAMW_MANAGER_LOCK
 }
 
 #Check if $USER is a sudo member 
@@ -114,9 +116,9 @@ Run(){
 		getStatus
 	fi
 	
-	IsFileBusy lamw_manager /tmp/lamw-overrides.conf
-	exec 3>/tmp/lamw-overrides.conf
-	echo "$USER" >&3
+	IsFileBusy lamw_manager $LAMW_MANAGER_LOCK
+	exec 3>$LAMW_MANAGER_LOCK
+	echo "" >&3
 	getBashCMD
 	if [ $USE_PKEXEC = 1 ]; then
 		tty | grep 'tty[0-9]'>/dev/null
