@@ -26,6 +26,36 @@ APT_LOCKS=(
 shopt  -s expand_aliases
 alias newPtr='declare -n'
 
+
+
+CheckPackageDebIsInstalled(){
+	if [ "$1" = "" ]; then 
+		echo "Package cannot be empty"
+		return 2
+	fi
+	exec 2> /dev/null dpkg -s  "$1" | grep 'Status: install'  > /dev/null
+}
+getCurrentDebianFrontend(){
+	tty | grep pts/[0-9] > /dev/null 
+	if [ $? = 0 ]; then
+		CheckPackageDebIsInstalled libgtk3-perl 
+		local is_gnome_apt_frontend_installed=$?
+		
+		CheckPackageDebIsInstalled "debconf-kde-helper"
+		local is_kde_apt_frontend_installed=$?
+
+
+		if [ $is_gnome_apt_frontend_installed = 0 ]; then 
+			export DEBIAN_FRONTEND=gnome
+		else 
+			if [ $is_kde_apt_frontend_installed = 0 ];then
+				export DEBIAN_FRONTEND=kde
+			fi
+		fi
+	fi
+}
+
+
 isVariabelDeclared(){
 	if [ "$1" = "" ]; then return 1; fi
 
