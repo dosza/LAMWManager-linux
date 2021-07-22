@@ -80,9 +80,9 @@ TrapActions(){
 			rm  -rv $file_deleted
 		fi
 	fi
-#	chattr -i /tmp/lamw-overrides.conf
+#	chattr -i "$LAMW_MANAGER_LOCK"
 	#exit 2
-	rm '/tmp/lamw-overrides.conf'
+	rm "$LAMW_MANAGER_LOCK"
 }
 
 TrapTermProcess(){
