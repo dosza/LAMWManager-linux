@@ -76,6 +76,7 @@ getStatusInstalation(){
 
 #install deps
 installDependences(){
+	getCurrentDebianFrontend
 	AptInstall $LIBS_ANDROID $PROG_TOOLS
 		
 }

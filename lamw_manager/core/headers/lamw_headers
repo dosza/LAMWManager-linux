@@ -37,7 +37,6 @@ LAMW_LINUX_SPP=(
 )
 
 
-export DEBIAN_FRONTEND="gnome"
 export flag_new_ubuntu_lts=0
 export FORCE_LAWM4INSTALL=0
 WORK_HOME_DESKTOP=$(xdg-user-dir DESKTOP)
