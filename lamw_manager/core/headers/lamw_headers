@@ -46,7 +46,7 @@ export PORT_SERVER=3128
 PROXY_URL="http://$PROXY_SERVER:$PORT_SERVER"
 export USE_PROXY=0
 
-export SDK_TOOLS_URL="https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip"
+export SDK_TOOLS_URL="https://dl.google.com/android/repository/commandlinetools-linux-7302050_latest.zip"
 export NDK_VERSION="r22b"
 export NDK_VERSION_STR="22.1.7171670"
 export OLD_NDK_VERSION_STR=(
@@ -58,8 +58,8 @@ export NDK_URL="https://dl.google.com/android/repository/android-ndk-${NDK_VERSI
 export NDK_ZIP="android-ndk-${NDK_VERSION}-linux-x86_64.zip"
 export NDK_DIR_UNZIP="android-ndk-${NDK_VERSION}"
 
-SDK_TOOLS_VERSION="r26.1.1"
-SDK_TOOLS_ZIP="sdk-tools-linux-4333796.zip"
+SDK_TOOLS_VERSION="4.0"
+SDK_TOOLS_ZIP="commandlinetools-linux-7302050_latest.zip"
 export GRADLE_MIN_BUILD_TOOLS='28.0.3'
 
 SDK_MANAGER_CMD_PARAMETERS2_PROXY=()
@@ -125,7 +125,7 @@ LIBS_ANDROID="libx11-dev libgtk2.0-dev libgdk-pixbuf2.0-dev libcairo2-dev libpan
 PROG_TOOLS="menu git subversion make build-essential zip unzip android-tools-adb gdb wget jq "
 PACKS=()
 
-export OLD_ANDROID_SDK=1
+export OLD_ANDROID_SDK=0
 export NO_GUI_OLD_SDK=0
 export LAMW_INSTALL_STATUS=0
 export LAMW_IMPLICIT_ACTION_MODE=0

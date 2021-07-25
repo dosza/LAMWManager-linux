@@ -71,7 +71,7 @@ case "$1" in
 		fi
 	;;
 	"install")
-		export OLD_ANDROID_SDK=1
+		#export OLD_ANDROID_SDK=1
 		export NO_GUI_OLD_SDK=1
 		mainInstall
 		changeOwnerAllLAMW
@@ -82,13 +82,13 @@ case "$1" in
 		getStatusInstalation
 		CleanOldConfig
 	#	printf "Mode SDKTOOLS=24 with ant support "
-		export OLD_ANDROID_SDK=1
+	#	export OLD_ANDROID_SDK=1
 		export NO_GUI_OLD_SDK=1
 		mainInstall
 		changeOwnerAllLAMW
 	;;
 	"--reset-aapis")
-		export OLD_ANDROID_SDK=1
+	#	export OLD_ANDROID_SDK=1
 		export NO_GUI_OLD_SDK=1
 		getStatusInstalation
 		if [ $LAMW_INSTALL_STATUS = 1 ]; then
@@ -107,7 +107,10 @@ case "$1" in
 	"--help"| "help") 
 		lamw_manager_help
 	;;
-
+	"build-lazarus")
+		BuildLazarusIDE 1
+		changeOwnerAllLAMW 1
+	;;
 	*)
 		printf "${VERMELHO}Invalid argument!${NORMAL}\n$(lamw_manager_help)" >&2
 		exit 1
