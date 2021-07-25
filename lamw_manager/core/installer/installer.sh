@@ -276,44 +276,48 @@ getAndroidSDKTools(){
 	fi
 
 	changeDirectory $ANDROID_SDK
-	if [ ! -e tools ];then
+	if [ ! -e "cmdline-tools" ];then
+		mkdir -p "$ANDROID_SDK/cmdline-tools"
+		changeDirectory "$ANDROID_SDK/cmdline-tools"
 		trap TrapControlC  2
 		MAGIC_TRAP_INDEX=4
 		Wget $SDK_TOOLS_URL
 		MAGIC_TRAP_INDEX=5
 		unzip -o  $SDK_TOOLS_ZIP
+		mv cmdline-tools latest
 		rm $SDK_TOOLS_ZIP
 		AntTrigger
 	fi
 }
 
 getSDKAndroid(){
-	changeDirectory $ANDROID_SDK/tools/bin #change directory
-	yes | ./sdkmanager ${SDK_LICENSES_PARAMETERS[*]}
+	changeDirectory $ANDROID_SDK/cmdline-tools/latest/bin #change directory
+	yes | ./sdkmanager ${SDK_LICENSES_PARAMETERS[*]} 
 	if [ $? != 0 ]; then 
-		yes | ./sdkmanager ${SDK_LICENSES_PARAMETERS[*]}
+		yes | ./sdkmanager ${SDK_LICENSES_PARAMETERS[*]} 
 		if [ $? != 0 ]; then
 			echo "possible network instability! Try later!"
 			exit 1
 		fi
 	fi
+
 	for((i=0;i<${#SDK_MANAGER_CMD_PARAMETERS[*]};i++))
 	do
 		echo "Please wait, downloading ${NEGRITO}${SDK_MANAGER_CMD_PARAMETERS[i]}${NORMAL}\"..."
 		if [ $i = 0 ]; then 
 			yes | ./sdkmanager ${SDK_MANAGER_CMD_PARAMETERS[i]}  # instala sdk sem intervenção humana 
 			if [ $? != 0 ]; then 
-				yes | ./sdkmanager ${SDK_MANAGER_CMD_PARAMETERS[i]}
+				yes | ./sdkmanager ${SDK_MANAGER_CMD_PARAMETERS[i]} 
 				if [ $? != 0 ]; then
 					echo "possible network instability! Try later!"
 					exit 1
 				fi
 			fi 
 		else
-			./sdkmanager ${SDK_MANAGER_CMD_PARAMETERS[i]}
+			./sdkmanager ${SDK_MANAGER_CMD_PARAMETERS[i]} 
 
 			if [ $? != 0 ]; then 
-				./sdkmanager ${SDK_MANAGER_CMD_PARAMETERS[i]}
+				./sdkmanager ${SDK_MANAGER_CMD_PARAMETERS[i]} 
 				if [ $? != 0 ]; then
 					echo "possible network instability! Try later!"
 					exit 1
@@ -518,6 +522,9 @@ BuildLazarusIDE(){
 	local make_opts=(
 		"PP=${FPC_TRUNK_LIB_PATH}/ppcx64"
 		"FPC_VERSION=$_FPC_TRUNK_VERSION"
+		CPU_TARGET=x86_64 
+		OS_TARGET=linux 
+
 	)
 
 	if [ ! -e "$LAMW_IDE_HOME" ]; then  
@@ -539,11 +546,13 @@ BuildLazarusIDE(){
 	for((i=0;i< ${#LAMW_PACKAGES[@]};i++))
 	do
 		local lamw_build_opts=(--build-ide= --add-package ${LAMW_PACKAGES[i]} --pcp=$LAMW4_LINUX_PATH_CFG  --lazarusdir=$LAMW_IDE_HOME)
-		./lazbuild  ${lamw_build_opts[*]}
+		./lazbuild  ${lamw_build_opts[*]} --ws=qt5
 		if [ $? != 0 ]; then
-			./lazbuild ${lamw_build_opts[*]}
+			./lazbuild ${lamw_build_opts[*]} --ws=qt5
 		fi
 	done
+
+	strip lazarus
 }
 
 #this code add support a proxy 
