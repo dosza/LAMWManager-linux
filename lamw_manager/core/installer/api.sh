@@ -57,16 +57,8 @@ setJDKDeps(){
 checkJDKVersionStatus(){
 	setJDKDeps
 	JDK_STATUS=0
-	if [ ! -e $JAVA_HOME ]; then
-		JDK_STATUS=1
-		return 
-	else 
-		grep $JAVA_VERSION $JAVA_HOME/release
-		if  [ $? != 0 ]; then
-			JDK_STATUS=1
-			return
-		fi
-	fi
+	local java_release_path="$JAVA_HOME/release"
+	[ ! -e $JAVA_HOME ] || ( [ -e $java_release_path ]  && ! grep $JAVA_VERSION  $java_release_path > /dev/null ) && JDK_STATUS=1
 }
 
 setLAMWDeps(){
