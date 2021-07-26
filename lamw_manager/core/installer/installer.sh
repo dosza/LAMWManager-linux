@@ -67,7 +67,7 @@ getStatusInstalation(){
 		export LAMW_INSTALL_STATUS=1
 		return 1
 	else 
-		export OLD_ANDROID_SDK=1
+		setOldAndroidSDKStatus
 		export NO_GUI_OLD_SDK=1
 		return 0;
 	fi
@@ -202,9 +202,8 @@ AntTrigger(){
 
 #this function get ant 
 getAnt(){
-	if [ $OLD_ANDROID_SDK = 0 ]; then  #sem ação se ant nao é suportado
-		return
-	fi
+	[ $OLD_ANDROID_SDK = 0 ] && return   #sem ação se ant nao é suportado
+		
 	changeDirectory "$ROOT_LAMW" 
 	if [ ! -e "$ANT_HOME" ]; then
 		MAGIC_TRAP_INDEX=0 # preperando o indice do arquivo/diretório a ser removido
@@ -235,17 +234,13 @@ getGradle(){
 }
 
 getNDK(){
-	if [ $OLD_ANDROID_SDK = 0 ]; then
-		return 
-	fi
+	[ $OLD_ANDROID_SDK = 0 ] && return 
+
 	changeDirectory "$ANDROID_SDK"
 	if [ -e  "$ANDROID_SDK/ndk-bundle" ]; then 
 		for i in ${!OLD_NDK_VERSION_STR[*]}; do
-			 grep ${OLD_NDK_VERSION_STR[i]} "$ANDROID_SDK/ndk-bundle/source.properties" > /dev/null
-			if [ $? = 0 ]; then 
-				rm -rf $ANDROID_SDK/ndk-bundle
-				break
-			fi
+			grep ${OLD_NDK_VERSION_STR[i]} "$ANDROID_SDK/ndk-bundle/source.properties" > /dev/null
+			[ $? = 0 ] && rm -rf $ANDROID_SDK/ndk-bundle && break
 		done
 	fi
 
@@ -273,25 +268,25 @@ getAndroidSDKTools(){
 		export SDK_TOOLS_VERSION="r25.2.5"
 		export SDK_TOOLS_URL="https://dl.google.com/android/repository/tools_r25.2.5-linux.zip"
 		export SDK_TOOLS_ZIP="tools_r25.2.5-linux.zip"
+		export SDK_TOOLS_DIR="$ANDROID_SDK/tools"
 	fi
 
 	changeDirectory $ANDROID_SDK
-	if [ ! -e "cmdline-tools" ];then
-		mkdir -p "$ANDROID_SDK/cmdline-tools"
-		changeDirectory "$ANDROID_SDK/cmdline-tools"
+	if [ ! -e "$SDK_TOOLS_DIR" ];then
+		[ $OLD_ANDROID_SDK = 0 ]  && mkdir -p "$SDK_TOOLS_DIR" && changeDirectory "$SDK_TOOLS_DIR"
 		trap TrapControlC  2
 		MAGIC_TRAP_INDEX=4
 		Wget $SDK_TOOLS_URL
 		MAGIC_TRAP_INDEX=5
 		unzip -o  $SDK_TOOLS_ZIP
-		mv cmdline-tools latest
+		[ $OLD_ANDROID_SDK = 0 ] && mv cmdline-tools latest
 		rm $SDK_TOOLS_ZIP
 		AntTrigger
 	fi
 }
 
 getSDKAndroid(){
-	changeDirectory $ANDROID_SDK/cmdline-tools/latest/bin #change directory
+	changeDirectory $SDK_TOOLS_DIR/latest/bin #change directory
 	yes | ./sdkmanager ${SDK_LICENSES_PARAMETERS[*]} 
 	if [ $? != 0 ]; then 
 		yes | ./sdkmanager ${SDK_LICENSES_PARAMETERS[*]} 
@@ -442,10 +437,10 @@ Repair(){
 }
 
 setOldAndroidSDKStatus(){
-	if [  $1 = 0 ]; then
-		export OLD_ANDROID_SDK=0
-	else 
-		export OLD_ANDROID_SDK=1
+	local lamw_install_log_path="$LAMW4LINUX_HOME/lamw-install.log"
+	if [ -e $lamw_install_log_path ] ; then 
+		grep "OLD_ANDROID_SDK=0" "$lamw_install_log_path"  > /dev/null 
+	 	OLD_ANDROID_SDK=$?
 	fi
 }
 
@@ -498,7 +493,6 @@ getImplicitInstall(){
 	if [ ! -e "$lamw_install_log_path" ]; then
 		export NO_GUI_OLD_SDK=1
 	else
-		grep "OLD_ANDROID_SDK=0" "$lamw_install_log_path"  > /dev/null
 		setOldAndroidSDKStatus $?
 		
 		grep "Generate LAMW_INSTALL_VERSION=$LAMW_INSTALL_VERSION" "$lamw_install_log_path" 	> /dev/null
@@ -522,9 +516,6 @@ BuildLazarusIDE(){
 	local make_opts=(
 		"PP=${FPC_TRUNK_LIB_PATH}/ppcx64"
 		"FPC_VERSION=$_FPC_TRUNK_VERSION"
-		CPU_TARGET=x86_64 
-		OS_TARGET=linux 
-
 	)
 
 	if [ ! -e "$LAMW_IDE_HOME" ]; then  
@@ -546,9 +537,9 @@ BuildLazarusIDE(){
 	for((i=0;i< ${#LAMW_PACKAGES[@]};i++))
 	do
 		local lamw_build_opts=(--build-ide= --add-package ${LAMW_PACKAGES[i]} --pcp=$LAMW4_LINUX_PATH_CFG  --lazarusdir=$LAMW_IDE_HOME)
-		./lazbuild  ${lamw_build_opts[*]} --ws=qt5
+		./lazbuild  ${lamw_build_opts[*]}
 		if [ $? != 0 ]; then
-			./lazbuild ${lamw_build_opts[*]} --ws=qt5
+			./lazbuild ${lamw_build_opts[*]} 
 		fi
 	done
 
@@ -577,8 +568,8 @@ mainInstall(){
 	getAnt
 	getGradle
 	getAndroidSDKTools
-	getNDK
 	getAndroidAPIS 
+	getNDK
 	getFPCStable
 	getFPCSourcesTrunk
 	getLazarusSources
