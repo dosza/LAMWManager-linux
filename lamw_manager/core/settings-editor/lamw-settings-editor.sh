@@ -26,8 +26,8 @@ initROOT_LAMW(){
 }
 
 enableADBtoUdev(){
-	  printf 'SUBSYSTEM=="usb", ATTR{idVendor}=="<VENDOR>", MODE="0666", GROUP="plugdev"\n'  |  tee /etc/udev/rules.d/51-android.rules
-	  service udev restart
+	  printf 'SUBSYSTEM=="usb", ATTR{idVendor}=="<VENDOR>", MODE="0666", GROUP="plugdev"\n' > /etc/udev/rules.d/51-android.rules
+	  systemctl restart udev.service
 }
 
 

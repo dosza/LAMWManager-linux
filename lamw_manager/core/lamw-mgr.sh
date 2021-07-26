@@ -71,7 +71,7 @@ case "$1" in
 		fi
 	;;
 	"install")
-		#export OLD_ANDROID_SDK=1
+		setOldAndroidSDKStatus
 		export NO_GUI_OLD_SDK=1
 		mainInstall
 		changeOwnerAllLAMW
@@ -81,14 +81,11 @@ case "$1" in
 		printf "Please wait ...\n"
 		getStatusInstalation
 		CleanOldConfig
-	#	printf "Mode SDKTOOLS=24 with ant support "
-	#	export OLD_ANDROID_SDK=1
 		export NO_GUI_OLD_SDK=1
 		mainInstall
 		changeOwnerAllLAMW
 	;;
 	"--reset-aapis")
-	#	export OLD_ANDROID_SDK=1
 		export NO_GUI_OLD_SDK=1
 		getStatusInstalation
 		if [ $LAMW_INSTALL_STATUS = 1 ]; then
