@@ -367,7 +367,7 @@ getOldAndroidSDK(){
 	if [ -e $ANDROID_SDK/tools/android  ]; then 
 		changeDirectory $ANDROID_HOME
 		if [ $NO_GUI_OLD_SDK = 0 ]; then
-			echo "before update-sdk"
+			echo "Please wait..."
 			$ANDROID_SDK/tools/android  update sdk
 		else 
 			for((i=0;i<${#SDK_MANAGER_CMD_PARAMETERS2[*]};i++));do
@@ -396,7 +396,7 @@ RepairOldSDKAndroid(){
 	done
 
 	setLAMWDeps
-	getOldAndroidSDK
+	getAndroidAPIS
 	for ((i=0;i<${#sdk_manager_fails[*]};i++))
 	do
 		local current_sdk_path="${ANDROID_SDK}/${sdk_manager_fails[i]}"
@@ -458,8 +458,8 @@ Repair(){
 setOldAndroidSDKStatus(){
 	local lamw_install_log_path="$LAMW4LINUX_HOME/lamw-install.log"
 	if [ -e $lamw_install_log_path ] ; then 
-		grep "OLD_ANDROID_SDK=0" "$lamw_install_log_path"  > /dev/null 
-	 	OLD_ANDROID_SDK=$?
+		#grep "OLD_ANDROID_SDK=0" "$lamw_install_log_path"  > /dev/null 
+	 	OLD_ANDROID_SDK=0
 	fi
 }
 
@@ -537,6 +537,8 @@ BuildLazarusIDE(){
 		"FPC_VERSION=$_FPC_TRUNK_VERSION"
 	)
 
+	local ide_make_cfg_path="$LAMW4_LINUX_PATH_CFG/idemake.cfg"
+
 	[ ! -e "$LAMW_IDE_HOME" ] && ln -sf $LAMW4LINUX_HOME/$LAZARUS_STABLE $LAMW_IDE_HOME # link to lamw4_home directory  
 	[ ! -e "$LAMW4LINUX_EXE_PATH" ] && ln -sf $LAMW_IDE_HOME/lazarus $LAMW4LINUX_EXE_PATH  #link  to lazarus executable
 
@@ -545,10 +547,15 @@ BuildLazarusIDE(){
 	[ $# = 0 ] && make clean all  ${make_opts[*]} #build all IDE
 	
 	initLAMw4LinuxConfig
+
+	if [ -e   "$ide_make_cfg_path" ]; then 
+		local current_widget_set="$(grep '\-dLCL.' "$ide_make_cfg_path" | sed 's/-dLCL//g')"
+		[ "$current_widget_set" != "" ] && [ "$current_widget_set" != "gtk2" ] && current_widget_set="--ws=$current_widget_set"
+	fi
 		#build ide  with lamw framework 
 	for((i=0;i< ${#LAMW_PACKAGES[@]};i++))
 	do
-		local lamw_build_opts=(--build-ide= --add-package ${LAMW_PACKAGES[i]} --pcp=$LAMW4_LINUX_PATH_CFG  --lazarusdir=$LAMW_IDE_HOME)
+		local lamw_build_opts=(--build-ide= --add-package ${LAMW_PACKAGES[i]} --pcp=$LAMW4_LINUX_PATH_CFG  --lazarusdir=$LAMW_IDE_HOME $current_widget_set)
 		./lazbuild  ${lamw_build_opts[*]}
 		if [ $? != 0 ]; then
 			./lazbuild ${lamw_build_opts[*]}
