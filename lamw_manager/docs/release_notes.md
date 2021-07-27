@@ -7,7 +7,7 @@ v0.4.0.2 - Jul 27, 2021
 +	Apache Ant is no longer officially supported (*in fresh instalation*)
 +	Get Current Widget from idemake.cfg and pass to *lazbuild*
 +	Now: LAMW Manager uses new **Android Commmand Line Tools**
-+	New: LAMW Manager can execute Android *sdkmanager* with params
++	LAMW Manager can execute *sdkmanager* with params
 
 **Fixed**
 +	Wrong permission: idemake.cfg
