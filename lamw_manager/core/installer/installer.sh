@@ -89,7 +89,7 @@ getJDK(){
 		[ -e "$JAVA_HOME" ] && rm -r "$JAVA_HOME"
 		Wget "$ZULU_JDK_URL"
 		tar -zxvf "$ZULU_JDK_TAR"
-		mv "$ZULU_JDK_FILE" "zulu-8"
+		mv "$ZULU_JDK_FILE" "zulu-$JDK_VERSION"
 		[ -e "$ZULU_JDK_TAR" ] && rm $ZULU_JDK_TAR
 	fi
 }
@@ -552,7 +552,7 @@ BuildLazarusIDE(){
 		./lazbuild  ${lamw_build_opts[*]}
 		if [ $? != 0 ]; then
 			./lazbuild ${lamw_build_opts[*]}
-			[ $? != 0 ] && { echo "${VERMELHO}Error${NORMAL}:Fails on build ${NEGRITO}${LAMW_PACKAGES[i]}${NORMAL} package" && return ; }
+			[ $? != 0 ] && { echo "${VERMELHO}Error${NORMAL}: Fails on build ${NEGRITO}${LAMW_PACKAGES[i]}${NORMAL} package" && return ; }
 		fi
 	done
 
