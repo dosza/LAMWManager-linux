@@ -1,4 +1,4 @@
-**&nbsp;&nbsp;&nbsp;lamw_manager(1)&nbsp; 2021 Jun 17 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LAMW Manager man page&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lamw_manager(1)**
+**&nbsp;&nbsp;&nbsp;lamw_manager(1)&nbsp; 2021 Jul 27 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LAMW Manager man page&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lamw_manager(1)**
 
 **NAME**
 <p>
@@ -50,10 +50,10 @@
 **OPTIONS**
 <p>
        <pre>
-              <strong>--reset</strong>            Clean and Install LAMW
-              <strong>--reset-aapis</strong>      Reset Android API's to default
-              <strong>--help</strong>             Show this help
-              <strong>--sdkmanager</strong>       Run Android SDK Manager
+              <strong>--reset</strong>                  Clean and Install LAMW
+              <strong>--reset-aapis</strong>            Reset Android API's to default
+              <strong>--help</strong>                   Show this help
+              <strong>--sdkmanager</strong>   <strong>[ARGS]</strong>    Run Android SDK Manager
               <strong>--update-lamw</strong>      Just upgrade LAMW Framework  (with 
                                  the  latest  version avaliable in git )
        </pre>
@@ -68,6 +68,18 @@
               ./lamw_manager --update-lamw <strong>--use-proxy</strong>  <strong>--server</strong>  10.0.16.1 --port 3128
         </pre>
  </p>
+
+
+**Android SDK Manager**
+<p>
+       <pre>
+              ./lamw_manager  <strong>--sdkmanager</strong>    <strong>[ARGS]</strong>
+              [NUMBER]
+              <strong>sample:</strong>
+              ./lamw_manager --sdkmanager  <strong>--list_installed</strong>
+        </pre>
+ </p>
+
 
 **DEBUG**
 <p>
