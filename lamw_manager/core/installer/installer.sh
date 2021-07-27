@@ -137,7 +137,7 @@ getFromSVN(){
 		svn checkout "$svn_src_url" --force
 		if [ $? != 0 ]; then 
 			svn cleanup "$svn_src_dir"
-			[ $? != 0 ] && rm -rf "$svn_src_d"
+			[ $? != 0 ] && rm -rf "$svn_src_dir"
 			echo "possible network instability! Try later!"
 			exit 1
 		fi
