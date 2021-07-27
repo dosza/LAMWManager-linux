@@ -23,8 +23,8 @@ Example of installation from sources:
 	<pre><strong>env LOCAL_ROOT_LAMW=/opt/LAMW</strong> ./lamw_manager</pre>
 	<strong>To install LAMW and dependencies:</strong><sup>2</sup>
 	<pre>	./lamw_manager</pre>
-	<strong>To install LAMW and dependencies and Run Android  GUI SDK Manager</strong><sup>3</sup>
-	<pre>	./lamw_manager              <em>--sdkmanager</em></pre>
+	<strong>To install LAMW and dependencies and Run Android SDK Manager</strong><sup>3</sup>
+	<pre>	./lamw_manager              <em>--sdkmanager</em>	<em>[ARGS]</em></pre>
 	<strong>To clean and reinstall LAMW</strong>
 	<pre>	./lamw_manager              <em> --reset</em></pre>
 	<strong>To just upgrade LAMW framework</strong> <em>(with the latest version available in git)</em>
