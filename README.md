@@ -29,7 +29,6 @@ Linux Distro Supported:
 LAMW Manager install the following [dependencies] tools:
 ----------------------------------------------------------------------
 <ul>
-	<li>Apache Ant</li>
 	<li>Gradle</li>
 	<li>Freepascal Compiler</li>
 	<li>Lazarus IDE Sources</li>
