@@ -94,6 +94,12 @@ TrapControlC(){
 	exit 2
 }
 
+
+disableTrapActions(){
+	trap - SIGINT  #removendo a traps
+	MAGIC_TRAP_INDEX=-1
+}
+
 startImplicitAction(){
 	getImplicitInstall
 	if [ $LAMW_IMPLICIT_ACTION_MODE = 0 ]; then

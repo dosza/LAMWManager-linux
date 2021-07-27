@@ -93,22 +93,57 @@ getJDK(){
 		[ -e "$ZULU_JDK_TAR" ] && rm $ZULU_JDK_TAR
 	fi
 }
-getFPCSourcesTrunk(){
-	mkdir -p $FPC_TRUNK_SOURCE_PATH
-	changeDirectory $FPC_TRUNK_SOURCE_PATH
-	svn checkout $FPC_TRUNK_URL --force
-	if [ $? != 0 ]; then
-		svn cleanup "$FPC_TRUNK_SVNTAG"
-		svn checkout "$FPC_TRUNK_URL" --force
+
+getFromGit(){
+	local git_src_url="$1"
+	local git_src_dir="$2"
+	local git_branch="$3"
+
+	if [ ! -e "$git_src_dir" ]; then 
+		if [ $# -lt 3 ]; then 
+			local git_param=(clone "$git_src_url")
+		else 
+			local git_param=(clone "$git_src_url" -b "$git_branch" "$git_src_dir" )
+		fi
+		git ${git_param[@]}
 		if [ $? != 0 ]; then 
-			svn cleanup "$FPC_TRUNK_SVNTAG"
-			[ $? != 0 ] && rm -rf $FPC_TRUNK_SVNTAG
+			git ${git_param[@]}
+			check_error_and_exit "possible network instability!! Try later!"
+		fi
+	else
+		if [ $# -lt 3 ]; then 
+			local git_param=(pull)
+		else 
+			local git_param=(pull origin $git_branch )
+		fi
+		changeDirectory "$git_src_dir"
+		git ${git_param[@]}
+		if [ $? != 0 ]; then
+			git_param=(reset --hard)
+			git ${git_param[@]}
+			check_error_and_exit "possible network instability!! Try later!"
+		fi
+	fi
+}
+
+
+getFromSVN(){
+	local svn_src_url="$1"
+	local svn_src_dir="$2"
+
+	svn checkout "$svn_src_url" --force
+	if [ $? != 0 ]; then
+		svn cleanup "$svn_src_dir"
+		svn checkout "$svn_src_url" --force
+		if [ $? != 0 ]; then 
+			svn cleanup "$svn_src_dir"
+			[ $? != 0 ] && rm -rf "$svn_src_d"
 			echo "possible network instability! Try later!"
 			exit 1
 		fi
 	fi
-	parseFPCTrunk
 }
+
 
 getFPCStable(){
 	if [ ! -e "$LAMW4LINUX_HOME/usr" ]; then 
@@ -141,59 +176,30 @@ getFPCStable(){
 		$FPC_MKCFG_EXE -d basepath=$FPC_LIB_PATH -o $FPC_LIB_PATH/fpc.cfg;
 	fi
 }
+
+getFPCSourcesTrunk(){
+	mkdir -p $FPC_TRUNK_SOURCE_PATH
+	changeDirectory $FPC_TRUNK_SOURCE_PATH
+	getFromSVN "$FPC_TRUNK_URL" "$FPC_TRUNK_SVNTAG"
+	parseFPCTrunk
+}
+
 #get Lazarus Sources
 getLazarusSources(){
 	changeDirectory $LAMW4LINUX_HOME
-	svn co $LAZARUS_STABLE_SRC_LNK
-	if [ $? != 0 ]; then  #case fails last command , try svn chekout 
-		svn cleanup $LAZARUS_STABLE
-		svn co $LAZARUS_STABLE_SRC_LNK
-		if [ $? != 0 ]; then 
-			svn cleanup $LAZARUS_STABLE
-			[ $? != 0 ] && rm -rf $LAZARUS_STABLE
-			echo "possible network instability! Try later!"
-			exit 1
-		fi
-	fi
+	getFromSVN "$LAZARUS_STABLE_SRC_LNK" "$LAZARUS_STABLE"
 }
 
 #GET LAMW FrameWork
 getLAMWFramework(){
-	local git_param=("clone" "$LAMW_SRC_LNK")
 	changeDirectory $ROOT_LAMW
-	#Remove LAMW  downloaded by SVN
-	if [ -e "$ROOT_LAMW/lazandroidmodulewizard.git" ]; then 
-		if [ -e "$ROOT_LAMW/lazandroidmodulewizard" ]; then 
-			rm -fr "$ROOT_LAMW/lazandroidmodulewizard"
-			rm -fr "$ROOT_LAMW/lazandroidmodulewizard.git"
-		fi
-	fi
+	[  -e "$ROOT_LAMW/lazandroidmodulewizard.git" ] && [ -e "$ROOT_LAMW/lazandroidmodulewizard" ] && 
+		rm -rf "$ROOT_LAMW/lazandroidmodulewizard.git" && rm -rf "$ROOT_LAMW/lazandroidmodulewizard"
 
-	if [ -e lazandroidmodulewizard/.git ]  ; then
-		changeDirectory "$ROOT_LAMW/lazandroidmodulewizard"
-		git_param=("pull")
-	fi
-	
-	git ${git_param[*]}
-	if [ $? != 0 ]; then #case fails last command , try svn chekout
-		
-		git_param=("clone" "$LAMW_SRC_LNK")
-		changeDirectory $ROOT_LAMW
-		#chmod 777 -Rv lazandroidmodulewizard
-		if [ -e $ROOT_LAMW/lazandroidmodulewizard ]; then 
-			rm -rf $ROOT_LAMW/lazandroidmodulewizard
-		fi
-		git ${git_param[*]}
-		if [ $? != 0 ]; then 
-			if [ -e $ROOT_LAMW/lazandroidmodulewizard ]; then 
-				rm -rf $ROOT_LAMW/lazandroidmodulewizard
-			fi
-			echo "possible network instability! Try later!"
-			exit 1
-		fi
-	fi
-	
+	getFromGit "$LAMW_SRC_LNK" "$ROOT_LAMW/lazandroidmodulewizard"
 }
+
+
 AntTrigger(){
 	if [ -e "$ANDROID_SDK/tools/.ant" ]; then 
 		mv "$ANDROID_SDK/tools/.ant" "$ANDROID_SDK/tools/ant"
@@ -213,9 +219,7 @@ getAnt(){
 		tar -xvf "$ANT_TAR_FILE"
 	fi
 
-	if [ -e  $ANT_TAR_FILE ]; then
-		rm $ANT_TAR_FILE
-	fi
+	[ -e  $ANT_TAR_FILE ] && rm $ANT_TAR_FILE
 }
 
 getGradle(){
@@ -252,12 +256,9 @@ getNDK(){
 		unzip -o  $NDK_ZIP
 		MAGIC_TRAP_INDEX=-1
 		mv $NDK_DIR_UNZIP ndk-bundle
-		if [ -e $NDK_ZIP ]; then 
-			rm $NDK_ZIP
-		fi
+		[ -e $NDK_ZIP ] && rm $NDK_ZIP
+
 	fi
-	trap - SIGINT  #removendo a traps
-	MAGIC_TRAP_INDEX=-1
 }
 #Get Gradle and SDK Tools 
 getAndroidSDKTools(){
@@ -518,19 +519,12 @@ BuildLazarusIDE(){
 		"FPC_VERSION=$_FPC_TRUNK_VERSION"
 	)
 
-	if [ ! -e "$LAMW_IDE_HOME" ]; then  
-		ln -sf $LAMW4LINUX_HOME/$LAZARUS_STABLE $LAMW_IDE_HOME # link to lamw4_home directory 
-	fi  
-
-	if [ ! -e "$LAMW4LINUX_EXE_PATH" ]; then 
-		ln -sf $LAMW_IDE_HOME/lazarus $LAMW4LINUX_EXE_PATH  #link  to lazarus executable
-	fi
-
+	[ ! -e "$LAMW_IDE_HOME" ] && ln -sf $LAMW4LINUX_HOME/$LAZARUS_STABLE $LAMW_IDE_HOME # link to lamw4_home directory  
+	[ ! -e "$LAMW4LINUX_EXE_PATH" ] && ln -sf $LAMW_IDE_HOME/lazarus $LAMW4LINUX_EXE_PATH  #link  to lazarus executable
 
 	changeDirectory $LAMW_IDE_HOME
-	if [ $# = 0 ]; then 
-		make clean all  ${make_opts[*]}
-	fi
+	
+	[ $# = 0 ] && make clean all  ${make_opts[*]} #build all IDE
 	
 	initLAMw4LinuxConfig
 		#build ide  with lamw framework 
@@ -539,11 +533,13 @@ BuildLazarusIDE(){
 		local lamw_build_opts=(--build-ide= --add-package ${LAMW_PACKAGES[i]} --pcp=$LAMW4_LINUX_PATH_CFG  --lazarusdir=$LAMW_IDE_HOME)
 		./lazbuild  ${lamw_build_opts[*]}
 		if [ $? != 0 ]; then
-			./lazbuild ${lamw_build_opts[*]} 
+			./lazbuild ${lamw_build_opts[*]}
 		fi
 	done
 
 	strip lazarus
+	strip lazbuild
+	strip startlazarus
 }
 
 #this code add support a proxy 
@@ -568,8 +564,9 @@ mainInstall(){
 	getAnt
 	getGradle
 	getAndroidSDKTools
-	getAndroidAPIS 
 	getNDK
+	disableTrapActions
+	getAndroidAPIS 
 	getFPCStable
 	getFPCSourcesTrunk
 	getLazarusSources
@@ -584,4 +581,5 @@ mainInstall(){
 	LAMW4LinuxPostConfig
 	enableADBtoUdev
 	writeLAMWLogInstall
+	changeOwnerAllLAMW
 }

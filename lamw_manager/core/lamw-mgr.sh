@@ -52,7 +52,6 @@ case "$1" in
 		getStatusInstalation
 		if [ $LAMW_INSTALL_STATUS  = 0 ]; then
 			mainInstall
-			changeOwnerAllLAMW
 
 		else
 
@@ -74,7 +73,6 @@ case "$1" in
 		setOldAndroidSDKStatus
 		export NO_GUI_OLD_SDK=1
 		mainInstall
-		changeOwnerAllLAMW
 	;;
 
 	"--reset")
@@ -83,7 +81,6 @@ case "$1" in
 		CleanOldConfig
 		export NO_GUI_OLD_SDK=1
 		mainInstall
-		changeOwnerAllLAMW
 	;;
 	"--reset-aapis")
 		export NO_GUI_OLD_SDK=1
@@ -92,7 +89,6 @@ case "$1" in
 			RepairOldSDKAndroid
 		else
 			mainInstall
-			changeOwnerAllLAMW
 		fi
 	;;
 	"")
@@ -113,4 +109,3 @@ case "$1" in
 		exit 1
 	;;
 esac
-#chattr -i /tmp/lamw-overrides.conf
