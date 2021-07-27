@@ -123,7 +123,7 @@ LIBS_ANDROID="libx11-dev libgtk2.0-dev libgdk-pixbuf2.0-dev libcairo2-dev libpan
 PROG_TOOLS="menu git subversion make build-essential zip unzip android-tools-adb gdb wget jq "
 PACKS=()
 
-OLD_ANDROID_SDK=0
+OLD_ANDROID_SDK=1
 NO_GUI_OLD_SDK=0
 LAMW_INSTALL_STATUS=0
 LAMW_IMPLICIT_ACTION_MODE=0
