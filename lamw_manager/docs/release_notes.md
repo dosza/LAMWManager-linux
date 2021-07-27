@@ -1,6 +1,18 @@
 # LAMW Manager Release Notes
 This page contains information about new features and bug fixes.
 
+v0.4.0.2 - Jul 27, 2021
+---
+**News**
++	Apache Ant is no longer officially supported (*in fresh instalation*)
++	Get Current Widget from idemake.cfg and pass to *lazbuild*
++	Now: LAMW Manager uses new **Android Commmand Line Tools**
++	New: LAMW Manager can execute Android *sdkmanager* with params
+
+**Fixed**
++	Wrong permission: idemake.cfg
++	Fix parser proxy options
+
 v0.4.0.1 - Jul 18, 2021
 ---
 

@@ -15,8 +15,7 @@ setAndroidSDKCMDParameters(){
 	SDK_MANAGER_CMD_PARAMETERS=(
 		"platforms;android-$ANDROID_SDK_TARGET" 
 		"platform-tools"
-		"build-tools;$ANDROID_BUILD_TOOLS_TARGET" 
-		"tools" 
+		"build-tools;$ANDROID_BUILD_TOOLS_TARGET"
 		"ndk-bundle" 
 		"extras;android;m2repository"
 		"build-tools;$GRADLE_MIN_BUILD_TOOLS"
