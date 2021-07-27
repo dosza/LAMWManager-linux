@@ -11,9 +11,10 @@ LAMW_MANAGER_LOCAL_CONFIG_DIR="$LAMW_USER_HOME/.lamw_manager"
 LAMW_MANAGER_LOCAL_CONFIG_PATH="$LAMW_MANAGER_LOCAL_CONFIG_DIR/local_lamw_manager.cfg"
 DEFAULT_ROOT_LAMW="$LAMW_USER_HOME/LAMW"
 SET_ROOT_LAMW #RAIZ DO AMBIENTE LAMW 
-ANDROID_HOME=$ROOT_LAMW
+
+export ANDROID_HOME=$ROOT_LAMW
 ANDROID_SDK="$ROOT_LAMW/sdk"
-#--------------------------------------------------------------------------------------
+export ANDROID_SDK_ROOT=$ANDROID_SDK
 export XDG_DATA_DIRS="/usr/share:/usr/local/share:$LAMW_USER_HOME/.local/share"
 
 LAMW_INSTALL_VERSION="0.4.0.1"
@@ -174,4 +175,4 @@ export JAVA_HOME="$ROOT_LAMW/jdk/zulu-$JDK_VERSION"
 JAVA_PATH="$JAVA_HOME/bin"
 export PATH=$JAVA_PATH:$PATH:$LLVM_ANDROID_TOOLCHAINS
 
-alias print_error_and_exit='[ $? != 0 ] && echo  "$1" && exit'
+alias check_error_and_exit='[ $? != 0 ] && echo  "$1" && exit 1'
