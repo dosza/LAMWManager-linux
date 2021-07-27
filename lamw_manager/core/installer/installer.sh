@@ -552,6 +552,7 @@ BuildLazarusIDE(){
 		./lazbuild  ${lamw_build_opts[*]}
 		if [ $? != 0 ]; then
 			./lazbuild ${lamw_build_opts[*]}
+			[ $? != 0 ] && { echo "${VERMELHO}Error${NORMAL}:Fails on build ${NEGRITO}${LAMW_PACKAGES[i]}${NORMAL} package" && return ; }
 		fi
 	done
 
