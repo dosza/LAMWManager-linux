@@ -54,7 +54,7 @@
               <strong>--reset-aapis</strong>            Reset Android API's to default
               <strong>--help</strong>                   Show this help
               <strong>--sdkmanager</strong>   <strong>[ARGS]</strong>    Run Android SDK Manager
-              <strong>--update-lamw</strong>      Just upgrade LAMW Framework  (with 
+              <strong>--update-lamw</strong>            Just upgrade LAMW Framework  (with 
                                  the  latest  version avaliable in git )
        </pre>
 </p>
@@ -74,7 +74,6 @@
 <p>
        <pre>
               ./lamw_manager  <strong>--sdkmanager</strong>    <strong>[ARGS]</strong>
-              [NUMBER]
               <strong>sample:</strong>
               ./lamw_manager --sdkmanager  <strong>--list_installed</strong>
         </pre>
