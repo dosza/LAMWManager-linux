@@ -137,9 +137,7 @@ getFromSVN(){
 		svn checkout "$svn_src_url" --force
 		if [ $? != 0 ]; then 
 			svn cleanup "$svn_src_dir"
-			[ $? != 0 ] && rm -rf "$svn_src_dir"
-			echo "possible network instability! Try later!"
-			exit 1
+			[ $? != 0 ] && rm -rf "$svn_src_dir" && echo "possible network instability! Try later!" && exit 1
 		fi
 	fi
 }
@@ -286,41 +284,73 @@ getAndroidSDKTools(){
 	fi
 }
 
-getSDKAndroid(){
-	changeDirectory $SDK_TOOLS_DIR/latest/bin #change directory
-	yes | ./sdkmanager ${SDK_LICENSES_PARAMETERS[*]} 
+
+runSDKManagerLicenses(){
+	local sdk_manager_cmd="$SDK_TOOLS_DIR/latest/bin/sdkmanager"
+	yes | $sdk_manager_cmd ${SDK_LICENSES_PARAMETERS[*]} 
 	if [ $? != 0 ]; then 
-		yes | ./sdkmanager ${SDK_LICENSES_PARAMETERS[*]} 
+		yes | $sdk_manager_cmd ${SDK_LICENSES_PARAMETERS[*]} 
+		check_error_and_exit "possible network instability! Try later!"
+	fi
+}
+
+runSDKManager(){
+	local sdk_manager_cmd="$SDK_TOOLS_DIR/latest/bin/sdkmanager"
+	if [ $FORCE_YES = 1 ]; then 
+		yes | $sdk_manager_cmd $*
+
 		if [ $? != 0 ]; then
-			echo "possible network instability! Try later!"
-			exit 1
+			yes | $sdk_manager_cmd $*
+			check_error_and_exit "possible network instability! Try later!"
+		fi
+	else
+		$sdk_manager_cmd $*
+
+		if [ $? != 0 ]; then 
+			$sdk_manager_cmd $*
+			check_error_and_exit "possible network instability! Try later!"
 		fi
 	fi
+}
 
-	for((i=0;i<${#SDK_MANAGER_CMD_PARAMETERS[*]};i++))
-	do
-		echo "Please wait, downloading ${NEGRITO}${SDK_MANAGER_CMD_PARAMETERS[i]}${NORMAL}\"..."
-		if [ $i = 0 ]; then 
-			yes | ./sdkmanager ${SDK_MANAGER_CMD_PARAMETERS[i]}  # instala sdk sem intervenção humana 
-			if [ $? != 0 ]; then 
-				yes | ./sdkmanager ${SDK_MANAGER_CMD_PARAMETERS[i]} 
-				if [ $? != 0 ]; then
-					echo "possible network instability! Try later!"
-					exit 1
-				fi
-			fi 
-		else
-			./sdkmanager ${SDK_MANAGER_CMD_PARAMETERS[i]} 
+runOldSDKManager(){
+	local sdk_pack="$1"
+	local sdk_pack_path="$2"
+	local sdk_manager_cmd="$ANDROID_SDK/tools/android"
+	local sdk_cmd_extra_params=(update sdk --all --no-ui --filter $sdk_pack  ${SDK_MANAGER_CMD_PARAMETERS2_PROXY[*]})
+	if [ ! -e $sdk_pack_path ]; then 
+		echo "y" |  $sdk_manager_cmd ${sdk_cmd_extra_params[@]}
 
-			if [ $? != 0 ]; then 
-				./sdkmanager ${SDK_MANAGER_CMD_PARAMETERS[i]} 
-				if [ $? != 0 ]; then
-					echo "possible network instability! Try later!"
-					exit 1
-				fi
-			fi
+		if [ ! -e $sdk_pack_path ]; then 
+			echo "y" |  $sdk_manager_cmd ${sdk_cmd_extra_params[@]}
+			[ ! -e "$sdk_pack_path" ] && echo "possible network instability! Try later!" && exit 1
 		fi
-	done
+	fi
+}
+
+getSDKAndroid(){
+	
+	FORCE_YES=1
+	changeDirectory $ANDROID_HOME
+	runSDKManagerLicenses
+	
+	if [ $#  = 0 ]; then 
+
+		for((i=0;i<${#SDK_MANAGER_CMD_PARAMETERS[*]};i++));do
+			echo "Please wait, downloading ${NEGRITO}${SDK_MANAGER_CMD_PARAMETERS[i]}${NORMAL}\"..."
+			
+			if [ $i = 0 ]; then 
+				runSDKManager ${SDK_MANAGER_CMD_PARAMETERS[i]} # instala sdk sem intervenção humana 
+			else
+				FORCE_YES=0
+				runSDKManager ${SDK_MANAGER_CMD_PARAMETERS[i]} 
+			fi
+		done
+	else 
+		runSDKManager $*
+	fi
+
+	unset FORCE_YES
 }
 
 getOldAndroidSDK(){
@@ -335,26 +365,14 @@ getOldAndroidSDK(){
 	)
 
 	if [ -e $ANDROID_SDK/tools/android  ]; then 
-		changeDirectory $ANDROID_SDK/tools
+		changeDirectory $ANDROID_HOME
 		if [ $NO_GUI_OLD_SDK = 0 ]; then
 			echo "before update-sdk"
 			$ANDROID_SDK/tools/android  update sdk
 		else 
-			for((i=0;i<${#SDK_MANAGER_CMD_PARAMETERS2[*]};i++))
-			do
+			for((i=0;i<${#SDK_MANAGER_CMD_PARAMETERS2[*]};i++));do
 				echo "Getting ${NEGRITO}${SDK_MANAGER_CMD_PARAMETERS2[i]}${NORMAL} ..."
-				#read;
-			#	ls "$ANDROID_SDK/${sdk_manager_sdk_paths[i]}";read
-				if [ ! -e "${sdk_manager_sdk_paths[i]}" ];then
-					echo "y" |   ./android update sdk --all --no-ui --filter ${SDK_MANAGER_CMD_PARAMETERS2[i]} ${SDK_MANAGER_CMD_PARAMETERS2_PROXY[*]}
-					if [ ! -e "${sdk_manager_sdk_paths[i]}" ]; then
-						echo "y" |   ./android update sdk --all --no-ui --filter ${SDK_MANAGER_CMD_PARAMETERS2[i]} ${SDK_MANAGER_CMD_PARAMETERS2_PROXY[*]}
-						if [ ! -e "${sdk_manager_sdk_paths[i]}" ]; then
-							echo "possible network instability! Try later!"
-							exit 1
-						fi
-					fi
-				fi	
+				runOldSDKManager "${SDK_MANAGER_CMD_PARAMETERS2[i]}" "${sdk_manager_sdk_paths[i]}"
 			done 
 		fi
 	fi
@@ -397,7 +415,7 @@ RepairOldSDKAndroid(){
 
 getAndroidAPIS(){
 	if [ $OLD_ANDROID_SDK = 0 ]; then
-		getSDKAndroid
+		getSDKAndroid $*
 	else
 		getOldAndroidSDK
 	fi
