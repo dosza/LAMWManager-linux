@@ -39,12 +39,13 @@ case "$1" in
 	"--sdkmanager")
 	getStatusInstalation;
 	if [ $LAMW_INSTALL_STATUS = 1 ];then
-		$ANDROID_SDK/tools/android update sdk
+		getAndroidAPIS  ${ARGS[@]:1}
 		changeOwnerAllLAMW 
 
 	else
 		mainInstall
-		$ANDROID_SDK/tools/android update sdk
+		NO_GUI_OLD_SDK=0
+		getAndroidAPIS  ${ARGS[@]:1}
 		changeOwnerAllLAMW
 	fi 	
 	;;
@@ -71,7 +72,7 @@ case "$1" in
 	;;
 	"install")
 		setOldAndroidSDKStatus
-		export NO_GUI_OLD_SDK=1
+		NO_GUI_OLD_SDK=1
 		mainInstall
 	;;
 
@@ -79,23 +80,19 @@ case "$1" in
 		printf "Please wait ...\n"
 		getStatusInstalation
 		CleanOldConfig
-		export NO_GUI_OLD_SDK=1
 		mainInstall
 	;;
 	"--reset-aapis")
-		export NO_GUI_OLD_SDK=1
 		getStatusInstalation
 		if [ $LAMW_INSTALL_STATUS = 1 ]; then
+			NO_GUI_OLD_SDK=1
 			RepairOldSDKAndroid
 		else
 			mainInstall
 		fi
 	;;
-	"")
+	"" | "--use_proxy")
 		startImplicitAction	
-	;;
-	"--use_proxy")
-		startImplicitAction
 	;;
 	"--help"| "help") 
 		lamw_manager_help

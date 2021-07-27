@@ -17,9 +17,9 @@ ANDROID_SDK="$ROOT_LAMW/sdk"
 export ANDROID_SDK_ROOT=$ANDROID_SDK
 export XDG_DATA_DIRS="/usr/share:/usr/local/share:$LAMW_USER_HOME/.local/share"
 
-LAMW_INSTALL_VERSION="0.4.0.1"
+LAMW_INSTALL_VERSION="0.4.0.2"
 OLD_LAMW_INSTALL_VERSION=(
-	"0.4.0"
+	0.4.0{.1,}
 	0.3.6{.{2,1},}
 	0.3.{5,4}{r1,}
 	"0.3.3r2"
@@ -174,5 +174,3 @@ ZULU_API_JDK_URL+="?java_version$JDK_VERSION&jdk_version=$JDK_VERSION&zulu_versi
 export JAVA_HOME="$ROOT_LAMW/jdk/zulu-$JDK_VERSION"
 JAVA_PATH="$JAVA_HOME/bin"
 export PATH=$JAVA_PATH:$PATH:$LLVM_ANDROID_TOOLCHAINS
-
-alias check_error_and_exit='[ $? != 0 ] && echo  "$1" && exit 1'

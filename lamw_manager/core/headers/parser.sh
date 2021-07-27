@@ -125,15 +125,37 @@ startImplicitAction(){
 
 #instalando tratadores de sinal	
 trap TrapControlC 2 
-if [ $# = 6 ] || [ $# = 7 ]; then
-	if [ "$2" = "--use_proxy" ] ;then 
-		if [ "$3" = "--server" ]; then
-			if [ "$5" = "--port" ] ;then
-				initParameters $2 $4 $6
-			fi
-		fi
-	fi
-else
-	initParameters
-fi
 
+ARGS=($@)
+
+INDEX_FOUND_USE_PROXY=-1
+for arg_index in ${!ARGS[@]}; do 
+	arg=${ARGS[$arg_index]}
+	if [ "$arg" = "--use_proxy" ];then
+		INDEX_FOUND_USE_PROXY=$arg_index
+		break
+	fi
+done
+
+if [ $INDEX_FOUND_USE_PROXY -lt 0 ]; then
+	initParameters
+else 
+	index_proxy_server=$((INDEX_FOUND_USE_PROXY+1))
+	index_server_value=$((index_proxy_server+1))
+	index_port_server=$((index_server_value+1))
+	index_port_value=$((index_port_server+1))
+	if [ "${ARGS[$index_proxy_server]}" = "--server" ]; then
+		if [ "${ARGS[$index_port_server]}" = "--port" ] ;then
+			initParameters "${ARGS[$INDEX_FOUND_USE_PROXY]}" "${ARGS[$index_server_value]}" "${ARGS[$index_port_value]}"
+		else 
+			echo "${VERMELHO}Error:${NORMAL}missing ${NEGRITO}--port${NORMAL}";exit 1
+		fi
+		unset ARGS[$INDEX_FOUND_USE_PROXY]
+		unset ARGS[$index_proxy_server]
+		unset ARGS[$index_server_value]
+		unset ARGS[$index_port_server]
+		unset ARGS[$index_port_value]
+	else 
+		echo "${VERMELHO}Error:${NORMAL}missing ${NEGRITO}--server${NORMAL}";exit 1
+	fi
+fi
