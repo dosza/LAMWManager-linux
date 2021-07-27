@@ -64,8 +64,8 @@ checkJDKVersionStatus(){
 setLAMWDeps(){
 
 	[  "$LAMW_DEPENDENCIES" = "" ] && LAMW_DEPENDENCIES="$(Wget -O- -q  "$LAMW_PACKAGE_URL" )"
-	export ANDROID_SDK_TARGET=$(getLAMWDep '.dependencies.android.platform')
-	export ANDROID_BUILD_TOOLS_TARGET=$(getLAMWDep '.dependencies.android.buildTools')
+	ANDROID_SDK_TARGET=$(getLAMWDep '.dependencies.android.platform')
+	ANDROID_BUILD_TOOLS_TARGET=$(getLAMWDep '.dependencies.android.buildTools')
 	GRADLE_VERSION=$(getLAMWDep '.dependencies.gradle')
 	GRADLE_HOME="$ROOT_LAMW/gradle-${GRADLE_VERSION}"
 	GRADLE_ZIP_LNK="https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip"

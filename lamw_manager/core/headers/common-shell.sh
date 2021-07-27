@@ -27,6 +27,9 @@ shopt  -s expand_aliases
 alias newPtr='declare -n'
 
 
+check_error_and_exit(){
+	[ $? != 0 ] && echo "$1" && exit 1
+}
 
 CheckPackageDebIsInstalled(){
 	if [ "$1" = "" ]; then 
