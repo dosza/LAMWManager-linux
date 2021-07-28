@@ -15,7 +15,7 @@ lamw_manager_help(){
 	"${NEGRITO}Usage${NORMAL}:\n"
 	"\t${NEGRITO}env LOCAL_ROOT_LAMW=[dir]${NORMAL} ${lamw_mgr}    Installing LAMW and dependencies¹ on custom² directory\n"
 	"\t${NEGRITO}${lamw_mgr//\-\-/'      '}${NORMAL}                              Install LAMW and dependencies¹\n"
-	"\t$lamw_mgr\t${VERDE}--sdkmanager${NORMAL}                Install LAMW and Run Android SDK Manager³\n"
+	"\t$lamw_mgr\t${VERDE}--sdkmanager${NORMAL}\t${VERDE}[ARGS]${NORMAL}      Install LAMW and Run Android SDK Manager³\n"
 	"\t$lamw_mgr\t${VERDE}--update-lamw${NORMAL}               To just upgrade LAMW framework (with the latest version available in git)\n"
 	"\t$lamw_mgr\t${VERDE}--reset${NORMAL}                     To clean and reinstall LAMW\n"
 	"\t$lamw_mgr\t${VERDE}--reset-aapis${NORMAL}               Reset Android API's to default\n"
@@ -30,10 +30,15 @@ lamw_manager_help(){
 	"${NEGRITO}Proxy Options:${NORMAL}\n"
 	"\t$lamw_mgr\t${NEGRITO}[action]${NORMAL}  --use_proxy --server ${VERDE}[HOST]${NORMAL} --port ${VERDE}[NUMBER]${NORMAL}\n"
 	"sample:\n\t$lamw_mgr\t --update-lamw --use_proxy --server 10.0.16.1 --port 3128\n"
+	"\n"
+	"${NEGRITO}Android SDK Manager [ARGS]:${NORMAL}\n"
+	"sample:\n\t$lamw_mgr\t --sdkmanager  ${VERDE}--list_installed${NORMAL}\n"
 	"\n\n${NEGRITO}Note:\n${NORMAL}"
 	"\t¹ By default the installation waives the use of parameters, if LAMW is installed, it will only be updated!\n"
 	"\t² After directory verification and validation (system directories and mount points will not be accepted)!\n"
-	"\t³ If it is already installed, just run the Android SDK Tools\n"
+	"\t³ If it is already installed, just run the Android SDK Tools with [ARGS].\n"
+	"\n"
+	"\t"
 	"\n"
 	)
 
@@ -80,9 +85,9 @@ TrapActions(){
 			rm  -rv $file_deleted
 		fi
 	fi
-#	chattr -i /tmp/lamw-overrides.conf
+#	chattr -i "$LAMW_MANAGER_LOCK"
 	#exit 2
-	rm '/tmp/lamw-overrides.conf'
+	rm "$LAMW_MANAGER_LOCK"
 }
 
 TrapTermProcess(){
@@ -92,6 +97,12 @@ TrapTermProcess(){
 TrapControlC(){
 	TrapActions
 	exit 2
+}
+
+
+disableTrapActions(){
+	trap - SIGINT  #removendo a traps
+	MAGIC_TRAP_INDEX=-1
 }
 
 startImplicitAction(){
@@ -119,15 +130,37 @@ startImplicitAction(){
 
 #instalando tratadores de sinal	
 trap TrapControlC 2 
-if [ $# = 6 ] || [ $# = 7 ]; then
-	if [ "$2" = "--use_proxy" ] ;then 
-		if [ "$3" = "--server" ]; then
-			if [ "$5" = "--port" ] ;then
-				initParameters $2 $4 $6
-			fi
-		fi
-	fi
-else
-	initParameters
-fi
 
+ARGS=($@)
+
+INDEX_FOUND_USE_PROXY=-1
+for arg_index in ${!ARGS[@]}; do 
+	arg=${ARGS[$arg_index]}
+	if [ "$arg" = "--use_proxy" ];then
+		INDEX_FOUND_USE_PROXY=$arg_index
+		break
+	fi
+done
+
+if [ $INDEX_FOUND_USE_PROXY -lt 0 ]; then
+	initParameters
+else 
+	index_proxy_server=$((INDEX_FOUND_USE_PROXY+1))
+	index_server_value=$((index_proxy_server+1))
+	index_port_server=$((index_server_value+1))
+	index_port_value=$((index_port_server+1))
+	if [ "${ARGS[$index_proxy_server]}" = "--server" ]; then
+		if [ "${ARGS[$index_port_server]}" = "--port" ] ;then
+			initParameters "${ARGS[$INDEX_FOUND_USE_PROXY]}" "${ARGS[$index_server_value]}" "${ARGS[$index_port_value]}"
+		else 
+			echo "${VERMELHO}Error:${NORMAL}missing ${NEGRITO}--port${NORMAL}";exit 1
+		fi
+		unset ARGS[$INDEX_FOUND_USE_PROXY]
+		unset ARGS[$index_proxy_server]
+		unset ARGS[$index_server_value]
+		unset ARGS[$index_port_server]
+		unset ARGS[$index_port_value]
+	else 
+		echo "${VERMELHO}Error:${NORMAL}missing ${NEGRITO}--server${NORMAL}";exit 1
+	fi
+fi
