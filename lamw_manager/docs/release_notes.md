@@ -1,6 +1,13 @@
 # LAMW Manager Release Notes
 This page contains information about new features and bug fixes.
 
+v0.4.0.3 - Jul 28, 2021
+---
+**News**
++	Hybrid install: latest version that will work with *Apache Ant* and New *Android Command Line Tools*
++	This version uses JDK8 with build ZuluOpenJDK
+
+
 v0.4.0.2 - Jul 27, 2021
 ---
 **News**

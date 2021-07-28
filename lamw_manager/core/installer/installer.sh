@@ -284,6 +284,15 @@ getAndroidSDKTools(){
 	fi
 }
 
+getHibridAndroidSDKTools(){
+	getAndroidSDKTools
+	OLD_ANDROID_SDK=0
+	SDK_TOOLS_VERSION="4.0"
+	SDK_TOOLS_URL="https://dl.google.com/android/repository/commandlinetools-linux-7302050_latest.zip"
+	SDK_TOOLS_ZIP="commandlinetools-linux-7302050_latest.zip"
+	SDK_TOOLS_DIR="$ANDROID_SDK/cmdline-tools"
+	getAndroidSDKTools
+}
 
 runSDKManagerLicenses(){
 	local sdk_manager_cmd="$SDK_TOOLS_DIR/latest/bin/sdkmanager"
@@ -589,7 +598,7 @@ mainInstall(){
 	getJDK
 	getAnt
 	getGradle
-	getAndroidSDKTools
+	getHibridAndroidSDKTools
 	getNDK
 	disableTrapActions
 	getAndroidAPIS 

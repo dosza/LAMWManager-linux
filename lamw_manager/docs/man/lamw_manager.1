@@ -1,5 +1,5 @@
 .\" Manpage for lamw_manager
-.TH lamw_manager 1 "2021 Jul 27 " "0.4.0.2" "LAMW manager man page"
+.TH lamw_manager 1 "2021 Jul 28 " "0.4.0.3" "LAMW manager man page"
 .SH NAME
 lamw_manager -\ manager to LAMW framework
 .SH SINOPSIS
@@ -9,14 +9,14 @@ lamw_manager -\ manager to LAMW framework
 .br
 lamw_manager
 .br
- ./lamw_manager 	[\fBACTION\fR] [\fBOPTIONS\fR]
+ ./lamw_manager     [\fBACTION\fR] [\fBOPTIONS\fR]
 .br 
- ./lamw_manager 	[\fBOPTIONS\fR]
+ ./lamw_manager     [\fBOPTIONS\fR]
 .br
- ./lamw_manager 	[\fBACTIONS\fR][\fBOPTIONS\fR] DEBUG=1
+ ./lamw_manager     [\fBACTIONS\fR][\fBOPTIONS\fR] DEBUG=1
 .br
- ./lamw_manager 	[\fBuninstall\fR] [\fB\-\-reset\fR] [\fB\-\-reset-aapis\fR]
- 			 	[\fB\-\-sdkmanager\fR] [\fB\-\-update-lamw\fR] [\fB\-\-help\fR]
+ ./lamw_manager     [\fBuninstall\fR] [\fB\-\-reset\fR] [\fB\-\-reset-aapis\fR]
+                [\fB\-\-sdkmanager\fR] [\fB\-\-update-lamw\fR] [\fB\-\-help\fR]
 .SH DESCRIPTION
 LAMW Manager is a command line tool,like APT, to automate the installation, configuration and upgrade the framework 
 \.br
@@ -29,17 +29,17 @@ sample:
 \fBenv LOCAL_ROOT_LAMW=/opt/LAMW\fR ./lamw_manager
 
 .SH ACTIONS
-\fBuninstall\fR 		Clean all LAMW
+\fBuninstall\fR                     Clean all LAMW
 .SH OPTIONS
-\fB\-\-reset\fR  			Clean and Install LAMW
+\fB\-\-reset\fR                         Clean and Install LAMW
 .br
-\fB\-\-reset-aapis\fR   	Reset Android API's to default
+\fB\-\-reset-aapis\fR                   Reset Android API's to default
 .br
-\fB\-\-help\fR   			Show this help
+\fB\-\-help\fR                          Show this help
 .br
-\fB\-\-sdkmanager\fR  		Run Android SDK Manager
+\fB\-\-sdkmanager\fR        \fB[ARGS]\fR      Run Android SDK Manager
 .br
-\fB\-\-update\-lamw\fR  	Just upgrade LAMW Framework(with the latest version avaliable in git)
+\fB\-\-update\-lamw\fR                  Just upgrade LAMW Framework(with the latest version avaliable in git)
 .SH PROXY OPTIONS
 lamw_manager [ACTIONS]||[OPTIONS] \fB\-\-use-proxy\fR \fB\-\-server\fR [HOST] \fB\-\-port\fR [NUMBER]
 .br
@@ -61,11 +61,11 @@ sample:
 .br
  ./lamw_manager \fBDEBUG=1\fR --reset
 .SH BUGS
-	¹	Fail! Folder /platforms is empty! Use command ./lamw_manager \fB\-\-reset-aapis\fR to fix this error.
+    ¹   Fail! Folder /platforms is empty! Use command ./lamw_manager \fB\-\-reset-aapis\fR to fix this error.
 .br
-	²	If the LAMW4Linux launcher does not appear in the start menu, simply restart the user session.
+    ²   If the LAMW4Linux launcher does not appear in the start menu, simply restart the user session.
 .br
-	³	You can launch LAMW4Linux with command: \fBstartlamw4linux\fR .
+    ³   You can launch LAMW4Linux with command: \fBstartlamw4linux\fR .
 .SH AUTHOR
 Daniel Oliveira 
 
