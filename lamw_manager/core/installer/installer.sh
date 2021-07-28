@@ -200,8 +200,8 @@ getLAMWFramework(){
 
 
 AntTrigger(){
-	if [ -e "$ANDROID_SDK/tools/.ant" ]; then 
-		mv "$ANDROID_SDK/tools/.ant" "$ANDROID_SDK/tools/ant"
+	if [ $OLD_ANDROID_SDK = 0 ] && [ -e "$ANDROID_SDK/tools/ant" ]; then 
+		mv  "$ANDROID_SDK/tools/ant" "$ANDROID_SDK/tools/.ant"
 	fi
 }
 
@@ -281,8 +281,8 @@ getAndroidSDKTools(){
 		unzip -o  $SDK_TOOLS_ZIP
 		[ $OLD_ANDROID_SDK = 0 ] && mv cmdline-tools latest
 		rm $SDK_TOOLS_ZIP
-		AntTrigger
 	fi
+	AntTrigger
 }
 
 
