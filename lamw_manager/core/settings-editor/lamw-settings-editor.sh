@@ -26,8 +26,8 @@ initROOT_LAMW(){
 }
 
 enableADBtoUdev(){
-	  printf 'SUBSYSTEM=="usb", ATTR{idVendor}=="<VENDOR>", MODE="0666", GROUP="plugdev"\n'  |  tee /etc/udev/rules.d/51-android.rules
-	  service udev restart
+	  printf 'SUBSYSTEM=="usb", ATTR{idVendor}=="<VENDOR>", MODE="0666", GROUP="plugdev"\n' > /etc/udev/rules.d/51-android.rules
+	  systemctl restart udev.service
 }
 
 
@@ -83,7 +83,7 @@ changeOwnerAllLAMW(){
 	for ((i=0;i<${#files_chown[*]};i++))
 	do
 		if [ -e ${files_chown[i]} ] ; then
-			if [ $i = 0 ] ; then 
+			if [ $i = 0 ] && [ $# = 0 ] ; then 
 				# caso $LAMW_USER não seja dono do diretório LAMW_USER_HOME/Dev ou $LAMW_WORKSPACE_HOME
 				if  [ $UID = 0 ] && ( [ -O ${files_chown[i]} ] || [ -O  "$LAMW_WORKSPACE_HOME" ] ); then 
 					chown $LAMW_USER:$LAMW_USER -R ${files_chown[i]}
@@ -131,13 +131,8 @@ writeLAMWLogInstall(){
 
 #Add LAMW4Linux to menu 
 AddLAMWtoStartMenu(){
-	if [ ! -e $LAMW_USER_HOME/.local/share/applications ] ; then #create a directory of local apps launcher, if not exists 
-		mkdir -p $LAMW_USER_HOME/.local/share/applications
-	fi
-	if [ ! -e $LAMW_USER_HOME/.local/share/mime/packages ]; then
-		mkdir -p $LAMW_USER_HOME/.local/share/mime/packages
-	fi
-	
+	[ ! -e $LAMW_USER_HOME/.local/share/applications ] && mkdir -p $LAMW_USER_HOME/.local/share/applications  #create a directory of local apps launcher, if not exists 	
+	[ ! -e $LAMW_USER_HOME/.local/share/mime/packages ] && mkdir -p $LAMW_USER_HOME/.local/share/mime/packages
 	local lamw_desktop_file_str=(
 		"[Desktop Entry]"  
 		"Name=LAMW4Linux"
@@ -159,7 +154,6 @@ AddLAMWtoStartMenu(){
 
 	WriterFileln "$LAMW_MENU_ITEM_PATH" "lamw_desktop_file_str"
 	chmod +x $LAMW_MENU_ITEM_PATH
-	cp $LAMW_MENU_ITEM_PATH "$WORK_HOME_DESKTOP"
 	#mime association: ref https://help.gnome.org/admin/system-admin-guide/stable/mime-types-custom-user.html.en
 	cp $LAMW_IDE_HOME/install/lazarus-mime.xml $LAMW_USER_HOME/.local/share/mime/packages
 	update-mime-database   $LAMW_USER_HOME/.local/share/mime/
@@ -170,25 +164,17 @@ AddLAMWtoStartMenu(){
 #this  fuction create a INI file to config  all paths used in lamw framework 
 LAMW4LinuxPostConfig(){
 	local old_lamw_workspace="$LAMW_USER_HOME/Dev/lamw_workspace"
-	if [ ! -e $LAMW4_LINUX_PATH_CFG ] ; then
-		mkdir $LAMW4_LINUX_PATH_CFG
-	fi
+	[ ! -e $LAMW4_LINUX_PATH_CFG ] && mkdir $LAMW4_LINUX_PATH_CFG
+	[ -e $old_lamw_workspace ] && mv $old_lamw_workspace $LAMW_WORKSPACE_HOME
+	[ ! -e $LAMW_WORKSPACE_HOME ] && mkdir -p $LAMW_WORKSPACE_HOME
 
-	if [ -e $old_lamw_workspace ]; then
-		mv $old_lamw_workspace $LAMW_WORKSPACE_HOME
-	fi
-	if [ ! -e $LAMW_WORKSPACE_HOME ] ; then
-		mkdir -p $LAMW_WORKSPACE_HOME
-	fi
 	local ant_path=$ANT_HOME/bin
 	ant_path=${ant_path%/ant*} #
 
 	#testa modificação de workspace
 	if [ -e "$LAMW4_LINUX_PATH_CFG/LAMW.ini" ]; then 
 		local current_lamw_workspace=$(grep '^PathToWorkspace=' $LAMW4_LINUX_PATH_CFG/LAMW.ini  | sed 's/PathToWorkspace=//g')
-		if [ "$current_lamw_workspace" != "$LAMW_WORKSPACE_HOME" ]; then
-			LAMW_WORKSPACE_HOME=$current_lamw_workspace
-		fi
+		[ "$current_lamw_workspace" != "$LAMW_WORKSPACE_HOME" ] && LAMW_WORKSPACE_HOME=$current_lamw_workspace	
 	fi
 # contem o arquivo de configuração do lamw
 	local LAMW_init_str=(
@@ -212,10 +198,18 @@ LAMW4LinuxPostConfig(){
 	)
 	local startlamw4linux_str=(
 		'#!/bin/bash'
+		'#-------------------------------------------------------------------------------------------------#'
+		'### THIS FILE IS AUTOMATICALLY CONFIGURED by LAMW Manager'
+		'###ou may comment out this entry, but any other modifications may be lost.'
+		'#Description: This script is script configure LAMW environment and startLAMW4Linux'
+		'#-------------------------------------------------------------------------------------------------#'
+		''
 		"export PPC_CONFIG_PATH=$PPC_CONFIG_PATH"
 		"export JAVA_HOME=$JAVA_HOME"
+		"export ANDROID_HOME=$ANDROID_HOME"
+		"export ANDROID_SDK_ROOT=$ANDROID_SDK"
 		"export PATH=$ROOT_LAMW/lamw4linux/usr/bin:\$PPC_CONFIG_PATH:\$JAVA_HOME/bin:\$PATH"
-		"$LAMW4LINUX_EXE_PATH --pcp=$LAMW4_LINUX_PATH_CFG \$*"
+		"exec $LAMW4LINUX_EXE_PATH --pcp=$LAMW4_LINUX_PATH_CFG \$*"
 	)
 
 	WriterFileln "$LAMW4_LINUX_PATH_CFG/LAMW.ini" "LAMW_init_str"
@@ -223,9 +217,7 @@ LAMW4LinuxPostConfig(){
 
 	if [ -e  $LAMW_IDE_HOME/startlamw4linux ]; then
 		chmod +x $LAMW_IDE_HOME/startlamw4linux
-		if [ ! -e "/usr/bin/startlamw4linux" ]; then
-			ln -s "$LAMW_IDE_HOME/startlamw4linux" "/usr/bin/startlamw4linux"
-		fi
+		[ ! -e "/usr/bin/startlamw4linux" ] && ln -s "$LAMW_IDE_HOME/startlamw4linux" "/usr/bin/startlamw4linux"
 	fi
 
 	AddLAMWtoStartMenu
@@ -286,10 +278,8 @@ CleanOldCrossCompileBins(){
 	local current_old_lamw_manager=${OLD_LAMW_INSTALL_VERSION[$CURRENT_OLD_LAMW_INSTALL_INDEX]}
 	((index_clean_files_v031-=1))
 
-	
-	if [ $CURRENT_OLD_LAMW_INSTALL_INDEX -lt  0 ]; then
-		return 1
-	fi
+	[ $CURRENT_OLD_LAMW_INSTALL_INDEX -lt  0 ] && return 1
+
 
 
 	for((i=0;i<${#list_deleted_files[*]};i++)); do 
@@ -303,9 +293,7 @@ CleanOldCrossCompileBins(){
 		if [  -e ${clean_files[i]} ] && [ $i -lt  $index_clean_files_v031 ]  ; then 
 			rm -rf ${clean_files[i]}
 		else 
-			if [ -e ${clean_files[i]} ]  && [ $current_old_lamw_manager  = $lamw_manager_v031 ];then
-				rm -rf ${clean_files[i]}
-			fi
+			[ -e ${clean_files[i]} ]  && [ $current_old_lamw_manager  = $lamw_manager_v031 ] && rm -rf ${clean_files[i]}
 		fi
 	done
 
@@ -313,7 +301,7 @@ CleanOldCrossCompileBins(){
 		local fpc_tmp_files=("bin2obj" "chmcmd" "chmls" "cldrparser" "compileserver" "cvsco.tdf" "cvsdiff.tdf" "cvsup.tdf" "data2inc" "delp" "fd2pascal" "fp" "fp.ans" "fpc" "fpcjres" "fpclasschart" "fpclasschart.rsj" "fpcmake" "fpcmkcfg" "fpcmkcfg.rsj" "fpcres" "fpcsubst" "fpcsubst.rsj" "fpdoc" "fppkg" "fprcp" "fp.rsj" "gplprog.pt" "gplunit.pt" "grab_vcsa" "grep.tdf" "h2pas" "h2paspp" "instantfpc" "json2pas" "makeskel" "makeskel.rsj" "mka64ins" "mkarmins" "mkinsadd" "mkx86ins" "pas2fpm" "pas2jni" "pas2js" "pas2ut" "pas2ut.rsj" "plex" "postw32" "ppdep" "ppudump" "ppufiles" "ppumove" "program.pt" "ptop" "ptop.rsj" "pyacc" "rmcvsdir" "rstconv" "rstconv.rsj" "tpgrep.tdf" "unihelper" "unitdiff" "unitdiff.rsj" "unit.pt" "webidl2pas")
 		for((i=0;i<${#fpc_tmp_files[*]};i++)); do
 			local aux="/usr/local/bin/${fpc_tmp_files[i]}"
-			if [ -e $aux ]; then  rm $aux ; fi
+			[ -e $aux ] &&  rm $aux
 		done
 	fi
 	
@@ -352,10 +340,8 @@ validate_is_file_create_by_lamw_manager(){
 	local last_index_deleted_files=$((size_list_deleted_files - 1))
 	local last_but_one_index_deleted_files=$((last_index_deleted_files-1))
 
-	if [ $CURRENT_OLD_LAMW_INSTALL_INDEX -lt 0 ] && [  $1 -lt $system_index_deleted_files ]; then  #ignora binarios fpc/arm  se o ambiente de desenvolvimento lamw não estiver instalado
-		return 1
-	fi
-
+	[ $CURRENT_OLD_LAMW_INSTALL_INDEX -lt 0 ] && [  $1 -lt $system_index_deleted_files ] && return 1 #ignora binarios fpc/arm  se o ambiente de desenvolvimento lamw não estiver instalado
+		
 	 #verifica se o arquivo é um arquivo do criado pelo lamw_manager
 	if [ $CURRENT_OLD_LAMW_INSTALL_INDEX -lt $very_old_lamw_manager_index ]; then 
 		if [ $1 -lt $system_index_deleted_files ] ; then
@@ -403,15 +389,12 @@ CleanOldConfig(){
 	for((i=0;i<${#list_deleted_files[*]};i++))
 	do
 		if [ -e "${list_deleted_files[i]}" ]; then 
-			if [ -d  "${list_deleted_files[i]}" ]; then 
-				local rm_opts="-rf"
-			fi
+			[ -d  "${list_deleted_files[i]}" ] && local rm_opts="-rf"
 			validate_is_file_create_by_lamw_manager $i "${list_deleted_files[i]}"
-			if [ $? = 0 ]; then 
-				rm  "${list_deleted_files[i]}" $rm_opts
-			fi
+			[ $? = 0 ] && rm  "${list_deleted_files[i]}" $rm_opts
 		fi
 	done
+
 	CleanOldCrossCompileBins
 	update-mime-database   $LAMW_USER_HOME/.local/share/mime/
 	update-desktop-database $LAMW_USER_HOME/.local/share/applications
@@ -510,10 +493,7 @@ configureFPCTrunk(){
 	if [ -e $FPC_CFG_PATH ] ; then  # se exiir /etc/fpc.cfg
 		searchLineinFile $FPC_CFG_PATH  "${fpc_cfg_str[0]}"
 		flag_fpc_cfg=$?
-
-		if [ $flag_fpc_cfg != 1 ]; then # caso o arquvo ainda não esteja configurado
-			AppendFileln "$FPC_CFG_PATH" "fpc_cfg_str"		
-		fi
+		[ $flag_fpc_cfg != 1 ] && AppendFileln "$FPC_CFG_PATH" "fpc_cfg_str" # caso o arquvo ainda não esteja configurado
 	fi
 }
 

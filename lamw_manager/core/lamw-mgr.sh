@@ -39,12 +39,13 @@ case "$1" in
 	"--sdkmanager")
 	getStatusInstalation;
 	if [ $LAMW_INSTALL_STATUS = 1 ];then
-		$ANDROID_SDK/tools/android update sdk
+		getAndroidAPIS  ${ARGS[@]:1}
 		changeOwnerAllLAMW 
 
 	else
 		mainInstall
-		$ANDROID_SDK/tools/android update sdk
+		NO_GUI_OLD_SDK=0
+		getAndroidAPIS  ${ARGS[@]:1}
 		changeOwnerAllLAMW
 	fi 	
 	;;
@@ -52,7 +53,6 @@ case "$1" in
 		getStatusInstalation
 		if [ $LAMW_INSTALL_STATUS  = 0 ]; then
 			mainInstall
-			changeOwnerAllLAMW
 
 		else
 
@@ -71,46 +71,38 @@ case "$1" in
 		fi
 	;;
 	"install")
-		export OLD_ANDROID_SDK=1
-		export NO_GUI_OLD_SDK=1
+		setOldAndroidSDKStatus
+		NO_GUI_OLD_SDK=1
 		mainInstall
-		changeOwnerAllLAMW
 	;;
 
 	"--reset")
 		printf "Please wait ...\n"
 		getStatusInstalation
 		CleanOldConfig
-	#	printf "Mode SDKTOOLS=24 with ant support "
-		export OLD_ANDROID_SDK=1
-		export NO_GUI_OLD_SDK=1
 		mainInstall
-		changeOwnerAllLAMW
 	;;
 	"--reset-aapis")
-		export OLD_ANDROID_SDK=1
-		export NO_GUI_OLD_SDK=1
 		getStatusInstalation
 		if [ $LAMW_INSTALL_STATUS = 1 ]; then
+			NO_GUI_OLD_SDK=1
 			RepairOldSDKAndroid
 		else
 			mainInstall
-			changeOwnerAllLAMW
 		fi
 	;;
-	"")
+	"" | "--use_proxy")
 		startImplicitAction	
-	;;
-	"--use_proxy")
-		startImplicitAction
 	;;
 	"--help"| "help") 
 		lamw_manager_help
 	;;
-
+	"build-lazarus")
+		BuildLazarusIDE 1
+		changeOwnerAllLAMW 1
+	;;
 	*)
 		printf "${VERMELHO}Invalid argument!${NORMAL}\n$(lamw_manager_help)" >&2
 		exit 1
 	;;
 esac
-#chattr -i /tmp/lamw-overrides.conf

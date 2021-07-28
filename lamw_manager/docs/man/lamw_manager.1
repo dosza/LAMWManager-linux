@@ -1,5 +1,5 @@
 .\" Manpage for lamw_manager
-.TH lamw_manager 8 "2021 Jun 17 " "0.4.0" "LAMW manager man page"
+.TH lamw_manager 1 "2021 Jul 27 " "0.4.0.2" "LAMW manager man page"
 .SH NAME
 lamw_manager -\ manager to LAMW framework
 .SH SINOPSIS
@@ -46,6 +46,12 @@ lamw_manager [ACTIONS]||[OPTIONS] \fB\-\-use-proxy\fR \fB\-\-server\fR [HOST] \f
 sample:
 .br
  ./lamw_manager --update-lamw --use-proxy --server 10.0.16.1 --port 3128
+.SH ANDROID SDK MANAGER
+lamw_manager --sdkmanager \fB[ARGS]\fR 
+.br
+sample:
+.br
+ ./lamw_manager --sdkmanager \fB--list_installed\fR
 .SH DEBUG
  Use the \fBDEBUG=1\fR flag later in any position of ./lamw_manager (flag does not count as argument)
 .br
