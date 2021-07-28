@@ -58,7 +58,7 @@ NDK_DIR_UNZIP="android-ndk-${NDK_VERSION}"
 SDK_TOOLS_VERSION="4.0"
 SDK_TOOLS_ZIP="commandlinetools-linux-7302050_latest.zip"
 SDK_TOOLS_DIR="$ANDROID_SDK/cmdline-tools"
-GRADLE_MIN_BUILD_TOOLS='28.0.3'
+#GRADLE_MIN_BUILD_TOOLS='28.0.3'
 
 SDK_MANAGER_CMD_PARAMETERS2_PROXY=()
 SDK_LICENSES_PARAMETERS=(--licenses )
@@ -166,10 +166,12 @@ OLD_FPC_STABLE=(
 LAMW_PACKAGE_URL="https://raw.githubusercontent.com/jmpessoa/lazandroidmodulewizard/master/package.json"
 
 CURRENT_OLD_LAMW_INSTALL_INDEX=-1
-JDK_VERSION=8
-ZULU_API_JDK_URL="https://api.azul.com/zulu/download/community/v1.0/bundles/"
-ZULU_API_JDK_URL+="?java_version$JDK_VERSION&jdk_version=$JDK_VERSION&zulu_version=$JDK_VERSION&os=linux&arch=x86&hw_bitness=64&ext=tar.gz&bundle_type=jdk&javafx=false&latest=true&support_term=lts"
-
-export JAVA_HOME="$ROOT_LAMW/jdk/zulu-$JDK_VERSION"
+JDK_VERSION=11
+JDK_VENDOR="openjdk"
+API_JDK_URL="https://api.adoptopenjdk.net/v3/assets/latest/$JDK_VERSION/hotspot?vendor=openjdk"
+JDK_VERSION_FOLDER="${JDK_VENDOR}-${JDK_VERSION}"
+export JAVA_HOME="$ROOT_LAMW/jdk/${JDK_VERSION_FOLDER}"
 JAVA_PATH="$JAVA_HOME/bin"
 export PATH=$JAVA_PATH:$PATH:$LLVM_ANDROID_TOOLCHAINS
+
+OLD_JAVA_HOME="$ROOT_LAMW/jdk/zulu-8"
