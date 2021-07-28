@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.4.0
-#Date: 06/12/2021
+#Version: 0.4.1
+#Date: 07/27/2021
 #Description: The "lamw_headers" is part of the core of LAMW Manager. This script contains LAMW Manager variables.
 #-------------------------------------------------------------------------------------------------#
 NOTIFY_SEND_EXE=$(which notify-send)
@@ -17,7 +17,7 @@ ANDROID_SDK="$ROOT_LAMW/sdk"
 export ANDROID_SDK_ROOT=$ANDROID_SDK
 export XDG_DATA_DIRS="/usr/share:/usr/local/share:$LAMW_USER_HOME/.local/share"
 
-LAMW_INSTALL_VERSION="0.4.0.2"
+LAMW_INSTALL_VERSION="0.4.1"
 OLD_LAMW_INSTALL_VERSION=(
 	0.4.0{.1,}
 	0.3.6{.{2,1},}

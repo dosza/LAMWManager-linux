@@ -1,7 +1,7 @@
 # LAMW Manager Release Notes
 This page contains information about new features and bug fixes.
 
-v0.4.0.2 - Jul 27, 2021
+v0.4.1 - Jul 27, 2021
 ---
 **News**
 +	Apache Ant is no longer officially supported
