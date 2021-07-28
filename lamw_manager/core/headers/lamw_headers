@@ -17,9 +17,9 @@ ANDROID_SDK="$ROOT_LAMW/sdk"
 export ANDROID_SDK_ROOT=$ANDROID_SDK
 export XDG_DATA_DIRS="/usr/share:/usr/local/share:$LAMW_USER_HOME/.local/share"
 
-LAMW_INSTALL_VERSION="0.4.0.2"
+LAMW_INSTALL_VERSION="0.4.0.3"
 OLD_LAMW_INSTALL_VERSION=(
-	0.4.0{.1,}
+	0.4.0{.{2,1}}
 	0.3.6{.{2,1},}
 	0.3.{5,4}{r1,}
 	"0.3.3r2"
@@ -123,7 +123,7 @@ LIBS_ANDROID="libx11-dev libgtk2.0-dev libgdk-pixbuf2.0-dev libcairo2-dev libpan
 PROG_TOOLS="menu git subversion make build-essential zip unzip android-tools-adb gdb wget jq "
 PACKS=()
 
-OLD_ANDROID_SDK=0
+OLD_ANDROID_SDK=1
 NO_GUI_OLD_SDK=0
 LAMW_INSTALL_STATUS=0
 LAMW_IMPLICIT_ACTION_MODE=0
