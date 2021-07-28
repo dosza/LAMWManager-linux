@@ -55,7 +55,7 @@ checkisLocalRootLAMWInvalid(){
 
 
 }
-setRootLAMW(){
+SET_ROOT_LAMW(){
 	if [ ! -e $LAMW_MANAGER_LOCAL_CONFIG_DIR ]; then 
 		if [ "$LOCAL_ROOT_LAMW" = "" ] || [ "$LOCAL_ROOT_LAMW" = "$DEFAULT_ROOT_LAMW" ]; then 
 			ROOT_LAMW="$DEFAULT_ROOT_LAMW"

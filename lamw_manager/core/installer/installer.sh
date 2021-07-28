@@ -67,7 +67,7 @@ getStatusInstalation(){
 		export LAMW_INSTALL_STATUS=1
 		return 1
 	else 
-		export OLD_ANDROID_SDK=1
+		setOldAndroidSDKStatus
 		export NO_GUI_OLD_SDK=1
 		return 0;
 	fi
@@ -76,6 +76,7 @@ getStatusInstalation(){
 
 #install deps
 installDependences(){
+	getCurrentDebianFrontend
 	AptInstall $LIBS_ANDROID $PROG_TOOLS
 		
 }
@@ -88,26 +89,59 @@ getJDK(){
 		[ -e "$JAVA_HOME" ] && rm -r "$JAVA_HOME"
 		Wget "$ZULU_JDK_URL"
 		tar -zxvf "$ZULU_JDK_TAR"
-		mv "$ZULU_JDK_FILE" "zulu-8"
+		mv "$ZULU_JDK_FILE" "zulu-$JDK_VERSION"
 		[ -e "$ZULU_JDK_TAR" ] && rm $ZULU_JDK_TAR
 	fi
 }
-getFPCSourcesTrunk(){
-	mkdir -p $FPC_TRUNK_SOURCE_PATH
-	changeDirectory $FPC_TRUNK_SOURCE_PATH
-	svn checkout $FPC_TRUNK_URL --force
-	if [ $? != 0 ]; then
-		svn cleanup "$FPC_TRUNK_SVNTAG"
-		svn checkout "$FPC_TRUNK_URL" --force
+
+getFromGit(){
+	local git_src_url="$1"
+	local git_src_dir="$2"
+	local git_branch="$3"
+
+	if [ ! -e "$git_src_dir" ]; then 
+		if [ $# -lt 3 ]; then 
+			local git_param=(clone "$git_src_url")
+		else 
+			local git_param=(clone "$git_src_url" -b "$git_branch" "$git_src_dir" )
+		fi
+		git ${git_param[@]}
 		if [ $? != 0 ]; then 
-			svn cleanup "$FPC_TRUNK_SVNTAG"
-			[ $? != 0 ] && rm -rf $FPC_TRUNK_SVNTAG
-			echo "possible network instability! Try later!"
-			exit 1
+			git ${git_param[@]}
+			check_error_and_exit "possible network instability!! Try later!"
+		fi
+	else
+		if [ $# -lt 3 ]; then 
+			local git_param=(pull)
+		else 
+			local git_param=(pull origin $git_branch )
+		fi
+		changeDirectory "$git_src_dir"
+		git ${git_param[@]}
+		if [ $? != 0 ]; then
+			git_param=(reset --hard)
+			git ${git_param[@]}
+			check_error_and_exit "possible network instability!! Try later!"
 		fi
 	fi
-	parseFPCTrunk
 }
+
+
+getFromSVN(){
+	local svn_src_url="$1"
+	local svn_src_dir="$2"
+
+	svn checkout "$svn_src_url" --force
+	if [ $? != 0 ]; then
+		svn cleanup "$svn_src_dir"
+		svn checkout "$svn_src_url" --force
+		if [ $? != 0 ]; then 
+			svn cleanup "$svn_src_dir"
+			[ $? != 0 ] && rm -rf "$svn_src_dir" && echo "possible network instability! Try later!" && exit 1
+		fi
+	fi
+}
+
 
 getFPCStable(){
 	if [ ! -e "$LAMW4LINUX_HOME/usr" ]; then 
@@ -140,59 +174,30 @@ getFPCStable(){
 		$FPC_MKCFG_EXE -d basepath=$FPC_LIB_PATH -o $FPC_LIB_PATH/fpc.cfg;
 	fi
 }
+
+getFPCSourcesTrunk(){
+	mkdir -p $FPC_TRUNK_SOURCE_PATH
+	changeDirectory $FPC_TRUNK_SOURCE_PATH
+	getFromSVN "$FPC_TRUNK_URL" "$FPC_TRUNK_SVNTAG"
+	parseFPCTrunk
+}
+
 #get Lazarus Sources
 getLazarusSources(){
 	changeDirectory $LAMW4LINUX_HOME
-	svn co $LAZARUS_STABLE_SRC_LNK
-	if [ $? != 0 ]; then  #case fails last command , try svn chekout 
-		svn cleanup $LAZARUS_STABLE
-		svn co $LAZARUS_STABLE_SRC_LNK
-		if [ $? != 0 ]; then 
-			svn cleanup $LAZARUS_STABLE
-			[ $? != 0 ] && rm -rf $LAZARUS_STABLE
-			echo "possible network instability! Try later!"
-			exit 1
-		fi
-	fi
+	getFromSVN "$LAZARUS_STABLE_SRC_LNK" "$LAZARUS_STABLE"
 }
 
 #GET LAMW FrameWork
 getLAMWFramework(){
-	local git_param=("clone" "$LAMW_SRC_LNK")
 	changeDirectory $ROOT_LAMW
-	#Remove LAMW  downloaded by SVN
-	if [ -e "$ROOT_LAMW/lazandroidmodulewizard.git" ]; then 
-		if [ -e "$ROOT_LAMW/lazandroidmodulewizard" ]; then 
-			rm -fr "$ROOT_LAMW/lazandroidmodulewizard"
-			rm -fr "$ROOT_LAMW/lazandroidmodulewizard.git"
-		fi
-	fi
+	[  -e "$ROOT_LAMW/lazandroidmodulewizard.git" ] && [ -e "$ROOT_LAMW/lazandroidmodulewizard" ] && 
+		rm -rf "$ROOT_LAMW/lazandroidmodulewizard.git" && rm -rf "$ROOT_LAMW/lazandroidmodulewizard"
 
-	if [ -e lazandroidmodulewizard/.git ]  ; then
-		changeDirectory "$ROOT_LAMW/lazandroidmodulewizard"
-		git_param=("pull")
-	fi
-	
-	git ${git_param[*]}
-	if [ $? != 0 ]; then #case fails last command , try svn chekout
-		
-		git_param=("clone" "$LAMW_SRC_LNK")
-		changeDirectory $ROOT_LAMW
-		#chmod 777 -Rv lazandroidmodulewizard
-		if [ -e $ROOT_LAMW/lazandroidmodulewizard ]; then 
-			rm -rf $ROOT_LAMW/lazandroidmodulewizard
-		fi
-		git ${git_param[*]}
-		if [ $? != 0 ]; then 
-			if [ -e $ROOT_LAMW/lazandroidmodulewizard ]; then 
-				rm -rf $ROOT_LAMW/lazandroidmodulewizard
-			fi
-			echo "possible network instability! Try later!"
-			exit 1
-		fi
-	fi
-	
+	getFromGit "$LAMW_SRC_LNK" "$ROOT_LAMW/lazandroidmodulewizard"
 }
+
+
 AntTrigger(){
 	if [ -e "$ANDROID_SDK/tools/.ant" ]; then 
 		mv "$ANDROID_SDK/tools/.ant" "$ANDROID_SDK/tools/ant"
@@ -201,9 +206,8 @@ AntTrigger(){
 
 #this function get ant 
 getAnt(){
-	if [ $OLD_ANDROID_SDK = 0 ]; then  #sem ação se ant nao é suportado
-		return
-	fi
+	[ $OLD_ANDROID_SDK = 0 ] && return   #sem ação se ant nao é suportado
+		
 	changeDirectory "$ROOT_LAMW" 
 	if [ ! -e "$ANT_HOME" ]; then
 		MAGIC_TRAP_INDEX=0 # preperando o indice do arquivo/diretório a ser removido
@@ -213,9 +217,7 @@ getAnt(){
 		tar -xvf "$ANT_TAR_FILE"
 	fi
 
-	if [ -e  $ANT_TAR_FILE ]; then
-		rm $ANT_TAR_FILE
-	fi
+	[ -e  $ANT_TAR_FILE ] && rm $ANT_TAR_FILE
 }
 
 getGradle(){
@@ -234,17 +236,13 @@ getGradle(){
 }
 
 getNDK(){
-	if [ $OLD_ANDROID_SDK = 0 ]; then
-		return 
-	fi
+	[ $OLD_ANDROID_SDK = 0 ] && return 
+
 	changeDirectory "$ANDROID_SDK"
 	if [ -e  "$ANDROID_SDK/ndk-bundle" ]; then 
 		for i in ${!OLD_NDK_VERSION_STR[*]}; do
-			 grep ${OLD_NDK_VERSION_STR[i]} "$ANDROID_SDK/ndk-bundle/source.properties" > /dev/null
-			if [ $? = 0 ]; then 
-				rm -rf $ANDROID_SDK/ndk-bundle
-				break
-			fi
+			grep ${OLD_NDK_VERSION_STR[i]} "$ANDROID_SDK/ndk-bundle/source.properties" > /dev/null
+			[ $? = 0 ] && rm -rf $ANDROID_SDK/ndk-bundle && break
 		done
 	fi
 
@@ -256,12 +254,9 @@ getNDK(){
 		unzip -o  $NDK_ZIP
 		MAGIC_TRAP_INDEX=-1
 		mv $NDK_DIR_UNZIP ndk-bundle
-		if [ -e $NDK_ZIP ]; then 
-			rm $NDK_ZIP
-		fi
+		[ -e $NDK_ZIP ] && rm $NDK_ZIP
+
 	fi
-	trap - SIGINT  #removendo a traps
-	MAGIC_TRAP_INDEX=-1
 }
 #Get Gradle and SDK Tools 
 getAndroidSDKTools(){
@@ -272,54 +267,90 @@ getAndroidSDKTools(){
 		export SDK_TOOLS_VERSION="r25.2.5"
 		export SDK_TOOLS_URL="https://dl.google.com/android/repository/tools_r25.2.5-linux.zip"
 		export SDK_TOOLS_ZIP="tools_r25.2.5-linux.zip"
+		export SDK_TOOLS_DIR="$ANDROID_SDK/tools"
 	fi
 
 	changeDirectory $ANDROID_SDK
-	if [ ! -e tools ];then
+	if [ ! -e "$SDK_TOOLS_DIR" ];then
+		[ $OLD_ANDROID_SDK = 0 ]  && mkdir -p "$SDK_TOOLS_DIR" && changeDirectory "$SDK_TOOLS_DIR"
 		trap TrapControlC  2
 		MAGIC_TRAP_INDEX=4
 		Wget $SDK_TOOLS_URL
 		MAGIC_TRAP_INDEX=5
 		unzip -o  $SDK_TOOLS_ZIP
+		[ $OLD_ANDROID_SDK = 0 ] && mv cmdline-tools latest
 		rm $SDK_TOOLS_ZIP
 		AntTrigger
 	fi
 }
 
-getSDKAndroid(){
-	changeDirectory $ANDROID_SDK/tools/bin #change directory
-	yes | ./sdkmanager ${SDK_LICENSES_PARAMETERS[*]}
+
+runSDKManagerLicenses(){
+	local sdk_manager_cmd="$SDK_TOOLS_DIR/latest/bin/sdkmanager"
+	yes | $sdk_manager_cmd ${SDK_LICENSES_PARAMETERS[*]} 
 	if [ $? != 0 ]; then 
-		yes | ./sdkmanager ${SDK_LICENSES_PARAMETERS[*]}
+		yes | $sdk_manager_cmd ${SDK_LICENSES_PARAMETERS[*]} 
+		check_error_and_exit "possible network instability! Try later!"
+	fi
+}
+
+runSDKManager(){
+	local sdk_manager_cmd="$SDK_TOOLS_DIR/latest/bin/sdkmanager"
+	if [ $FORCE_YES = 1 ]; then 
+		yes | $sdk_manager_cmd $*
+
 		if [ $? != 0 ]; then
-			echo "possible network instability! Try later!"
-			exit 1
+			yes | $sdk_manager_cmd $*
+			check_error_and_exit "possible network instability! Try later!"
+		fi
+	else
+		$sdk_manager_cmd $*
+
+		if [ $? != 0 ]; then 
+			$sdk_manager_cmd $*
+			check_error_and_exit "possible network instability! Try later!"
 		fi
 	fi
-	for((i=0;i<${#SDK_MANAGER_CMD_PARAMETERS[*]};i++))
-	do
-		echo "Please wait, downloading ${NEGRITO}${SDK_MANAGER_CMD_PARAMETERS[i]}${NORMAL}\"..."
-		if [ $i = 0 ]; then 
-			yes | ./sdkmanager ${SDK_MANAGER_CMD_PARAMETERS[i]}  # instala sdk sem intervenção humana 
-			if [ $? != 0 ]; then 
-				yes | ./sdkmanager ${SDK_MANAGER_CMD_PARAMETERS[i]}
-				if [ $? != 0 ]; then
-					echo "possible network instability! Try later!"
-					exit 1
-				fi
-			fi 
-		else
-			./sdkmanager ${SDK_MANAGER_CMD_PARAMETERS[i]}
+}
 
-			if [ $? != 0 ]; then 
-				./sdkmanager ${SDK_MANAGER_CMD_PARAMETERS[i]}
-				if [ $? != 0 ]; then
-					echo "possible network instability! Try later!"
-					exit 1
-				fi
-			fi
+runOldSDKManager(){
+	local sdk_pack="$1"
+	local sdk_pack_path="$2"
+	local sdk_manager_cmd="$ANDROID_SDK/tools/android"
+	local sdk_cmd_extra_params=(update sdk --all --no-ui --filter $sdk_pack  ${SDK_MANAGER_CMD_PARAMETERS2_PROXY[*]})
+	if [ ! -e $sdk_pack_path ]; then 
+		echo "y" |  $sdk_manager_cmd ${sdk_cmd_extra_params[@]}
+
+		if [ ! -e $sdk_pack_path ]; then 
+			echo "y" |  $sdk_manager_cmd ${sdk_cmd_extra_params[@]}
+			[ ! -e "$sdk_pack_path" ] && echo "possible network instability! Try later!" && exit 1
 		fi
-	done
+	fi
+}
+
+getSDKAndroid(){
+	
+	FORCE_YES=1
+	changeDirectory $ANDROID_HOME
+	runSDKManagerLicenses
+	
+	if [ $#  = 0 ]; then 
+
+		for((i=0;i<${#SDK_MANAGER_CMD_PARAMETERS[*]};i++));do
+			echo "Please wait, downloading ${NEGRITO}${SDK_MANAGER_CMD_PARAMETERS[i]}${NORMAL}\"..."
+			
+			if [ $i = 0 ]; then 
+				runSDKManager ${SDK_MANAGER_CMD_PARAMETERS[i]} # instala sdk sem intervenção humana 
+			else
+				FORCE_YES=0
+				runSDKManager ${SDK_MANAGER_CMD_PARAMETERS[i]} 
+			fi
+		done
+	else 
+		runSDKManager $*
+	fi
+
+	unset FORCE_YES
 }
 
 getOldAndroidSDK(){
@@ -334,26 +365,14 @@ getOldAndroidSDK(){
 	)
 
 	if [ -e $ANDROID_SDK/tools/android  ]; then 
-		changeDirectory $ANDROID_SDK/tools
+		changeDirectory $ANDROID_HOME
 		if [ $NO_GUI_OLD_SDK = 0 ]; then
-			echo "before update-sdk"
+			echo "Please wait..."
 			$ANDROID_SDK/tools/android  update sdk
 		else 
-			for((i=0;i<${#SDK_MANAGER_CMD_PARAMETERS2[*]};i++))
-			do
+			for((i=0;i<${#SDK_MANAGER_CMD_PARAMETERS2[*]};i++));do
 				echo "Getting ${NEGRITO}${SDK_MANAGER_CMD_PARAMETERS2[i]}${NORMAL} ..."
-				#read;
-			#	ls "$ANDROID_SDK/${sdk_manager_sdk_paths[i]}";read
-				if [ ! -e "${sdk_manager_sdk_paths[i]}" ];then
-					echo "y" |   ./android update sdk --all --no-ui --filter ${SDK_MANAGER_CMD_PARAMETERS2[i]} ${SDK_MANAGER_CMD_PARAMETERS2_PROXY[*]}
-					if [ ! -e "${sdk_manager_sdk_paths[i]}" ]; then
-						echo "y" |   ./android update sdk --all --no-ui --filter ${SDK_MANAGER_CMD_PARAMETERS2[i]} ${SDK_MANAGER_CMD_PARAMETERS2_PROXY[*]}
-						if [ ! -e "${sdk_manager_sdk_paths[i]}" ]; then
-							echo "possible network instability! Try later!"
-							exit 1
-						fi
-					fi
-				fi	
+				runOldSDKManager "${SDK_MANAGER_CMD_PARAMETERS2[i]}" "${sdk_manager_sdk_paths[i]}"
 			done 
 		fi
 	fi
@@ -377,7 +396,7 @@ RepairOldSDKAndroid(){
 	done
 
 	setLAMWDeps
-	getOldAndroidSDK
+	getAndroidAPIS
 	for ((i=0;i<${#sdk_manager_fails[*]};i++))
 	do
 		local current_sdk_path="${ANDROID_SDK}/${sdk_manager_fails[i]}"
@@ -396,7 +415,7 @@ RepairOldSDKAndroid(){
 
 getAndroidAPIS(){
 	if [ $OLD_ANDROID_SDK = 0 ]; then
-		getSDKAndroid
+		getSDKAndroid $*
 	else
 		getOldAndroidSDK
 	fi
@@ -437,10 +456,10 @@ Repair(){
 }
 
 setOldAndroidSDKStatus(){
-	if [  $1 = 0 ]; then
-		export OLD_ANDROID_SDK=0
-	else 
-		export OLD_ANDROID_SDK=1
+	local lamw_install_log_path="$LAMW4LINUX_HOME/lamw-install.log"
+	if [ -e $lamw_install_log_path ] ; then 
+		#grep "OLD_ANDROID_SDK=0" "$lamw_install_log_path"  > /dev/null 
+	 	OLD_ANDROID_SDK=0
 	fi
 }
 
@@ -493,7 +512,6 @@ getImplicitInstall(){
 	if [ ! -e "$lamw_install_log_path" ]; then
 		export NO_GUI_OLD_SDK=1
 	else
-		grep "OLD_ANDROID_SDK=0" "$lamw_install_log_path"  > /dev/null
 		setOldAndroidSDKStatus $?
 		
 		grep "Generate LAMW_INSTALL_VERSION=$LAMW_INSTALL_VERSION" "$lamw_install_log_path" 	> /dev/null
@@ -519,30 +537,35 @@ BuildLazarusIDE(){
 		"FPC_VERSION=$_FPC_TRUNK_VERSION"
 	)
 
-	if [ ! -e "$LAMW_IDE_HOME" ]; then  
-		ln -sf $LAMW4LINUX_HOME/$LAZARUS_STABLE $LAMW_IDE_HOME # link to lamw4_home directory 
-	fi  
+	local ide_make_cfg_path="$LAMW4_LINUX_PATH_CFG/idemake.cfg"
 
-	if [ ! -e "$LAMW4LINUX_EXE_PATH" ]; then 
-		ln -sf $LAMW_IDE_HOME/lazarus $LAMW4LINUX_EXE_PATH  #link  to lazarus executable
-	fi
-
+	[ ! -e "$LAMW_IDE_HOME" ] && ln -sf $LAMW4LINUX_HOME/$LAZARUS_STABLE $LAMW_IDE_HOME # link to lamw4_home directory  
+	[ ! -e "$LAMW4LINUX_EXE_PATH" ] && ln -sf $LAMW_IDE_HOME/lazarus $LAMW4LINUX_EXE_PATH  #link  to lazarus executable
 
 	changeDirectory $LAMW_IDE_HOME
-	if [ $# = 0 ]; then 
-		make clean all  ${make_opts[*]}
-	fi
+	
+	[ $# = 0 ] && make clean all  ${make_opts[*]} #build all IDE
 	
 	initLAMw4LinuxConfig
+
+	if [ -e   "$ide_make_cfg_path" ]; then 
+		local current_widget_set="$(grep '\-dLCL.' "$ide_make_cfg_path" | sed 's/-dLCL//g')"
+		[ "$current_widget_set" != "" ] && [ "$current_widget_set" != "gtk2" ] && current_widget_set="--ws=$current_widget_set"
+	fi
 		#build ide  with lamw framework 
 	for((i=0;i< ${#LAMW_PACKAGES[@]};i++))
 	do
-		local lamw_build_opts=(--build-ide= --add-package ${LAMW_PACKAGES[i]} --pcp=$LAMW4_LINUX_PATH_CFG  --lazarusdir=$LAMW_IDE_HOME)
+		local lamw_build_opts=(--build-ide= --add-package ${LAMW_PACKAGES[i]} --pcp=$LAMW4_LINUX_PATH_CFG  --lazarusdir=$LAMW_IDE_HOME $current_widget_set)
 		./lazbuild  ${lamw_build_opts[*]}
 		if [ $? != 0 ]; then
 			./lazbuild ${lamw_build_opts[*]}
+			[ $? != 0 ] && { echo "${VERMELHO}Error${NORMAL}: Fails on build ${NEGRITO}${LAMW_PACKAGES[i]}${NORMAL} package" && return ; }
 		fi
 	done
+
+	strip lazarus
+	strip lazbuild
+	strip startlazarus
 }
 
 #this code add support a proxy 
@@ -568,6 +591,7 @@ mainInstall(){
 	getGradle
 	getAndroidSDKTools
 	getNDK
+	disableTrapActions
 	getAndroidAPIS 
 	getFPCStable
 	getFPCSourcesTrunk
@@ -583,4 +607,5 @@ mainInstall(){
 	LAMW4LinuxPostConfig
 	enableADBtoUdev
 	writeLAMWLogInstall
+	changeOwnerAllLAMW
 }

@@ -15,8 +15,7 @@ setAndroidSDKCMDParameters(){
 	SDK_MANAGER_CMD_PARAMETERS=(
 		"platforms;android-$ANDROID_SDK_TARGET" 
 		"platform-tools"
-		"build-tools;$ANDROID_BUILD_TOOLS_TARGET" 
-		"tools" 
+		"build-tools;$ANDROID_BUILD_TOOLS_TARGET"
 		"ndk-bundle" 
 		"extras;android;m2repository"
 		"build-tools;$GRADLE_MIN_BUILD_TOOLS"
@@ -57,23 +56,15 @@ setJDKDeps(){
 checkJDKVersionStatus(){
 	setJDKDeps
 	JDK_STATUS=0
-	if [ ! -e $JAVA_HOME ]; then
-		JDK_STATUS=1
-		return 
-	else 
-		grep $JAVA_VERSION $JAVA_HOME/release
-		if  [ $? != 0 ]; then
-			JDK_STATUS=1
-			return
-		fi
-	fi
+	local java_release_path="$JAVA_HOME/release"
+	[ ! -e $JAVA_HOME ] || ( [ -e $java_release_path ]  && ! grep $JAVA_VERSION  $java_release_path > /dev/null ) && JDK_STATUS=1
 }
 
 setLAMWDeps(){
 
 	[  "$LAMW_DEPENDENCIES" = "" ] && LAMW_DEPENDENCIES="$(Wget -O- -q  "$LAMW_PACKAGE_URL" )"
-	export ANDROID_SDK_TARGET=$(getLAMWDep '.dependencies.android.platform')
-	export ANDROID_BUILD_TOOLS_TARGET=$(getLAMWDep '.dependencies.android.buildTools')
+	ANDROID_SDK_TARGET=$(getLAMWDep '.dependencies.android.platform')
+	ANDROID_BUILD_TOOLS_TARGET=$(getLAMWDep '.dependencies.android.buildTools')
 	GRADLE_VERSION=$(getLAMWDep '.dependencies.gradle')
 	GRADLE_HOME="$ROOT_LAMW/gradle-${GRADLE_VERSION}"
 	GRADLE_ZIP_LNK="https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip"
