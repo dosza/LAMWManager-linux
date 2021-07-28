@@ -18,7 +18,7 @@ setAndroidSDKCMDParameters(){
 		"build-tools;$ANDROID_BUILD_TOOLS_TARGET"
 		"ndk-bundle" 
 		"extras;android;m2repository"
-		"build-tools;$GRADLE_MIN_BUILD_TOOLS"
+		#"build-tools;$GRADLE_MIN_BUILD_TOOLS"
 	)
 
 	SDK_MANAGER_CMD_PARAMETERS2=(
@@ -30,7 +30,7 @@ setAndroidSDKCMDParameters(){
 		"extra-google-m2repository"
 		"extra-google-market_licensing"
 		"extra-google-market_apk_expansion"
-		"build-tools-$GRADLE_MIN_BUILD_TOOLS"
+		#"build-tools-$GRADLE_MIN_BUILD_TOOLS"
 	)
 
 	if [ $USE_PROXY = 1 ]; then
@@ -44,13 +44,18 @@ setAndroidSDKCMDParameters(){
 		)
 	fi
 }
+parseJSONString(){
+	echo "$1" | jq "${@:2}"  | sed 's/"//g'
+}
 
 setJDKDeps(){
-	ZULU_JDK_JSON="$(Wget -O- -q  "$ZULU_API_JDK_URL")"
-	ZULU_JDK_URL="$(echo $ZULU_JDK_JSON | jq '.[0].url' | sed 's/"//g')"
-	ZULU_JDK_TAR="$(echo $ZULU_JDK_JSON | jq '.[0].name' | sed 's/"//g' )"
-	ZULU_JDK_FILE="$(echo $ZULU_JDK_TAR | sed 's/.tar.gz//g')"
-	JAVA_VERSION="1.8.0_$(echo $ZULU_JDK_JSON | jq '.[0].java_version[2]'| sed 's/"//g')"
+	local jdk_filters_query=(".[] | select(.binary.os==\"linux\")|select(.binary.architecture==\"x64\")|select(.binary.image_type==\"jdk\")|map(.)")
+	JDK_JSON="$(Wget -O- -q  "$API_JDK_URL" | jq "${jdk_filters_query[@]}")"
+	JDK_URL="`parseJSONString "$JDK_JSON" ".[0].package.link"`"
+	JDK_TAR="`parseJSONString "$JDK_JSON" ".[0].package.name"`"
+	JDK_FILE="openjdk-`parseJSONString "$JDK_JSON" ".[3].openjdk_version"  | sed 's/+/_/g'`"
+	JAVA_VERSION="11.0.`parseJSONString "$JDK_JSON" ".[3].security"`"
+	JDK_TAR="`parseJSONString "$JDK_JSON" ".[0].package.name"`"
 }
 
 checkJDKVersionStatus(){
