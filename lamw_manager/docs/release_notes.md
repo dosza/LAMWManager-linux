@@ -9,8 +9,16 @@ v0.4.1 - Jul 27, 2021
 +	The [*api*](https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/tree/v0.4.1/lamw_manager/core/installer/api.sh) submodule has been updated to get JDK11 from AdoptOpenJDK API
 
 **Note**
-+	Apache Ant is no longer supported on new installs, but ant will still work for those who installed using lamw_manager <= 0.4.0 and then upgrade to v0.4.0.2 
-+	Read [Instaling LAMW Manager with Apache Ant](https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/tree/v0.4.1/lamw_manager/docs/apache_ant.md)
++	This version uses JDK 11 compatible with it.
+
+v0.4.0.3 - Jul 28, 2021
+---
+
+**News**
++	Hybrid install: latest version that will work with Apache Ant 
+
+**Fixed**:
++	Error:build lazarus: *unknown gtk2* package
 
 v0.4.0.2 - Jul 27, 2021
 ---
