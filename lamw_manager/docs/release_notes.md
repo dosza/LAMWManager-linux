@@ -9,7 +9,7 @@ v0.4.1 - Jul 27, 2021
 +	LAMW Manager uses new Android [*Commmand Line Tools*](https://developer.android.com/studio/command-line)
 +	LAMW Manager can execute *sdkmanager* with params
 +	JDK default (installed by LAMW Manager) version is *11* using build from *AdoptOpenJDK*
-+	The [*api*](https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/tree/v0.4.0/lamw_manager/core/installer/api.sh) submodule has been updated to get JDK11 from AdoptOpenJDK API
++	The [*api*](https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/tree/v0.4.1/lamw_manager/core/installer/api.sh) submodule has been updated to get JDK11 from AdoptOpenJDK API
 
 **Fixed**
 +	Wrong permission: idemake.cfg
