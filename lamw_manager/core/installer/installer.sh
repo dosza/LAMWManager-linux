@@ -551,7 +551,11 @@ BuildLazarusIDE(){
 
 	if [ -e   "$ide_make_cfg_path" ]; then 
 		local current_widget_set="$(grep '\-dLCL.' "$ide_make_cfg_path" | sed 's/-dLCL//g')"
-		[ "$current_widget_set" != "" ] && [ "$current_widget_set" != "gtk2" ] && current_widget_set="--ws=$current_widget_set"
+		if [ "$current_widget_set" != "" ] && [ "$current_widget_set" != "gtk2" ]; then 
+			current_widget_set="--ws=$current_widget_set"
+		else 
+			current_widget_set=""
+		fi
 	fi
 		#build ide  with lamw framework 
 	for((i=0;i< ${#LAMW_PACKAGES[@]};i++))

@@ -4,12 +4,34 @@ This page contains information about new features and bug fixes.
 v0.4.1 - Jul 27, 2021
 ---
 **News**
-+	Apache Ant is no longer officially supported
-+	Get Current Widget from idemake.cfg and pass to *lazbuild*
-+	LAMW Manager uses new Android [*Commmand Line Tools*](https://developer.android.com/studio/command-line)
-+	LAMW Manager can execute *sdkmanager* with params
++	Apache Ant¹ is no longer officially supported
 +	JDK default (installed by LAMW Manager) version is *11* using build from *AdoptOpenJDK*
 +	The [*api*](https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/tree/v0.4.1/lamw_manager/core/installer/api.sh) submodule has been updated to get JDK11 from AdoptOpenJDK API
+
+**Fixes**
++	Error:build lazarus: *unknown gtk2* package (backported from v0.4.0.3)
+
+**Note**
+
+1.	To continue using Apache Ant (hybrid install), you must use [*LAMW Manager v0.4.0.3*](https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/tree/v0.4.0/) 
+
+v0.4.0.3 - Jul 28, 2021
+---
+
+**News**
++	Hybrid install: latest version that will work with Apache Ant!
++	Hybrid install: new *Android Command Line Tools* to get Android API's and Apache Ant + JDK 8. 
+
+**Fixed**:
++	Error:build lazarus: *unknown gtk2* package
+
+v0.4.0.2 - Jul 27, 2021
+---
+**News**
++	Apache Ant is no longer officially supported (*in fresh instalation*)
++	Get Current Widget from idemake.cfg and pass to *lazbuild*
++	Now: LAMW Manager uses new **Android Commmand Line Tools**
++	LAMW Manager can execute *sdkmanager* with params
 
 **Fixed**
 +	Wrong permission: idemake.cfg
