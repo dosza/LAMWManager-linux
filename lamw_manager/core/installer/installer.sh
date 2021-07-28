@@ -85,12 +85,13 @@ installDependences(){
 getJDK(){
 	checkJDKVersionStatus
 	if [ $JDK_STATUS = 1 ]; then 
+		[ -e "$OLD_JAVA_HOME" ] && rm -rf "$OLD_JAVA_HOME"
 		changeDirectory "$ROOT_LAMW/jdk"
 		[ -e "$JAVA_HOME" ] && rm -r "$JAVA_HOME"
-		Wget "$ZULU_JDK_URL"
-		tar -zxvf "$ZULU_JDK_TAR"
-		mv "$ZULU_JDK_FILE" "zulu-$JDK_VERSION"
-		[ -e "$ZULU_JDK_TAR" ] && rm $ZULU_JDK_TAR
+		Wget "$JDK_URL"
+		tar -zxvf "$JDK_TAR"
+		mv "$JDK_FILE" "${JDK_VERSION_FOLDER}"
+		[ -e "$JDK_TAR" ] && rm "$JDK_TAR"
 	fi
 }
 
@@ -264,10 +265,10 @@ getAndroidSDKTools(){
 	changeDirectory $ROOT_LAMW
 
 	if [ $OLD_ANDROID_SDK = 1 ]; then #mode OLD SDK (2-4 with ant support )
-		export SDK_TOOLS_VERSION="r25.2.5"
-		export SDK_TOOLS_URL="https://dl.google.com/android/repository/tools_r25.2.5-linux.zip"
-		export SDK_TOOLS_ZIP="tools_r25.2.5-linux.zip"
-		export SDK_TOOLS_DIR="$ANDROID_SDK/tools"
+		SDK_TOOLS_VERSION="r25.2.5"
+		SDK_TOOLS_URL="https://dl.google.com/android/repository/tools_r25.2.5-linux.zip"
+		SDK_TOOLS_ZIP="tools_r25.2.5-linux.zip"
+		SDK_TOOLS_DIR="$ANDROID_SDK/tools"
 	fi
 
 	changeDirectory $ANDROID_SDK
@@ -294,7 +295,7 @@ runSDKManagerLicenses(){
 	fi
 }
 
-runSDKManager(){
+  runSDKManager(){
 	local sdk_manager_cmd="$SDK_TOOLS_DIR/latest/bin/sdkmanager"
 	if [ $FORCE_YES = 1 ]; then 
 		yes | $sdk_manager_cmd $*
@@ -361,7 +362,7 @@ getOldAndroidSDK(){
 		"$ANDROID_SDK/extras/google/google_play_services"
 		$ANDROID_SDK/extras/{android,google}/m2repository
 		$ANDROID_SDK/extras/google/market_{licensing,apk_expansion}
-		"$ANDROID_SDK/build-tools/$GRADLE_MIN_BUILD_TOOLS"
+	#	"$ANDROID_SDK/build-tools/$GRADLE_MIN_BUILD_TOOLS"
 	)
 
 	if [ -e $ANDROID_SDK/tools/android  ]; then 
