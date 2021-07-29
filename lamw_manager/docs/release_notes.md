@@ -7,6 +7,8 @@ v0.4.0.3 - Jul 28, 2021
 +	Apache Ant 1.10.11
 +	Hybrid install: latest version that will work with Apache Ant!
 +	Hybrid install: new *Android Command Line Tools* to get Android API's and Apache Ant + JDK 8.
++	[*headers*](https://github.com/dosza/LAMW4Linux-installer/blob/v0.4.0/lamw_manager/core/headers) module was divided in new submodule: [*lamw4linux_env*](https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/tree/v0.4.0/lamw_manager/core/headers/lamw4linux_env.sh)
++	Removed code deprecated
 
 
 
