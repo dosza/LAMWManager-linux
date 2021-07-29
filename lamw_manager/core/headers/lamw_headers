@@ -16,6 +16,8 @@ LAMW_INSTALL_STATUS=0
 LAMW_IMPLICIT_ACTION_MODE=0
 FLAG_FORCE_ANDROID_AARCH64=1
 
+ARGS=($@)
+INDEX_FOUND_USE_PROXY=-1
 CURRENT_OLD_LAMW_INSTALL_INDEX=-1
 MAGIC_TRAP_INDEX=-1
 
@@ -94,9 +96,8 @@ ZULU_API_JDK_URL+="?java_version$JDK_VERSION&jdk_version=$JDK_VERSION&zulu_versi
 FPC_TRUNK_URL="https://svn.freepascal.org/svn/fpc/tags/${FPC_TRUNK_SVNTAG}"
 
 #------------------------------------------------------------------------------------------	
-ANDROID_SDK=$ANDROID_SDK_ROOT
 CMD_SDK_TOOLS_ZIP="commandlinetools-linux-7302050_latest.zip"
-CMD_SDK_TOOLS_DIR="$ANDROID_SDK/cmdline-tools"
+CMD_SDK_TOOLS_DIR="$ANDROID_SDK_ROOT/cmdline-tools"
 SDK_LICENSES_PARAMETERS=(--licenses )
 LAMW4_LINUX_PATH_CFG="$LAMW_USER_HOME/.lamw4linux"
 LAMW4LINUX_HOME="$ROOT_LAMW/lamw4linux"

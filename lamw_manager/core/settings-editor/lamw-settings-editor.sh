@@ -8,8 +8,8 @@
 #-------------------------------------------------------------------------------------------------#
 #this function builds initial struct directory of LAMW env Development !
 initROOT_LAMW(){
-	if [ ! -e $ANDROID_SDK ]; then 
-		mkdir -p $ANDROID_SDK
+	if [ ! -e $ANDROID_SDK_ROOT ]; then 
+		mkdir -p $ANDROID_SDK_ROOT
 	fi
 
 	[ ! -e "$ROOT_LAMW/jdk" ] && mkdir "$ROOT_LAMW/jdk"
@@ -204,7 +204,7 @@ LAMW4LinuxPostConfig(){
 		"export PPC_CONFIG_PATH=$PPC_CONFIG_PATH"
 		"export JAVA_HOME=$JAVA_HOME"
 		"export ANDROID_HOME=$ANDROID_HOME"
-		"export ANDROID_SDK_ROOT=$ANDROID_SDK"
+		"export ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
 		"export PATH=$ROOT_LAMW/lamw4linux/usr/bin:\$PPC_CONFIG_PATH:\$JAVA_HOME/bin:\$PATH"
 		"exec $LAMW4LINUX_EXE_PATH --pcp=$LAMW4_LINUX_PATH_CFG \$*"
 	)

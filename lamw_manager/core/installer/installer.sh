@@ -192,8 +192,8 @@ getLAMWFramework(){
 
 
 AntTrigger(){
-	if [ -e "$ANDROID_SDK/tools/.ant" ]; then 
-		mv "$ANDROID_SDK/tools/.ant" "$ANDROID_SDK/tools/ant"
+	if [ -e "$ANDROID_SDK_ROOT/tools/.ant" ]; then 
+		mv "$ANDROID_SDK_ROOT/tools/.ant" "$ANDROID_SDK_ROOT/tools/ant"
 	fi
 }
 
@@ -233,7 +233,7 @@ getGradle(){
 getAndroidSDKTools(){
 	initROOT_LAMW
 	changeDirectory $ROOT_LAMW
-	changeDirectory $ANDROID_SDK
+	changeDirectory $ANDROID_SDK_ROOT
 	
 	if [ ! -e "$CMD_SDK_TOOLS_DIR" ];then
 		mkdir -p "$CMD_SDK_TOOLS_DIR"
@@ -250,11 +250,11 @@ getAndroidSDKTools(){
 
 getSDKAntSupportedTools(){
 	initROOT_LAMW
-	changeDirectory $ANDROID_SDK
+	changeDirectory $ANDROID_SDK_ROOT
 	SDK_TOOLS_VERSION="r25.2.5"
 	SDK_TOOLS_URL="https://dl.google.com/android/repository/tools_r25.2.5-linux.zip"
 	SDK_TOOLS_ZIP="tools_r25.2.5-linux.zip"
-	SDK_TOOLS_DIR="$ANDROID_SDK/tools"
+	SDK_TOOLS_DIR="$ANDROID_SDK_ROOT/tools"
 	if [ ! -e "$SDK_TOOLS_DIR" ];then
 		trap TrapControlC  2
 		MAGIC_TRAP_INDEX=4
