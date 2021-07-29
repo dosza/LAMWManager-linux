@@ -4,6 +4,7 @@ This page contains information about new features and bug fixes.
 v0.4.0.3 - Jul 28, 2021
 ---
 **News**
++	Apache Ant 1.10.11
 +	Hybrid install: latest version that will work with Apache Ant!
 +	Hybrid install: new *Android Command Line Tools* to get Android API's and Apache Ant + JDK 8.
 
