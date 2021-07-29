@@ -44,7 +44,6 @@ case "$1" in
 
 	else
 		mainInstall
-		NO_GUI_OLD_SDK=0
 		getAndroidAPIS  ${ARGS[@]:1}
 		changeOwnerAllLAMW
 	fi 	
@@ -71,8 +70,6 @@ case "$1" in
 		fi
 	;;
 	"install")
-		setOldAndroidSDKStatus
-		NO_GUI_OLD_SDK=1
 		mainInstall
 	;;
 
@@ -85,8 +82,7 @@ case "$1" in
 	"--reset-aapis")
 		getStatusInstalation
 		if [ $LAMW_INSTALL_STATUS = 1 ]; then
-			NO_GUI_OLD_SDK=1
-			RepairOldSDKAndroid
+			resetAndroidAPIS
 		else
 			mainInstall
 		fi
