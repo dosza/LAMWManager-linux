@@ -6,20 +6,21 @@
 #Date: 06/12/2021
 #Description: The "lamw_headers" is part of the core of LAMW Manager. This script contains LAMW Manager variables.
 #-------------------------------------------------------------------------------------------------#
-
-NOTIFY_SEND_EXE=`which notify-send`
 LAMW_MANAGER_LOCAL_CONFIG_DIR="$LAMW_USER_HOME/.lamw_manager"
 LAMW_MANAGER_LOCAL_CONFIG_PATH="$LAMW_MANAGER_LOCAL_CONFIG_DIR/local_lamw_manager.cfg"
 DEFAULT_ROOT_LAMW="$LAMW_USER_HOME/LAMW"
-
 SET_ROOT_LAMW #RAIZ DO AMBIENTE LAMW 
-FORCE_LAWM4INSTALL=0
-APT_OPT=""
-PROXY_SERVER="internet.cua.ufmt.br"
-PORT_SERVER=3128
-PROXY_URL="http://$PROXY_SERVER:$PORT_SERVER"
-USE_PROXY=0
 
+OLD_ANDROID_SDK=1
+LAMW_INSTALL_STATUS=0
+LAMW_IMPLICIT_ACTION_MODE=0
+FLAG_FORCE_ANDROID_AARCH64=1
+
+CURRENT_OLD_LAMW_INSTALL_INDEX=-1
+MAGIC_TRAP_INDEX=-1
+
+USE_PROXY=0
+TIME_WAIT=2
 
 #------------------------------------------------------------------------------------------
 #						Section Version 
@@ -107,20 +108,12 @@ LAMW_MENU_ITEM_PATH="$LAMW_USER_HOME/.local/share/applications/lamw4linux.deskto
 ANT_TAR_FILE="apache-ant-${ANT_VERSION_STABLE}-bin.tar.xz"
 ANT_HOME="$ROOT_LAMW/apache-ant-${ANT_VERSION_STABLE}"
 GRADLE_CFG_HOME="$LAMW_USER_HOME/.gradle"
-REAL_LAMW_TOOLS="$ROOT_LAMW/.real"
-
-FPC_STABLE=""
 OLD_FPC_CFG_PATH="$LAMW_USER_HOME/.fpc.cfg"
 FPC_CFG_PATH="$LAMW_USER_HOME/.fpc.cfg"
-PPC_CONFIG_PATH="$LAMW_USER_HOME"
-	
-
 FPC_LIB_PATH="$LAMW4LINUX_HOME/usr/local/lib/fpc/${FPC_VERSION}"
 FPC_MKCFG_EXE="$LAMW4LINUX_HOME/usr/local/bin/fpcmkcfg"
 
 FPC_DEB="fpc-laz_${FPC_VERSION}-1_amd64.deb"
-
-FPC_ID_DEFAULT=0
 FPC_CROSS_ARM_DEFAULT_PARAMETERS=('clean crossall crossinstall  CPU_TARGET=arm OS_TARGET=android OPT="-dFPC_ARMHF" SUBARCH="armv7a" INSTALL_PREFIX=/usr')
 
 LAMW_PACKAGES=(
@@ -131,28 +124,11 @@ LAMW_PACKAGES=(
 )
 
 #REGEX VARIABLES
-
-WR_GRADLE_HOME=""
-WR_ANDROID_HOME=""
 HOME_USER_SPLITTED_ARRAY=(${HOME//\// })
-HOME_STR_SPLITTED=""
-
 LIBS_ANDROID="libx11-dev libgtk2.0-dev libgdk-pixbuf2.0-dev libcairo2-dev libpango1.0-dev libxtst-dev libatk1.0-dev libghc-x11-dev freeglut3 freeglut3-dev "
 PROG_TOOLS="menu git subversion make build-essential zip unzip android-tools-adb gdb wget jq "
-PACKS=()
 
-OLD_ANDROID_SDK=1
-LAMW_INSTALL_STATUS=0
-LAMW_IMPLICIT_ACTION_MODE=0
-TIME_WAIT=2
-MAGIC_TRAP_INDEX=-1
-
-FLAG_FORCE_ANDROID_AARCH64=1
-FPC_TRUNK_RELEASE=""
-FPC_TRUNK_LIB_PATH=""
-FPC_TRUNK_EXEC_PATH=""
 FPC_TRUNK_SOURCE_PATH="$LAMW4LINUX_HOME/usr/share/fpcsrc"
-CURRENT_OLD_LAMW_INSTALL_INDEX=-1
 
 LAMW_INSTALL_WELCOME=(
 	"${NEGRITO}LAMW Manager v$LAMW_INSTALL_VERSION${NORMAL}\n"
