@@ -19,9 +19,9 @@ LAMWPackageManager(){
 			rm "$old_lamw_ide_home"  -rf
 		fi
 
-		for((i=0;i<${#LAZARUS_OLD_STABLE[*]};i++))
+		for((i=0;i<${#OLD_LAZARUS_STABLE[*]};i++))
 		do
-			local old_lazarus_home=$LAMW4LINUX_HOME/${LAZARUS_OLD_STABLE[i]}
+			local old_lazarus_home=$LAMW4LINUX_HOME/${OLD_LAZARUS_STABLE[i]}
 			if [ -e "$old_lazarus_home" ]; then
 				rm "$old_lazarus_home" -rf
 			fi
@@ -206,8 +206,8 @@ AntTrigger(){
 
 #this function get ant 
 getAnt(){
-	[ $OLD_ANDROID_SDK = 0 ] && return   #sem ação se ant nao é suportado
-		
+	[ $OLD_ANDROID_SDK = 0 ]  && return   #sem ação se ant nao é suportado
+
 	changeDirectory "$ROOT_LAMW" 
 	if [ ! -e "$ANT_HOME" ]; then
 		MAGIC_TRAP_INDEX=0 # preperando o indice do arquivo/diretório a ser removido
@@ -322,22 +322,7 @@ runSDKManager(){
 	fi
 }
 
-runOldSDKManager(){
-	local sdk_pack="$1"
-	local sdk_pack_path="$2"
-	local sdk_manager_cmd="$ANDROID_SDK/tools/android"
-	local sdk_cmd_extra_params=(update sdk --all --no-ui --filter $sdk_pack  ${SDK_MANAGER_CMD_PARAMETERS2_PROXY[*]})
-	if [ ! -e $sdk_pack_path ]; then 
-		echo "y" |  $sdk_manager_cmd ${sdk_cmd_extra_params[@]}
-
-		if [ ! -e $sdk_pack_path ]; then 
-			echo "y" |  $sdk_manager_cmd ${sdk_cmd_extra_params[@]}
-			[ ! -e "$sdk_pack_path" ] && echo "possible network instability! Try later!" && exit 1
-		fi
-	fi
-}
-
-getSDKAndroid(){
+getAndroidAPIS(){
 	
 	FORCE_YES=1
 	changeDirectory $ANDROID_HOME
@@ -346,7 +331,7 @@ getSDKAndroid(){
 	if [ $#  = 0 ]; then 
 
 		for((i=0;i<${#SDK_MANAGER_CMD_PARAMETERS[*]};i++));do
-			echo "Please wait, downloading ${NEGRITO}${SDK_MANAGER_CMD_PARAMETERS[i]}${NORMAL}\"..."
+			echo "Please wait, downloading ${NEGRITO}${SDK_MANAGER_CMD_PARAMETERS[i]}${NORMAL}..."
 			
 			if [ $i = 0 ]; then 
 				runSDKManager ${SDK_MANAGER_CMD_PARAMETERS[i]} # instala sdk sem intervenção humana 
@@ -362,30 +347,6 @@ getSDKAndroid(){
 	unset FORCE_YES
 }
 
-getOldAndroidSDK(){
-	local sdk_manager_sdk_paths=(
-		"$ANDROID_SDK/platforms/android-$ANDROID_SDK_TARGET"
-		"$ANDROID_SDK/platform-tools"
-		"$ANDROID_SDK/build-tools/$ANDROID_BUILD_TOOLS_TARGET"
-		"$ANDROID_SDK/extras/google/google_play_services"
-		$ANDROID_SDK/extras/{android,google}/m2repository
-		$ANDROID_SDK/extras/google/market_{licensing,apk_expansion}
-		"$ANDROID_SDK/build-tools/$GRADLE_MIN_BUILD_TOOLS"
-	)
-
-	if [ -e $ANDROID_SDK/tools/android  ]; then 
-		changeDirectory $ANDROID_HOME
-		if [ $NO_GUI_OLD_SDK = 0 ]; then
-			echo "Please wait..."
-			$ANDROID_SDK/tools/android  update sdk
-		else 
-			for((i=0;i<${#SDK_MANAGER_CMD_PARAMETERS2[*]};i++));do
-				echo "Getting ${NEGRITO}${SDK_MANAGER_CMD_PARAMETERS2[i]}${NORMAL} ..."
-				runOldSDKManager "${SDK_MANAGER_CMD_PARAMETERS2[i]}" "${sdk_manager_sdk_paths[i]}"
-			done 
-		fi
-	fi
-}
 
 RepairOldSDKAndroid(){
 	local sdk_manager_fails=(
@@ -418,17 +379,6 @@ RepairOldSDKAndroid(){
 }
 
 
-
-#Addd sdk to .bashrc and .profile
-
-
-getAndroidAPIS(){
-	if [ $OLD_ANDROID_SDK = 0 ]; then
-		getSDKAndroid $*
-	else
-		getOldAndroidSDK
-	fi
-}
 Repair(){
 	local flag_need_repair=0 # flag de reparo 
 	local flag_upgrade_lazarus=0
