@@ -65,7 +65,7 @@ initParameters(){
 }
 
 TrapActions(){
-	local sdk_tools_zip=$ANDROID_SDK
+	local sdk_tools_zip=$ANDROID_SDK_ROOT
 	#echo "MAGIC_TRAP_INDEX=$MAGIC_TRAP_INDEX";read
 	local magic_trap=(
 		"$ANT_TAR_FILE" #0 
@@ -73,7 +73,7 @@ TrapActions(){
 		"$GRADLE_ZIP_FILE" #2
 		"$GRADLE_HOME"   #3
 		"$sdk_tools_zip" #4
-		"$ANDROID_SDK" #5
+		"$ANDROID_SDK_ROOT" #5
 		"$NDK_ZIP" #6
 		"$NDK_DIR_UNZIP" #7
 	)
@@ -131,9 +131,6 @@ startImplicitAction(){
 #instalando tratadores de sinal	
 trap TrapControlC 2 
 
-ARGS=($@)
-
-INDEX_FOUND_USE_PROXY=-1
 for arg_index in ${!ARGS[@]}; do 
 	arg=${ARGS[$arg_index]}
 	if [ "$arg" = "--use_proxy" ];then
