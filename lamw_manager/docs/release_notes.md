@@ -8,6 +8,8 @@ v0.4.0.3 - Jul 28, 2021
 +	Hybrid install: latest version that will work with Apache Ant!
 +	Hybrid install: new *Android Command Line Tools* to get Android API's and Apache Ant + JDK 8.
 
+
+
 v0.4.0.2 - Jul 27, 2021
 ---
 **News**
