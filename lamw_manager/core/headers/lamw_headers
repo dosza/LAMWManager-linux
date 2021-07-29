@@ -32,15 +32,46 @@ FPC_VERSION="3.2.0"
 FPC_TRUNK_VERSION="3.2.2"
 LAZARUS_STABLE_VERSION="2.0.12"
 ANT_VERSION_STABLE='1.10.11'
-NDK_VERSION="r22b"
-SDK_TOOLS_VERSION="4.0"
-NDK_VERSION_STR="22.1.7171670"
+CMD_SDK_TOOLS_VERSION="4.0"
 FPC_TRUNK_SVNTAG="release_${FPC_TRUNK_VERSION//\./_}"
 LAZARUS_STABLE="lazarus_"${LAZARUS_STABLE_VERSION//\./_} #expansão que remove todos '.' por _, obs '\.' barra invertida escapa '.'
 
+OLD_GRADLE=(
+	$ROOT_LAMW/gradle-{"6.1.1","4.10.3","4.4.1"}
+)
+OLD_ANT=(
+	$ROOT_LAMW/apache-ant-1.10.{8,7,5}
+)
+
+OLD_FPC_SOURCES=(
+	"$LAMW4LINUX_HOME/fpcsrc"
+	$LAMW4LINUX_HOME/usr/share/fpcsrc/{trunk,fixes_3_2,release_3_2_0}
+)
+
+OLD_FPC_STABLE=(
+	$LAMW4LINUX_HOME/usr/local/lib/fpc/3.0.4
+	$LAMW4LINUX_HOME/usr/lib/fpc/$FPC_VERSION
+)
+
+OLD_LAZARUS_STABLE_VERSION=(
+	2.0.{10..2..2}
+	"1.8.4"
+)
+
+OLD_LAMW_INSTALL_VERSION=(
+	0.4.0{.{2,1},}
+	0.3.6{.{2,1},}
+	0.3.{5,4}{r1,}
+	"0.3.3r2"
+	"0.3."{3..0}
+	"0.2.1"		
+)
 #------------------------------------------------------------------------------------------	
 export ANDROID_HOME=$ROOT_LAMW
 export ANDROID_SDK_ROOT=$ANDROID_HOME/sdk
+export ARM_ANDROID_TOOLS="$ANDROID_SDK_ROOT/ndk-bundle/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin"
+export AARCH64_ANDROID_TOOLS="$ANDROID_SDK_ROOT/ndk-bundle/toolchains/aarch64-linux-android-4.9/prebuilt/linux-x86_64/bin"
+export LLVM_ANDROID_TOOLCHAINS="$ANDROID_SDK_ROOT/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/bin"
 export JAVA_HOME="$ROOT_LAMW/jdk/zulu-$JDK_VERSION"
 export PATH=$JAVA_HOME/bin:$PATH:$LLVM_ANDROID_TOOLCHAINS
 export XDG_DATA_DIRS="/usr/share:/usr/local/share:$LAMW_USER_HOME/.local/share"
@@ -51,8 +82,7 @@ export XDG_DATA_DIRS="/usr/share:/usr/local/share:$LAMW_USER_HOME/.local/share"
 #						Section URL
 #------------------------------------------------------------------------------------------
 
-NDK_URL="https://dl.google.com/android/repository/android-ndk-${NDK_VERSION}-linux-x86_64.zip"
-SDK_TOOLS_URL="https://dl.google.com/android/repository/commandlinetools-linux-7302050_latest.zip"
+CMD_SDK_TOOLS_URL="https://dl.google.com/android/repository/commandlinetools-linux-7302050_latest.zip"
 LAMW_SRC_LNK="https://github.com/jmpessoa/lazandroidmodulewizard.git"
 FPC_DEB_LINK="https://sourceforge.net/projects/lazarus/files/Lazarus%20Linux%20amd64%20DEB/Lazarus%20${FPC_LAZ_VERSION}/fpc-laz_${FPC_VERSION}-1_amd64.deb"
 ANT_TAR_URL="https://archive.apache.org/dist/ant/binaries/apache-ant-${ANT_VERSION_STABLE}-bin.tar.xz"
@@ -64,11 +94,8 @@ FPC_TRUNK_URL="https://svn.freepascal.org/svn/fpc/tags/${FPC_TRUNK_SVNTAG}"
 
 #------------------------------------------------------------------------------------------	
 ANDROID_SDK=$ANDROID_SDK_ROOT
-SDK_TOOLS_ZIP="commandlinetools-linux-7302050_latest.zip"
-SDK_TOOLS_DIR="$ANDROID_SDK/cmdline-tools"
-NDK_ZIP="android-ndk-${NDK_VERSION}-linux-x86_64.zip"
-NDK_DIR_UNZIP="android-ndk-${NDK_VERSION}"
-
+CMD_SDK_TOOLS_ZIP="commandlinetools-linux-7302050_latest.zip"
+CMD_SDK_TOOLS_DIR="$ANDROID_SDK/cmdline-tools"
 SDK_LICENSES_PARAMETERS=(--licenses )
 LAMW4_LINUX_PATH_CFG="$LAMW_USER_HOME/.lamw4linux"
 LAMW4LINUX_HOME="$ROOT_LAMW/lamw4linux"
@@ -115,18 +142,10 @@ PROG_TOOLS="menu git subversion make build-essential zip unzip android-tools-adb
 PACKS=()
 
 OLD_ANDROID_SDK=1
-NO_GUI_OLD_SDK=0
 LAMW_INSTALL_STATUS=0
 LAMW_IMPLICIT_ACTION_MODE=0
 TIME_WAIT=2
 MAGIC_TRAP_INDEX=-1
-
-ARM_ANDROID_TOOLS="$ROOT_LAMW/sdk/ndk-bundle/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin"
-
-#-------------------- AARCH64 SUPPORT HEADERS-------------------------------------------------------------
-
-AARCH64_ANDROID_TOOLS="$ROOT_LAMW/sdk/ndk-bundle/toolchains/aarch64-linux-android-4.9/prebuilt/linux-x86_64/bin"
-LLVM_ANDROID_TOOLCHAINS="$ROOT_LAMW/sdk/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/bin"
 
 FLAG_FORCE_ANDROID_AARCH64=1
 FPC_TRUNK_RELEASE=""
@@ -134,50 +153,6 @@ FPC_TRUNK_LIB_PATH=""
 FPC_TRUNK_EXEC_PATH=""
 FPC_TRUNK_SOURCE_PATH="$LAMW4LINUX_HOME/usr/share/fpcsrc"
 CURRENT_OLD_LAMW_INSTALL_INDEX=-1
-
-
-
-OLD_GRADLE=(
-	$ROOT_LAMW/gradle-{"6.1.1","4.10.3","4.4.1"}
-)
-OLD_ANT=(
-	$ROOT_LAMW/apache-ant-1.10.{8,7,5}
-)
-
-OLD_NDK_VERSION_STR=(
-	"21.3.6528147"
-	"20.1.5948944"
-	"18.1.5063045"
-)
-
-OLD_FPC_SOURCES=(
-	"$LAMW4LINUX_HOME/fpcsrc"
-	$LAMW4LINUX_HOME/usr/share/fpcsrc/{trunk,fixes_3_2,release_3_2_0}
-)
-
-OLD_FPC_STABLE=(
-	$LAMW4LINUX_HOME/usr/local/lib/fpc/3.0.4
-	$LAMW4LINUX_HOME/usr/lib/fpc/$FPC_VERSION
-)
-
-OLD_LAZARUS_STABLE_VERSION=(
-	2.0.{10..2..2}
-	"1.8.4"
-)
-
-OLD_LAZARUS_STABLE=(
-	$( for i in ${!OLD_LAZARUS_STABLE_VERSION[@]}; do echo "lazarus_${OLD_LAZARUS_STABLE_VERSION[i]//\./_}";done )
-)
-
-OLD_LAMW_INSTALL_VERSION=(
-	0.4.0{.{2,1},}
-	0.3.6{.{2,1},}
-	0.3.{5,4}{r1,}
-	"0.3.3r2"
-	"0.3."{3..0}
-	"0.2.1"		
-)
-
 
 LAMW_INSTALL_WELCOME=(
 	"${NEGRITO}LAMW Manager v$LAMW_INSTALL_VERSION${NORMAL}\n"
