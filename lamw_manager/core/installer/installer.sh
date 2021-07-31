@@ -19,38 +19,29 @@ LAMWPackageManager(){
 			rm "$old_lamw_ide_home"  -rf
 		fi
 
-		for((i=0;i<${#LAZARUS_OLD_STABLE[*]};i++))
-		do
-			local old_lazarus_home=$LAMW4LINUX_HOME/${LAZARUS_OLD_STABLE[i]}
-			if [ -e "$old_lazarus_home" ]; then
-				rm "$old_lazarus_home" -rf
-			fi
+		for((i=0;i<${#OLD_LAZARUS_STABLE_VERSION[*]};i++)); do
+			local old_lazarus_release=lazarus_${OLD_LAZARUS_STABLE_VERSION[i]//\./_}
+			local old_lazarus_home=$LAMW4LINUX_HOME/${old_lazarus_release}
+			[ -e "$old_lazarus_home" ] && rm "$old_lazarus_home" -rf
 		done
 		
-		if [ -e "$OLD_FPC_CFG_PATH" ]; then
-			rm "$OLD_FPC_CFG_PATH"
-		fi
+		[ -e "$OLD_FPC_CFG_PATH" ] && grep  "$ROOT_LAMW" "$OLD_FPC_CFG_PATH" && rm "$OLD_FPC_CFG_PATH"
 	
 		#fixs 0.3.1 to 0.3.2
 
 		for i  in ${!OLD_FPC_SOURCES[*]}; do
-			if [ -e ${OLD_FPC_SOURCES[i]} ]; then
-				rm  -rf ${OLD_FPC_SOURCES[i]}
-			fi
+			[ -e ${OLD_FPC_SOURCES[i]} ] && rm  -rf ${OLD_FPC_SOURCES[i]}
 		done
 
 
-
-		for gradle in ${OLD_GRADLE[*]}
-		do
+		for gradle in ${OLD_GRADLE[*]}; do
 			if [ -e "$gradle" ]; then
 				./$gradle/bin/gradle --stop
 				rm -rf $gradle 
 			fi
 		done
 
-		for ((i=0;i<${#OLD_ANT[*]};i++))
-		do
+		for ((i=0;i<${#OLD_ANT[*]};i++)); do
 			[ -e ${OLD_ANT[i]} ] && rm -rf ${OLD_ANT[i]}
 		done
 
@@ -58,8 +49,6 @@ LAMWPackageManager(){
 			[ -e $old_fpc_stable ] && rm -rf $old_fpc_stable
 		done
 	fi
-
-
 
 }
 getStatusInstalation(){

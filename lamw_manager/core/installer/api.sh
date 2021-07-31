@@ -21,18 +21,6 @@ setAndroidSDKCMDParameters(){
 		#"build-tools;$GRADLE_MIN_BUILD_TOOLS"
 	)
 
-	SDK_MANAGER_CMD_PARAMETERS2=(
-		"android-$ANDROID_SDK_TARGET"
-		"platform-tools"
-		"build-tools-$ANDROID_BUILD_TOOLS_TARGET" 
-		"extra-google-google_play_services"
-		"extra-android-m2repository"
-		"extra-google-m2repository"
-		"extra-google-market_licensing"
-		"extra-google-market_apk_expansion"
-		#"build-tools-$GRADLE_MIN_BUILD_TOOLS"
-	)
-
 	if [ $USE_PROXY = 1 ]; then
 		SDK_LICENSES_PARAMETERS=( --licenses --no_https --proxy=http --proxy_host=$PROXY_SERVER --proxy_port=$PORT_SERVER )
 		SDK_MANAGER_CMD_PARAMETERS+=("--no_https --proxy=http" "--proxy_host=$PROXY_SERVER" "--proxy_port=$PORT_SERVER")

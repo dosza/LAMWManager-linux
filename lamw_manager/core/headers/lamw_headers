@@ -51,7 +51,15 @@ OLD_LAMW_INSTALL_VERSION=(
 	"0.2.1"		
 )
 
-
+#------------------------------------------------------------------------------------------	
+export ANDROID_HOME=$ROOT_LAMW
+export ANDROID_SDK_ROOT=$ANDROID_HOME/sdk
+export ARM_ANDROID_TOOLS="$ANDROID_SDK_ROOT/ndk-bundle/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin"
+export AARCH64_ANDROID_TOOLS="$ANDROID_SDK_ROOT/ndk-bundle/toolchains/aarch64-linux-android-4.9/prebuilt/linux-x86_64/bin"
+export LLVM_ANDROID_TOOLCHAINS="$ANDROID_SDK_ROOT/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/bin"
+export JAVA_HOME="$ROOT_LAMW/jdk/${JDK_VENDOR}-${JDK_VERSION}"
+export PATH=$JAVA_HOME/bin:$PATH:$LLVM_ANDROID_TOOLCHAINS
+export XDG_DATA_DIRS="/usr/share:/usr/local/share:$LAMW_USER_HOME/.local/share"
 #----------------------------------------------------------------------------------------------------
 
 CMD_SDK_TOOLS_URL="https://dl.google.com/android/repository/commandlinetools-linux-7302050_latest.zip"
@@ -74,6 +82,7 @@ ANT_HOME="$ROOT_LAMW/apache-ant-${ANT_VERSION_STABLE}"
 GRADLE_CFG_HOME="$LAMW_USER_HOME/.gradle"
 OLD_FPC_CFG_PATH="$LAMW_USER_HOME/.fpc.cfg"
 OLD_JAVA_HOME="$ROOT_LAMW/jdk/zulu-8"
+JDK_VERSION_FOLDER="${JDK_VENDOR}-${JDK_VERSION}"
 
 FPC_CFG_PATH="$LAMW_USER_HOME/.fpc.cfg"
 FPC_LIB_PATH="$LAMW4LINUX_HOME/usr/local/lib/fpc/${FPC_DEB_VERSION}"
@@ -106,14 +115,3 @@ LAMW_LINUX_SPP=(
 
 ARGS=($@)
 
-#------------------------------------------------------------------------------------------	
-export ANDROID_HOME=$ROOT_LAMW
-export ANDROID_SDK_ROOT=$ANDROID_HOME/sdk
-export ARM_ANDROID_TOOLS="$ANDROID_SDK_ROOT/ndk-bundle/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin"
-export AARCH64_ANDROID_TOOLS="$ANDROID_SDK_ROOT/ndk-bundle/toolchains/aarch64-linux-android-4.9/prebuilt/linux-x86_64/bin"
-export LLVM_ANDROID_TOOLCHAINS="$ANDROID_SDK_ROOT/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/bin"
-export JAVA_HOME="$ROOT_LAMW/jdk/${JDK_VENDOR}-${JDK_VERSION}"
-export PATH=$JAVA_HOME/bin:$PATH:$LLVM_ANDROID_TOOLCHAINS
-export XDG_DATA_DIRS="/usr/share:/usr/local/share:$LAMW_USER_HOME/.local/share"
-
-#------------------------------------------------------------------------------------------
