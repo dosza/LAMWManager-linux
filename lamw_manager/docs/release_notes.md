@@ -13,7 +13,7 @@ v0.4.1 - Jul 27, 2021
 
 **Note**
 
-1.	To continue using Apache Ant (hybrid install), you must use [*LAMW Manager v0.4.0.3*](https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/tree/v0.4.0/) 
+1.	To continue using Apache Ant (hybrid install), you must use [*LAMW Manager Setup v0.4.0.x*](https://github.com/dosza/LAMW4Linux-installer/raw/v0.4.0/lamw_manager/assets/lamw_manager_setup.sh) 
 
 v0.4.0.3 - Jul 28, 2021
 ---
