@@ -37,13 +37,14 @@ buildFPCTrunk(){
 
 
 BuildCrossAll(){
-	
 	case "$1" in
 	"1")
 		make clean crossall crossinstall  CPU_TARGET=aarch64 OS_TARGET=android OPT="-dFPC_ARMHF" INSTALL_PREFIX=$LAMW4LINUX_HOME/usr "PP=$FPC_LIB_PATH/ppcx64" ;;
 
 	"2")
 		make clean crossall crossinstall CPU_TARGET=arm OPT="-dFPC_ARMEL" OS_TARGET=android CROSSOPT="-CpARMV7A -CfVFPV3" INSTALL_PREFIX=$LAMW4LINUX_HOME/usr "PP=$FPC_LIB_PATH/ppcx64";;
+
+	* ) check_error_and_exit "${VERMELHO}Fatal Error:${NORMAL}Invalid CrossOpts";;
 	esac
 }
 
