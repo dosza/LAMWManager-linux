@@ -6,18 +6,26 @@
 #Date: 07/27/2021
 #Description: The "lamw_headers" is part of the core of LAMW Manager. This script contains LAMW Manager variables.
 #-------------------------------------------------------------------------------------------------#
+
+#--------------------------------------------------------------------------------------------------
+#										Section Version Variables
+#--------------------------------------------------------------------------------------------------
+
 LAMW_INSTALL_VERSION="0.4.1.1"
 JDK_VERSION=11
 ANT_VERSION_STABLE='1.10.11'
-CMD_SDK_TOOLS_VERSION="4.0"
+CMD_SDK_TOOLS_VERSION="7302050"
+CMD_SDK_TOOLS_VERSION_STR="4.0"
 LAZARUS_STABLE_VERSION="2.2.0_RC1"
 FPC_TRUNK_VERSION="3.2.2"
 FPC_LAZ_DEB_VERSION="2.0.12"
-FPC_DEB_VERSION="3.2.0"	
+FPC_DEB_VERSION="3.2.0-1"	
 FPC_TRUNK_SVNTAG="release_${FPC_TRUNK_VERSION//\./_}"
 LAZARUS_STABLE="lazarus_"${LAZARUS_STABLE_VERSION//\./_} #expansão que remove todos '.' por _, obs '\.' barra invertida escapa '.'
 
-JDK_VENDOR="openjdk"
+#--------------------------------------------------------------------------------------------------
+#										Section Old Version Variables
+#--------------------------------------------------------------------------------------------------
 
 OLD_GRADLE=(
 	$ROOT_LAMW/gradle-{"6.1.1","4.10.3","4.4.1"}
@@ -51,29 +59,42 @@ OLD_LAMW_INSTALL_VERSION=(
 	"0.2.1"		
 )
 
-#------------------------------------------------------------------------------------------	
-export ANDROID_HOME=$ROOT_LAMW
-export ANDROID_SDK_ROOT=$ANDROID_HOME/sdk
-export ARM_ANDROID_TOOLS="$ANDROID_SDK_ROOT/ndk-bundle/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin"
-export AARCH64_ANDROID_TOOLS="$ANDROID_SDK_ROOT/ndk-bundle/toolchains/aarch64-linux-android-4.9/prebuilt/linux-x86_64/bin"
-export LLVM_ANDROID_TOOLCHAINS="$ANDROID_SDK_ROOT/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/bin"
-export JAVA_HOME="$ROOT_LAMW/jdk/${JDK_VENDOR}-${JDK_VERSION}"
-export PATH=$JAVA_HOME/bin:$PATH:$LLVM_ANDROID_TOOLCHAINS
-export XDG_DATA_DIRS="/usr/share:/usr/local/share:$LAMW_USER_HOME/.local/share"
-#----------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------
+#										Section Extra String
+#--------------------------------------------------------------------------------------------------
 
-CMD_SDK_TOOLS_URL="https://dl.google.com/android/repository/commandlinetools-linux-7302050_latest.zip"
+JDK_VENDOR="openjdk"
+JDK_VERSION_DIR=${JDK_VENDOR}-${JDK_VERSION}
+
+#--------------------------------------------------------------------------------------------------
+#										Section URL
+#-------------------------------------------------------------------------------------------------#
+
+CMD_SDK_TOOLS_URL="https://dl.google.com/android/repository/commandlinetools-linux-${CMD_SDK_TOOLS_VERSION}_latest.zip"
 LAMW_SRC_LNK="https://github.com/jmpessoa/lazandroidmodulewizard.git"
-FPC_DEB_LINK="https://sourceforge.net/projects/lazarus/files/Lazarus%20Linux%20amd64%20DEB/Lazarus%20${FPC_LAZ_DEB_VERSION}/fpc-laz_${FPC_DEB_VERSION}-1_amd64.deb"
+FPC_DEB_LINK="https://sourceforge.net/projects/lazarus/files/Lazarus%20Linux%20amd64%20DEB/Lazarus%20${FPC_LAZ_DEB_VERSION}/fpc-laz_${FPC_DEB_VERSION}_amd64.deb"
 ANT_TAR_URL="https://archive.apache.org/dist/ant/binaries/apache-ant-${ANT_VERSION_STABLE}-bin.tar.xz"
 LAZARUS_STABLE_SRC_LNK="https://gitlab.com/freepascal.org/lazarus/lazarus.git"
 LAMW_PACKAGE_URL="https://raw.githubusercontent.com/jmpessoa/lazandroidmodulewizard/master/package.json"
 API_JDK_URL="https://api.adoptopenjdk.net/v3/assets/latest/$JDK_VERSION/hotspot?vendor=$JDK_VENDOR"
 FPC_TRUNK_URL="https://svn.freepascal.org/svn/fpc/tags/${FPC_TRUNK_SVNTAG}"
+
+#------------------------------------------------------------------------------------------	
+#										Section Enviroment Variables
 #------------------------------------------------------------------------------------------	
 
+export ANDROID_HOME=$ROOT_LAMW
+export ANDROID_SDK_ROOT=$ANDROID_HOME/sdk
+export ARM_ANDROID_TOOLS="$ANDROID_SDK_ROOT/ndk-bundle/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin"
+export AARCH64_ANDROID_TOOLS="$ANDROID_SDK_ROOT/ndk-bundle/toolchains/aarch64-linux-android-4.9/prebuilt/linux-x86_64/bin"
+export LLVM_ANDROID_TOOLCHAINS="$ANDROID_SDK_ROOT/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/bin"
+export JAVA_HOME="$ROOT_LAMW/jdk/${JDK_VERSION_DIR}"
+export PATH=$JAVA_HOME/bin:$PATH:$LLVM_ANDROID_TOOLCHAINS
+export XDG_DATA_DIRS="/usr/share:/usr/local/share:$LAMW_USER_HOME/.local/share"
 
-CMD_SDK_TOOLS_ZIP="commandlinetools-linux-7302050_latest.zip"
+#------------------------------------------------------------------------------------------	
+
+CMD_SDK_TOOLS_ZIP="commandlinetools-linux-${CMD_SDK_TOOLS_VERSION}_latest.zip"
 CMD_SDK_TOOLS_DIR="$ANDROID_SDK_ROOT/cmdline-tools"
 SDK_LICENSES_PARAMETERS=(--licenses )
 
@@ -82,14 +103,12 @@ ANT_HOME="$ROOT_LAMW/apache-ant-${ANT_VERSION_STABLE}"
 GRADLE_CFG_HOME="$LAMW_USER_HOME/.gradle"
 OLD_FPC_CFG_PATH="$LAMW_USER_HOME/.fpc.cfg"
 OLD_JAVA_HOME="$ROOT_LAMW/jdk/zulu-8"
-JDK_VERSION_FOLDER="${JDK_VENDOR}-${JDK_VERSION}"
 
 FPC_CFG_PATH="$LAMW_USER_HOME/.fpc.cfg"
-FPC_LIB_PATH="$LAMW4LINUX_HOME/usr/local/lib/fpc/${FPC_DEB_VERSION}"
+FPC_LIB_PATH="$LAMW4LINUX_HOME/usr/local/lib/fpc/${FPC_DEB_VERSION//\-*}"
 FPC_MKCFG_EXE="$LAMW4LINUX_HOME/usr/local/bin/fpcmkcfg"
 
-FPC_DEB="fpc-laz_${FPC_DEB_VERSION}-1_amd64.deb"
-FPC_CROSS_ARM_DEFAULT_PARAMETERS=('clean crossall crossinstall  CPU_TARGET=arm OS_TARGET=android OPT="-dFPC_ARMHF" SUBARCH="armv7a" INSTALL_PREFIX=/usr')
+FPC_DEB="fpc-laz_${FPC_DEB_VERSION}_amd64.deb"
 
 LAMW_PACKAGES=(
 	"$ROOT_LAMW/lazandroidmodulewizard/android_bridges/tfpandroidbridge_pack.lpk"
@@ -97,7 +116,6 @@ LAMW_PACKAGES=(
 	"$ROOT_LAMW/lazandroidmodulewizard/ide_tools/amw_ide_tools.lpk"
 	"$ROOT_LAMW/lazandroidmodulewizard/fcl_bridges/fcl_bridges_pack.lpk"
 )
-
 
 LIBS_ANDROID="libx11-dev libgtk2.0-dev libgdk-pixbuf2.0-dev libcairo2-dev libpango1.0-dev libxtst-dev libatk1.0-dev libghc-x11-dev freeglut3 freeglut3-dev "
 PROG_TOOLS="menu git subversion make build-essential zip unzip android-tools-adb gdb wget jq "
