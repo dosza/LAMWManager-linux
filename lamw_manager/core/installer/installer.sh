@@ -77,7 +77,7 @@ getJDK(){
 		[ -e "$JAVA_HOME" ] && rm -r "$JAVA_HOME"
 		Wget "$JDK_URL"
 		tar -zxvf "$JDK_TAR"
-		mv "$JDK_FILE" "${JDK_VERSION_FOLDER}"
+		mv "$JDK_FILE" "${JDK_VERSION_DIR}"
 		[ -e "$JDK_TAR" ] && rm "$JDK_TAR"
 	fi
 }
@@ -269,7 +269,7 @@ getAndroidCmdLineTools(){
 
 
 runSDKManagerLicenses(){
-	local sdk_manager_cmd="$SDK_TOOLS_DIR/latest/bin/sdkmanager"
+	local sdk_manager_cmd="$CMD_SDK_TOOLS_DIR/latest/bin/sdkmanager"
 	yes | $sdk_manager_cmd ${SDK_LICENSES_PARAMETERS[*]} 
 	if [ $? != 0 ]; then 
 		yes | $sdk_manager_cmd ${SDK_LICENSES_PARAMETERS[*]} 
@@ -278,7 +278,7 @@ runSDKManagerLicenses(){
 }
 
  runSDKManager(){
-	local sdk_manager_cmd="$SDK_TOOLS_DIR/latest/bin/sdkmanager"
+	local sdk_manager_cmd="$CMD_SDK_TOOLS_DIR/latest/bin/sdkmanager"
 	if [ $FORCE_YES = 1 ]; then 
 		yes | $sdk_manager_cmd $*
 
@@ -297,7 +297,7 @@ runSDKManagerLicenses(){
 }
 
 
-getAndroidAPISt(){
+getAndroidAPIS(){
 	
 	FORCE_YES=1
 	changeDirectory $ANDROID_HOME

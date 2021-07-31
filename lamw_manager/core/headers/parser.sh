@@ -131,9 +131,6 @@ startImplicitAction(){
 #instalando tratadores de sinal	
 trap TrapControlC 2 
 
-ARGS=($@)
-
-INDEX_FOUND_USE_PROXY=-1
 for arg_index in ${!ARGS[@]}; do 
 	arg=${ARGS[$arg_index]}
 	if [ "$arg" = "--use_proxy" ];then
