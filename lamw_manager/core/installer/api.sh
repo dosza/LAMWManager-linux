@@ -24,12 +24,6 @@ setAndroidSDKCMDParameters(){
 	if [ $USE_PROXY = 1 ]; then
 		SDK_LICENSES_PARAMETERS=( --licenses --no_https --proxy=http --proxy_host=$PROXY_SERVER --proxy_port=$PORT_SERVER )
 		SDK_MANAGER_CMD_PARAMETERS+=("--no_https --proxy=http" "--proxy_host=$PROXY_SERVER" "--proxy_port=$PORT_SERVER")
-		
-		SDK_MANAGER_CMD_PARAMETERS2_PROXY=(
-			'--no_https' 
-			"--proxy-host=$PROXY_SERVER" 
-			"--proxy-port=$PORT_SERVER" #'--proxy=http'
-		)
 	fi
 }
 parseJSONString(){
