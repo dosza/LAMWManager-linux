@@ -306,7 +306,7 @@ getAndroidAPIS(){
 	if [ $#  = 0 ]; then 
 
 		for((i=0;i<${#SDK_MANAGER_CMD_PARAMETERS[*]};i++));do
-			echo "Please wait, downloading ${NEGRITO}${SDK_MANAGER_CMD_PARAMETERS[i]}${NORMAL}\"..."
+			echo "Please wait, downloading ${NEGRITO}${SDK_MANAGER_CMD_PARAMETERS[i]}${NORMAL}..."
 			
 			if [ $i = 0 ]; then 
 				runSDKManager ${SDK_MANAGER_CMD_PARAMETERS[i]} # instala sdk sem intervenção humana 
