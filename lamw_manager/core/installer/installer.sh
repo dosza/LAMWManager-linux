@@ -204,7 +204,7 @@ AntTrigger(){
 
 #this function get ant 
 getAnt(){
-	[ $OLD_ANDROID_SDK = 0 ]  && return   #sem ação se ant nao é suportado
+	[ $OLD_ANDROID_SDK = 0 ] && return   #sem ação se ant nao é suportado
 
 	changeDirectory "$ROOT_LAMW" 
 	if [ ! -e "$ANT_HOME" ]; then
