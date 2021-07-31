@@ -19,8 +19,7 @@ LAMWPackageManager(){
 			rm "$old_lamw_ide_home"  -rf
 		fi
 
-		for((i=0;i<${#OLD_LAZARUS_STABLE_VERSION[*]};i++))
-		do
+		for((i=0;i<${#OLD_LAZARUS_STABLE_VERSION[*]};i++)); do
 			local old_lazarus_release=lazarus_${OLD_LAZARUS_STABLE_VERSION[i]//\./_}
 			local old_lazarus_home=$LAMW4LINUX_HOME/${old_lazarus_release}
 			[ -e "$old_lazarus_home" ] && rm "$old_lazarus_home" -rf
@@ -36,16 +35,14 @@ LAMWPackageManager(){
 
 
 
-		for gradle in ${OLD_GRADLE[*]}
-		do
+		for gradle in ${OLD_GRADLE[*]}; do
 			if [ -e "$gradle" ]; then
 				./$gradle/bin/gradle --stop
 				rm -rf $gradle 
 			fi
 		done
 
-		for ((i=0;i<${#OLD_ANT[*]};i++))
-		do
+		for ((i=0;i<${#OLD_ANT[*]};i++)); do
 			[ -e ${OLD_ANT[i]} ] && rm -rf ${OLD_ANT[i]}
 		done
 
