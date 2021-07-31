@@ -332,8 +332,7 @@ resetAndroidAPIS(){
 	)
 	echo "${VERMELHO}Warning:${NORMAL} All Android API'S will  be unistalled!"
 	echo "Only the default APIs will be reinstalled!"
-	for ((i=0;i<${#sdk_manager_fails[*]};i++))
-	do
+	for ((i=0;i<${#sdk_manager_fails[*]};i++)); do
 		local current_sdk_path="${ANDROID_SDK_ROOT}/${sdk_manager_fails[i]}"
 		if [ -e $current_sdk_path ]; then
 			rm -rf $current_sdk_path
@@ -342,8 +341,7 @@ resetAndroidAPIS(){
 
 	setLAMWDeps
 	getAndroidAPIS
-	for ((i=0;i<${#sdk_manager_fails[*]};i++))
-	do
+	for ((i=0;i<${#sdk_manager_fails[*]};i++)); do
 		local current_sdk_path="${ANDROID_SDK_ROOT}/${sdk_manager_fails[i]}"
 		if [ -e $current_sdk_path ]; then
 			chown $LAMW_USER:$LAMW_USER -R $current_sdk_path
@@ -435,8 +433,6 @@ getImplicitInstall(){
 	if [ ! -e "$lamw_install_log_path" ]; then
 		return 
 	else
-		setOldAndroidSDKStatus $?
-		
 		grep "Generate LAMW_INSTALL_VERSION=$LAMW_INSTALL_VERSION" "$lamw_install_log_path" 	> /dev/null
 		
 		if [ $? = 0 ]; then
