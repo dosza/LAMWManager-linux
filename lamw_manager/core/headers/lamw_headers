@@ -10,12 +10,12 @@
 #------------------------------------------------------------------------------------------
 LAMW_INSTALL_VERSION="0.4.0.3"
 JDK_VERSION=8
-FPC_LAZ_VERSION="2.0.12"
-FPC_VERSION="3.2.0"	
-FPC_TRUNK_VERSION="3.2.2"
-LAZARUS_STABLE_VERSION="2.0.12"
 ANT_VERSION_STABLE='1.10.11'
 CMD_SDK_TOOLS_VERSION="4.0"
+LAZARUS_STABLE_VERSION="2.2.0_RC1"
+FPC_TRUNK_VERSION="3.2.2"
+FPC_LAZ_DEB_VERSION="2.0.12"
+FPC_DEB_VERSION="3.2.0"	
 FPC_TRUNK_SVNTAG="release_${FPC_TRUNK_VERSION//\./_}"
 LAZARUS_STABLE="lazarus_"${LAZARUS_STABLE_VERSION//\./_} #expansão que remove todos '.' por _, obs '\.' barra invertida escapa '.'
 
@@ -37,7 +37,7 @@ OLD_FPC_STABLE=(
 )
 
 OLD_LAZARUS_STABLE_VERSION=(
-	2.0.{10..2..2}
+	2.0.{12..2..2}
 	"1.8.4"
 )
 
@@ -67,9 +67,9 @@ export XDG_DATA_DIRS="/usr/share:/usr/local/share:$LAMW_USER_HOME/.local/share"
 
 CMD_SDK_TOOLS_URL="https://dl.google.com/android/repository/commandlinetools-linux-7302050_latest.zip"
 LAMW_SRC_LNK="https://github.com/jmpessoa/lazandroidmodulewizard.git"
-FPC_DEB_LINK="https://sourceforge.net/projects/lazarus/files/Lazarus%20Linux%20amd64%20DEB/Lazarus%20${FPC_LAZ_VERSION}/fpc-laz_${FPC_VERSION}-1_amd64.deb"
+FPC_DEB_LINK="https://sourceforge.net/projects/lazarus/files/Lazarus%20Linux%20amd64%20DEB/Lazarus%20${FPC_LAZ_DEB_VERSION}/fpc-laz_${FPC_DEB_VERSION}-1_amd64.deb"
 ANT_TAR_URL="https://archive.apache.org/dist/ant/binaries/apache-ant-${ANT_VERSION_STABLE}-bin.tar.xz"
-LAZARUS_STABLE_SRC_LNK="https://svn.freepascal.org/svn/lazarus/tags/${LAZARUS_STABLE}"
+LAZARUS_STABLE_SRC_LNK="https://gitlab.com/freepascal.org/lazarus/lazarus.git"
 LAMW_PACKAGE_URL="https://raw.githubusercontent.com/jmpessoa/lazandroidmodulewizard/master/package.json"
 ZULU_API_JDK_URL="https://api.azul.com/zulu/download/community/v1.0/bundles/"
 ZULU_API_JDK_URL+="?java_version$JDK_VERSION&jdk_version=$JDK_VERSION&zulu_version=$JDK_VERSION&os=linux&arch=x86&hw_bitness=64&ext=tar.gz&bundle_type=jdk&javafx=false&latest=true&support_term=lts"
@@ -85,10 +85,10 @@ ANT_HOME="$ROOT_LAMW/apache-ant-${ANT_VERSION_STABLE}"
 GRADLE_CFG_HOME="$LAMW_USER_HOME/.gradle"
 OLD_FPC_CFG_PATH="$LAMW_USER_HOME/.fpc.cfg"
 FPC_CFG_PATH="$LAMW_USER_HOME/.fpc.cfg"
-FPC_LIB_PATH="$LAMW4LINUX_HOME/usr/local/lib/fpc/${FPC_VERSION}"
+FPC_LIB_PATH="$LAMW4LINUX_HOME/usr/local/lib/fpc/${FPC_DEB_VERSION}"
 FPC_MKCFG_EXE="$LAMW4LINUX_HOME/usr/local/bin/fpcmkcfg"
 
-FPC_DEB="fpc-laz_${FPC_VERSION}-1_amd64.deb"
+FPC_DEB="fpc-laz_${FPC_DEB_VERSION}-1_amd64.deb"
 FPC_CROSS_ARM_DEFAULT_PARAMETERS=('clean crossall crossinstall  CPU_TARGET=arm OS_TARGET=android OPT="-dFPC_ARMHF" SUBARCH="armv7a" INSTALL_PREFIX=/usr')
 
 LAMW_PACKAGES=(
@@ -112,5 +112,7 @@ LAMW_LINUX_SPP=(
 	"\t*Debian 10\n"
 	"\t*Ubuntu 18.04 LTS\n"
 )
+
+ARGS=($@)
 
 

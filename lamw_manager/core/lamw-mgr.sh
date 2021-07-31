@@ -94,7 +94,7 @@ case "$1" in
 		lamw_manager_help
 	;;
 	"build-lazarus")
-		BuildLazarusIDE 1
+		BuildLazarusIDE 
 		changeOwnerAllLAMW 1
 	;;
 	*)
