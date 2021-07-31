@@ -88,8 +88,10 @@ export ANDROID_SDK_ROOT=$ANDROID_HOME/sdk
 export ARM_ANDROID_TOOLS="$ANDROID_SDK_ROOT/ndk-bundle/toolchains/arm-linux-androideabi-4.9/prebuilt/linux-x86_64/bin"
 export AARCH64_ANDROID_TOOLS="$ANDROID_SDK_ROOT/ndk-bundle/toolchains/aarch64-linux-android-4.9/prebuilt/linux-x86_64/bin"
 export LLVM_ANDROID_TOOLCHAINS="$ANDROID_SDK_ROOT/ndk-bundle/toolchains/llvm/prebuilt/linux-x86_64/bin"
+export I386_ANDROID_TOOLS="$ANDROID_SDK_ROOT/ndk-bundle/toolchains/x86-4.9/prebuilt/linux-x86_64/bin"
+export AMD64_ANDROID_TOOLS="$ANDROID_SDK_ROOT/ndk-bundle/toolchains/x86_64-4.9/prebuilt/linux-x86_64/bin"
 export JAVA_HOME="$ROOT_LAMW/jdk/${JDK_VERSION_DIR}"
-export PATH=$JAVA_HOME/bin:$PATH:$LLVM_ANDROID_TOOLCHAINS
+export PATH=$JAVA_HOME/bin:$PATH:$LLVM_ANDROID_TOOLCHAINS:$I386_ANDROID_TOOLS:$AMD64_ANDROID_TOOLS
 export XDG_DATA_DIRS="/usr/share:/usr/local/share:$LAMW_USER_HOME/.local/share"
 
 #------------------------------------------------------------------------------------------	
