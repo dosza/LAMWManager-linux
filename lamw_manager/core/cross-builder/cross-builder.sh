@@ -14,6 +14,7 @@ parseFPCTrunk(){
 	FPC_TRUNK_LIB_PATH=$LAMW4LINUX_HOME/usr/lib/fpc/${_FPC_TRUNK_VERSION}
 	FPC_TRUNK_EXEC_PATH="$LAMW4LINUX_HOME/usr/bin"
 	FPC_CFG_PATH="$FPC_TRUNK_LIB_PATH/fpc.cfg"
+	FPPKG_TRUNK_CFG_PATH="$FPC_TRUNK_LIB_PATH/fppkg.cfg"
 	export PPC_CONFIG_PATH="$FPC_TRUNK_LIB_PATH"
 	
 }
@@ -34,13 +35,31 @@ buildFPCTrunk(){
 	fi
 }
 
+
+BuildCrossAll(){
+	
+	case "$1" in
+	"1")
+		make clean crossall crossinstall  CPU_TARGET=aarch64 OS_TARGET=android OPT="-dFPC_ARMHF" INSTALL_PREFIX=$LAMW4LINUX_HOME/usr "PP=$FPC_LIB_PATH/ppcx64" ;;
+
+	"2")
+		make clean crossall crossinstall CPU_TARGET=arm OPT="-dFPC_ARMEL" OS_TARGET=android CROSSOPT="-CpARMV7A -CfVFPV3" INSTALL_PREFIX=$LAMW4LINUX_HOME/usr "PP=$FPC_LIB_PATH/ppcx64";;
+	esac
+}
+
 #Function to build ARMv7 and AARCH64
 BuildCrossAArch64(){
 	changeDirectory "$LAMW4LINUX_HOME/usr/share/fpcsrc/$FPC_TRUNK_SVNTAG"
-	make clean crossall crossinstall  CPU_TARGET=aarch64 OS_TARGET=android OPT="-dFPC_ARMHF" INSTALL_PREFIX=$LAMW4LINUX_HOME/usr "PP=$FPC_LIB_PATH/ppcx64"
-	check_error_and_exit "${VERMELHO}Fatal Error: Falls to build FPC to  Android/AARCH64${NORMAL}"
-	make clean crossall crossinstall CPU_TARGET=arm OPT="-dFPC_ARMEL" OS_TARGET=android CROSSOPT="-CpARMV7A -CfVFPV3" INSTALL_PREFIX=$LAMW4LINUX_HOME/usr "PP=$FPC_LIB_PATH/ppcx64"
-	check_error_and_exit "${VERMELHO}Fatal Error: Falls to build FPC  to Android/ARMv7${NORMAL}"
+	
+	local error_build_msg=(
+		"${VERMELHO}Fatal Error: Falls to build FPC to Android/AARCH64${NORMAL}"
+		"${VERMELHO}Fatal Error: Falls to build FPC to Android/ARMv7${NORMAL}"
+	)
+
+	for i in ${!error_build_msg[*]}; do 
+		BuildCrossAll $i 
+		check_error_and_exit ${error_build_msg[i]}
+	done
 
 	echo "cleaning sources..."
 	make clean > /dev/null
