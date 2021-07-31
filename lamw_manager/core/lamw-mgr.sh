@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.4.1
-#Date: 07/27/2021
+#Version: 0.4.0.3
+#Date: 07/29/2021
 #Description: The "lamw-install.sh" is part of the core of LAMW Manager. This script configures the development environment for LAMW
 #-------------------------------------------------------------------------------------------------#
 
@@ -44,7 +44,6 @@ case "$1" in
 
 	else
 		mainInstall
-		NO_GUI_OLD_SDK=0
 		getAndroidAPIS  ${ARGS[@]:1}
 		changeOwnerAllLAMW
 	fi 	
@@ -71,8 +70,6 @@ case "$1" in
 		fi
 	;;
 	"install")
-		setOldAndroidSDKStatus
-		NO_GUI_OLD_SDK=1
 		mainInstall
 	;;
 
@@ -85,8 +82,7 @@ case "$1" in
 	"--reset-aapis")
 		getStatusInstalation
 		if [ $LAMW_INSTALL_STATUS = 1 ]; then
-			NO_GUI_OLD_SDK=1
-			RepairOldSDKAndroid
+			resetAndroidAPIS
 		else
 			mainInstall
 		fi
@@ -98,7 +94,7 @@ case "$1" in
 		lamw_manager_help
 	;;
 	"build-lazarus")
-		BuildLazarusIDE 1
+		BuildLazarusIDE 
 		changeOwnerAllLAMW 1
 	;;
 	*)

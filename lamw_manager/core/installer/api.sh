@@ -87,7 +87,7 @@ updateLAMWDeps(){
 	local need_update_lamw_deps=0
 	setLAMWDeps
 
-	if [ ! -e "$GRADLE_HOME" ] ||  [ ! -e "$ANDROID_SDK/platforms/android-$ANDROID_SDK_TARGET" ] || [ ! -e "$ANDROID_SDK/build-tools/$ANDROID_BUILD_TOOLS_TARGET" ] ; then
+	if [ ! -e "$GRADLE_HOME" ] ||  [ ! -e "$ANDROID_SDK_ROOT/platforms/android-$ANDROID_SDK_TARGET" ] || [ ! -e "$ANDROID_SDK_ROOT/build-tools/$ANDROID_BUILD_TOOLS_TARGET" ] ; then
 		need_update_lamw_deps=1
 	fi
 
