@@ -349,7 +349,7 @@ resetAndroidAPIS(){
 	setLAMWDeps
 	getAndroidAPIS
 	for ((i=0;i<${#sdk_manager_fails[*]};i++)); do
-		local current_sdk_path="${ANDROID_SDK}/${sdk_manager_fails[i]}"
+		local current_sdk_path="${ANDROID_SDK_ROOT}/${sdk_manager_fails[i]}"
 		if [ -e $current_sdk_path ]; then
 			chown $LAMW_USER:$LAMW_USER -R $current_sdk_path
 		fi
