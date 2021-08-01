@@ -39,13 +39,17 @@ buildFPCTrunk(){
 BuildCrossAll(){
 	case $1 in
 	0)
-		make clean crossall crossinstall  CPU_TARGET=aarch64 OS_TARGET=android OPT="-dFPC_ARMHF" INSTALL_PREFIX=$LAMW4LINUX_HOME/usr "PP=$FPC_LIB_PATH/ppcx64" ;;
+		make clean crossall crossinstall  CPU_TARGET=aarch64 OS_TARGET=android OPT="-dFPC_ARMHF"\
+			INSTALL_PREFIX=$LAMW4LINUX_HOME/usr "PP=$FPC_LIB_PATH/ppcx64" ;;
 	1)
-		make clean crossall crossinstall CPU_TARGET=arm OPT="-dFPC_ARMEL" OS_TARGET=android CROSSOPT="-CpARMV7A -CfVFPV3" INSTALL_PREFIX=$LAMW4LINUX_HOME/usr "PP=$FPC_LIB_PATH/ppcx64";;
+		make clean crossall crossinstall CPU_TARGET=arm OPT="-dFPC_ARMEL" OS_TARGET=android CROSSOPT="-CpARMV7A -CfVFPV3"\
+			 INSTALL_PREFIX=$LAMW4LINUX_HOME/usr "PP=$FPC_LIB_PATH/ppcx64";;
 	2) 
-		make clean crossall crossinstall CPU_TARGET=x86_64 OS_TARGET=android "PP=$FPC_LIB_PATH/ppcx64" INSTALL_PREFIX=$LAMW4LINUX_HOME/usr OPT="-Cfsse3" CROSSOPT="-Cfsse3" ;;
+		make clean crossall crossinstall CPU_TARGET=x86_64 OS_TARGET=android "PP=$FPC_LIB_PATH/ppcx64"\
+			 INSTALL_PREFIX=$LAMW4LINUX_HOME/usr OPT="-Cfsse3" CROSSOPT="-Cfsse3" ;;
 	3)
-		make clean crossall crossinstall CPU_TARGET=i386 CPU_TARGET=i386 OS_TARGET=android "PP=$FPC_LIB_PATH/ppcx64" INSTALL_PREFIX=$LAMW4LINUX_HOME/usr OPT="-Cfsse3" CROSSOPT="-Cfsse3" ;;
+		make clean crossall crossinstall CPU_TARGET=i386 CPU_TARGET=i386 OS_TARGET=android "PP=$FPC_LIB_PATH/ppcx64"\
+			INSTALL_PREFIX=$LAMW4LINUX_HOME/usr OPT="-Cfsse3" CROSSOPT="-Cfsse3" ;;
 	*) 
 		check_error_and_exit "${VERMELHO}Fatal Error:${NORMAL}Invalid CrossOpts";;
 	esac
@@ -55,7 +59,7 @@ BuildCrossAll(){
 BuildCrossAArch64(){
 	changeDirectory "$LAMW4LINUX_HOME/usr/share/fpcsrc/$FPC_TRUNK_SVNTAG"
 	
-	local error_build_msg=("${VERMELHO}Fatal Error:${NORMAL} Falls to build FPC to Android "{AARCH64,ARMv7,i386,x86_64}
+	local error_build_msg=("${VERMELHO}Fatal Error:${NORMAL} Falls to build FPC to Android/"{AARCH64,ARMv7,x86_64,i386}
 
 	)
 
