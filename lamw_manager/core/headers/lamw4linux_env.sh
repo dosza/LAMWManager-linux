@@ -1,4 +1,4 @@
-!/bin/bash
+#!/bin/bash
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
