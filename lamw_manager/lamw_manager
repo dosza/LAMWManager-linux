@@ -92,47 +92,48 @@ RunAsSudo(){
 
 #Run LAMW Manager as Police Kit
 RunAsPolkit(){
-	LAMW_MANAGER_ENV+=(DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY)
+	local error_msg="${VERMELHO}Fatal error:${NORMAL} Cannot run on tty terminal!!"
 	CheckUseLamw_manager_setup
-	pkexec  env ${LAMW_MANAGER_ENV[@]} $CALL_BASH  "$LAMW_MGR_INSTALL" $*
-	export EXIT_STATUS=$?
-	if [  $ENTER_TO_EXIT = 1 ]; then
-		echo "press enter to exit ...";read
+	tty | grep 'pts/[0-9]'>/dev/null
+
+	if [ $?  = 0 ]; then 
+		LAMW_MANAGER_ENV+=(DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY)
+		pkexec  env ${LAMW_MANAGER_ENV[@]} $CALL_BASH  "$LAMW_MGR_INSTALL" $*
+		export EXIT_STATUS=$?
+	else
+		echo $error_msg
+		export EXIT_STATUS=$?
 	fi
+	
+	[  $ENTER_TO_EXIT = 1 ] && echo "press enter to exit ..." && read
+	
+
 }
 
 #get install status and exit
 getStatus(){
-	if [ -e ~/LAMW/lamw4linux/lamw-install.log ]; then
-		exit 0
-	else
-		exit 1
+	echo "$*" | grep "get-status" > /dev/null
+	if [ $? = 0 ]; then 
+		if [ -e ~/LAMW/lamw4linux/lamw-install.log ]; then
+			exit 0
+		else
+			exit 1
+		fi
 	fi
 }
 #Wrapper function to Run LAMW Manager
 Run(){
-	echo "$*" | grep "get-status" > /dev/null
-	if [ $? = 0 ]; then  #get-status is parameter call getStatus
-		getStatus
-	fi
-	
+	getStatus $*
 	IsFileBusy lamw_manager $LAMW_MANAGER_LOCK
 	exec 3>$LAMW_MANAGER_LOCK
 	echo "" >&3
 	getBashCMD
 	if [ $USE_PKEXEC = 1 ]; then
-		tty | grep 'tty[0-9]'>/dev/null
-		if [ $? != 0 ]; then 
-			RunAsPolkit $*
-		else
-			echo "${VERMELHO}FATAL ERROR: This tool cannot run in $(tty)${NORMAL}"
-			echo "" 
-			export EXIT_STATUS=2
-		fi
-
+		RunAsPolkit $*
 	else
 		RunAsSudo $*
 	fi
+	exec 3>&-
 }
 
 #main function
@@ -148,7 +149,5 @@ main(){
 	DelTempFiles
 }
 
-
 main $*
-exec 3>&-
 exit $EXIT_STATUS 
