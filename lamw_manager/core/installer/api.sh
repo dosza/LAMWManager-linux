@@ -28,11 +28,11 @@ setAndroidSDKCMDParameters(){
 }
 
 setJDKDeps(){
-	ZULU_JDK_JSON="$(Wget -O- -q  "$ZULU_API_JDK_URL")"
-	ZULU_JDK_URL="$(echo $ZULU_JDK_JSON | jq '.[0].url' | sed 's/"//g')"
-	ZULU_JDK_TAR="$(echo $ZULU_JDK_JSON | jq '.[0].name' | sed 's/"//g' )"
+	ZULU_JDK_JSON="$(Wget -O- -q  "$ZULU_API_JDK_URL" | jq)"
+	ZULU_JDK_URL="$(echo $ZULU_JDK_JSON | jq '.url' | sed 's/"//g')"
+	ZULU_JDK_TAR="$(echo $ZULU_JDK_JSON | jq '.name' | sed 's/"//g' )"
 	ZULU_JDK_FILE="$(echo $ZULU_JDK_TAR | sed 's/.tar.gz//g')"
-	JAVA_VERSION="1.8.0_$(echo $ZULU_JDK_JSON | jq '.[0].java_version[2]'| sed 's/"//g')"
+	JAVA_VERSION="1.8.0_$(echo $ZULU_JDK_JSON | jq '.java_version[2]'| sed 's/"//g')"
 }
 
 checkJDKVersionStatus(){
