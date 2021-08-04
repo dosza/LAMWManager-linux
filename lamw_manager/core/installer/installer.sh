@@ -249,8 +249,7 @@ getGradle(){
 	if [ ! -e "$GRADLE_HOME" ]; then
 		MAGIC_TRAP_INDEX=2 #Set arquivo a ser removido
 		trap TrapControlC  2 # set armadilha para o signal2 (siginterrupt)
-		MAGIC_TRAP_INDEX=3
-		getCompressFile "$GRADLE_ZIP_LNK" "$GRADLE_ZIP_FILE" "unzip -o -q"
+		getCompressFile "$GRADLE_ZIP_LNK" "$GRADLE_ZIP_FILE" "unzip -o -q" "MAGIC_TRAP_INDEX=3"
 	fi
 }
 
