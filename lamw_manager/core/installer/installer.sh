@@ -7,7 +7,6 @@
 #Description: "installer.sh" is part of the core of LAMW Manager. Contains routines for installing LAMW development environment
 #-------------------------------------------------------------------------------------------------#
 
-
 #prepare upgrade
 LAMWPackageManager(){
 	if [ $FLAG_FORCE_ANDROID_AARCH64 = 1 ]; then 
@@ -36,7 +35,7 @@ LAMWPackageManager(){
 
 		for gradle in ${OLD_GRADLE[*]}; do
 			if [ -e "$gradle" ]; then
-				./$gradle/bin/gradle --stop
+				stopGradleDaemon "$gradle"
 				rm -rf $gradle 
 			fi
 		done
@@ -69,16 +68,34 @@ installDependences(){
 }
 
 
+
+
+getCompressFile(){
+	local compress_url="$1"
+	local compress_file="$2"
+	local uncompress_command="$3"
+	local before_uncompress="$4"
+	local error_uncompress_msg="${VERMELHO}Error:${NORMAL} corrupt/unsupported file"
+	Wget $compress_url
+	if [ -e $compress_file ]; then
+		echo "Extracting: ${NEGRITO}$compress_file${NORMAL} ..." 
+			if [ "$before_uncompress" != "" ]; then 
+				eval "$before_uncompress"
+			fi
+		$uncompress_command $compress_file
+		check_error_and_exit "$error_uncompress_msg"
+		rm $compress_file
+	fi
+}
+
 getJDK(){
 	checkJDKVersionStatus
 	if [ $JDK_STATUS = 1 ]; then 
 		[ -e "$OLD_JAVA_HOME" ] && rm -rf "$OLD_JAVA_HOME"
 		changeDirectory "$ROOT_LAMW/jdk"
 		[ -e "$JAVA_HOME" ] && rm -r "$JAVA_HOME"
-		Wget "$JDK_URL"
-		tar -zxvf "$JDK_TAR"
+		getCompressFile "$JDK_URL" "$JDK_TAR" "tar -zxf"
 		mv "$JDK_FILE" "${JDK_VERSION_DIR}"
-		[ -e "$JDK_TAR" ] && rm "$JDK_TAR"
 	fi
 }
 
@@ -109,9 +126,15 @@ getFromGit(){
 
 		git ${git_param[@]}
 		if [ $? != 0 ]; then
-			git_param=(reset --hard)
+		local git_reset_param=(reset --hard)
+			git ${git_reset_param[@]}
 			git ${git_param[@]}
-			check_error_and_exit "possible network instability!! Try later!"
+			if [ $? != 0 ]; then
+				changeDirectory .. 
+				rm -rf $git_src_dir
+				echo "possible network instability!! Try later!"
+				exit 1
+			fi
 		fi
 	fi
 }
@@ -168,7 +191,15 @@ getFPCStable(){
 getFPCSourcesTrunk(){
 	mkdir -p $FPC_TRUNK_SOURCE_PATH
 	changeDirectory $FPC_TRUNK_SOURCE_PATH
-	getFromSVN "$FPC_TRUNK_URL" "$FPC_TRUNK_SVNTAG"
+	if [ ! -e $FPC_TRUNK_SVNTAG ]; then
+		local url_fpc_src="https://sourceforge.net/projects/freepascal/files/Source/${_FPC_TRUNK_VERSION}/fpc-${_FPC_TRUNK_VERSION}.source.tar.gz"
+		local tar_fpc_src="fpc-${_FPC_TRUNK_VERSION}.source.tar.gz"
+		local untar_fpc_src="tar -zxf"
+		local fpc_src_file="fpc-${_FPC_TRUNK_VERSION}"
+		getCompressFile "$url_fpc_src" "$tar_fpc_src" "$untar_fpc_src"
+		mv $fpc_src_file $FPC_TRUNK_SVNTAG
+	fi
+	#getFromSVN "$FPC_TRUNK_URL" "$FPC_TRUNK_SVNTAG"
 	parseFPCTrunk
 }
 
@@ -202,12 +233,10 @@ getAnt(){
 	if [ ! -e "$ANT_HOME" ]; then
 		MAGIC_TRAP_INDEX=0 # preperando o indice do arquivo/diretório a ser removido
 		trap TrapControlC  2
-		Wget $ANT_TAR_URL
 		MAGIC_TRAP_INDEX=1
-		tar -xvf "$ANT_TAR_FILE"
+		getCompressFile "$ANT_TAR_URL" "$ANT_TAR_FILE" "tar -xf"
 	fi
 
-	[ -e  $ANT_TAR_FILE ] && rm $ANT_TAR_FILE
 }
 
 getGradle(){
@@ -215,13 +244,7 @@ getGradle(){
 	if [ ! -e "$GRADLE_HOME" ]; then
 		MAGIC_TRAP_INDEX=2 #Set arquivo a ser removido
 		trap TrapControlC  2 # set armadilha para o signal2 (siginterrupt)
-		Wget $GRADLE_ZIP_LNK
-		MAGIC_TRAP_INDEX=3
-		unzip -o  $GRADLE_ZIP_FILE
-	fi
-
-	if [ -e  $GRADLE_ZIP_FILE ]; then
-		rm $GRADLE_ZIP_FILE
+		getCompressFile "$GRADLE_ZIP_LNK" "$GRADLE_ZIP_FILE" "unzip -o -q" "MAGIC_TRAP_INDEX=3"
 	fi
 }
 
@@ -236,11 +259,8 @@ getAndroidSDKTools(){
 		changeDirectory "$CMD_SDK_TOOLS_DIR"
 		trap TrapControlC  2
 		MAGIC_TRAP_INDEX=4
-		Wget $CMD_SDK_TOOLS_URL
-		MAGIC_TRAP_INDEX=5
-		unzip -o  $CMD_SDK_TOOLS_ZIP
+		getCompressFile "$CMD_SDK_TOOLS_URL" "$CMD_SDK_TOOLS_ZIP" "unzip -o -q" "MAGIC_TRAP_INDEX=5"
 		mv cmdline-tools latest
-		rm $CMD_SDK_TOOLS_ZIP
 	fi
 }
 
@@ -254,10 +274,7 @@ getSDKAntSupportedTools(){
 	if [ ! -e "$SDK_TOOLS_DIR" ];then
 		trap TrapControlC  2
 		MAGIC_TRAP_INDEX=4
-		Wget $SDK_TOOLS_URL
-		MAGIC_TRAP_INDEX=5
-		unzip -o  $SDK_TOOLS_ZIP
-		rm $SDK_TOOLS_ZIP
+		getCompressFile "$SDK_TOOLS_URL" "$SDK_TOOLS_ZIP" "unzip -o -q"  "MAGIC_TRAP_INDEX=5"
 	fi
 }
 
