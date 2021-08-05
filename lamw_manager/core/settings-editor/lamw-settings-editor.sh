@@ -30,19 +30,6 @@ enableADBtoUdev(){
 	  systemctl restart udev.service
 }
 
-stopGradleDaemon(){
-	local gradle="$1"
-	local lamw_log="$LAMW4LINUX_HOME/lamw-install.log"
-	if [ "$gradle" = "" ]; then
-		if [ $LAMW_INSTALL_STATUS = 1 ] && [ -e $LAMW4LINUX_HOME/lamw-install.log ] ; then 
-			local gradle_version="$(grep ^GRADLE_VERSION | sed 's/GRADLE_VERSION=//g')"
-			gradle="$ROOT_LAMW/gradle-$gradle_version"
-		fi
-	fi
-
-	[ -e "$gradle" ] && $gradle/bin/gradle --stop
-}
-
 
 AddSDKPathstoProfile(){
 	local profile_file=$LAMW_USER_HOME/.bashrc
@@ -362,7 +349,6 @@ validate_is_file_create_by_lamw_manager(){
 CleanOldConfig(){
 	getStatusInstalation
 	[ $LAMW_INSTALL_STATUS = 1 ] && checkLAMWManagerVersion > /dev/null
-	stopGradleDaemon
 	wrapperParseFPC
 	local list_deleted_files=(
 		"/usr/bin/ppcarm"
