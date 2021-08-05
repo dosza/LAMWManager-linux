@@ -1,7 +1,7 @@
 # LAMW Manager Release Notes
 This page contains information about new features and bug fixes.
 
-v0.4.1.1  - Aug 6, 2021
+v0.4.1.1  - Aug 5, 2021
 ---
 **News**
 +	Lazarus 2.2.0RC1
