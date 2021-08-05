@@ -1,6 +1,17 @@
 # LAMW Manager Release Notes
 This page contains information about new features and bug fixes.
 
+v0.4.1.1  - Aug 6, 2021
+---
+**News**
++	Lazarus 2.2.0RC1
++	Remove unnecessary verbose on extract files 
++	Crosscompile to i386/amd64 Android
++	*starlamw4linux* uses exec to load *lamw4linux*
+
+**Fixed**
++	Get Freepascal Sources from SourceForge (while FPC migrates to gitlab)
+
 v0.4.1 - Jul 27, 2021
 ---
 **News**
@@ -13,7 +24,7 @@ v0.4.1 - Jul 27, 2021
 
 **Note**
 
-1.	To continue using Apache Ant (hybrid install), you must use [*LAMW Manager v0.4.0.3*](https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/tree/v0.4.0/) 
+1.	To continue using Apache Ant (hybrid install), you must use [*LAMW Manager Setup v0.4.0.x*](https://github.com/dosza/LAMW4Linux-installer/raw/v0.4.0/lamw_manager/assets/lamw_manager_setup.sh) 
 
 v0.4.0.3 - Jul 28, 2021
 ---

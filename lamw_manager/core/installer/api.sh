@@ -21,27 +21,9 @@ setAndroidSDKCMDParameters(){
 		#"build-tools;$GRADLE_MIN_BUILD_TOOLS"
 	)
 
-	SDK_MANAGER_CMD_PARAMETERS2=(
-		"android-$ANDROID_SDK_TARGET"
-		"platform-tools"
-		"build-tools-$ANDROID_BUILD_TOOLS_TARGET" 
-		"extra-google-google_play_services"
-		"extra-android-m2repository"
-		"extra-google-m2repository"
-		"extra-google-market_licensing"
-		"extra-google-market_apk_expansion"
-		#"build-tools-$GRADLE_MIN_BUILD_TOOLS"
-	)
-
 	if [ $USE_PROXY = 1 ]; then
 		SDK_LICENSES_PARAMETERS=( --licenses --no_https --proxy=http --proxy_host=$PROXY_SERVER --proxy_port=$PORT_SERVER )
 		SDK_MANAGER_CMD_PARAMETERS+=("--no_https --proxy=http" "--proxy_host=$PROXY_SERVER" "--proxy_port=$PORT_SERVER")
-		
-		SDK_MANAGER_CMD_PARAMETERS2_PROXY=(
-			'--no_https' 
-			"--proxy-host=$PROXY_SERVER" 
-			"--proxy-port=$PORT_SERVER" #'--proxy=http'
-		)
 	fi
 }
 parseJSONString(){
@@ -87,7 +69,7 @@ updateLAMWDeps(){
 	local need_update_lamw_deps=0
 	setLAMWDeps
 
-	if [ ! -e "$GRADLE_HOME" ] ||  [ ! -e "$ANDROID_SDK/platforms/android-$ANDROID_SDK_TARGET" ] || [ ! -e "$ANDROID_SDK/build-tools/$ANDROID_BUILD_TOOLS_TARGET" ] ; then
+	if [ ! -e "$GRADLE_HOME" ] ||  [ ! -e "$ANDROID_SDK_ROOT/platforms/android-$ANDROID_SDK_TARGET" ] || [ ! -e "$ANDROID_SDK_ROOT/build-tools/$ANDROID_BUILD_TOOLS_TARGET" ] ; then
 		need_update_lamw_deps=1
 	fi
 
