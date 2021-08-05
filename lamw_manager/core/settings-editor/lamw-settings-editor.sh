@@ -8,21 +8,21 @@
 #-------------------------------------------------------------------------------------------------#
 #this function builds initial struct directory of LAMW env Development !
 initROOT_LAMW(){
-	if [ ! -e $ANDROID_SDK ]; then 
-		mkdir -p $ANDROID_SDK
-	fi
 
-	[ ! -e "$ROOT_LAMW/jdk" ] && mkdir "$ROOT_LAMW/jdk"
+	local init_root_lamw_dirs=(
+		$ANDROID_SDK_ROOT
+		"$(dirname $JAVA_HOME)"
+		"$LAMW4LINUX_ETC"
+		$LAMW_USER_HOME/.android
+		$HOME/.android
+	)
 
-	if  [ ! -e $LAMW_USER_HOME/.android ]; then
-		mkdir $LAMW_USER_HOME/.android 
-		echo "" > $LAMW_USER_HOME/.android/repositories.cfg
-	fi
+	for lamw_dir in ${init_root_lamw_dirs[@]}; do
+		[ ! -e "$lamw_dir" ] && mkdir -p "$lamw_dir"
+	done
 
-	if [ !  -e $HOME/.android ]; then
-		mkdir -p $HOME/.android 	
-		echo "" > $HOME/.android/repositories.cfg
-	fi 
+	[ ! -e $LAMW_USER_HOME/.android/repositories.cfg ] && touch $LAMW_USER_HOME/.android/repositories.cfg  
+	[ ! $HOME/.android/repositories.cfg ] && echo "" > $HOME/.android/repositories.cfg 
 }
 
 enableADBtoUdev(){
@@ -113,20 +113,13 @@ writeLAMWLogInstall(){
 		"ANT_VERSION=$ANT_VERSION_STABLE"
 		"GRADLE_VERSION=$GRADLE_VERSION"
 		"SDK_TOOLS_VERSION=$SDK_TOOLS_VERSION"
-		"NDK_VERSION=$NDK_VERSION"
 		"FPC_VERSION=$fpc_version"
 		"LAZARUS_VERSION=$LAZARUS_STABLE_VERSION"
 		"AARCH64_SUPPORT=$FLAG_FORCE_ANDROID_AARCH64"
 		"Install-date:$(date)"
 	)
 
-	WriterFileln "$LAMW4LINUX_HOME/lamw-install.log" "lamw_log_str"
-	if [ "$NOTIFY_SEND_EXE" != "" ]; then
-		$NOTIFY_SEND_EXE    "Info:\nLAMW4Linux:$LAMW4LINUX_HOME\nLAMW workspace : $LAMW_WORKSPACE_HOME\nAndroid SDK:$ROOT_LAMW/sdk\nAndroid NDK:$ROOT_LAMW/ndk\nGradle:$GRADLE_HOME\nLOG:$LAMW4LINUX_HOME/lamw-install.log"
-	else
-		printf "Info:\nLAMW4Linux:$LAMW4LINUX_HOME\nLAMW workspace : $LAMW_USER_HOME/Dev/lamw_workspace\nAndroid SDK:$ROOT_LAMW/sdk\nAndroid NDK:$ROOT_LAMW/ndk\nGradle:$GRADLE_HOME\nLOG:$LAMW4LINUX_HOME/lamw-install.log\n"
-	fi		
-
+	WriterFileln "$LAMW4LINUX_HOME/lamw-install.log" "lamw_log_str"	
 }
 
 #Add LAMW4Linux to menu 
@@ -184,7 +177,7 @@ LAMW4LinuxPostConfig(){
 		"PathToJavaTemplates=$ROOT_LAMW/lazandroidmodulewizard/android_wizard/smartdesigner/java"
 		"PathToJavaJDK=$JAVA_HOME"
 		"PathToAndroidNDK=$ROOT_LAMW/ndk"
-		"PathToAndroidSDK=$ROOT_LAMW/sdk"
+		"PathToAndroidSDK=$ANDROID_SDK_ROOT"
 		"PathToAntBin=$ant_path"
 		"PathToGradle=$GRADLE_HOME"
 		"PrebuildOSYS=linux-x86_64"
@@ -207,7 +200,7 @@ LAMW4LinuxPostConfig(){
 		"export PPC_CONFIG_PATH=$PPC_CONFIG_PATH"
 		"export JAVA_HOME=$JAVA_HOME"
 		"export ANDROID_HOME=$ANDROID_HOME"
-		"export ANDROID_SDK_ROOT=$ANDROID_SDK"
+		"export ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
 		"export PATH=$ROOT_LAMW/lamw4linux/usr/bin:\$PPC_CONFIG_PATH:\$JAVA_HOME/bin:\$PATH"
 		"exec $LAMW4LINUX_EXE_PATH --pcp=$LAMW4_LINUX_PATH_CFG \$*"
 	)
@@ -454,12 +447,8 @@ configureFPCTrunk(){
 	# parte do arquivo de configuração do fpc, 
 	#	if [ ! -e $FPC_CFG_PATH ]; then
 	parseFPCTrunk
-	$FPC_MKCFG_EXE -d basepath=$FPC_TRUNK_LIB_PATH -o $FPC_CFG_PATH
-
-
-	local fpc_trunk_parent=$FPC_TRUNK_LIB_PATH
-	fpc_trunk_parent=$(echo $fpc_trunk_parent | sed "s/\/$_FPC_TRUNK_VERSION//g")
-	#ls $fpc_trunk_parent;echo $fpc_trunk_parent;read;
+	$FPC_MKCFG_EXE -d basepath="$FPC_TRUNK_LIB_PATH" -o "$FPC_CFG_PATH"
+	local fpc_trunk_parent="$(dirname "$FPC_TRUNK_LIB_PATH")"
 
 	#this config enable to crosscompile in fpc 
 	local fpc_cfg_str=(
@@ -471,9 +460,6 @@ configureFPCTrunk(){
 		"-XParm-linux-androideabi-"
 		"-Fl$ROOT_LAMW/ndk/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/arm-linux-androideabi/$ANDROID_SDK_TARGET"
 		"-FLlibdl.so"
-		"-Fu${fpc_trunk_parent}/"'$fpcversion/units/$fpctarget'
-		"-Fu${fpc_trunk_parent}/"'$fpcversion/units/$fpctarget/*'
-		"-Fu${fpc_trunk_parent}/"'$fpcversion/units/$fpctarget/rtl'
 		"-FD${ARM_ANDROID_TOOLS}"
 		"#ENDIF"
 		"#IFDEF CPUAARCH64"
@@ -482,13 +468,57 @@ configureFPCTrunk(){
 		"-Fl$ROOT_LAMW/ndk/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/aarch64-linux-android/$ANDROID_SDK_TARGET"
 		"-FLlibdl.so"
 		"-FD${AARCH64_ANDROID_TOOLS}"
-		"-Fu${fpc_trunk_parent}/"'$fpcversion/units/$fpctarget'
-		"-Fu${fpc_trunk_parent}/"'$fpcversion/units/$fpctarget/*'
-		"-Fu${fpc_trunk_parent}/"'$fpcversion/units/$fpctarget/rtl'
-	
+		"#ENDIF"
+		"#IFDEF CPUI386"
+		"-Cfsse3"
+		"-Xd"
+		"-XPi686-linux-android-"
+		"-FLlibdl.so"
+		"-FD${I386_ANDROID_TOOLS}"
+		"-Fl$ROOT_LAMW/ndk/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/i686-linux-android/$ANDROID_SDK_TARGET"
+		"#ENDIF"
+		"#IFDEF CPUX86_64"
+		"-Cfsse3"
+		"-Xd"
+		"-XPx86_64-linux-android-"
+		"-FD${AMD64_ANDROID_TOOLS}"
+		"-FLlibdl.so"
+		"-Fl$ROOT_LAMW/ndk/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/x86_64-linux-android/$ANDROID_SDK_TARGET"
 		"#ENDIF"
 		"#ENDIF"
 	)
+
+	local fpcpkg_cfg_str=(
+			"[Defaults]"
+			"ConfigVersion=5"
+			"LocalRepository={UserDir}.fppkg/"
+			"BuildDir={LocalRepository}build/"
+			"ArchivesDir={LocalRepository}archives/"
+			"CompilerConfigDir={LocalRepository}config/"
+			"RemoteMirrors=https://www.freepascal.org/repository/mirrors.xml"
+			"RemoteRepository=auto"
+			"CompilerConfig=default"
+			"FPMakeCompilerConfig=default"
+			"Downloader=FPC"
+			"InstallRepository=user"
+			""
+			"[Repository]"
+			"Name=fpc"
+			"Description=Packages which are installed along with the Free Pascal Compiler"
+			"Path=${fpc_trunk_parent}/{CompilerVersion}/"
+			"Prefix=$LAMW4LINUX_HOME/usr"
+			""
+			"[IncludeFiles]"
+			"FileMask={LocalRepository}config/conf.d/*.conf"
+			""
+			"[Repository]"
+			"Name=user"
+			"Description=User-installed packages"
+			"Path={LocalRepository}lib/fpc/{CompilerVersion}"
+			"Prefix={LocalRepository}"
+		)
+	
+	WriterFileln "$FPPKG_TRUNK_CFG_PATH" fpcpkg_cfg_str
 
 	if [ -e $FPC_CFG_PATH ] ; then  # se exiir /etc/fpc.cfg
 		searchLineinFile $FPC_CFG_PATH  "${fpc_cfg_str[0]}"
@@ -563,11 +593,14 @@ CreateFPCTrunkBootStrap(){
 }
 
 initLAMw4LinuxConfig(){
+	local lazarus_version_str="`$LAMW_IDE_HOME/tools/install/get_lazarus_version.sh`"	
+	local lazarus_env_cfg_path="$LAMW4_LINUX_PATH_CFG/environmentoptions.xml"	
+	
 	local lazarus_env_cfg_str=(
 		'<?xml version="1.0" encoding="UTF-8"?>'
 		'<CONFIG>'
 		'	<EnvironmentOptions>'
-		"		<Version Value=\"110\" Lazarus=\"${LAZARUS_STABLE_VERSION}\"/>"
+		"		<Version Value=\"110\" Lazarus=\"${lazarus_version_str}\"/>"
 		"		<LazarusDirectory Value=\"${LAMW_IDE_HOME}/\"/>"
 		"		<CompilerFilename Value=\"$FPC_TRUNK_EXEC_PATH/fpc\"/>"
 		"		<FPCSourceDirectory Value=\"${FPC_TRUNK_SOURCE_PATH}/${FPC_TRUNK_SVNTAG}\">" 
@@ -576,10 +609,23 @@ initLAMw4LinuxConfig(){
 		"		</MakeFilename>"
 		"		<TestBuildDirectory Value=\"/tmp\">"
 		"		</TestBuildDirectory>"
+		"		<FppkgConfigFile Value=\"${FPPKG_TRUNK_CFG_PATH}\"/>"
+		'    	<Debugger Class="TGDBMIDebugger">'
+      	'			<Configs>'
+        '				<Config ConfigName="FpDebug" ConfigClass="TFpDebugDebugger" Active="True"/>'
+        "				<Config ConfigName=\"Gdb\" ConfigClass=\"TGDBMIDebugger\" DebuggerFilename=\"$(which gdb)\"/>"
+        '			</Configs>'
+
+        # "		<Debugger>"
+	 #    "			<Configs>"
+	 #    "				<Config ConfigName=\"FpDebug\" ConfigClass=\"TFpDebugDebugger\" Active=\"True\"/>"
+	 #    "    			<Config ConfigName=\"Gdb\" ConfigClass=\"TGDBMIDebugger\" DebuggerFilename=\"$(which gdb)\"/>"
+	 #    "		</Configs>"
+	  "		</Debugger>"
 		"	</EnvironmentOptions>"
 		"</CONFIG>"
 	)
-	local lazarus_env_cfg_path="$LAMW4_LINUX_PATH_CFG/environmentoptions.xml"
+
 
 	if [ ! -e $LAMW4_LINUX_PATH_CFG ]; then
 		mkdir $LAMW4_LINUX_PATH_CFG
@@ -597,8 +643,8 @@ initLAMw4LinuxConfig(){
 		local old_lazarus_version_file=$(grep 'Lazarus='  "$lazarus_env_cfg_path" | sed 's/<//g' | sed 's/Version//g'| sed 's/Value//g'  | sed 's/"110"//g' | sed 's/=//g' | sed 's/Lazarus//g' | sed 's/"//g' | sed 's/\/>//g' | sed 's/[[:space:]]//g' ) # remove'	<Version Value=\"110\" Lazarus=X.Y.Z', restando  X.Y.Z
 		local old_stable_lazarus="lazarus_"${old_lazarus_version_file//\./_} #cria a string lazarus_X_Y_Z usando a expansao que substitui . por _
 		local old_lazarus_version_file_scap=${old_lazarus_version_file//\./\\\.} # substitui X.Y.Z por X\.Y\.Z na string
-		local lazarus_stable_version_scap=${LAZARUS_STABLE_VERSION//\./\\\.} # substitui X.Y.Z por X\.Y\.Z na string
-
+		local lazarus_stable_version_scap=${lazarus_version_str//\./\\\.} # substitui X.Y.Z por X\.Y\.Z na string
+	
 		grep 'CompilerFilename Value=\"\/usr\/bin\/fpc\"' $lazarus_env_cfg_path 
 		if [ $? = 0 ]; then
 			sed -i "s/CompilerFilename Value=\"${fpc_splited[0]}\"/CompilerFilename Value=\"${fpc_splited[4]}\"/g" "$lazarus_env_cfg_path"
