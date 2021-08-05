@@ -78,11 +78,9 @@ getCompressFile(){
 	local error_uncompress_msg="${VERMELHO}Error:${NORMAL} corrupt/unsupported file"
 	Wget $compress_url
 	if [ -e $compress_file ]; then
-		echo "Extracting: ${NEGRITO}$compress_file${NORMAL} ..." 
-			if [ "$before_uncompress" != "" ]; then 
-				eval "$before_uncompress"
-			fi
-		$uncompress_command $compress_file
+		echo "Please wait, extracting ${NEGRITO}$compress_file${NORMAL} ..." 
+		[ "$before_uncompress" != "" ] &&  eval "$before_uncompress"
+		$uncompress_command
 		check_error_and_exit "$error_uncompress_msg"
 		rm $compress_file
 	fi
@@ -94,7 +92,7 @@ getJDK(){
 		[ -e "$OLD_JAVA_HOME" ] && rm -rf "$OLD_JAVA_HOME"
 		changeDirectory "$ROOT_LAMW/jdk"
 		[ -e "$JAVA_HOME" ] && rm -r "$JAVA_HOME"
-		getCompressFile "$JDK_URL" "$JDK_TAR" "tar -zxf"
+		getCompressFile "$JDK_URL" "$JDK_TAR" "tar -zxf $JDK_TAR"
 		mv "$JDK_FILE" "${JDK_VERSION_DIR}"
 	fi
 }
@@ -163,24 +161,13 @@ getFPCStable(){
 
 	cd "$LAMW4LINUX_HOME/usr"
 	if  [ ! -e "$FPC_LIB_PATH" ]; then
-		echo "doesn't exist $FPC_LIB_PATH"
-		Wget $FPC_DEB_LINK
-		if [ -e "$FPC_DEB" ]; then
-			local tmp_files=(
-				data.tar.xz
-				control.tar.gz
-				debian-binary
-				"$FPC_DEB"
-			)
-			ar x "$FPC_DEB"
-			if [ -e data.tar.xz ]; then 
-				tar -xvf data.tar.xz 
-				rm -rf $LAMW4LINUX_HOME/usr/local
-				[ -e $LAMW4LINUX_HOME/usr/usr ] && mv $LAMW4LINUX_HOME/usr/usr/ $LAMW4LINUX_HOME/usr/local
-			fi
-			for i in ${!tmp_files[@]}; do  
-				if [ -e ${tmp_files[i]} ]; then rm ${tmp_files[i]} ; fi
-			done	
+
+		getCompressFile "$FPC_DEB_LINK" "$FPC_DEB" "ar x $FPC_DEB data.tar.xz"
+		if [ -e data.tar.xz ]; then 
+			tar -xf data.tar.xz 
+			rm -rf $LAMW4LINUX_HOME/usr/local
+			[ -e $LAMW4LINUX_HOME/usr/usr ] && mv $LAMW4LINUX_HOME/usr/usr/ $LAMW4LINUX_HOME/usr/local
+			rm data.tar.xz
 		fi
 		export PPC_CONFIG_PATH=$FPC_LIB_PATH
 
@@ -194,7 +181,7 @@ getFPCSourcesTrunk(){
 	if [ ! -e $FPC_TRUNK_SVNTAG ]; then
 		local url_fpc_src="https://sourceforge.net/projects/freepascal/files/Source/${_FPC_TRUNK_VERSION}/fpc-${_FPC_TRUNK_VERSION}.source.tar.gz"
 		local tar_fpc_src="fpc-${_FPC_TRUNK_VERSION}.source.tar.gz"
-		local untar_fpc_src="tar -zxf"
+		local untar_fpc_src="tar -zxf $tar_fpc_src"
 		local fpc_src_file="fpc-${_FPC_TRUNK_VERSION}"
 		getCompressFile "$url_fpc_src" "$tar_fpc_src" "$untar_fpc_src"
 		mv $fpc_src_file $FPC_TRUNK_SVNTAG
@@ -234,7 +221,7 @@ getAnt(){
 		MAGIC_TRAP_INDEX=0 # preperando o indice do arquivo/diretório a ser removido
 		trap TrapControlC  2
 		MAGIC_TRAP_INDEX=1
-		getCompressFile "$ANT_TAR_URL" "$ANT_TAR_FILE" "tar -xf"
+		getCompressFile "$ANT_TAR_URL" "$ANT_TAR_FILE" "tar -xf $ANT_TAR_FILE"
 	fi
 
 }
@@ -244,7 +231,7 @@ getGradle(){
 	if [ ! -e "$GRADLE_HOME" ]; then
 		MAGIC_TRAP_INDEX=2 #Set arquivo a ser removido
 		trap TrapControlC  2 # set armadilha para o signal2 (siginterrupt)
-		getCompressFile "$GRADLE_ZIP_LNK" "$GRADLE_ZIP_FILE" "unzip -o -q" "MAGIC_TRAP_INDEX=3"
+		getCompressFile "$GRADLE_ZIP_LNK" "$GRADLE_ZIP_FILE" "unzip -o -q $GRADLE_ZIP_FILE" "MAGIC_TRAP_INDEX=3"
 	fi
 }
 
@@ -259,7 +246,7 @@ getAndroidSDKTools(){
 		changeDirectory "$CMD_SDK_TOOLS_DIR"
 		trap TrapControlC  2
 		MAGIC_TRAP_INDEX=4
-		getCompressFile "$CMD_SDK_TOOLS_URL" "$CMD_SDK_TOOLS_ZIP" "unzip -o -q" "MAGIC_TRAP_INDEX=5"
+		getCompressFile "$CMD_SDK_TOOLS_URL" "$CMD_SDK_TOOLS_ZIP" "unzip -o -q  $CMD_SDK_TOOLS_ZIP" "MAGIC_TRAP_INDEX=5"
 		mv cmdline-tools latest
 	fi
 }
@@ -274,7 +261,7 @@ getSDKAntSupportedTools(){
 	if [ ! -e "$SDK_TOOLS_DIR" ];then
 		trap TrapControlC  2
 		MAGIC_TRAP_INDEX=4
-		getCompressFile "$SDK_TOOLS_URL" "$SDK_TOOLS_ZIP" "unzip -o -q"  "MAGIC_TRAP_INDEX=5"
+		getCompressFile "$SDK_TOOLS_URL" "$SDK_TOOLS_ZIP" "unzip -o -q $SDK_TOOLS_ZIP"  "MAGIC_TRAP_INDEX=5"
 	fi
 }
 
@@ -294,7 +281,7 @@ runSDKManagerLicenses(){
 	fi
 }
 
- runSDKManager(){
+runSDKManager(){
 	local sdk_manager_cmd="$CMD_SDK_TOOLS_DIR/latest/bin/sdkmanager"
 	if [ $FORCE_YES = 1 ]; then 
 		yes | $sdk_manager_cmd $*
