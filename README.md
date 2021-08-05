@@ -35,10 +35,14 @@ LAMW Manager install the following [dependencies] tools:
 	<li>Android NDK</li>
 	<li>Android SDK</li>
 	<li>OpenJDK</li>
-	<li>Build Freepascal Cross-compile to <strong>ARM-android</strong></li>
-	<li>Build Freepascal Cross-compile to <strong>AARCH64-android</strong></li>
-		<li>Build Freepascal Cross-compile to <strong>i386-android</strong></li>
-	<li>Build Freepascal Cross-compile to <strong>x86_64-android</strong></li>
+	<li>Build Freepascal:
+		<ul>
+			<li>Crosscompile to AARCH64-Android</li>
+			<li>Crosscompile to ARMv7-Android</li>
+			<li><strong>New</strong>: Crosscompile to i386-Android</li>
+			<li><strong>New</strong>: Crosscompile to amd64/Android</li>
+		</ul>
+	</li>
 	<li>Build Lazarus IDE</li>
 	<li>LAMW framework</li>
 	<li>Create launcher to menu</li>
