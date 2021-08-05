@@ -159,3 +159,13 @@ else
 		echo "${VERMELHO}Error:${NORMAL}missing ${NEGRITO}--server${NORMAL}";exit 1
 	fi
 fi
+
+
+getFiller(){
+	FILLER='................................................................................'
+	max_col=$(tput cols)
+	if [ $max_col -ge 160 ]; then 
+		FILLER='....................................................................................................'
+	fi
+
+}

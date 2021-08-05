@@ -76,12 +76,14 @@ getCompressFile(){
 	local uncompress_command="$3"
 	local before_uncompress="$4"
 	local error_uncompress_msg="${VERMELHO}Error:${NORMAL} corrupt/unsupported file"
+	local initial_msg="Please wait, extracting ${NEGRITO}$compress_file${NORMAL} ..." 
 	Wget $compress_url
 	if [ -e $compress_file ]; then
-		echo "Please wait, extracting ${NEGRITO}$compress_file${NORMAL} ..." 
+		printf "%s" "$initial_msg"	
 		[ "$before_uncompress" != "" ] &&  eval "$before_uncompress"
 		$uncompress_command
 		check_error_and_exit "$error_uncompress_msg"
+		printf  "%s\n" "${FILLER:${#compress_file}}${VERDE} [OK]${NORMAL}"
 		rm $compress_file
 	fi
 }
@@ -510,6 +512,7 @@ checkProxyStatus(){
 }
 
 mainInstall(){
+	getFiller
 	checkLAMWManagerVersion > /dev/null
 	initROOT_LAMW
 	installDependences
