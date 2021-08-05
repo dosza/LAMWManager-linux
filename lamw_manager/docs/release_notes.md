@@ -1,6 +1,17 @@
 # LAMW Manager Release Notes
 This page contains information about new features and bug fixes.
 
+v0.4.1.1  - Aug 6, 2021
+---
+**News**
++	Lazarus 2.2.0RC1
++	Remove unnecessary verbose on extract files 
++	Crosscompile to i386/amd64 Android
++	*starlamw4linux* uses exec to load *lamw4linux*
+
+**Fixed**
++	Get Freepascal Sources from SourceForge (while FPC migrates to gitlab)
+
 v0.4.1 - Jul 27, 2021
 ---
 **News**
