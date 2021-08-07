@@ -15,6 +15,7 @@ initROOT_LAMW(){
 		"$LAMW4LINUX_ETC"
 		$LAMW_USER_HOME/.android
 		$HOME/.android
+		$FPPKG_LOCAL_REPOSITORY
 	)
 
 	for lamw_dir in ${init_root_lamw_dirs[@]}; do
@@ -482,10 +483,17 @@ configureFPCTrunk(){
 		"#ENDIF"
 	)
 
+	local fppkg_local_cfg=(
+		'[Defaults]'
+		'ConfigVersion=5'
+		"Compiler=$FPC_TRUNK_EXEC_PATH/fpc"
+		'OS=Linux'
+	)
+
 	local fpcpkg_cfg_str=(
 			"[Defaults]"
 			"ConfigVersion=5"
-			"LocalRepository={UserDir}.fppkg/"
+			"LocalRepository=$(dirname $FPPKG_LOCAL_REPOSITORY)/"
 			"BuildDir={LocalRepository}build/"
 			"ArchivesDir={LocalRepository}archives/"
 			"CompilerConfigDir={LocalRepository}config/"
@@ -511,8 +519,10 @@ configureFPCTrunk(){
 			"Path={LocalRepository}lib/fpc/{CompilerVersion}"
 			"Prefix={LocalRepository}"
 		)
+
 	
 	WriterFileln "$FPPKG_TRUNK_CFG_PATH" fpcpkg_cfg_str
+	WriterFileln "$FPPKG_LOCAL_REPOSITORY_CFG" fppkg_local_cfg
 
 	if [ -e $FPC_CFG_PATH ] ; then  # se exiir /etc/fpc.cfg
 		searchLineinFile $FPC_CFG_PATH  "${fpc_cfg_str[0]}"
