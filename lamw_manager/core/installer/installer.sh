@@ -491,7 +491,7 @@ BuildLazarusIDE(){
 	changeDirectory $LAMW_IDE_HOME
 
 	if [ $# = 0 ]; then 
-	 	make ${make_opts[*]}
+	 	make -s  ${make_opts[*]}
 	 	check_error_and_exit "$error_build_lazarus_msg" #build all IDE
 	fi
 	
