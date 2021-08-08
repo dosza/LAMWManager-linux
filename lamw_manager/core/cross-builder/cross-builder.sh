@@ -25,14 +25,14 @@ parseFPCTrunk(){
 #BuildFPC to Trunk
 buildFPCTrunk(){
 	if [ -e "$FPC_TRUNK_SOURCE_PATH" ]; then
+		local build_msg="Please wait, starting build FPC to ${NEGRITO}x86_64/Linux${NORMAL} ..."
+		local succes_msg="Build to FPC ${NEGRITO}x86_64/Linux${NORMAL}"
 		changeDirectory "$FPC_TRUNK_SOURCE_PATH/$FPC_TRUNK_SVNTAG"
-		printf "%s\n\n" "Starting build FPC to ${NEGRITO}x86_64/Linux${NORMAL} ..."
+		printf "%s\n" "$build_msg"
 		make -s  clean all install  INSTALL_PREFIX=$LAMW4LINUX_HOME/usr "PP=$FPC_LIB_PATH/ppcx64"
 		check_error_and_exit "${VERMELHO}Fatal Error: Falls build FPC to x86_64-linux${NORMAL}" 
-		#changeDirectory "$LAMW4LINUX_HOME/usr"
-		#echo "$FPC_INSTALL_TRUNK_ZIP";
-		#tar -zxf "$FPC_INSTALL_TRUNK_ZIP"	
-		#[  -e "$FPC_INSTALL_TRUNK_ZIP" ] && rm "$FPC_INSTALL_TRUNK_ZIP"
+		printf  "%s\n\n" "${succes_msg}${FILLER:${#succes_msg}}${VERDE} [OK]${NORMAL}"
+
 	fi
 }
 
@@ -64,11 +64,12 @@ BuildCrossAArch64(){
 
 	for i in ${!build_aarch[*]}; do 
 		local error_build_msg="${VERMELHO}Fatal Error:${NORMAL} Falls to build FPC to Android/${build_aarch[$i]}"
-		local build_msg="Starting build to Android/${build_aarch[i]}..."
-		printf "%s\n\n" "$build_msg"
+		local build_msg="Please wait, starting build FPC to ${NEGRITO}${build_aarch[i]}/Android${NORMAL}..."
+		local succes_msg="Build to FPC ${NEGRITO}${build_aarch[i]}/Android${NORMAL}"
+		printf "%s\n" "$build_msg"
 		BuildCrossAll $i 
-		printf  "%s\n" "${FILLER:${#build_msg}}${VERDE} [OK]${NORMAL}"
 		check_error_and_exit ${error_build_msg[i]}
+		printf  "%s\n\n" "${succes_msg}${FILLER:${#succes_msg}}${VERDE} [OK]${NORMAL}"
 	done
 
 	echo "cleaning sources..."
