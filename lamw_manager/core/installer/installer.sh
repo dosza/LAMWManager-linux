@@ -468,7 +468,9 @@ installLAMWPackages(){
 			--pcp=$LAMW4_LINUX_PATH_CFG  
 			--lazarusdir=$LAMW_IDE_HOME 
 			$current_widget_set
+			-q
 		)
+		echo "Please wait, buiding ${NEGRITO}`basename ${LAMW_PACKAGES[i]}`${NORMAL} ... "
 		./lazbuild  ${lamw_build_opts[*]}
 		
 		if [ $? != 0 ]; then 
