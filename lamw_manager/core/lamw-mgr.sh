@@ -38,15 +38,10 @@ case "$1" in
 
 	"--sdkmanager")
 	getStatusInstalation;
-	if [ $LAMW_INSTALL_STATUS = 1 ];then
-		getAndroidAPIS  ${ARGS[@]:1}
-		changeOwnerAllLAMW 
-
-	else
-		mainInstall
-		getAndroidAPIS  ${ARGS[@]:1}
-		changeOwnerAllLAMW
-	fi 	
+	[ $LAMW_INSTALL_STATUS = 0 ] && mainInstall
+	getAndroidAPIS  ${ARGS[@]:1}
+	changeOwnerAllLAMW
+ 
 	;;
 	"--update-lamw")
 		getStatusInstalation
