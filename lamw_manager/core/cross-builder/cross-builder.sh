@@ -35,16 +35,44 @@ buildFPCTrunk(){
 	fi
 }
 
+
+BuildCrossAll(){
+	case $1 in
+	0)
+		make -s  clean crossall crossinstall  CPU_TARGET=aarch64 OS_TARGET=android OPT="-dFPC_ARMHF"\
+			INSTALL_PREFIX=$LAMW4LINUX_HOME/usr "PP=$FPC_LIB_PATH/ppcx64" ;;
+	1)
+		make -s  clean crossall crossinstall CPU_TARGET=arm OPT="-dFPC_ARMEL" OS_TARGET=android CROSSOPT="-CpARMV7A -CfVFPV3"\
+			 INSTALL_PREFIX=$LAMW4LINUX_HOME/usr "PP=$FPC_LIB_PATH/ppcx64";;
+	2) 
+		make -s  clean crossall crossinstall CPU_TARGET=x86_64 OS_TARGET=android "PP=$FPC_LIB_PATH/ppcx64"\
+			 INSTALL_PREFIX=$LAMW4LINUX_HOME/usr OPT="-Cfsse3" CROSSOPT="-Cfsse3" ;;
+	3)
+		make -s  clean crossall crossinstall CPU_TARGET=i386 CPU_TARGET=i386 OS_TARGET=android "PP=$FPC_LIB_PATH/ppcx64"\
+			INSTALL_PREFIX=$LAMW4LINUX_HOME/usr OPT="-Cfsse3" CROSSOPT="-Cfsse3" ;;
+	*) 
+		check_error_and_exit "${VERMELHO}Fatal Error:${NORMAL}Invalid CrossOpts";;
+	esac
+}
+
 #Function to build ARMv7 and AARCH64
 BuildCrossAArch64(){
 	changeDirectory "$LAMW4LINUX_HOME/usr/share/fpcsrc/$FPC_TRUNK_SVNTAG"
-	make clean crossall crossinstall  CPU_TARGET=aarch64 OS_TARGET=android OPT="-dFPC_ARMHF" INSTALL_PREFIX=$LAMW4LINUX_HOME/usr "PP=$FPC_LIB_PATH/ppcx64"
-	check_error_and_exit "${VERMELHO}Fatal Error: Falls to build FPC to  Android/AARCH64${NORMAL}"
-	make clean crossall crossinstall CPU_TARGET=arm OPT="-dFPC_ARMEL" OS_TARGET=android CROSSOPT="-CpARMV7A -CfVFPV3" INSTALL_PREFIX=$LAMW4LINUX_HOME/usr "PP=$FPC_LIB_PATH/ppcx64"
-	check_error_and_exit "${VERMELHO}Fatal Error: Falls to build FPC  to Android/ARMv7${NORMAL}"
+	
+	local build_aarch=( AARCH64 ARMv7 x86_64 i386)
+
+	for i in ${!build_aarch[*]}; do 
+		local error_build_msg="${VERMELHO}Fatal Error:${NORMAL} Falls to build FPC to Android/${build_aarch[$i]}"
+		local build_msg="Please wait, starting build FPC to ${NEGRITO}${build_aarch[i]}/Android${NORMAL}..."
+		local succes_msg="Build to FPC ${NEGRITO}${build_aarch[i]}/Android${NORMAL}"
+		printf "%s\n" "$build_msg"
+		BuildCrossAll $i 
+		check_error_and_exit ${error_build_msg[i]}
+		printf  "%s\n\n" "${succes_msg}${FILLER:${#succes_msg}}${VERDE} [OK]${NORMAL}"
+	done
 
 	echo "cleaning sources..."
-	make clean > /dev/null
+	make -s  clean > /dev/null
 	#CreateFPCTrunkBootStrap
 }
 

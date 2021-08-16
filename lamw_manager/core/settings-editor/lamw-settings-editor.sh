@@ -464,9 +464,6 @@ configureFPCTrunk(){
 		"-XParm-linux-androideabi-"
 		"-Fl$ROOT_LAMW/ndk/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/arm-linux-androideabi/$ANDROID_SDK_TARGET"
 		"-FLlibdl.so"
-		"-Fu${fpc_trunk_parent}/"'$fpcversion/units/$fpctarget'
-		"-Fu${fpc_trunk_parent}/"'$fpcversion/units/$fpctarget/*'
-		"-Fu${fpc_trunk_parent}/"'$fpcversion/units/$fpctarget/rtl'
 		"-FD${ARM_ANDROID_TOOLS}"
 		"#ENDIF"
 		"#IFDEF CPUAARCH64"
@@ -475,10 +472,22 @@ configureFPCTrunk(){
 		"-Fl$ROOT_LAMW/ndk/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/aarch64-linux-android/$ANDROID_SDK_TARGET"
 		"-FLlibdl.so"
 		"-FD${AARCH64_ANDROID_TOOLS}"
-		"-Fu${fpc_trunk_parent}/"'$fpcversion/units/$fpctarget'
-		"-Fu${fpc_trunk_parent}/"'$fpcversion/units/$fpctarget/*'
-		"-Fu${fpc_trunk_parent}/"'$fpcversion/units/$fpctarget/rtl'
-	
+		"#ENDIF"
+		"#IFDEF CPUI386"
+		"-Cfsse3"
+		"-Xd"
+		"-XPi686-linux-android-"
+		"-FLlibdl.so"
+		"-FD${I386_ANDROID_TOOLS}"
+		"-Fl$ROOT_LAMW/ndk/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/i686-linux-android/$ANDROID_SDK_TARGET"
+		"#ENDIF"
+		"#IFDEF CPUX86_64"
+		"-Cfsse3"
+		"-Xd"
+		"-XPx86_64-linux-android-"
+		"-FD${AMD64_ANDROID_TOOLS}"
+		"-FLlibdl.so"
+		"-Fl$ROOT_LAMW/ndk/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/x86_64-linux-android/$ANDROID_SDK_TARGET"
 		"#ENDIF"
 		"#ENDIF"
 	)

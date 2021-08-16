@@ -111,7 +111,6 @@ startImplicitAction(){
 		printf "Press control+c to exit ...\n"
 		sleep $TIME_WAIT
 		mainInstall
-		changeOwnerAllLAMW;
 	else
 		echo "Please wait ..."
 		printf "${NEGRITO}Implicit LAMW Framework update starting in $TIME_WAIT seconds ... ${NORMAL}...\n"

@@ -104,10 +104,12 @@ getFromGit(){
 
 	if [ ! -e "$git_src_dir" ]; then 
 		
-		if [ $# -lt 3 ]; then 
-			local git_param=(clone "$git_src_url")
+		if [ $#  = 2 ]; then 
+			local git_param=(clone "$git_src_url" $git_src_dir)
 		else 
-			local git_param=(clone "$git_src_url" -b "$git_branch" "$git_src_dir" )
+			if [ $# = 3 ]; then
+				local git_param=(clone "$git_src_url" -b "$git_branch" "$git_src_dir" )
+			fi
 		fi
 		git ${git_param[@]}
 		
@@ -212,7 +214,7 @@ getFPCSourcesTrunk(){
 #get Lazarus Sources
 getLazarusSources(){
 	changeDirectory $LAMW4LINUX_HOME
-	getFromGit "$LAZARUS_STABLE_SRC_LNK" "$LAZARUS_STABLE"  "$LAZARUS_STABLE"
+	getFromGit "$LAZARUS_STABLE_SRC_LNK" "$LAZARUS_STABLE"
 }
 
 #GET LAMW FrameWork
