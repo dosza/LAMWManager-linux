@@ -3,7 +3,7 @@
 
 This page contains information about new features and bug fixes.
 
-v0.4.1.2 - Aug, 2021
+v0.4.1.2 - Aug 20, 2021
 ---
 **News**
 +	Add /Update\<FppkgConfigFile\> tag (*and attributes*)  in  \~/.lamw4linux/environmentoptions.xml
