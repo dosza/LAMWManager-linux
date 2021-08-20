@@ -68,4 +68,4 @@ Congratulations!!
 ---
 You are now a Lazarus for Android developer!</br>[Building Android application with **LAMW** is **RAD**!](https://drive.google.com/open?id=1CeDDpuDfRwYrKpN7VHbossH6GfZUfqjm)
 
-For more info read [**LAMW Manager v0.4.1 Manual**](https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/blob/v0.4.1/lamw_manager/docs/man.md")
+For more info read [**LAMW Manager v0.4.1 Manual**](https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/blob/v0.4.1/lamw_manager/docs/man.md)
