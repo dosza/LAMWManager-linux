@@ -15,7 +15,10 @@ LAMWPackageManager(){
 		local old_lamw4linux_exec=$old_lamw_ide_home/lamw4linux
 
 		if [ -e "$old_lamw_ide_home"  ] &&  [ -L $old_lamw_ide_home ] && [ -d $old_lamw_ide_home ]; then # remove deprecated symbolik links
-			[ -e $old_lamw4linux_exec ] && rm $old_lamw4linux_exec
+			if [ -e $old_lamw4linux_exec ]; then
+				[ -e /usr/bin/startlamw4linux ] && 	rm /usr/bin/startlamw4linux
+				rm $old_lamw4linux_exec
+			fi
 			rm "$old_lamw_ide_home"  -rf
 		fi
 
