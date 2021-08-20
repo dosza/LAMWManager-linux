@@ -12,9 +12,13 @@ LAMWPackageManager(){
 	if [ $FLAG_FORCE_ANDROID_AARCH64 = 1 ]; then 
 		
 		local old_lamw_ide_home="$LAMW4LINUX_HOME/lamw4linux"
+		local old_lamw4linux_exec=$old_lamw_ide_home/lamw4linux
 
-		if [ -e "$old_lamw_ide_home"  ]; then
-			echo "Uninstalling  Old Lazarus ..."
+		if [ -e "$old_lamw_ide_home"  ] &&  [ -L $old_lamw_ide_home ] && [ -d $old_lamw_ide_home ]; then # remove deprecated symbolik links
+			if [ -e $old_lamw4linux_exec ]; then
+				[ -e /usr/bin/startlamw4linux ] && 	rm /usr/bin/startlamw4linux
+				rm $old_lamw4linux_exec
+			fi
 			rm "$old_lamw_ide_home"  -rf
 		fi
 
@@ -468,7 +472,9 @@ installLAMWPackages(){
 			--pcp=$LAMW4_LINUX_PATH_CFG  
 			--lazarusdir=$LAMW_IDE_HOME 
 			$current_widget_set
+			-q
 		)
+		echo "Please wait, buiding ${NEGRITO}`basename ${LAMW_PACKAGES[i]}`${NORMAL} ... "
 		./lazbuild  ${lamw_build_opts[*]}
 		
 		if [ $? != 0 ]; then 
@@ -479,10 +485,7 @@ installLAMWPackages(){
 
 }
 #Build lazarus ide
-BuildLazarusIDE(){
-	[ ! -e "$LAMW_IDE_HOME" ] && ln -sf $LAMW4LINUX_HOME/$LAZARUS_STABLE $LAMW_IDE_HOME # link to lamw4_home directory  
-	[ ! -e "$LAMW4LINUX_EXE_PATH" ] && ln -sf $LAMW_IDE_HOME/lazarus $LAMW4LINUX_EXE_PATH  #link  to lazarus executable
-	
+BuildLazarusIDE(){	
 	wrapperParseFPC
 	export PATH=$FPC_TRUNK_LIB_PATH:$FPC_TRUNK_EXEC_PATH:$PATH
 	local error_build_lazarus_msg="${VERMELHO}Fatal error:${NORMAL}Fails in build Lazarus!!"
@@ -491,7 +494,7 @@ BuildLazarusIDE(){
 	changeDirectory $LAMW_IDE_HOME
 
 	if [ $# = 0 ]; then 
-	 	make ${make_opts[*]}
+	 	make -s  ${make_opts[*]}
 	 	check_error_and_exit "$error_build_lazarus_msg" #build all IDE
 	fi
 	

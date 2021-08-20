@@ -11,7 +11,7 @@
 #										Section Version Variables
 #--------------------------------------------------------------------------------------------------
 
-LAMW_INSTALL_VERSION="0.4.1.1"
+LAMW_INSTALL_VERSION="0.4.1.2"
 JDK_VERSION=11
 ANT_VERSION_STABLE='1.10.11'
 CMD_SDK_TOOLS_VERSION="7302050"
@@ -96,10 +96,11 @@ export XDG_DATA_DIRS="/usr/share:/usr/local/share:$LAMW_USER_HOME/.local/share"
 
 #------------------------------------------------------------------------------------------	
 
+LAMW_IDE_HOME="$LAMW4LINUX_HOME/$LAZARUS_STABLE"
+LAMW4LINUX_EXE_PATH="$LAMW_IDE_HOME/lazarus"
 CMD_SDK_TOOLS_ZIP="commandlinetools-linux-${CMD_SDK_TOOLS_VERSION}_latest.zip"
 CMD_SDK_TOOLS_DIR="$ANDROID_SDK_ROOT/cmdline-tools"
 SDK_LICENSES_PARAMETERS=(--licenses )
-
 ANT_TAR_FILE="apache-ant-${ANT_VERSION_STABLE}-bin.tar.xz"
 ANT_HOME="$ROOT_LAMW/apache-ant-${ANT_VERSION_STABLE}"
 GRADLE_CFG_HOME="$LAMW_USER_HOME/.gradle"
@@ -120,7 +121,7 @@ LAMW_PACKAGES=(
 )
 
 LIBS_ANDROID="libx11-dev libgtk2.0-dev libgdk-pixbuf2.0-dev libcairo2-dev libpango1.0-dev libxtst-dev libatk1.0-dev libghc-x11-dev freeglut3 freeglut3-dev "
-PROG_TOOLS="menu git subversion make build-essential zip unzip android-tools-adb gdb wget jq "
+PROG_TOOLS="menu git subversion make build-essential zip unzip android-tools-adb gdb wget jq  xmlstarlet"
 
 FPC_TRUNK_SOURCE_PATH="$LAMW4LINUX_HOME/usr/share/fpcsrc"
 
