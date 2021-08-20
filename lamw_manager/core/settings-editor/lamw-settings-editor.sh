@@ -16,6 +16,7 @@ initROOT_LAMW(){
 		$LAMW_USER_HOME/.android
 		$HOME/.android
 		$FPPKG_LOCAL_REPOSITORY
+		$LAMW4_LINUX_PATH_CFG
 	)
 
 	for lamw_dir in ${init_root_lamw_dirs[@]}; do
@@ -587,9 +588,7 @@ initLAMw4LinuxConfig(){
 		"</CONFIG>"
 	)
 
-
-	if [ ! -e $LAMW4_LINUX_PATH_CFG ]; then
-		mkdir $LAMW4_LINUX_PATH_CFG
+	if [  ! -e "$lazarus_env_cfg_path" ]; then 
 		WriterFileln  "$lazarus_env_cfg_path" "lazarus_env_cfg_str"
 	else
 		local env_opts_node="//CONFIG/EnvironmentOptions"
@@ -600,14 +599,14 @@ initLAMw4LinuxConfig(){
 			['lazarus_version']="$env_opts_node/Version/@Lazarus"
 			['lazarus_dir']="$env_opts_node/LazarusDirectory/@Value"
 			['compiler_file']="$env_opts_node/CompilerFilename/@Value"
-			['fpc-src']="$env_opts_node/FPCSourceDirectory/@Value"
+			['fpc_src']="$env_opts_node/FPCSourceDirectory/@Value"
 		)
 
 		local -A expected_env_xml_nodes_attr=(
 			['lazarus_version']=$lazarus_version_str
 			['lazarus_dir']=$LAMW_IDE_HOME
 			['compiler_file']=$FPC_TRUNK_EXEC_PATH/fpc
-			['fpc-src']=${FPC_TRUNK_SOURCE_PATH}/${FPC_TRUNK_SVNTAG}
+			['fpc_src']=${FPC_TRUNK_SOURCE_PATH}/${FPC_TRUNK_SVNTAG}
 		)
 
 		grep 'LastCalledByLazarusFullPath' $lazarus_env_cfg_path > /dev/null
@@ -626,7 +625,7 @@ initLAMw4LinuxConfig(){
 				
 			if [ "$current_node_attr_value" != "$expected_node_attr_value" ]; then #update attribute ref:#ref: https://stackoverflow.com/questions/7837879/xmlstarlet-update-an-attribute
 				echo "$current_node_value"
-				xmlstarlet edit  --inplace  -u "$node_attr" -v "$expected_node_attr_values" "$lazarus_env_cfg_path"
+				xmlstarlet edit  --inplace  -u "$node_attr" -v "$expected_node_attr_value" "$lazarus_env_cfg_path"
 			fi
 		done
 

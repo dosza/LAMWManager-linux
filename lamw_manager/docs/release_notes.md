@@ -1,5 +1,16 @@
-;bv      cxs# LAMW Manager Release Notes
+#LAMW Manager Release Notes
+===
+
 This page contains information about new features and bug fixes.
+
+v0.4.1.2 - Aug, 2021
+---
+**News**
++	Add /Update\<FppkgConfigFile\> tag (*and attributes*)  in  \~/.lamw4linux/environmentoptions.xml
+
+**Fixed**
++	Remove deprecated symbolic link: \~LAMW/lamw4linux/lamw4linux
++
 
 v0.4.1.1  - Aug 5, 2021
 ---
@@ -17,7 +28,7 @@ v0.4.1 - Jul 27, 2021
 **News**
 +	Apache Ant¹ is no longer officially supported
 +	JDK default (installed by LAMW Manager) version is *11* using build from *AdoptOpenJDK*
-+	The [*api*](https://githu;bv      cxsb.com/DanielOliveiraSouza/LAMW4Linux-installer/tree/v0.4.1/lamw_manager/core/installer/api.sh) submodule has been updated to get JDK11 from AdoptOpenJDK API
++	The [*api*](https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/tree/v0.4.1/lamw_manager/core/installer/api.sh) submodule has been updated to get JDK11 from AdoptOpenJDK API
 
 **Fixes**
 +	Error:build lazarus: *unknown gtk2* package (backported from v0.4.0.3)
