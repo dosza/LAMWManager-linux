@@ -616,7 +616,9 @@ initLAMw4LinuxConfig(){
 			local expected_env_xml_nodes_attr['last_laz_full_path']=$LAMW4LINUX_EXE_PATH
 		fi
 
-		cp $lazarus_env_cfg_path ".${lazarus_env_cfg_path}.bak"
+
+		[ -e  "${lazarus_env_cfg_path}.bak" ] && rm "${lazarus_env_cfg_path}.bak" 
+		cp $lazarus_env_cfg_path "${lazarus_env_cfg_path}.bak" 
 
 		for key in ${!lazarus_env_xml_nodes_attr[*]}; do 
 			local node_attr="${lazarus_env_xml_nodes_attr[$key]}"
@@ -624,7 +626,6 @@ initLAMw4LinuxConfig(){
 			local expected_node_attr_value=${expected_env_xml_nodes_attr[$key]}
 				
 			if [ "$current_node_attr_value" != "$expected_node_attr_value" ]; then #update attribute ref:#ref: https://stackoverflow.com/questions/7837879/xmlstarlet-update-an-attribute
-				echo "$current_node_value"
 				xmlstarlet edit  --inplace  -u "$node_attr" -v "$expected_node_attr_value" "$lazarus_env_cfg_path"
 			fi
 		done
@@ -632,8 +633,7 @@ initLAMw4LinuxConfig(){
 		grep 'FppkgConfigFile' $lazarus_env_cfg_path > /dev/null 
 
 		if [ $? != 0 ]; then #insert fppkg_config ref: https://stackoverflow.com/questions/7837879/xmlstarlet-update-an-attribute
-			xmlstarlet ed  --inplace -s "$env_opts_node" -t elem -n "FppkgConfigFile" -v ""\ 
-				-i $fppkg_cfg_node -t attr -n "Value" -v "$FPPKG_TRUNK_CFG_PATH" $lazarus_env_cfg_path
+			xmlstarlet ed  --inplace -s "$env_opts_node" -t elem -n "FppkgConfigFile" -v "" -i $fppkg_cfg_node -t attr -n "Value" -v "$FPPKG_TRUNK_CFG_PATH" $lazarus_env_cfg_path
 		else # update fppkg_config
 			local current_fppkg_config_value=$(xmlstarlet sel  -t -v  "$fppkg_cfg_node_attr" $lazarus_env_cfg_path )
 			echo "current_fppkg_config_value = $current_fppkg_config_value"
