@@ -54,7 +54,7 @@ user@pc:~$ env LOCAL_ROOT_LAMW=/opt/LAMW bash lamw_manager_setup.sh
 ```
 
 **Notes:**
-+	See the [*LAMW Manager Setup Guide*](https://raw.githubusercontent.com/DanielOliveiraSouza/LAMW4Linux-installer/master/lamw_manager/assets/lamw_manager_setup.sh)
++	See the [*LAMW Manager Setup Guide*](https://drive.google.com/open?id=1B6fvTgJ-W7OS7I4mGCZ4sH0U3GqyAeUg)
 +	Read more about new installer procedure in [*LAMW Manager Setup*](https://github.com/DanielOliveiraSouza/LAMWAutoRunScripts/blob/master/lamw_manager/docs/lamw_manager_setup.md)
 +	You can also install from sources read more in [*Classic Install*](https://github.com/DanielOliveiraSouza/LAMWAutoRunScripts/blob/master/lamw_manager/docs/classic-install.md)
 +	Replace *your_dir* with the directory of your choice, eg */opt/LAMW*
