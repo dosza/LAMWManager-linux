@@ -10,6 +10,9 @@ v0.4.1.2 - Aug 20, 2021
 
 **Fixed**
 +	Remove deprecated symbolic link: \~LAMW/lamw4linux/lamw4linux
++	Auto Repair: Missing \~/.lamw4linux folder:
+	+	Recreate lamw4linux settings
+	+	Recreate LAMW.ini
 
 v0.4.1.1  - Aug 5, 2021
 ---
