@@ -393,6 +393,10 @@ Repair(){
 			writeLAMWLogInstall
 			changeOwnerAllLAMW
 		fi
+
+		if [ ! -e $LAMW4_LINUX_PATH_CFG ]; then 
+			setLAMWDeps; LAMW4LinuxPostConfig
+		fi
 	fi
 }
 
