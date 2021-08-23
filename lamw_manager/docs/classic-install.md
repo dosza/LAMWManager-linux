@@ -7,9 +7,9 @@ Basic Tutorial
 	Getting from sources:
 	<ol>
 		<li>Clone this repository with command:
-		<pre>	<em>git clone</em> <a href="https://github.com/DanielOliveiraSouza/LAMW4Linux-installer.git">https://github.com/DanielOliveiraSouza/LAMW4Linux-installer.git</a></pre> 
+		<pre>	<em>git clone</em> <a href="https://github.com/dosza/LAMWManager-linux.git">https://github.com/dosza/LAMWManager-linux.git</a></pre> 
 		Or Download 
-		<pre>	<a href="https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/archive/master.zip">https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/archive/master.zip</a> and unzip.</pre></li>
+		<pre>	<a href="https://github.com/dosza/LAMWManager-linux/archive/master.zip">https://github.com/dosza/LAMWManager-linux/archive/master.zip</a> and unzip.</pre></li>
 		<li>Go to <em>lamw_manager</em> folder</li>
 		<li>Open a terminal and run 
 		<pre>	<em>./lamw_manager</em></pre></li>
