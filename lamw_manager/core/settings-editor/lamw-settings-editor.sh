@@ -563,48 +563,6 @@ CreateBinutilsSimbolicLinks(){
 
 #echo "importei lamw-settings-editor.sh";read
 
-CreateFPCTrunkBootStrap(){
-
-	local fpc_trunk_boostrap_path="$FPC_TRUNK_EXEC_PATH/fpc"
-	local fpc_bootstrap_str=(
-		'#!/bin/bash'
-		"#Bootsrap(to FPC Trunk) generate by LAMW Manager"
-		"#### THIS FILE IS AUTOMATICALLY CONFIGURED"
-		#"export LAMW_ENV=$LAMW4LINUX_HOME/usr/bin"
-		#'export PATH=$LAMW_ENV:$PATH'
-		"export FPC_TRUNK_LIB_PATH=$FPC_TRUNK_LIB_PATH"
-		#'export LD_LIBRARY=$LAMW_ENV/usr/lib:$LD_LIBRARY'
-		#sudo ldconfig
-		'export FPC_ARGS=($*)'
-		'export FPC_EXEC="ppcx64"'
-		#'if [ -e $FPC_TRUNK_LIB_PATH/ppcrossa64 ]; then'
-		'if [ -e $FPC_TRUNK_LIB_PATH/ppcrossarm ]; then'
-		'	export PATH=$FPC_TRUNK_LIB_PATH:$PATH'
-		'fi'
-
-		''
-		'for((i=0;i<${#FPC_ARGS[*]};i++))'
-		'do'
-
-		'		case "${FPC_ARGS[i]}" in'
-		'			"-Parm")'
-		'				export FPC_EXEC="ppcarm"'
-		'				break'
-		'			;;'
-
-		'			"-Paarch64")'
-		'				export FPC_EXEC="ppca64"'
-		'				break'
-		'			;;'
-		'		esac'
-		'done'
-		'$FPC_EXEC ${FPC_ARGS[@]}'
-	)
-
-	WriterFileln "$fpc_trunk_boostrap_path" "fpc_bootstrap_str"
-	chmod +x "$fpc_trunk_boostrap_path"
-}
-
 initLAMw4LinuxConfig(){
 	local lazarus_version_str="`$LAMW_IDE_HOME/tools/install/get_lazarus_version.sh`"	
 	local lazarus_env_cfg_path="$LAMW4_LINUX_PATH_CFG/environmentoptions.xml"	
@@ -624,66 +582,67 @@ initLAMw4LinuxConfig(){
 		"		</TestBuildDirectory>"
 		"		<FppkgConfigFile Value=\"${FPPKG_TRUNK_CFG_PATH}\"/>"
 		'    	<Debugger Class="TGDBMIDebugger">'
-      	'		<Configs>'
-        '			<Config ConfigName="FpDebug" ConfigClass="TFpDebugDebugger" Active="True"/>'
-        "			<Config ConfigName=\"Gdb\" ConfigClass=\"TGDBMIDebugger\" DebuggerFilename=\"$(which gdb)\"/>"
-        '		</Configs>'
-
-        # "		<Debugger>"
-	 #    "			<Configs>"
-	 #    "				<Config ConfigName=\"FpDebug\" ConfigClass=\"TFpDebugDebugger\" Active=\"True\"/>"
-	 #    "    			<Config ConfigName=\"Gdb\" ConfigClass=\"TGDBMIDebugger\" DebuggerFilename=\"$(which gdb)\"/>"
-	 #    "		</Configs>"
-	  "		</Debugger>"
+      	'			<Configs>'
+        '				<Config ConfigName="FpDebug" ConfigClass="TFpDebugDebugger" Active="True"/>'
+        "				<Config ConfigName=\"Gdb\" ConfigClass=\"TGDBMIDebugger\" DebuggerFilename=\"$(which gdb)\"/>"
+        '			</Configs>'
+		"		</Debugger>"
 		"	</EnvironmentOptions>"
 		"</CONFIG>"
 	)
 
 
-	if [ ! -e $LAMW4_LINUX_PATH_CFG ]; then
-		mkdir $LAMW4_LINUX_PATH_CFG
+	if [  ! -e "$lazarus_env_cfg_path" ]; then 
 		WriterFileln  "$lazarus_env_cfg_path" "lazarus_env_cfg_str"
 	else
-		local fpc_splited=(
-			$(GenerateScapesStr "/usr/bin/fpc"					)				 		#0
-			$(GenerateScapesStr "/usr/share/fpcsrc/\$(FPCVer)"	) 						#1
-			$(GenerateScapesStr "/usr/local/bin/fpc"			)						#2
-			$(GenerateScapesStr "$FPC_TRUNK_SOURCE_PATH/trunk" 	)						#3
-			$(GenerateScapesStr "$LAMW4LINUX_HOME/usr/bin/fpc" 	)						#4
-			$(GenerateScapesStr "$FPC_TRUNK_SOURCE_PATH/${FPC_TRUNK_SVNTAG}")			#5
+		local env_opts_node="//CONFIG/EnvironmentOptions"
+		local fppkg_cfg_node_attr="$env_opts_node/FppkgConfigFile/@Value"
+		local fppkg_cfg_node="$env_opts_node/FppkgConfigFile"
+
+		local -A lazarus_env_xml_nodes_attr=(
+			['lazarus_version']="$env_opts_node/Version/@Lazarus"
+			['lazarus_dir']="$env_opts_node/LazarusDirectory/@Value"
+			['compiler_file']="$env_opts_node/CompilerFilename/@Value"
+			['fpc_src']="$env_opts_node/FPCSourceDirectory/@Value"
 		)
-		
-		local old_lazarus_version_file=$(grep 'Lazarus='  "$lazarus_env_cfg_path" | sed 's/<//g' | sed 's/Version//g'| sed 's/Value//g'  | sed 's/"110"//g' | sed 's/=//g' | sed 's/Lazarus//g' | sed 's/"//g' | sed 's/\/>//g' | sed 's/[[:space:]]//g' ) # remove'	<Version Value=\"110\" Lazarus=X.Y.Z', restando  X.Y.Z
-		local old_stable_lazarus="lazarus_"${old_lazarus_version_file//\./_} #cria a string lazarus_X_Y_Z usando a expansao que substitui . por _
-		local old_lazarus_version_file_scap=${old_lazarus_version_file//\./\\\.} # substitui X.Y.Z por X\.Y\.Z na string
-		local lazarus_stable_version_scap=${lazarus_version_str//\./\\\.} # substitui X.Y.Z por X\.Y\.Z na string
-	
-		grep 'CompilerFilename Value=\"\/usr\/bin\/fpc\"' $lazarus_env_cfg_path 
-		if [ $? = 0 ]; then
-			sed -i "s/CompilerFilename Value=\"${fpc_splited[0]}\"/CompilerFilename Value=\"${fpc_splited[4]}\"/g" "$lazarus_env_cfg_path"
-			sed -i "s/FPCSourceDirectory Value=\"${fpc_splited[1]}\"/FPCSourceDirectory Value=\"${fpc_splited[5]}\"/g" "$lazarus_env_cfg_path"
+
+		local -A expected_env_xml_nodes_attr=(
+			['lazarus_version']=$lazarus_version_str
+			['lazarus_dir']=$LAMW_IDE_HOME
+			['compiler_file']=$FPC_TRUNK_EXEC_PATH/fpc
+			['fpc_src']=${FPC_TRUNK_SOURCE_PATH}/${FPC_TRUNK_SVNTAG}
+		)
+
+		grep 'LastCalledByLazarusFullPath' $lazarus_env_cfg_path > /dev/null
+		if [ $? = 0 ]; then 
+			local lazarus_env_xml_nodes_attr['last_laz_full_path']="/CONFIG/EnvironmentOptions/LastCalledByLazarusFullPath/@Value"
+			local expected_env_xml_nodes_attr['last_laz_full_path']=$LAMW4LINUX_EXE_PATH
 		fi
 
-		grep 'CompilerFilename Value=\"\/usr\/local\/bin\/fpc\"' "$lazarus_env_cfg_path"
-		if [ $? = 0 ]; then
-			sed -i "s/CompilerFilename Value=\"${fpc_splited[2]}\"/CompilerFilename Value=\"${fpc_splited[4]}\"/g" "$lazarus_env_cfg_path"
-			sed -i "s/FPCSourceDirectory Value=\"${fpc_splited[3]}\"/FPCSourceDirectory Value=\"${fpc_splited[5]}\"/g" "$lazarus_env_cfg_path"
-		fi
+		[ -e  "${lazarus_env_cfg_path}.bak" ] && rm "${lazarus_env_cfg_path}.bak" 
+		cp $lazarus_env_cfg_path "${lazarus_env_cfg_path}.bak" 
 
-		#caso FPCSource foi apontado para um arquivo inesperado
-		grep "FPCSourceDirectory\sValue=\"${fpc_splited[5]}\""  $lazarus_env_cfg_path  > /dev/null
-		if [ $? != 0 ]; then 
-			local wrong_fpc_splited_path=$(GenerateScapesStr $(grep 'FPCSourceDirectory'  $lazarus_env_cfg_path  |sed -r 's/    //g' |sed  's/<FPCSourceDirectory Value=//g' | sed 's/\/>//g' | sed 's/>//g' | sed 's/"//g'))
-			echo "$wrong_fpc_splited_path"
-			sed -i "s/FPCSourceDirectory Value=\"${wrong_fpc_splited_path}\"/FPCSourceDirectory Value=\"${fpc_splited[5]}\"/g" "$lazarus_env_cfg_path"	
-		fi
+		for key in ${!lazarus_env_xml_nodes_attr[*]}; do 
+			local node_attr="${lazarus_env_xml_nodes_attr[$key]}"
+			local current_node_attr_value="$(xmlstarlet sel -t -v $node_attr $lazarus_env_cfg_path )"
+			local expected_node_attr_value=${expected_env_xml_nodes_attr[$key]}
 
-	
-		#altera as versoes do lazarus $lazarus_env_cfg_path
-		if [ "$old_stable_lazarus" != "$LAZARUS_STABLE" ]; then 
-			sed -i "s/Lazarus=\"$old_lazarus_version_file_scap\"/Lazarus=\"$lazarus_stable_version_scap\"/g" "$lazarus_env_cfg_path"
-			sed -i "s/$old_stable_lazarus/$LAZARUS_STABLE/g" "$lazarus_env_cfg_path"
-		fi
+			if [ "$current_node_attr_value" != "$expected_node_attr_value" ]; then #update attribute ref:#ref: https://stackoverflow.com/questions/7837879/xmlstarlet-update-an-attribute
+				xmlstarlet edit  --inplace  -u "$node_attr" -v "$expected_node_attr_value" "$lazarus_env_cfg_path"
+			fi
+		done
+
+		grep 'FppkgConfigFile' $lazarus_env_cfg_path > /dev/null 
+
+		if [ $? != 0 ]; then #insert fppkg_config ref: https://stackoverflow.com/questions/7837879/xmlstarlet-update-an-attribute
+			xmlstarlet ed  --inplace -s "$env_opts_node" -t elem -n "FppkgConfigFile" -v "" -i $fppkg_cfg_node -t attr -n "Value" -v "$FPPKG_TRUNK_CFG_PATH" $lazarus_env_cfg_path
+		else # update fppkg_config
+			local current_fppkg_config_value=$(xmlstarlet sel  -t -v  "$fppkg_cfg_node_attr" $lazarus_env_cfg_path )
+			echo "current_fppkg_config_value = $current_fppkg_config_value"
+			if [ "$current_fppkg_config_value" != "${FPPKG_TRUNK_CFG_PATH}" ]; then 
+				xmlstarlet edit  --inplace  -u "$fppkg_cfg_node_attr" -v "$FPPKG_TRUNK_CFG_PATH" "$lazarus_env_cfg_path"
+			fi
+		fi 
 
 	fi
 }
