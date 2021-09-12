@@ -3,6 +3,12 @@
 
 This page contains information about new features and bug fixes.
 
+v0.4.1.3 - Set 12,2021
+---
+**Fixes**
++	Error on start lamw4linux on command line
+
+
 v0.4.1.2 - Aug 20, 2021
 ---
 **News**
