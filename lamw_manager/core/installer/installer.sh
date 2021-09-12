@@ -172,21 +172,12 @@ getFPCStable(){
 		echo "doesn't exist $FPC_LIB_PATH"
 		Wget $FPC_DEB_LINK
 		if [ -e "$FPC_DEB" ]; then
-			local tmp_files=(
-				data.tar.xz
-				control.tar.gz
-				debian-binary
-				"$FPC_DEB"
-			)
-			ar x "$FPC_DEB"
+			ar x "$FPC_DEB" data.tar.xz
 			if [ -e data.tar.xz ]; then 
 				tar -xvf data.tar.xz 
 				rm -rf $LAMW4LINUX_HOME/usr/local
 				[ -e $LAMW4LINUX_HOME/usr/usr ] && mv $LAMW4LINUX_HOME/usr/usr/ $LAMW4LINUX_HOME/usr/local
 			fi
-			for i in ${!tmp_files[@]}; do  
-				if [ -e ${tmp_files[i]} ]; then rm ${tmp_files[i]} ; fi
-			done	
 		fi
 		export PPC_CONFIG_PATH=$FPC_LIB_PATH
 
@@ -406,6 +397,10 @@ Repair(){
 			enableADBtoUdev
 			writeLAMWLogInstall
 			changeOwnerAllLAMW
+		fi
+
+		if [ ! -e $LAMW4_LINUX_PATH_CFG ]; then 
+			setLAMWDeps; LAMW4LinuxPostConfig
 		fi
 	fi
 }
