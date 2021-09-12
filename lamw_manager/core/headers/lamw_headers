@@ -8,7 +8,7 @@
 #-------------------------------------------------------------------------------------------------#
 #						Section Version 
 #------------------------------------------------------------------------------------------
-LAMW_INSTALL_VERSION="0.4.0.3"
+LAMW_INSTALL_VERSION="0.4.0.4"
 JDK_VERSION=8
 ANT_VERSION_STABLE='1.10.11'
 CMD_SDK_TOOLS_VERSION="4.0"
@@ -42,7 +42,7 @@ OLD_LAZARUS_STABLE_VERSION=(
 )
 
 OLD_LAMW_INSTALL_VERSION=(
-	0.4.0{.{2,1},}
+	0.4.0{.{3..1},}
 	0.3.6{.{2,1},}
 	0.3.{5,4}{r1,}
 	"0.3.3r2"
@@ -79,6 +79,8 @@ FPC_TRUNK_URL="https://svn.freepascal.org/svn/fpc/tags/${FPC_TRUNK_SVNTAG}"
 
 #------------------------------------------------------------------------------------------	
 CMD_SDK_TOOLS_ZIP="commandlinetools-linux-7302050_latest.zip"
+LAMW_IDE_HOME="$LAMW4LINUX_HOME/$LAZARUS_STABLE"
+LAMW4LINUX_EXE_PATH="$LAMW_IDE_HOME/lazarus"
 CMD_SDK_TOOLS_DIR="$ANDROID_SDK_ROOT/cmdline-tools"
 SDK_LICENSES_PARAMETERS=(--licenses )
 
