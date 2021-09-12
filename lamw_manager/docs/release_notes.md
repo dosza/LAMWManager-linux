@@ -1,6 +1,17 @@
 # LAMW Manager Release Notes
 This page contains information about new features and bug fixes.
 
+v0.4.0.4 - Set 12, 2021
+---
+
+**Fixes:**
++	**Backported from v0.4.1**
+	+	Remove deprecated symbolic links
+	+	Add /Update\<FppkgConfigFile\> tag (*and attributes*) in \~/.lamw4linux/environmentoptions.xml
+	+	Auto Repair: Missing \~/.lamw4linux folder:
+    	+	Recreate lamw4linux settings
+    	+	Recreate LAMW.ini
+
 v0.4.0.3 - Jul 28, 2021
 ---
 **News:**

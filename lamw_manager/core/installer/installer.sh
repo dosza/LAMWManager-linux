@@ -173,7 +173,6 @@ getFPCStable(){
 
 	cd "$LAMW4LINUX_HOME/usr"
 	if  [ ! -e "$FPC_LIB_PATH" ]; then
-		echo "doesn't exist $FPC_LIB_PATH"
 		Wget $FPC_DEB_LINK
 		if [ -e "$FPC_DEB" ]; then
 			ar x "$FPC_DEB" data.tar.xz
@@ -181,6 +180,7 @@ getFPCStable(){
 				tar -xvf data.tar.xz 
 				rm -rf $LAMW4LINUX_HOME/usr/local
 				[ -e $LAMW4LINUX_HOME/usr/usr ] && mv $LAMW4LINUX_HOME/usr/usr/ $LAMW4LINUX_HOME/usr/local
+				rm data.tar.xz
 			fi
 		fi
 		export PPC_CONFIG_PATH=$FPC_LIB_PATH
