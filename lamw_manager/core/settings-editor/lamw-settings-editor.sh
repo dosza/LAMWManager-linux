@@ -16,6 +16,7 @@ initROOT_LAMW(){
 		$LAMW_USER_HOME/.android
 		$HOME/.android
 		$FPPKG_LOCAL_REPOSITORY
+		$LAMW4_LINUX_PATH_CFG
 	)
 
 	for lamw_dir in ${init_root_lamw_dirs[@]}; do
