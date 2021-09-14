@@ -21,6 +21,7 @@ LAMWPackageManager(){
 			if [ -e $old_lamw4linux_exec ]; then
 				rm $old_lamw4linux_exec
 			fi
+			rm "$old_lamw_ide_home"  -rf
 		fi
 
 		for((i=0;i<${#OLD_LAZARUS_STABLE_VERSION[*]};i++)); do
