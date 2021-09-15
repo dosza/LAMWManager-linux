@@ -63,8 +63,8 @@ OLD_LAMW_INSTALL_VERSION=(
 #										Section Extra String
 #--------------------------------------------------------------------------------------------------
 
-JDK_VENDOR="openjdk"
-JDK_VERSION_DIR=${JDK_VENDOR}-${JDK_VERSION}
+JDK_VENDOR="adoptium"
+JDK_VERSION_DIR=openjdk-${JDK_VERSION}
 
 #--------------------------------------------------------------------------------------------------
 #										Section URL
@@ -76,7 +76,7 @@ FPC_DEB_LINK="https://sourceforge.net/projects/lazarus/files/Lazarus%20Linux%20a
 ANT_TAR_URL="https://archive.apache.org/dist/ant/binaries/apache-ant-${ANT_VERSION_STABLE}-bin.tar.xz"
 LAZARUS_STABLE_SRC_LNK="https://gitlab.com/freepascal.org/lazarus/lazarus.git"
 LAMW_PACKAGE_URL="https://raw.githubusercontent.com/jmpessoa/lazandroidmodulewizard/master/package.json"
-API_JDK_URL="https://api.adoptopenjdk.net/v3/assets/latest/$JDK_VERSION/hotspot?vendor=$JDK_VENDOR"
+API_JDK_URL="https://api.adoptium.net/v3/assets/latest/$JDK_VERSION/hotspot?vendor=$JDK_VENDOR"
 FPC_TRUNK_URL="https://svn.freepascal.org/svn/fpc/tags/${FPC_TRUNK_SVNTAG}"
 
 #------------------------------------------------------------------------------------------	
