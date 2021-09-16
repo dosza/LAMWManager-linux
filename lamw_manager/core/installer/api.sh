@@ -35,7 +35,7 @@ setJDKDeps(){
 	JDK_JSON="$(Wget -O- -q  "$API_JDK_URL" | jq "${jdk_filters_query[@]}")"
 	JDK_URL="`parseJSONString "$JDK_JSON" ".[0].package.link"`"
 	JDK_TAR="`parseJSONString "$JDK_JSON" ".[0].package.name"`"
-	JDK_FILE="openjdk-`parseJSONString "$JDK_JSON" ".[3].openjdk_version"  | sed 's/+/_/g'`"
+	JDK_FILE="jdk-`parseJSONString "$JDK_JSON" ".[3].openjdk_version"`"
 	JAVA_VERSION="11.0.`parseJSONString "$JDK_JSON" ".[3].security"`"
 	JDK_TAR="`parseJSONString "$JDK_JSON" ".[0].package.name"`"
 }
