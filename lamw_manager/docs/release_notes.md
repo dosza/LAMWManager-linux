@@ -3,13 +3,17 @@
 
 This page contains information about new features and bug fixes.
 
+v0.4.1.4 - Set 16, 2021
+---
+**News**
++	Get JDK from [Adoptium](https://adoptium.net) API ( [sucessor of AdoptOpenJDK](https://blog.adoptopenjdk.net/2021/03/transition-to-eclipse-an-update/))
+
 v0.4.1.3 - Set 12, 2021
 ---
 **Fixes**
 +	Error on start lamw4linux on command line
 
-
-v0.4.1.2 - Aug 20, 2021
+v0.4.1.2 - Aug 20, 2021https://adoptium.net
 ---
 **News**
 +	Add /Update\<FppkgConfigFile\> tag (*and attributes*)  in  \~/.lamw4linux/environmentoptions.xml
