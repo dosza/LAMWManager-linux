@@ -3,6 +3,11 @@
 
 This page contains information about new features and bug fixes.
 
+v0.4.1.5 - Set 18, 2021
+---
+**Fixed**
++	Missing Google Play Store API
+
 v0.4.1.4 - Set 16, 2021
 ---
 **News**
