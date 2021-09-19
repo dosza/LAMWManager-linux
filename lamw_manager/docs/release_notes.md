@@ -7,6 +7,7 @@ v0.4.1.5 - Set 18, 2021
 ---
 **Fixed**
 +	Missing Google Play Store API
++	Add install psmisc (APT) dependencie
 
 v0.4.1.4 - Set 16, 2021
 ---
