@@ -61,11 +61,11 @@ user@pc:~$ env LOCAL_ROOT_LAMW=/opt/LAMW bash lamw_manager_setup.sh
 
 Know Issues
 ---
-**[LAMW Demos](https://github.com/jmpessoa/lazandroidmodulewizard)**
+**Cannot Build [LAMW Demos](https://github.com/jmpessoa/lazandroidmodulewizard)**
 
 By default LAMW Manager uses Crosscompile to **ARMv7-vFPV3**/android, but LAMW Demos uses **ARMV6 Cfsoft**, you need apply this configuration:
-+	1 Open your LAMW Demo
-+	2 On menu bar go to Project --> [LAMW] Android Project Options --> Build -> Chipset --> ARMV7a+FVPv3
+1.	Open your LAMW Demo
+2.	On menu bar go to Project --> [LAMW] Android Project Options --> Build -> Chipset --> ARMV7a+FVPv3
 
 
 Release Notes:
