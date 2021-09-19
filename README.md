@@ -59,6 +59,14 @@ user@pc:~$ env LOCAL_ROOT_LAMW=/opt/LAMW bash lamw_manager_setup.sh
 +	You can also install from sources read more in [*Classic Install*](https://github.com/dosza/LAMWManager-linux/blob/master/lamw_manager/docs/classic-install.md)
 +	Replace *your_dir* with the directory of your choice, eg */opt/LAMW*
 
+Know Issues
+---
+**[LAMW Demos](https://github.com/jmpessoa/lazandroidmodulewizard)**
+
+By default LAMW Manager uses Crosscompile to **ARMv7-vFPV3**/android, but LAMW Demos uses **ARMV6 Cfsoft**, you need apply this configuration:
++	1 Open your LAMW Demo
++	2 On menu bar go to Project --> [LAMW] Android Project Options --> Build -> Chipset --> ARMV7a+FVPv3
+
 
 Release Notes:
 ---
