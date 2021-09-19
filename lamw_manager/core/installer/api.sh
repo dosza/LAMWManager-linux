@@ -18,7 +18,7 @@ setAndroidSDKCMDParameters(){
 		"build-tools;$ANDROID_BUILD_TOOLS_TARGET"
 		"ndk-bundle" 
 		"extras;android;m2repository"
-		"extras;google;google_play_services"
+		"extras;google;"{google_play_services,market_apk_expansion,market_licensing}
 	)
 
 	if [ $USE_PROXY = 1 ]; then
