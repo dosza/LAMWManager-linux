@@ -405,7 +405,7 @@ Repair(){
 checkLAMWManagerVersion(){
 	local ret=0
 	[ -e "$LAMW4LINUX_HOME/lamw-install.log" ] && for i  in ${!OLD_LAMW_INSTALL_VERSION[*]};do
-		grep "^Generate LAMW_INSTALL_VERSION=${OLD_LAMW_INSTALL_VERSION[i]}"  "$LAMW4LINUX_HOME/lamw-install.log" > /dev/null
+		grep "^Generate LAMW_INSTALL_VERSION=${OLD_LAMW_INSTALL_VERSION[i]}$"  "$LAMW4LINUX_HOME/lamw-install.log" > /dev/null
 		if [ $? = 0 ]; then 
 			CURRENT_OLD_LAMW_INSTALL_INDEX=$i
 			ret=1;
