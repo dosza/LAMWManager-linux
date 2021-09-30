@@ -3,6 +3,11 @@
 
 This page contains information about new features and bug fixes.
 
+v0.4.1.6 -Set 30, 2021
+---
+**Fixes**
++	Fixes GetCurrent LAMW Manager Version
+
 v0.4.1.5 - Set 18, 2021
 ---
 **Fixed**
