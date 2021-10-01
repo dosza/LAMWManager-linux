@@ -9,6 +9,8 @@ v0.4.0.5 - Set 30, 2021
 
 **Fixed**
 +	Get Current Version LAMW Manager
++	Missing Google Play Store API
++	Add install psmisc (APT) dependencie
 
 v0.4.0.4 - Set 12, 2021
 ---
