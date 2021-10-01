@@ -1,4 +1,8 @@
 #!/bin/bash
+parseJSONString(){
+	echo "$1" | jq "${@:2}"  | sed 's/"//g'
+}
+
 getLAMWDep(){
 	if [ "$1" = "" ]; then
 		echo 'Need object arg!'
@@ -28,11 +32,13 @@ setAndroidSDKCMDParameters(){
 }
 
 setJDKDeps(){
-	ZULU_JDK_JSON="$(Wget -O- -q  "$ZULU_API_JDK_URL" | jq)"
-	ZULU_JDK_URL="$(echo $ZULU_JDK_JSON | jq '.url' | sed 's/"//g')"
-	ZULU_JDK_TAR="$(echo $ZULU_JDK_JSON | jq '.name' | sed 's/"//g' )"
-	ZULU_JDK_FILE="$(echo $ZULU_JDK_TAR | sed 's/.tar.gz//g')"
-	JAVA_VERSION="1.8.0_$(echo $ZULU_JDK_JSON | jq '.java_version[2]'| sed 's/"//g')"
+local jdk_filters_query=(".[] | select(.binary.os==\"linux\")|select(.binary.architecture==\"x64\")|select(.binary.image_type==\"jdk\")|map(.)")
+	JDK_JSON="$(Wget -O- -q  "$API_JDK_URL" | jq "${jdk_filters_query[@]}")"
+	JDK_URL="`parseJSONString "$JDK_JSON" ".[0].package.link"`"
+	JDK_TAR="`parseJSONString "$JDK_JSON" ".[0].package.name"`"
+	JDK_FILE="jdk-`parseJSONString "$JDK_JSON" ".[3].openjdk_version"`"
+	JAVA_VERSION="1.8.0_`parseJSONString "$JDK_JSON" ".[3].security"`"
+	JDK_TAR="`parseJSONString "$JDK_JSON" ".[0].package.name"`"
 }
 
 checkJDKVersionStatus(){

@@ -1,6 +1,15 @@
 # LAMW Manager Release Notes
 This page contains information about new features and bug fixes.
 
+v0.4.0.5 - Set 30, 2021
+---
+**News**
++	Migrate Zulu OpenJDK to [Adoptium](https://adoptium.net/) OpenJDK 8
++	Update Getting Started.txt
+
+**Fixed**
++	Get Current Version LAMW Manager
+
 v0.4.0.4 - Set 12, 2021
 ---
 
