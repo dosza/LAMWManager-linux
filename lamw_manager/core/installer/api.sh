@@ -22,6 +22,7 @@ setAndroidSDKCMDParameters(){
 		"build-tools;$ANDROID_BUILD_TOOLS_TARGET"
 		"ndk-bundle" 
 		"extras;android;m2repository"
+		"extras;google;"{google_play_services,market_apk_expansion,market_licensing}
 	)
 
 
