@@ -95,10 +95,11 @@ getCompressFile(){
 getJDK(){
 	checkJDKVersionStatus
 	if [ $JDK_STATUS = 1 ]; then 
+		[ -e "$OLD_JAVA_HOME" ] && rm -rf "$OLD_JAVA_HOME"
 		changeDirectory "$ROOT_LAMW/jdk"
 		[ -e "$JAVA_HOME" ] && rm -r "$JAVA_HOME"
-		getCompressFile "$ZULU_JDK_URL" "$ZULU_JDK_TAR" "tar -zxf"
-		mv "$ZULU_JDK_FILE" "zulu-$JDK_VERSION"
+		getCompressFile "$JDK_URL" "$JDK_TAR" "tar -zxf"
+		mv "$JDK_FILE" "$JDK_VERSION_DIR"
 	fi
 }
 
@@ -413,7 +414,7 @@ Repair(){
 checkLAMWManagerVersion(){
 	local ret=0
 	[ -e "$LAMW4LINUX_HOME/lamw-install.log" ] && for i  in ${!OLD_LAMW_INSTALL_VERSION[*]};do
-		grep "^Generate LAMW_INSTALL_VERSION=${OLD_LAMW_INSTALL_VERSION[i]}"  "$LAMW4LINUX_HOME/lamw-install.log" > /dev/null
+		grep "^Generate LAMW_INSTALL_VERSION=${OLD_LAMW_INSTALL_VERSION[i]}$"  "$LAMW4LINUX_HOME/lamw-install.log" > /dev/null
 		if [ $? = 0 ]; then 
 			CURRENT_OLD_LAMW_INSTALL_INDEX=$i
 			ret=1;

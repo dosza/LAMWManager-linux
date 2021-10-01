@@ -583,10 +583,10 @@ initLAMw4LinuxConfig(){
 		"		</TestBuildDirectory>"
 		"		<FppkgConfigFile Value=\"${FPPKG_TRUNK_CFG_PATH}\"/>"
 		'    	<Debugger Class="TGDBMIDebugger">'
-      	'			<Configs>'
-        '				<Config ConfigName="FpDebug" ConfigClass="TFpDebugDebugger" Active="True"/>'
-        "				<Config ConfigName=\"Gdb\" ConfigClass=\"TGDBMIDebugger\" DebuggerFilename=\"$(which gdb)\"/>"
-        '			</Configs>'
+			'			<Configs>'
+		'				<Config ConfigName="FpDebug" ConfigClass="TFpDebugDebugger" Active="True"/>'
+		"				<Config ConfigName=\"Gdb\" ConfigClass=\"TGDBMIDebugger\" DebuggerFilename=\"$(which gdb)\"/>"
+		'			</Configs>'
 		"		</Debugger>"
 		"	</EnvironmentOptions>"
 		"</CONFIG>"
