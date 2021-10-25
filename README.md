@@ -70,7 +70,7 @@ By default LAMW Manager uses (Android) Crosscompile to **ARMv7+vFPV3**, but [*LA
 
 Release Notes:
 ---
-For information on new features and bug fixes read the [*Release Notes*](https://github.com/dosza/LAMWManager-linux/blob/v0.4.2/lamw_manager/docs/release_notes.md#vv042---out-26-2021)
+For information on new features and bug fixes read the [*Release Notes*](https://github.com/dosza/LAMWManager-linux/blob/v0.4.2/lamw_manager/docs/release_notes.md#v042---out-26-2021)
 
 Congratulations!!
 ---
