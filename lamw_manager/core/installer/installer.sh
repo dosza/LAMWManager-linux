@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.4.1
-#Date: 07/27/2021
+#Version: 0.4.2
+#Date: 10/26/2021
 #Description: "installer.sh" is part of the core of LAMW Manager. Contains routines for installing LAMW development environment
 #-------------------------------------------------------------------------------------------------#
 
@@ -200,8 +200,10 @@ getFPCSourcesTrunk(){
 
 #get Lazarus Sources
 getLazarusSources(){
+	local msg="${VERMELHO}Warning: ${NORMAL}${NEGRITO}Lazarus has been downgraded to version 2.0.12!!${NORMAL}"
+	printf "%s\n" "$msg"
 	changeDirectory $LAMW4LINUX_HOME
-	getFromGit "$LAZARUS_STABLE_SRC_LNK" "$LAZARUS_STABLE" "$LAZARUS_STABLE"
+	getFromGit "$LAZARUS_STABLE_SRC_LNK" "$LAMW_IDE_HOME" "$LAZARUS_STABLE"
 }
 
 #GET LAMW FrameWork
@@ -461,30 +463,35 @@ getImplicitInstall(){
 	fi
 }
 
+getCurrentLazarusWidget(){
+	local lazarus_widget_default="gkt2"
+	local current_widget_set="$lazarus_widget_default"
+	if [ -e  "$ide_make_cfg_path" ]; then 
+		current_widget_set="$(grep '\-dLCL.' "$ide_make_cfg_path" | sed 's/-dLCL//g')"
+		[ $? != 0 ] && current_widget_set="$lazarus_widget_default"
+	fi
+
+	echo "$current_widget_set"
+}
+
 installLAMWPackages(){
 	local ide_make_cfg_path="$LAMW4_LINUX_PATH_CFG/idemake.cfg"
 	local error_lazbuild_msg="${VERMELHO}Error${NORMAL}: Fails on build ${NEGRITO}${LAMW_PACKAGES[i]}${NORMAL} package"
-	
-	if [ -e  "$ide_make_cfg_path" ]; then 
-		local current_widget_set="$(grep '\-dLCL.' "$ide_make_cfg_path" | sed 's/-dLCL//g')"
-		[ "$current_widget_set" != "" ] && current_widget_set="--ws=$current_widget_set"
-	fi
+	local lamw_build_opts=(
+		"--pcp=$LAMW4_LINUX_PATH_CFG"  
+		"--ws=$(getCurrentLazarusWidget)"
+		"--quiet" 
+		"--build-ide=" 
+		"--add-package"
+	)
 
-	#build ide  with lamw framework 
+	#build ide with lamw framework 
 	for((i=0;i< ${#LAMW_PACKAGES[@]};i++)); do
-		
-		local lamw_build_opts=(
-			--build-ide= --add-package ${LAMW_PACKAGES[i]} 
-			--pcp=$LAMW4_LINUX_PATH_CFG  
-			--lazarusdir=$LAMW_IDE_HOME 
-			$current_widget_set
-			-q
-		)
 		echo "Please wait, buiding ${NEGRITO}`basename ${LAMW_PACKAGES[i]}`${NORMAL} ... "
-		./lazbuild  ${lamw_build_opts[*]}
+		./lazbuild ${lamw_build_opts[*]} ${LAMW_PACKAGES[$i]}
 		
 		if [ $? != 0 ]; then 
-			./lazbuild ${lamw_build_opts[*]}
+			./lazbuild ${lamw_build_opts[*]} ${LAMW_PACKAGES[$i]}
 			[ $? != 0 ] && { echo "$error_lazbuild_msg" && return ; }
 		fi
 	done

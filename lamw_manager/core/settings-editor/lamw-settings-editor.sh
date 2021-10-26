@@ -2,10 +2,10 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (mater-alma)
 #Course: Science Computer
-#Version: 0.4.1
-#Date: 07/27/2021
+#Version: 0.4.2
+#Date: 10/26/2021
 #Description: The "lamw-manager-settings-editor.sh" is part of the core of LAMW Manager. Responsible for managing LAMW Manager / LAMW configuration files..
-#-------------------------------------------------------------------------------------------------#
+#-----------------------------------------------------------------------f--------------------------#
 #this function builds initial struct directory of LAMW env Development !
 initROOT_LAMW(){
 
@@ -131,6 +131,7 @@ AddLAMWtoStartMenu(){
 	local lamw_desktop_file_str=(
 		"[Desktop Entry]"  
 		"Name=LAMW4Linux"
+		"Comment=A Lazarus IDE [and all equirements!] ready to develop for Android!" 
 		"GenericName=LAMW4Linux"   
 		"Exec=$LAMW_IDE_HOME/startlamw4linux"
 		"Icon=$LAMW_IDE_HOME/images/icons/lazarus_orange.ico"
@@ -369,11 +370,8 @@ CleanOldConfig(){
 		"$LAMW4_LINUX_PATH_CFG"
 		"$ROOT_LAMW"
 		"$LAMW_MENU_ITEM_PATH"
-		#"$GRADLE_CFG_HOME"
 		"$WORK_HOME_DESKTOP/lamw4linux.desktop"
 		"$LAMW_USER_HOME/.local/share/mime/packages/lazarus-mime.xml"
-		#"$LAMW_USER_HOME/.android"
-		#"/root/.android"
 		"$FPC_TRUNK_LIB_PATH"
 		"/root/.fpc.cfg"
 		"$OLD_FPC_CFG_PATH"
@@ -559,17 +557,14 @@ CreateBinutilsSimbolicLinks(){
 
 #echo "importei lamw-settings-editor.sh";read
 
-initLAMw4LinuxConfig(){
-	local lazarus_version_str="`$LAMW_IDE_HOME/tools/install/get_lazarus_version.sh`"	
-	local lazarus_env_cfg_path="$LAMW4_LINUX_PATH_CFG/environmentoptions.xml"
-	local fppkg_cfg_node_attr="//CONFIG/EnvironmentOptions/FppkgConfigFile/@Value"	
-	
+createLazarusEnvCfgFile(){
 	local lazarus_env_cfg_str=(
 		'<?xml version="1.0" encoding="UTF-8"?>'
 		'<CONFIG>'
 		'	<EnvironmentOptions>'
 		"		<Version Value=\"110\" Lazarus=\"${lazarus_version_str}\"/>"
 		"		<LazarusDirectory Value=\"${LAMW_IDE_HOME}/\"/>"
+		"		<LastCalledByLazarusFullPath Value=\"${LAMW_IDE_HOME}/lazarus\"/>"
 		"		<CompilerFilename Value=\"$FPC_TRUNK_EXEC_PATH/fpc\"/>"
 		"		<FPCSourceDirectory Value=\"${FPC_TRUNK_SOURCE_PATH}/${FPC_TRUNK_SVNTAG}\">" 
 		"		</FPCSourceDirectory>"
@@ -590,56 +585,77 @@ initLAMw4LinuxConfig(){
 
 	if [  ! -e "$lazarus_env_cfg_path" ]; then 
 		WriterFileln  "$lazarus_env_cfg_path" "lazarus_env_cfg_str"
+	fi
+}
+
+
+getNodeAttrXML(){
+	xmlstarlet sel -t -v "$1" "$2"
+}
+
+
+updateNodeAttrXML(){
+	newPtr xml_node_attr_ref=$1
+	newPtr xml_new_node_attr_values=$2
+	local xml_file_path="$3"
+	
+	for key in ${!xml_node_attr_ref[*]}; do 
+		local node_attr="${xml_node_attr_ref[$key]}"
+		local current_node_attr_value="$(getNodeAttrXML $node_attr $xml_file_path )"
+		local expected_node_attr_value=${xml_new_node_attr_values[$key]}
+			
+		[ "$current_node_attr_value" != "$expected_node_attr_value" ] &&  #update attribute ref:#ref: https://stackoverflow.com/questions/7837879/xmlstarlet-update-an-attribute
+			xmlstarlet edit  --inplace  -u "$node_attr" -v "$expected_node_attr_value" "$xml_file_path"
+		
+	done
+
+}
+
+initLAMw4LinuxConfig(){
+	local lazarus_version_str="`$LAMW_IDE_HOME/tools/install/get_lazarus_version.sh`"	
+	local lazarus_env_cfg_path="$LAMW4_LINUX_PATH_CFG/environmentoptions.xml"
+	local fppkg_cfg_node_attr="//CONFIG/EnvironmentOptions/FppkgConfigFile/@Value"	
+	local env_opts_node="//CONFIG/EnvironmentOptions"
+	local fppkg_cfg_node_attr="$env_opts_node/FppkgConfigFile/@Value"
+	local fppkg_cfg_node="$env_opts_node/FppkgConfigFile"
+
+	local -A lazarus_env_xml_nodes_attr=(
+		['lazarus_version']="$env_opts_node/Version/@Lazarus"
+		['lazarus_dir']="$env_opts_node/LazarusDirectory/@Value"
+		['compiler_file']="$env_opts_node/CompilerFilename/@Value"
+		['fpc_src']="$env_opts_node/FPCSourceDirectory/@Value"
+	)
+
+	local -A expected_env_xml_nodes_attr=(
+		['lazarus_version']=$lazarus_version_str
+		['lazarus_dir']=$LAMW_IDE_HOME
+		['compiler_file']=$FPC_TRUNK_EXEC_PATH/fpc
+		['fpc_src']=${FPC_TRUNK_SOURCE_PATH}/${FPC_TRUNK_SVNTAG}
+	)
+
+	if [ ! -e "$lazarus_env_cfg_path" ]; then
+		createLazarusEnvCfgFile
 	else
-		local env_opts_node="//CONFIG/EnvironmentOptions"
-		local fppkg_cfg_node_attr="$env_opts_node/FppkgConfigFile/@Value"
-		local fppkg_cfg_node="$env_opts_node/FppkgConfigFile"
-
-		local -A lazarus_env_xml_nodes_attr=(
-			['lazarus_version']="$env_opts_node/Version/@Lazarus"
-			['lazarus_dir']="$env_opts_node/LazarusDirectory/@Value"
-			['compiler_file']="$env_opts_node/CompilerFilename/@Value"
-			['fpc_src']="$env_opts_node/FPCSourceDirectory/@Value"
-		)
-
-		local -A expected_env_xml_nodes_attr=(
-			['lazarus_version']=$lazarus_version_str
-			['lazarus_dir']=$LAMW_IDE_HOME
-			['compiler_file']=$FPC_TRUNK_EXEC_PATH/fpc
-			['fpc_src']=${FPC_TRUNK_SOURCE_PATH}/${FPC_TRUNK_SVNTAG}
-		)
-
 		grep 'LastCalledByLazarusFullPath' $lazarus_env_cfg_path > /dev/null
-
 		if [ $? = 0 ]; then 
-			local lazarus_env_xml_nodes_attr['last_laz_full_path']="/CONFIG/EnvironmentOptions/LastCalledByLazarusFullPath/@Value"
+			local lazarus_env_xml_nodes_attr['last_laz_full_path']="${env_opts_node}/LastCalledByLazarusFullPath/@Value"
 			local expected_env_xml_nodes_attr['last_laz_full_path']=$LAMW4LINUX_EXE_PATH
 		fi
 
-
-		[ -e  "${lazarus_env_cfg_path}.bak" ] && rm "${lazarus_env_cfg_path}.bak" 
+		[ -e  "${lazarus_env_cfg_path}.bak" ] && 
+			rm "${lazarus_env_cfg_path}.bak" 
 		cp $lazarus_env_cfg_path "${lazarus_env_cfg_path}.bak" 
 
-		for key in ${!lazarus_env_xml_nodes_attr[*]}; do 
-			local node_attr="${lazarus_env_xml_nodes_attr[$key]}"
-			local current_node_attr_value="$(xmlstarlet sel -t -v $node_attr $lazarus_env_cfg_path )"
-			local expected_node_attr_value=${expected_env_xml_nodes_attr[$key]}
-				
-			if [ "$current_node_attr_value" != "$expected_node_attr_value" ]; then #update attribute ref:#ref: https://stackoverflow.com/questions/7837879/xmlstarlet-update-an-attribute
-				xmlstarlet edit  --inplace  -u "$node_attr" -v "$expected_node_attr_value" "$lazarus_env_cfg_path"
-			fi
-		done
+		updateNodeAttrXML lazarus_env_xml_nodes_attr expected_env_xml_nodes_attr "$lazarus_env_cfg_path"
 
 		grep 'FppkgConfigFile' $lazarus_env_cfg_path > /dev/null 
 
 		if [ $? != 0 ]; then #insert fppkg_config ref: https://stackoverflow.com/questions/7837879/xmlstarlet-update-an-attribute
 			xmlstarlet ed  --inplace -s "$env_opts_node" -t elem -n "FppkgConfigFile" -v "" -i $fppkg_cfg_node -t attr -n "Value" -v "$FPPKG_TRUNK_CFG_PATH" $lazarus_env_cfg_path
 		else # update fppkg_config
-			local current_fppkg_config_value=$(xmlstarlet sel  -t -v  "$fppkg_cfg_node_attr" $lazarus_env_cfg_path )
-			echo "current_fppkg_config_value = $current_fppkg_config_value"
-			if [ "$current_fppkg_config_value" != "${FPPKG_TRUNK_CFG_PATH}" ]; then 
-				xmlstarlet edit  --inplace  -u "$fppkg_cfg_node_attr" -v "$FPPKG_TRUNK_CFG_PATH" "$lazarus_env_cfg_path"
-			fi
+			local current_fppkg_config_value=$(getNodeAttrXML "$fppkg_cfg_node_attr" $lazarus_env_cfg_path )
+			[ "$current_fppkg_config_value" != "${FPPKG_TRUNK_CFG_PATH}" ] && 
+				xmlstarlet edit  --inplace  -u "$fppkg_cfg_node_attr" -v "$FPPKG_TRUNK_CFG_PATH" "$lazarus_env_cfg_path"	
 		fi 
 	fi
 }

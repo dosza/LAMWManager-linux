@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.4.0.3
-#Date: 07/29/2021
+#Version: 0.4.2
+#Date: 10/26/2021
 #Description: The "lamw-install.sh" is part of the core of LAMW Manager. This script configures the development environment for LAMW
 #-------------------------------------------------------------------------------------------------#
 
@@ -89,8 +89,14 @@ case "$1" in
 		lamw_manager_help
 	;;
 	"build-lazarus")
-		BuildLazarusIDE 
-		changeOwnerAllLAMW 1
+		getStatusInstalation
+		if [ $LAMW_INSTALL_STATUS = 0 ]; then 
+			mainInstall
+		else
+			Repair 
+			BuildLazarusIDE
+			changeOwnerAllLAMW 1
+		fi
 	;;
 	*)
 		printf "${VERMELHO}Invalid argument!${NORMAL}\n$(lamw_manager_help)" >&2
