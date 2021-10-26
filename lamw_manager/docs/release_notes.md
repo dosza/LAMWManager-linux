@@ -6,7 +6,7 @@ This page contains information about new features and bug fixes.
 v0.4.2 - Out 26, 2021
 ---
 **Fixes**
-+	Fixes error on try add first *jButton* on Lazarus 2.2.0 RC1
++	Fixes error on try add first *jButton* on Lazarus 2.2.0 RC1<br/>
 **Warning: Lazarus has been downgraded to version 2.0.12**
 
 **News**
