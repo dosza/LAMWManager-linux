@@ -89,8 +89,14 @@ case "$1" in
 		lamw_manager_help
 	;;
 	"build-lazarus")
-		BuildLazarusIDE 
-		changeOwnerAllLAMW 1
+		getStatusInstalation
+		if [ $LAMW_INSTALL_STATUS = 0 ]; then 
+			mainInstall
+		else
+			Repair 
+			BuildLazarusIDE
+			changeOwnerAllLAMW 1
+		fi
 	;;
 	*)
 		printf "${VERMELHO}Invalid argument!${NORMAL}\n$(lamw_manager_help)" >&2
