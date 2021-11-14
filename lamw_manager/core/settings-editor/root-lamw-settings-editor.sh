@@ -4,7 +4,7 @@ checkisLocalRootLAMWInvalid(){
 	
 	local invalid_paths=(
 		/bin /boot /dev /lib64 /lib /lib32 /libx32   /proc  /sbin  /sys /var
-		/etc  /lost+found /cdrom /snap/ /mnt /home  $LAMW_USER_HOME /media  
+		/etc  /lost+found /cdrom /snap / /mnt /home  $LAMW_USER_HOME /media  
 		/root /tmp /opt /run /srv 
 		/usr{,/{bin,games,include,lib,lib32,libexec,libx32,local,sbin,share,src}})
 
