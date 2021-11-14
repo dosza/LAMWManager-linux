@@ -24,7 +24,7 @@ StopGradleDaemon(){
 	local lamw_log="$LAMW4LINUX_HOME/lamw-install.log"
 	if [ "$gradle" = "" ]; then
 		if [ -e $LAMW4LINUX_HOME/lamw-install.log ] ; then 
-			local gradle_version="$(grep ^GRADLE_VERSION | sed 's/GRADLE_VERSION=//g')"
+			local gradle_version="$(grep ^GRADLE_VERSION $lamw_log | sed 's/GRADLE_VERSION=//g')"
 			gradle="$ROOT_LAMW/gradle-$gradle_version"
 		fi
 	fi
