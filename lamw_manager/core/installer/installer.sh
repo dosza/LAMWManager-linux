@@ -200,7 +200,7 @@ getFPCSourcesTrunk(){
 
 #get Lazarus Sources
 getLazarusSources(){
-	local msg="${VERMELHO}Warning: ${NORMAL}${NEGRITO}Lazarus has been downgraded to version 2.0.12!!${NORMAL}"
+	local msg="${VERMELHO}Warning:${NORMAL}${NEGRITO}Lazarus has been downgraded to version 2.0.12!!${NORMAL}"
 	printf "%s\n" "$msg"
 	changeDirectory $LAMW4LINUX_HOME
 	getFromGit "$LAZARUS_STABLE_SRC_LNK" "$LAMW_IDE_HOME" "$LAZARUS_STABLE"
@@ -208,11 +208,12 @@ getLazarusSources(){
 
 #GET LAMW FrameWork
 getLAMWFramework(){
+	local old_lamw_framework_home="$ROOT_LAMW/lazandroidmodulewizard.git"
 	changeDirectory $ROOT_LAMW
-	[  -e "$ROOT_LAMW/lazandroidmodulewizard.git" ] && [ -e "$ROOT_LAMW/lazandroidmodulewizard" ] && 
-		rm -rf "$ROOT_LAMW/lazandroidmodulewizard.git" && rm -rf "$ROOT_LAMW/lazandroidmodulewizard"
+	[  -e "$old_lamw_framework_home" ] && [ -e "$LAMW_FRAMEWORK_HOME" ] && 
+		rm -rf "$old_lamw_framework_home" && rm -rf "$LAMW_FRAMEWORK_HOME"
 
-	getFromGit "$LAMW_SRC_LNK" "$ROOT_LAMW/lazandroidmodulewizard"
+	getFromGit "$LAMW_SRC_LNK"  "$LAMW_FRAMEWORK_HOME"
 }
 
 
