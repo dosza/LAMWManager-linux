@@ -13,6 +13,7 @@ LAMW_MANAGER_MODULES_PATH=$0
 LAMW_MANAGER_MODULES_PATH=${LAMW_MANAGER_MODULES_PATH%/lamw-mgr.sh*}
 
 #importando modulos de headers 
+source "$LAMW_MANAGER_MODULES_PATH/settings-editor/root-lamw-settings-editor.sh"
 source "$LAMW_MANAGER_MODULES_PATH/headers/.index"
 source "$LAMW_MANAGER_MODULES_PATH/installer/api.sh"
 source "$LAMW_MANAGER_MODULES_PATH/installer/installer.sh"

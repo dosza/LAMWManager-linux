@@ -9,6 +9,7 @@
 
 #GLOBAL VARIABLES
 #----ColorTerm
+export WARNING_COLOR=$'\033[93m'
 export VERDE=$'\e[1;32m'
 export AMARELO=$'\e[01;33m'
 export SUBLINHADO=$'\e[4'

@@ -3,6 +3,16 @@
 
 This page contains information about new features and bug fixes.
 
+v0.4.2.1 - Nov 15, 2021
+---
+**News**
++	Stop Gradle before to run *lamw_manager*
++   Move setRootLAMW, getRootLAMW to new module [RootLAMW Settings Editor](https://github.com/dosza/LAMWManager-linux/tree/v0.4.2/lamw_manager/core/settings-editor/root-lamw-settings-editor.sh)
++	LAMW Manager Setup now prioritizes PKEXEC (if supported) for administrative privileges
+
+
+**Fixes**
+
 v0.4.2 - Out 26, 2021
 ---
 **Fixes**
