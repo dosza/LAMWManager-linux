@@ -34,8 +34,10 @@ StopGradleDaemon(){
 		GetLocalJavaHome
 	fi
 
-	[ "$gradle_path" != "" ] && [ -e "$gradle_path" ] && 
+	if [ "$gradle_path" != "" ] && [ -e "$gradle_path" ]; then 
+		echo "Stopping Gradle Daemons, please wait..."
 		$gradle_path/bin/gradle --stop
+	fi
 }
 
 #Del lamw-overrides
