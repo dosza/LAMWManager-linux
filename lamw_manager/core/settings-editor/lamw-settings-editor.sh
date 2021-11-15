@@ -226,7 +226,7 @@ LAMW4LinuxPostConfig(){
 		"		\$zenity_exec --title \"\$zenity_title\" --error --width 480 --text \"\$zenity_message\" &&"
 		"		exit 1"
 		"fi"
-		"if [ ! -e \"\${LAMW4LINUX_EXE_PATH} \" ] && [  -e \"\${OLD_LAMW4LINUX_EXE_PATH}\" ]; then"
+		"if [ ! -e \"\${LAMW4LINUX_EXE_PATH}\" ] && [  -e \"\${OLD_LAMW4LINUX_EXE_PATH}\" ]; then"
 		"	zenity_exec=\$(which zenity)"
 		"	zenity_message=\"lazarus not found, starting from lazarus.old...\""
 		"	zenity_title=\"Missing Lazarus\""
