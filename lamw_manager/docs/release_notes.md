@@ -12,6 +12,7 @@ v0.4.2.1 - Nov 15, 2021
 
 
 **Fixes**
++	Fixes get instalation Status using *\$LOCAL_ROOT_LAMW*
 
 v0.4.2 - Out 26, 2021
 ---
