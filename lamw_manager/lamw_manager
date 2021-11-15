@@ -7,28 +7,38 @@
 #Description:The "lamw_manager" is part of the core of LAMW Manager. This script is a wrapper for "core/lamw-instal.sh"
 #-------------------------------------------------------------------------------------------------#
 
-export DEBUG=0
-export ARGS="$*"
-export LAMW_MGR_INSTALL="core/lamw-mgr.sh"
-export LAMW_MGR_CORE=""
-export USE_PKEXEC=0
-export ENTER_TO_EXIT=0
-export CALL_BASH="bash"
-export EXIT_STATUS=0
-export LAMW_MANAGER_LOCK=/tmp/lamw_manager.lock
-export LAMW_MANAGER_ENV=(LAMW_USER=$USER LAMW_USER_HOME=$HOME LAMW_MANAGER_LOCK=$LAMW_MANAGER_LOCK)
-
 
 #Get Directory of LAMW Manager Core
 if [ -e "$PWD/$LAMW_MGR_INSTALL" ]; then
 	export LAMW_MGR_CORE="$PWD"
 else
-	export LAMW_MGR_CORE=$0
-	export LAMW_MGR_CORE=${LAMW_MGR_CORE%/lamw_manager*} 
+	export LAMW_MGR_CORE=${0%/lamw_manager*} 
 fi
 
-export LAMW_MGR_INSTALL="$LAMW_MGR_CORE/$LAMW_MGR_INSTALL"
-source $LAMW_MGR_CORE/core/headers/common-shell.sh
+source "$LAMW_MGR_CORE/core/headers/common-shell.sh"
+source "$LAMW_MGR_CORE/core/headers/lamw_manager_headers"
+source "$LAMW_MGR_CORE/core/settings-editor/root-lamw-settings-editor.sh"
+
+
+GetLocalJavaHome(){
+	local lamw4linux_env="$LAMW4LINUX_HOME/etc/environment"
+	if [ -e $lamw4linux_env ]; then
+		export JAVA_HOME=$(grep '^export JAVA_HOME' "$lamw4linux_env" | sed 's|export JAVA_HOME=||g')
+	fi	
+}
+StopGradleDaemon(){
+	local lamw_install_log="$LAMW4LINUX_HOME/lamw-install.log"
+	if [ -e $lamw_install_log ] ; then
+		local gradle_version="$(grep ^GRADLE_VERSION $lamw_install_log | sed 's/GRADLE_VERSION=//g')"
+		local gradle_path="$ROOT_LAMW/gradle-$gradle_version"
+		GetLocalJavaHome
+	fi
+
+	if [ "$gradle_path" != "" ] && [ -e "$gradle_path" ]; then 
+		echo "Stopping Gradle Daemons, please wait..."
+		$gradle_path/bin/gradle --stop
+	fi
+}
 
 #Del lamw-overrides
 DelTempFiles(){ 
@@ -60,11 +70,22 @@ getBashCMD(){
 	fi
 }
 
-#Run LAMW Manager as sudo (default)
+isSupportedPolkit(){
+	local error_msg="${VERMELHO}Fatal error:${NORMAL} Cannot run on tty terminal!!"
+	tty | grep 'pts/[0-9]'>/dev/null
+}
 
-CheckUseLamw_manager_setup(){
+
+setUseLamwManagerSetup(){
 	if [ "$USE_SETUP" = "1" ];
 	then 
+		isSupportedPolkit
+		local support_polkit=$?
+
+		if [ $support_polkit = 0 ]; then 
+			USE_PKEXEC=1
+		fi
+
 		LAMW_MANAGER_ENV+=("USE_SETUP=1")
 	else
 		LAMW_MANAGER_ENV+=("USE_SETUP=0")
@@ -73,29 +94,30 @@ CheckUseLamw_manager_setup(){
 
 CheckLocalRootLAMW(){
 	if [ "$LOCAL_ROOT_LAMW" != "" ]; then
-		LAMW_MANAGER_ENV+=("LOCAL_ROOT_LAMW=$LOCAL_ROOT_LAMW")
-
+		setRootLAMW
 	else 
 		isVariabelDeclared LOCAL_ROOT_LAMW
 		if [ $? = 0 ]; then
 			echo "${VERMELHO}Fatal error: LOCAL_ROOT_LAMW is declared as empty!${NORMAL}"
 			exit 1
+		else 
+			setRootLAMW
 		fi
-	fi 
+	fi
+
+	LAMW_MANAGER_ENV+=(ROOT_LAMW=$ROOT_LAMW)
+	LAMW4LINUX_HOME=$ROOT_LAMW/lamw4linux
 }
 
 RunAsSudo(){
-	CheckUseLamw_manager_setup
 	sudo -i env ${LAMW_MANAGER_ENV[@]} $CALL_BASH "$LAMW_MGR_INSTALL" $*
 	export EXIT_STATUS=$?
 }
 
+
 #Run LAMW Manager as Police Kit
 RunAsPolkit(){
-	local error_msg="${VERMELHO}Fatal error:${NORMAL} Cannot run on tty terminal!!"
-	CheckUseLamw_manager_setup
-	tty | grep 'pts/[0-9]'>/dev/null
-
+	isSupportedPolkit
 	if [ $?  = 0 ]; then 
 		LAMW_MANAGER_ENV+=(DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY)
 		pkexec  env ${LAMW_MANAGER_ENV[@]} $CALL_BASH  "$LAMW_MGR_INSTALL" $*
@@ -114,7 +136,7 @@ RunAsPolkit(){
 getStatus(){
 	echo "$*" | grep "get-status" > /dev/null
 	if [ $? = 0 ]; then 
-		if [ -e ~/LAMW/lamw4linux/lamw-install.log ]; then
+		if [ -e "$LAMW4LINUX_HOME/lamw-install.log" ]; then
 			exit 0
 		else
 			exit 1
@@ -128,7 +150,8 @@ Run(){
 	exec 3>$LAMW_MANAGER_LOCK
 	echo "" >&3
 	getBashCMD
-	if [ $USE_PKEXEC = 1 ]; then
+	setUseLamwManagerSetup
+	if [ $USE_PKEXEC = 1 ] ; then
 		RunAsPolkit $*
 	else
 		RunAsSudo $*
@@ -145,6 +168,7 @@ main(){
 	CheckFlags ENTER_TO_EXIT "ENTER=1"
 	CheckUserIsSudo
 	CheckLocalRootLAMW
+	StopGradleDaemon
 	Run $ARGS
 	DelTempFiles
 }
