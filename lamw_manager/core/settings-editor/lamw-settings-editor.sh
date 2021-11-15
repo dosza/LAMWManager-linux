@@ -194,6 +194,7 @@ LAMW4LinuxPostConfig(){
 		"AntBuildMode=debug"
 		"NDK=6"
 	)
+	local breakline='\n'
 	local startlamw4linux_str=(
 		'#!/bin/bash'
 		'#-------------------------------------------------------------------------------------------------#'
@@ -207,7 +208,18 @@ LAMW4LinuxPostConfig(){
 		"export ANDROID_HOME=$ANDROID_HOME"
 		"export ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
 		"export PATH=$ROOT_LAMW/lamw4linux/usr/bin:\$PPC_CONFIG_PATH:\$JAVA_HOME/bin:\$PATH"
-		"exec $LAMW4LINUX_EXE_PATH --pcp=$LAMW4_LINUX_PATH_CFG \$*"
+		"LAMW4_LINUX_PATH_CFG=$LAMW4_LINUX_PATH_CFG"
+		"LAMW_MANAGER_PATH=$LAMW_MANAGER_PATH"
+		""
+		"if [ ! -e \$LAMW4_LINUX_PATH_CFG ]; then"
+		"	zenity_exec=$(which zenity)"
+		"zenity_message=\"Primary Config Path(\$LAMW4_LINUX_PATH_CFG) doesn't exists!!${breakline}Run: './lamw_manager' to fix that! \""
+		"zenity_title=\"Error on start LAMW4Linux\""
+		"	[ \"\$zenity_exec\" != \"\" ] &&"
+		"		\$zenity_exec --title \"$zenity_title\" --error --width 480 --text \"\$zenity_message\" &&"
+		"		exit 1"
+		"fi"
+		"exec $LAMW4LINUX_EXE_PATH --pcp=\$LAMW4_LINUX_PATH_CFG \$*"
 	)
 
 	WriterFileln "$LAMW4_LINUX_PATH_CFG/LAMW.ini" "LAMW_init_str"
