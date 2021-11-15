@@ -8,6 +8,8 @@
 #-------------------------------------------------------------------------------------------------#
 LAMW4_LINUX_PATH_CFG="$LAMW_USER_HOME/.lamw4linux"
 LAMW4LINUX_HOME="$ROOT_LAMW/lamw4linux"
+LAMW4LINUX_ETC="$LAMW4LINUX_HOME/etc"
+LAMW4LINUX_LOCAL_ENV="$LAMW4LINUX_ETC/environment"
 LAMW_WORKSPACE_HOME="$LAMW_USER_HOME/Dev/LAMWProjects"  #path to lamw_workspace
 LAMW_MENU_ITEM_PATH="$LAMW_USER_HOME/.local/share/applications/lamw4linux.desktop"
 FPPKG_LOCAL_REPOSITORY="$LAMW4LINUX_HOME/.fppkg/config"
