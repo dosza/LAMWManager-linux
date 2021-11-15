@@ -19,18 +19,23 @@ source "$LAMW_MGR_CORE/core/headers/common-shell.sh"
 source "$LAMW_MGR_CORE/core/headers/lamw_manager_headers"
 source "$LAMW_MGR_CORE/core/settings-editor/root-lamw-settings-editor.sh"
 
+
+GetLocalJavaHome(){
+	local lamw4linux_env="$LAMW4LINUX_HOME/etc/environment"
+	if [ -e $lamw4linux_env ]; then
+		export JAVA_HOME=$(grep '^export JAVA_HOME' "$lamw4linux_env" | sed 's|export JAVA_HOME=||g')
+	fi	
+}
 StopGradleDaemon(){
-	local gradle="$1"
-	local lamw_log="$LAMW4LINUX_HOME/lamw-install.log"
-	if [ "$gradle" = "" ]; then
-		if [ -e $LAMW4LINUX_HOME/lamw-install.log ] ; then 
-			local gradle_version="$(grep ^GRADLE_VERSION $lamw_log | sed 's/GRADLE_VERSION=//g')"
-			gradle="$ROOT_LAMW/gradle-$gradle_version"
-		fi
+	local lamw_install_log="$LAMW4LINUX_HOME/lamw-install.log"
+	if [ -e $lamw_install_log ] ; then
+		local gradle_version="$(grep ^GRADLE_VERSION $lamw_install_log | sed 's/GRADLE_VERSION=//g')"
+		local gradle_path="$ROOT_LAMW/gradle-$gradle_version"
+		GetLocalJavaHome
 	fi
 
-	[ "$gradle" != "" ] && [ -e "$gradle" ] && 
-		$gradle/bin/gradle --stop
+	[ "$gradle_path" != "" ] && [ -e "$gradle_path" ] && 
+		$gradle_path/bin/gradle --stop
 }
 
 #Del lamw-overrides

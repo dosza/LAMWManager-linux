@@ -112,6 +112,7 @@ writeLAMWLogInstall(){
 		"Android SDK:$ROOT_LAMW/sdk" 
 		"Android NDK:$ROOT_LAMW/ndk"
 		"Gradle:$GRADLE_HOME"
+		"LAMW_MANAGER PATH:$LAMW_MANAGER_PATH"
 		"OLD_ANDROID_SDK=$OLD_ANDROID_SDK"
 		"ANT_VERSION=$ANT_VERSION_STABLE"
 		"GRADLE_VERSION=$GRADLE_VERSION"
@@ -119,7 +120,6 @@ writeLAMWLogInstall(){
 		"FPC_VERSION=$fpc_version"
 		"LAZARUS_VERSION=$LAZARUS_STABLE_VERSION"
 		"AARCH64_SUPPORT=$FLAG_FORCE_ANDROID_AARCH64"
-		"LAMW_MANAGER_PATH=$LAMW_MANAGER_PATH"
 		"Install-date:$(date)"
 	)
 
@@ -167,6 +167,7 @@ LAMW4LinuxPostConfig(){
 	[ ! -e $LAMW_WORKSPACE_HOME ] && mkdir -p $LAMW_WORKSPACE_HOME
 
 	local ant_path=$ANT_HOME/bin
+	local breakline='\\'n
 	ant_path=${ant_path%/ant*} #
 
 	#testa modificação de workspace
@@ -194,15 +195,9 @@ LAMW4LinuxPostConfig(){
 		"AntBuildMode=debug"
 		"NDK=6"
 	)
-	local breakline='\\'n
-	local startlamw4linux_str=(
-		'#!/bin/bash'
-		'#-------------------------------------------------------------------------------------------------#'
-		'### THIS FILE IS AUTOMATICALLY CONFIGURED by LAMW Manager'
-		'###ou may comment out this entry, but any other modifications may be lost.'
-		'#Description: This script is script configure LAMW environment and startLAMW4Linux'
-		'#-------------------------------------------------------------------------------------------------#'
-		''
+
+	local lamw4linux_env_str=(
+		"#!/bin/bash"
 		"export PPC_CONFIG_PATH=$PPC_CONFIG_PATH"
 		"export JAVA_HOME=$JAVA_HOME"
 		"export ANDROID_HOME=$ANDROID_HOME"
@@ -212,6 +207,16 @@ LAMW4LinuxPostConfig(){
 		"LAMW_MANAGER_PATH=$LAMW_MANAGER_PATH"
 		"LAMW4LINUX_EXE_PATH=$LAMW4LINUX_EXE_PATH"
 		"OLD_LAMW4LINUX_EXE_PATH=${LAMW4LINUX_EXE_PATH}.old"
+	)
+
+	local startlamw4linux_str=(
+		'#!/bin/bash'
+		'#-------------------------------------------------------------------------------------------------#'
+		'### THIS FILE IS AUTOMATICALLY CONFIGURED by LAMW Manager'
+		'###ou may comment out this entry, but any other modifications may be lost.'
+		'#Description: This script is script configure LAMW environment and startLAMW4Linux'
+		'#-------------------------------------------------------------------------------------------------#'
+		"source $LAMW4LINUX_LOCAL_ENV"
 		""
 		"if [ ! -e \$LAMW4_LINUX_PATH_CFG ]; then"
 		"	zenity_exec=\$(which zenity)"
@@ -233,6 +238,7 @@ LAMW4LinuxPostConfig(){
 
 	WriterFileln "$LAMW4_LINUX_PATH_CFG/LAMW.ini" "LAMW_init_str"
 	WriterFileln "$LAMW_IDE_HOME/startlamw4linux" "startlamw4linux_str"
+	WriterFileln "$LAMW4LINUX_LOCAL_ENV" lamw4linux_env_str
 
 	if [ -e  $LAMW_IDE_HOME/startlamw4linux ]; then
 		chmod +x $LAMW_IDE_HOME/startlamw4linux
