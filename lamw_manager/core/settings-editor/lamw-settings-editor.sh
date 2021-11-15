@@ -194,7 +194,7 @@ LAMW4LinuxPostConfig(){
 		"AntBuildMode=debug"
 		"NDK=6"
 	)
-	local breakline='\n'
+	local breakline='\\'n
 	local startlamw4linux_str=(
 		'#!/bin/bash'
 		'#-------------------------------------------------------------------------------------------------#'
