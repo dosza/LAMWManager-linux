@@ -9,10 +9,11 @@
 
 
 #Get Directory of LAMW Manager Core
-if [ -e "$PWD/$LAMW_MGR_INSTALL" ]; then
+if [ -e $"PWD/lamw_manager" ]; then
 	export LAMW_MGR_CORE="$PWD"
 else
-	export LAMW_MGR_CORE=${0%/lamw_manager*} 
+	export LAMW_MGR_CORE="$(realpath $(dirname $0))"
+	[ $? != 0 ] && export LAMW_MGR_CORE="${0/%\/lamw_manager}" 
 fi
 
 source "$LAMW_MGR_CORE/core/headers/common-shell.sh"
@@ -29,7 +30,7 @@ GetLocalJavaHome(){
 StopGradleDaemon(){
 	local lamw_install_log="$LAMW4LINUX_HOME/lamw-install.log"
 	if [ -e $lamw_install_log ] ; then
-		local gradle_version="$(grep ^GRADLE_VERSION $lamw_install_log | sed 's/GRADLE_VERSION=//g')"
+		local gradle_version="$(grep '^GRADLE_VERSION' $lamw_install_log | sed 's/GRADLE_VERSION=//g')"
 		local gradle_path="$ROOT_LAMW/gradle-$gradle_version"
 		GetLocalJavaHome
 	fi
