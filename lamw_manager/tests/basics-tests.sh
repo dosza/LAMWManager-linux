@@ -2,7 +2,11 @@
 #!/bin/bash
 
 testLocalRootLAMW(){
-	local lamw_manager_script=../lamw_manager/lamw_manager
+	if [ -e "$PWD/lamw_manager" ];then 
+		local lamw_manager_script="$(realpath ./lamw_manager)"
+	else 	
+		local lamw_manager_script=$(realpath ../lamw_manager)
+	fi
 	env LOCAL_ROOT_LAMW="" $lamw_manager_script
 	assertEquals 1  $?
 
