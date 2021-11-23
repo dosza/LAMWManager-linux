@@ -41,7 +41,6 @@ LAMWPackageManager(){
 
 		for gradle in ${OLD_GRADLE[*]}; do
 			if [ -e "$gradle" ]; then
-				stopGradleDaemon "$gradle"
 				rm -rf $gradle 
 			fi
 		done
