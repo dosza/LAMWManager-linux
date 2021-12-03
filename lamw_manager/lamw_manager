@@ -9,7 +9,7 @@
 
 
 #Get Directory of LAMW Manager Core
-if [ -e $"PWD/lamw_manager" ]; then
+if [ -e "$PWD/lamw_manager" ] && [ ! -d "$PWD/lamw_manager" ]; then
 	export LAMW_MGR_CORE="$PWD"
 else
 	export LAMW_MGR_CORE="$(realpath $(dirname $0))"
