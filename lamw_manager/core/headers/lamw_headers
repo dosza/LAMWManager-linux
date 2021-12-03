@@ -11,7 +11,7 @@
 #										Section Version Variables
 #--------------------------------------------------------------------------------------------------
 
-LAMW_INSTALL_VERSION="0.4.2.1"
+LAMW_INSTALL_VERSION="0.4.2.2"
 JDK_VERSION=11
 ANT_VERSION_STABLE='1.10.11'
 CMD_SDK_TOOLS_VERSION="7302050"
@@ -51,7 +51,7 @@ OLD_LAZARUS_STABLE_VERSION=(
 )
 
 OLD_LAMW_INSTALL_VERSION=(
-	0.4.2
+	0.4.2{.1,}
 	0.4.1{.{6..1},}
 	0.4.0{.{7..1},}
 	0.3.6{.{2,1},}
