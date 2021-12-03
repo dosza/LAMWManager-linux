@@ -3,6 +3,12 @@
 
 This page contains information about new features and bug fixes.
 
+v0.4.2.2 - Dec 2, 2021
+---
+**Fixes**
++	Fix get Current *\$LAMW_MGR_CORE*
+
+
 v0.4.2.1 - Nov 15, 2021
 ---
 **News**
