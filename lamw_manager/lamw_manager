@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.4.2
-#Date: 10/26/2021
+#Version: 0.4.3
+#Date: 12/09/2021
 #Description:The "lamw_manager" is part of the core of LAMW Manager. This script is a wrapper for "core/lamw-instal.sh"
 #-------------------------------------------------------------------------------------------------#
 

@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.4.2
-#Date: 10/26/2021
+#Version: 0.4.3
+#Date: 12/09/2021
 #Description: The "lamw_headers" is part of the core of LAMW Manager. This script contains LAMW Manager variables.
 #-------------------------------------------------------------------------------------------------#
 
@@ -11,7 +11,7 @@
 #										Section Version Variables
 #--------------------------------------------------------------------------------------------------
 
-LAMW_INSTALL_VERSION="0.4.2.2"
+LAMW_INSTALL_VERSION="0.4.3"
 JDK_VERSION=11
 ANT_VERSION_STABLE='1.10.11'
 CMD_SDK_TOOLS_VERSION="7302050"
@@ -51,7 +51,7 @@ OLD_LAZARUS_STABLE_VERSION=(
 )
 
 OLD_LAMW_INSTALL_VERSION=(
-	0.4.2{.1,}
+	0.4.3{.{2..1},}
 	0.4.1{.{6..1},}
 	0.4.0{.{7..1},}
 	0.3.6{.{2,1},}
@@ -77,7 +77,7 @@ LAMW_SRC_LNK="https://github.com/jmpessoa/lazandroidmodulewizard.git"
 FPC_DEB_LINK="https://sourceforge.net/projects/lazarus/files/Lazarus%20Linux%20amd64%20DEB/Lazarus%20${FPC_LAZ_DEB_VERSION}/fpc-laz_${FPC_DEB_VERSION}_amd64.deb"
 ANT_TAR_URL="https://archive.apache.org/dist/ant/binaries/apache-ant-${ANT_VERSION_STABLE}-bin.tar.xz"
 LAZARUS_STABLE_SRC_LNK="https://gitlab.com/freepascal.org/lazarus/lazarus.git"
-LAMW_PACKAGE_URL="https://raw.githubusercontent.com/jmpessoa/lazandroidmodulewizard/master/package.json"
+LAMW_PACKAGE_URL="https://raw.githubusercontent.com/jmpessoa/lazandroidmodulewizard/master/docs/package.json"
 API_JDK_URL="https://api.adoptium.net/v3/assets/latest/$JDK_VERSION/hotspot?vendor=$JDK_VENDOR"
 FPC_TRUNK_URL="https://svn.freepascal.org/svn/fpc/tags/${FPC_TRUNK_SVNTAG}"
 
