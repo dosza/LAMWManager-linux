@@ -19,6 +19,7 @@ initROOT_LAMW(){
 		$LAMW4_LINUX_PATH_CFG
 	)
 
+
 	for lamw_dir in ${init_root_lamw_dirs[@]}; do
 		[ ! -e "$lamw_dir" ] && mkdir -p "$lamw_dir"
 	done
@@ -79,7 +80,11 @@ changeOwnerAllLAMW(){
 			"$LAMW_MANAGER_LOCAL_CONFIG_DIR"
 				
 		#	
-		)		
+		)
+
+		if [ "$NO_EXISTENT_ROOT_LAMW_PARENT" != "" ]; then
+			files_chown+=($NO_EXISTENT_ROOT_LAMW_PARENT)
+		fi		
 	fi
 	echo "Restoring directories ..."
 	for ((i=0;i<${#files_chown[*]};i++))
