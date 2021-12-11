@@ -56,6 +56,41 @@ getRootLAMW(){
 	fi
 }
 
+detectNoExistsRootLAMWParent(){
+	if [ "$LOCAL_ROOT_LAMW" !=  "" ]; then
+		NO_EXISTENT_ROOT_LAMW_PARENT="$LOCAL_ROOT_LAMW"
+		local flag=1
+		while [ $flag != 0 ]; do
+			local current_parent=$NO_EXISTENT_ROOT_LAMW_PARENT
+			NO_EXISTENT_ROOT_LAMW_PARENT=$(dirname $NO_EXISTENT_ROOT_LAMW_PARENT)
+			if [ -e $NO_EXISTENT_ROOT_LAMW_PARENT ]; then
+				NO_EXISTENT_ROOT_LAMW_PARENT=$current_parent
+				flag=0
+			fi
+		done
+
+		if [ "$NO_EXISTENT_ROOT_LAMW_PARENT" != "$LOCAL_ROOT_LAMW" ]; then
+			LAMW_MANAGER_ENV+=(NO_EXISTENT_ROOT_LAMW_PARENT=$NO_EXISTENT_ROOT_LAMW_PARENT)
+			grep '^NO_EXISTENT_ROOT_LAMW_PARENT' $LAMW_MANAGER_LOCAL_CONFIG_PATH >/dev/null 
+			if [ $? != 0 ]; then
+				echo "NO_EXISTENT_ROOT_LAMW_PARENT=$NO_EXISTENT_ROOT_LAMW_PARENT" >> $LAMW_MANAGER_LOCAL_CONFIG_PATH
+
+			fi
+		fi
+
+	fi
+}
+
+getRootLAMWParent(){
+	if [ -e $LAMW_MANAGER_LOCAL_CONFIG_PATH ]; then 
+		local current_no_existent_root_parent="$(grep '^NO_EXISTENT_ROOT_LAMW_PARENT' $LAMW_MANAGER_LOCAL_CONFIG_PATH)"
+		if [ "$current_no_existent_root_parent" != "" ]; then
+			NO_EXISTENT_ROOT_LAMW_PARENT=$current_parent
+			LAMW_MANAGER_ENV+=(NO_EXISTENT_ROOT_LAMW_PARENT=$NO_EXISTENT_ROOT_LAMW_PARENT)
+		fi
+	fi
+
+}
 setRootLAMW(){
 	if [ ! -e $LAMW_MANAGER_LOCAL_CONFIG_DIR ]; then 
 		if [ "$LOCAL_ROOT_LAMW" = "" ] || [ "$LOCAL_ROOT_LAMW" = "$DEFAULT_ROOT_LAMW" ]; then 
@@ -70,9 +105,11 @@ setRootLAMW(){
 			mkdir $LAMW_MANAGER_LOCAL_CONFIG_DIR
 			echo "LOCAL_ROOT_LAMW=$LOCAL_ROOT_LAMW" > $LAMW_MANAGER_LOCAL_CONFIG_PATH
 			ROOT_LAMW=$LOCAL_ROOT_LAMW
+			detectNoExistsRootLAMWParent
 		fi
 	else
 		getRootLAMW
+		getRootLAMWParent
 	fi
 }
 
