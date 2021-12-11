@@ -3,6 +3,11 @@
 
 This page contains information about new features and bug fixes.
 
+v0.4.3 - Dec 11, 2021
+---
+**Fixes**
++	Fixed: Fix wrong permissions in $ROOT_LAMW parent directory
+
 v0.4.2.2 - Dec 2, 2021
 ---
 **Fixes**
