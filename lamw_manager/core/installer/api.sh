@@ -40,6 +40,17 @@ setJDKDeps(){
 	JDK_TAR="`parseJSONString "$JDK_JSON" ".[0].package.name"`"
 }
 
+setLAMWPackages(){
+	isVariabelDeclared LAMW_PACKAGES
+	[ $? = 0 ] && return 
+
+	local lamw_pkgs_json="$(echo "$LAMW_PACKAGE_JSON" | jq '. |{packages:.packages}')"
+	local max_lamw_pcks=$(parseJSONString "$lamw_pkgs_json" '.packages | length')
+	for((i = 0 ; i < ${max_lamw_pcks};i++)); do 
+		LAMW_PACKAGES[$i]="${LAMW_FRAMEWORK_HOME}/$(parseJSONString "$lamw_pkgs_json" ".packages[$i]")"
+	done
+}
+
 checkJDKVersionStatus(){
 	setJDKDeps
 	JDK_STATUS=0
@@ -47,9 +58,23 @@ checkJDKVersionStatus(){
 	[ ! -e $JAVA_HOME ] || ( [ -e $java_release_path ]  && ! grep $JAVA_VERSION  $java_release_path > /dev/null ) && JDK_STATUS=1
 }
 
-setLAMWDeps(){
+getLAMWPackageJSON(){
+	local error_package_json_msg="Error: Unable to get ${NEGRITO}LAMW package.json${NORMAL}"
+if [  "$LAMW_PACKAGE_JSON" = "" ]; then 
+	LAMW_PACKAGE_JSON="$(Wget -O- -q  "$LAMW_PACKAGE_URL" )"
+	
+	[  "$LAMW_PACKAGE_JSON" = "" ] && check_error_and_exit "$error_package_json_msg"
+	LAMW_PACKAGE_JSON=$(echo $LAMW_PACKAGE_JSON | jq '.| {packages:.packages,dependencies:.dependencies}')
+fi
+}
 
-	[  "$LAMW_DEPENDENCIES" = "" ] && LAMW_DEPENDENCIES="$(Wget -O- -q  "$LAMW_PACKAGE_URL" )"
+setLAMWDepsJSON(){
+	LAMW_DEPENDENCIES=$( echo $LAMW_PACKAGE_JSON | jq '. |{ dependencies:.dependencies}' )
+}
+setLAMWDeps(){
+	[ "$LAMW_PACKAGE_JSON" != "" ] && return 
+	getLAMWPackageJSON
+	setLAMWDepsJSON
 	ANDROID_SDK_TARGET=$(getLAMWDep '.dependencies.android.platform')
 	ANDROID_BUILD_TOOLS_TARGET=$(getLAMWDep '.dependencies.android.buildTools')
 	GRADLE_VERSION=$(getLAMWDep '.dependencies.gradle')
@@ -57,7 +82,7 @@ setLAMWDeps(){
 	GRADLE_ZIP_LNK="https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip"
 	GRADLE_ZIP_FILE="gradle-${GRADLE_VERSION}-bin.zip"
 	setAndroidSDKCMDParameters
-
+	setLAMWPackages
 
 	#printf "%b" "$ANDROID_SDK_TARGET\n$ANDROID_BUILD_TOOLS_TARGET\n$GRADLE_VERSION\n${SDK_MANAGER_CMD_PARAMETERS[*]}\n"
 }

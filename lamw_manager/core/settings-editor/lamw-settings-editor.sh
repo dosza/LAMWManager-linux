@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (mater-alma)
 #Course: Science Computer
-#Version: 0.4.2
-#Date: 10/26/2021
+#Version: 0.4.3
+#Date: 12/09/2021
 #Description: The "lamw-manager-settings-editor.sh" is part of the core of LAMW Manager. Responsible for managing LAMW Manager / LAMW configuration files..
 #-----------------------------------------------------------------------f--------------------------#
 #this function builds initial struct directory of LAMW env Development !
@@ -18,6 +18,7 @@ initROOT_LAMW(){
 		$FPPKG_LOCAL_REPOSITORY
 		$LAMW4_LINUX_PATH_CFG
 	)
+
 
 	for lamw_dir in ${init_root_lamw_dirs[@]}; do
 		[ ! -e "$lamw_dir" ] && mkdir -p "$lamw_dir"
@@ -79,7 +80,11 @@ changeOwnerAllLAMW(){
 			"$LAMW_MANAGER_LOCAL_CONFIG_DIR"
 				
 		#	
-		)		
+		)
+
+		if [ "$NO_EXISTENT_ROOT_LAMW_PARENT" != "" ]; then
+			files_chown+=($NO_EXISTENT_ROOT_LAMW_PARENT)
+		fi		
 	fi
 	echo "Restoring directories ..."
 	for ((i=0;i<${#files_chown[*]};i++))
