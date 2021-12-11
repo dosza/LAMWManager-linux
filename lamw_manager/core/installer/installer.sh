@@ -324,8 +324,8 @@ getAndroidAPIS(){
 			
 			if [ $i = 0 ]; then 
 				runSDKManager ${SDK_MANAGER_CMD_PARAMETERS[i]} # instala sdk sem intervenção humana 
-			else
 				FORCE_YES=0
+			else
 				runSDKManager ${SDK_MANAGER_CMD_PARAMETERS[i]} 
 			fi
 		done
@@ -376,12 +376,14 @@ Repair(){
 		local flag_old_fpc=""
 		checkLAMWManagerVersion > /dev/null
 
-		if [ "$(which git)" = "" ] || [ "$(which wget)" = "" ] || [ "$(which jq)" = "" ]; then
+		if [ "$(which git)" = "" ] || [ "$(which wget)" = "" ] || 
+		[ "$(which jq)" = "" ] || [ "$(which make)" = "" ]; then
 			echo "Missing lamw_manager required tools!, starting install base Dependencies ..."
 			installDependences
 			flag_need_repair=1
 		fi
 		wrapperParseFPC
+		setLAMWDeps
 		if [ ! -e $expected_fpc_src_path ]; then
 			getFPCSourcesTrunk
 			flag_need_repair=1
@@ -399,16 +401,19 @@ Repair(){
 		fi
 
 		if [ ! -e $LAMW4_LINUX_PATH_CFG ]; then 
-			setLAMWDeps; LAMW4LinuxPostConfig
+			LAMW4LinuxPostConfig
 		fi
 	fi
 }
 
 checkLAMWManagerVersion(){
 	local ret=0
-	[ -e "$LAMW4LINUX_HOME/lamw-install.log" ] && for i  in ${!OLD_LAMW_INSTALL_VERSION[*]};do
-		grep "^Generate LAMW_INSTALL_VERSION=${OLD_LAMW_INSTALL_VERSION[i]}$"  "$LAMW4LINUX_HOME/lamw-install.log" > /dev/null
-		if [ $? = 0 ]; then 
+	local lamw_install_log_path="$LAMW4LINUX_HOME/lamw-install.log"
+	[ ! -e  $lamw_install_log_path ] && return
+
+	local current_lamw_mgr_version="$(grep "^Generate LAMW_INSTALL_VERSION="  "$lamw_install_log_path" | awk -F= '{ print $NF }')"
+	for i  in ${!OLD_LAMW_INSTALL_VERSION[*]};do
+		if [ $current_lamw_mgr_version = ${OLD_LAMW_INSTALL_VERSION[i]} ]; then 
 			CURRENT_OLD_LAMW_INSTALL_INDEX=$i
 			ret=1;
 			break
