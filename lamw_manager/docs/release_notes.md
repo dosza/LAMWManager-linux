@@ -6,7 +6,10 @@ This page contains information about new features and bug fixes.
 v0.4.3 - Dec 11, 2021
 ---
 **Fixes**
-+	Fixed: Fix wrong permissions in $ROOT_LAMW parent directory
++	Fixed: Fix wrong permissions in *\$ROOT_LAMW* parent directory
+
+**News**
++	The moduleThe [*api*](https://github.com/dosza/LAMWManager-linux/tree/v0.4.1/lamw_manager/core/installer/api.sh)<br/>has been upgrated to get path of LAMW Packages *\*.lpk*
 
 v0.4.2.2 - Dec 2, 2021
 ---
