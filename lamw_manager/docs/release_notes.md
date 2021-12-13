@@ -3,7 +3,7 @@
 
 This page contains information about new features and bug fixes.
 
-v0.4.3 - Dec 13, 2021
+v0.4.3.1 - Dec 13, 2021
 ---
 **Fixes**
 +	Get Current *\*$ROOT_LAMW_PARENT*
