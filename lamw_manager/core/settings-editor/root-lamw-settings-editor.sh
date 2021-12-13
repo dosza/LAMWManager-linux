@@ -83,9 +83,9 @@ detectNoExistsRootLAMWParent(){
 
 getRootLAMWParent(){
 	if [ -e $LAMW_MANAGER_LOCAL_CONFIG_PATH ]; then 
-		local current_no_existent_root_parent="$(grep '^NO_EXISTENT_ROOT_LAMW_PARENT' $LAMW_MANAGER_LOCAL_CONFIG_PATH)"
+		local current_no_existent_root_parent="$(grep '^NO_EXISTENT_ROOT_LAMW_PARENT=' $LAMW_MANAGER_LOCAL_CONFIG_PATH | awk -F'=' '{ print $NF }')"
 		if [ "$current_no_existent_root_parent" != "" ]; then
-			NO_EXISTENT_ROOT_LAMW_PARENT=$current_parent
+			NO_EXISTENT_ROOT_LAMW_PARENT=$current_no_existent_root_parent
 			LAMW_MANAGER_ENV+=(NO_EXISTENT_ROOT_LAMW_PARENT=$NO_EXISTENT_ROOT_LAMW_PARENT)
 		fi
 	fi

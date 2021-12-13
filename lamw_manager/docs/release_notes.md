@@ -3,13 +3,18 @@
 
 This page contains information about new features and bug fixes.
 
+v0.4.3.1 - Dec 13, 2021
+---
+**Fixes**
++	Get Current *\*$ROOT_LAMW_PARENT*
+
 v0.4.3 - Dec 11, 2021
 ---
 **Fixes**
 +	Fixed: Fix wrong permissions in *\$ROOT_LAMW* parent directory
 
 **News**
-+	The moduleThe [*api*](https://github.com/dosza/LAMWManager-linux/tree/v0.4.1/lamw_manager/core/installer/api.sh)<br/>has been upgrated to get path of LAMW Packages *\*.lpk*
++	The module [*api.sh*](https://github.com/dosza/LAMWManager-linux/tree/v0.4.3/lamw_manager/core/installer/api.sh)<br/>has been upgrated to get path of LAMW Packages *\*.lpk*
 
 v0.4.2.2 - Dec 2, 2021
 ---
@@ -21,7 +26,7 @@ v0.4.2.1 - Nov 15, 2021
 ---
 **News**
 +	Stop Gradle before to run *lamw_manager*
-+   Move setRootLAMW, getRootLAMW to new module [RootLAMW Settings Editor](https://github.com/dosza/LAMWManager-linux/tree/v0.4.2/lamw_manager/core/settings-editor/root-lamw-settings-editor.sh)
++   Move setRootLAMW, getRootLAMW to new module [*Root LAMW Settings Editor*](https://github.com/dosza/LAMWManager-linux/tree/v0.4.2/lamw_manager/core/settings-editor/root-lamw-settings-editor.sh)
 +	LAMW Manager Setup now prioritizes PKEXEC (if supported) for administrative privileges
 
 
