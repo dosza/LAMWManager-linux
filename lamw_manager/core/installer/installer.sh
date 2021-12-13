@@ -183,6 +183,7 @@ getFPCStable(){
 				[ -e $LAMW4LINUX_HOME/usr/usr ] && mv $LAMW4LINUX_HOME/usr/usr/ $LAMW4LINUX_HOME/usr/local
 				rm data.tar.xz
 			fi
+			rm "$FPC_DEB"
 		fi
 		export PPC_CONFIG_PATH=$FPC_LIB_PATH
 
