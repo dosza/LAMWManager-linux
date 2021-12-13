@@ -42,7 +42,6 @@ LAMWPackageManager(){
 
 		for gradle in ${OLD_GRADLE[*]}; do
 			if [ -e "$gradle" ]; then
-				./$gradle/bin/gradle --stop
 				rm -rf $gradle 
 			fi
 		done
@@ -217,10 +216,10 @@ getLazarusSources(){
 #GET LAMW FrameWork
 getLAMWFramework(){
 	changeDirectory $ROOT_LAMW
-	[  -e "$ROOT_LAMW/lazandroidmodulewizard.git" ] && [ -e "$ROOT_LAMW/lazandroidmodulewizard" ] && 
-		rm -rf "$ROOT_LAMW/lazandroidmodulewizard.git" && rm -rf "$ROOT_LAMW/lazandroidmodulewizard"
+	[  -e "${LAMW_FRAMEWORK_HOME}.git" ] && [ -e "${LAMW_FRAMEWORK_HOME}" ] && 
+		rm -rf "${LAMW_FRAMEWORK_HOME}.git" && rm -rf "${LAMW_FRAMEWORK_HOME}"
 
-	getFromGit "$LAMW_SRC_LNK" "$ROOT_LAMW/lazandroidmodulewizard"
+	getFromGit "$LAMW_SRC_LNK" "$LAMW_FRAMEWORK_HOME"
 }
 
 

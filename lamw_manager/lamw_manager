@@ -23,8 +23,7 @@ export LAMW_MANAGER_ENV=(LAMW_USER=$USER LAMW_USER_HOME=$HOME LAMW_MANAGER_LOCK=
 if [ -e "$PWD/$LAMW_MGR_INSTALL" ]; then
 	export LAMW_MGR_CORE="$PWD"
 else
-	export LAMW_MGR_CORE=$0
-	export LAMW_MGR_CORE=${LAMW_MGR_CORE%/lamw_manager*} 
+	export LAMW_MGR_CORE="$(realpath $(dirname $0))"
 fi
 
 export LAMW_MGR_INSTALL="$LAMW_MGR_CORE/$LAMW_MGR_INSTALL"
