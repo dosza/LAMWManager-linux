@@ -79,7 +79,10 @@ changeOwnerAllLAMW(){
 			"$LAMW_MANAGER_LOCAL_CONFIG_DIR"
 				
 		#	
-		)		
+		)
+		if [ "$NO_EXISTENT_ROOT_LAMW_PARENT" != "" ]; then
+			files_chown[1]="$NO_EXISTENT_ROOT_LAMW_PARENT"
+		fi		
 	fi
 	echo "Restoring directories ..."
 	for ((i=0;i<${#files_chown[*]};i++))
