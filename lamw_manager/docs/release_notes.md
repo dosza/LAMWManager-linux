@@ -4,9 +4,9 @@ This page contains information about new features and bug fixes.
 v0.4.0.6 - Dec 13, 2021
 ---
 **Fixes**
-+	Backported from [*v0.4.3*](https://github.com/dosza/LAMWManager-linux/tree/v0.4.3)
++	**Backported from v0.4.3**
 	+	Fixed: Fix wrong permissions in \*/$ROOT_LAMW parent directory
-+	Backport from [v0.4.2*](https://github.com/dosza/LAMWManager-linux/tree/v0.4.2.2)
++	**Backported from v0.4.2**
 	+	Fix get realpath *\*$LAMW_MGR_CORE*
 + 	Fixed [*Getting Started.txt*](https://github.com/dosza/LAMWManager-linux/tree/v0.4.0/Getting%20Started.txt)
 
