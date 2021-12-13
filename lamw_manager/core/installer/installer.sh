@@ -2,7 +2,7 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.4.3.1
+#Version: 0.4.4
 #Date: 12/13/2021
 #Description: "installer.sh" is part of the core of LAMW Manager. Contains routines for installing LAMW development environment
 #-------------------------------------------------------------------------------------------------#

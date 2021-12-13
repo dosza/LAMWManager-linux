@@ -2,7 +2,7 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (mater-alma)
 #Course: Science Computer
-#Version: 0.4.3.1
+#Version: 0.4.4
 #Date: 12/13/2021
 #Description: The "lamw-manager-settings-editor.sh" is part of the core of LAMW Manager. Responsible for managing LAMW Manager / LAMW configuration files..
 #-----------------------------------------------------------------------f--------------------------#
