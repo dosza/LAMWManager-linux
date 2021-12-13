@@ -4,7 +4,7 @@ How to use LAMW Manager:
 	To install LAMW, Run command:
 		./lamw_manager
 
-	To update LAMW Run comand:
+	To update LAMW Run command:
 		./lamw_manager
 
 	Install LAMW in the custom directory (use this command in first install, replace dir, to absolute PATH of your preference, sample: /opt/LAMW)
