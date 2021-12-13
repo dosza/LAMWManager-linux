@@ -2,13 +2,13 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.4.0.3
-#Date: 07/29/2021
+#Version: 0.4.0.6
+#Date: 12/13/2021
 #Description: The "lamw_headers" is part of the core of LAMW Manager. This script contains LAMW Manager variables.
 #-------------------------------------------------------------------------------------------------#
 #						Section Version 
 #------------------------------------------------------------------------------------------
-LAMW_INSTALL_VERSION="0.4.0.5"
+LAMW_INSTALL_VERSION="0.4.0.6"
 JDK_VERSION=8
 ANT_VERSION_STABLE='1.10.11'
 CMD_SDK_TOOLS_VERSION="7302050"
@@ -44,7 +44,7 @@ OLD_LAZARUS_STABLE_VERSION=(
 )
 
 OLD_LAMW_INSTALL_VERSION=(
-	0.4.0{.{4..1},}
+	0.4.0{.{5..1},}
 	0.3.6{.{2,1},}
 	0.3.{5,4}{r1,}
 	"0.3.3r2"
