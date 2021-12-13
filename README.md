@@ -70,7 +70,7 @@ By default LAMW Manager uses (Android) Crosscompile to **ARMv7+vFPV3**, but [*LA
 
 #### Error on set *onClick Method* in fist LAMW Project in Lazarus Trunk ####
 
-In Lazarus versions > 2.0.12 it fails when trying to insert onClick method in LAMW projects.
+In Lazarus versions > 2.0.12 it fails when trying to insert onClick method in first LAMW project..
 1) Close LAMW4Linux
 2) Reopen the LAMW project
 3) Delete the Button (or component) from the form
