@@ -102,51 +102,63 @@ getJDK(){
 	fi
 }
 
+gitCheckout(){
+	if [ -e "$git_src_dir" ]; then
+		changeDirectory "$git_src_dir" 
+		git_param=(checkout $git_branch )
+		git ${git_param[*]}
+	fi
+	
+
+}
+
+GitClone(){
+	local git_param=(clone "$git_src_url" $git_src_dir)
+	git ${git_param[@]}
+		
+	if [ $? != 0 ]; then 
+		git ${git_param[@]}
+		check_error_and_exit "possible network instability!! Try later!"
+	fi
+
+	[ "$git_branch" != "" ] && gitCheckout
+}
+
+
+GitPull(){
+	local git_param=(pull)
+	if [ "$git_branch" != "" ]; then 
+		gitCheckout
+	else 
+		changeDirectory "$git_src_dir"
+	fi
+	git config pull.ff only
+	git ${git_param[@]}
+	GitReset
+}
+GitReset(){
+if [ $? != 0 ]; then
+	local git_reset_param=(reset --hard)
+	git ${git_reset_param[@]}
+	git ${git_param[@]}
+	if [ $? != 0 ]; then
+		changeDirectory .. 
+		rm -rf $git_src_dir
+		echo "possible network instability!! Try later!"
+		exit 1
+	fi
+fi
+}
 getFromGit(){
 	local git_src_url="$1"
 	local git_src_dir="$2"
 	local git_branch="$3"
 
-	if [ ! -e "$git_src_dir" ]; then 
-		
-		if [ $#  = 2 ]; then 
-			local git_param=(clone "$git_src_url" $git_src_dir)
-		else 
-			if [ $# = 3 ]; then
-				local git_param=(clone "$git_src_url" -b "$git_branch" "$git_src_dir" )
-			fi
-		fi
-		git ${git_param[@]}
-		
-		if [ $? != 0 ]; then 
-			git ${git_param[@]}
-			check_error_and_exit "possible network instability!! Try later!"
-		fi
-		
 
+	if [ ! -e "$git_src_dir" ]; then
+		GitClone
 	else
-		
-		if [ $# -lt 3 ]; then 
-			local git_param=(pull)
-		else 
-			local git_param=(pull origin $git_branch )
-		fi
-
-		changeDirectory "$git_src_dir"
-		git config pull.ff only
-
-		git ${git_param[@]}
-		if [ $? != 0 ]; then
-			local git_reset_param=(reset --hard)
-			git ${git_reset_param[@]}
-			git ${git_param[@]}
-			if [ $? != 0 ]; then
-				changeDirectory .. 
-				rm -rf $git_src_dir
-				echo "possible network instability!! Try later!"
-				exit 1
-			fi
-		fi
+		GitPull
 	fi
 }
 
@@ -211,7 +223,7 @@ getFPCSourcesTrunk(){
 #get Lazarus Sources
 getLazarusSources(){
 	changeDirectory $LAMW4LINUX_HOME
-	getFromGit "$LAZARUS_STABLE_SRC_LNK" "$LAZARUS_STABLE"
+	getFromGit "$LAZARUS_STABLE_SRC_LNK"  "$LAZARUS_STABLE" $LAZARUS_STABLE_TAG
 }
 
 #GET LAMW FrameWork

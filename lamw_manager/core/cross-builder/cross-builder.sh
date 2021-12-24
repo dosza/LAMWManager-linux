@@ -26,12 +26,9 @@ parseFPCTrunk(){
 buildFPCTrunk(){
 	if [ -e "$FPC_TRUNK_SOURCE_PATH" ]; then
 		changeDirectory "$FPC_TRUNK_SOURCE_PATH/$FPC_TRUNK_SVNTAG"
-		make clean all zipinstall "PP=$FPC_LIB_PATH/ppcx64"
+		make clean all install "PP=$FPC_LIB_PATH/ppcx64" INSTALL_PREFIX="$LAMW4LINUX_HOME/usr"
 		check_error_and_exit "${VERMELHO}Fatal Error: Falls build FPC to x86_64-linux${NORMAL}" 
-		changeDirectory "$LAMW4LINUX_HOME/usr"
-		echo "$FPC_INSTALL_TRUNK_ZIP";
-		tar -zxvf "$FPC_INSTALL_TRUNK_ZIP"	
-		[  -e "$FPC_INSTALL_TRUNK_ZIP" ] && rm "$FPC_INSTALL_TRUNK_ZIP"
+
 	fi
 }
 
