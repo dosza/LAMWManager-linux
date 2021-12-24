@@ -1,6 +1,11 @@
 # LAMW Manager Release Notes
 This page contains information about new features and bug fixes.
 
+v0.4.0.7 - Dec 24, 2021
+---
+**Fixes**
++	Dowgrade of Lazarus to version 2.0.12
+
 v0.4.0.6 - Dec 13, 2021
 ---
 **Fixes**
