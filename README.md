@@ -21,19 +21,30 @@ LAMW Manager install the following [dependencies] tools:
 ---
 +	Gradle
 +	Freepascal Compiler
-+	Lazarus IDE Sources
-+	Android NDK
-+	Android SDK
-+	OpenJDK
-+	Build Freepascal:
 	+	Crosscompile to ARMv7-vFPV3/android
 	+ 	Crosscompile to AARCH64/android
 	+	**New:** Crosscompile to **i386/android**
 	+	**New:** Crosscompile to **amd64/android**
-+	Build Lazarus IDE
++	Lazarus IDE
++	Android NDK
++	Android SDK
+	+	Android Platform API¹
+	+	Android Platform Tools¹
+	+ 	Android Build Tools
+	+	Android Extras
+		+	Android M2Repository
+		+	Android APK Expansion
+		+	Android Market License (Client Library)
+		+	Google Play Services
++	OpenJDK
 +	LAMW framework
-+	Create launcher to menu
++	Create **LAMW4Linux launcher**² on Menu
 +	Register **MIME**
+
+
+**Notes**
+1. The minimum Android API and Build Tools required by LAMW and specified in [*package.json*](https://github.com/jmpessoa/lazandroidmodulewizard/blob/master/package.json) are installed 
+2. Look for LAMW4Linux on Menu or use *startlamw4linux* command
 
 Getting Started!!
 ---
