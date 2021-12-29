@@ -59,7 +59,7 @@
        </pre>
 </p>
 
-### PROXY OPTIONS ####
+#### PROXY OPTIONS ####
 <p>
        <pre>
               ./lamw_manager  [ACTIONS]||[OPTIONS]  <strong>--use-proxy</strong>  <strong>--server</strong> [HOST] <strong>--port</strong>
