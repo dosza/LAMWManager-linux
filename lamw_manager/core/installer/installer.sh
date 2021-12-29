@@ -52,6 +52,13 @@ LAMWPackageManager(){
 		for old_fpc_stable in ${OLD_FPC_STABLE[*]}; do 
 			[ -e $old_fpc_stable ] && rm -rf $old_fpc_stable
 		done
+
+		#check and remove old  ppcx64 compiler (bootstrap)
+		if [ -e $LAMW4LINUX_HOME/usr/local/bin/ppcx64 ]; then 
+			local fpc_version=${FPC_DEB_VERSION%\-*}
+			$LAMW4LINUX_HOME/usr/local/bin/ppcx64 -help | grep "^Free Pascal Compiler version $fpc_version" > /dev/null
+			[ $? != 0 ] && rm  "$LAMW4LINUX_HOME/usr/local/bin/ppcx64"
+		fi
 	fi
 
 }
@@ -160,24 +167,26 @@ getFromGit(){
 
 
 
-getFPCStable(){
+getFPCBuilder(){
+	local fpc_deb=${FPC_DEB_VERSION%\-*}
 	if [ ! -e "$LAMW4LINUX_HOME/usr" ]; then 
 		mkdir -p "$LAMW4LINUX_HOME/usr"
 	fi
 
 	cd "$LAMW4LINUX_HOME/usr"
-	if  [ ! -e "$FPC_LIB_PATH" ]; then
+	if  [ ! -e "$FPC_LIB_PATH/ppcx64" ]; then
 
 		getCompressFile "$FPC_DEB_LINK" "$FPC_DEB" "ar x $FPC_DEB data.tar.xz"
+		
 		if [ -e data.tar.xz ]; then 
-			tar -xf data.tar.xz 
+			tar -xf data.tar.xz ./usr/lib/fpc/${fpc_deb}/ppcx64
 			rm -rf $LAMW4LINUX_HOME/usr/local
 			[ -e $LAMW4LINUX_HOME/usr/usr ] && mv $LAMW4LINUX_HOME/usr/usr/ $LAMW4LINUX_HOME/usr/local
+			[ ! -e  $LAMW4LINUX_HOME/usr/local/bin ] && mkdir -p ${LAMW4LINUX_HOME}/usr/local/bin
+			mv "$LAMW4LINUX_HOME/usr/local/lib/fpc/$fpc_deb/ppcx64" "$LAMW4LINUX_HOME/usr/local/bin"
+			rm $LAMW4LINUX_HOME/usr/local/lib/fpc -rf
 			rm data.tar.xz
 		fi
-		export PPC_CONFIG_PATH=$FPC_LIB_PATH
-
-		$FPC_MKCFG_EXE -d basepath=$FPC_LIB_PATH -o $FPC_LIB_PATH/fpc.cfg;
 	fi
 }
 
@@ -292,7 +301,7 @@ runSDKManagerLicenses(){
 
 runSDKManager(){
 	local sdk_manager_cmd="$CMD_SDK_TOOLS_DIR/latest/bin/sdkmanager"
-	if [ $FORCE_YES = 1 ]; then 
+	if [ $force_yes = 1 ]; then 
 		yes | $sdk_manager_cmd $*
 
 		if [ $? != 0 ]; then
@@ -312,7 +321,7 @@ runSDKManager(){
 
 getAndroidAPIS(){
 	
-	FORCE_YES=1
+	local force_yes=1
 	changeDirectory $ANDROID_HOME
 	runSDKManagerLicenses
 	
@@ -323,7 +332,7 @@ getAndroidAPIS(){
 			
 			if [ $i = 0 ]; then 
 				runSDKManager ${SDK_MANAGER_CMD_PARAMETERS[i]} # instala sdk sem intervenção humana 
-				FORCE_YES=0
+				force_yes=0
 			else
 				runSDKManager ${SDK_MANAGER_CMD_PARAMETERS[i]} 
 			fi
@@ -331,8 +340,6 @@ getAndroidAPIS(){
 	else 
 		runSDKManager $*
 	fi
-
-	unset FORCE_YES
 }
 
 
@@ -546,7 +553,7 @@ mainInstall(){
 	getAndroidCmdLineTools
 	disableTrapActions
 	getAndroidAPIS 
-	getFPCStable
+	getFPCBuilder
 	getFPCSourcesTrunk
 	getLazarusSources
 	getLAMWFramework
