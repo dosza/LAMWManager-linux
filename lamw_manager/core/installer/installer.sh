@@ -104,61 +104,60 @@ getJDK(){
 	fi
 }
 
+GitReset(){
+if [ $? != 0 ]; then
+	git reset --hard
+	if [ $? != 0 ]; then
+		changeDirectory .. 
+		rm -rf $git_src_dir
+		echo "possible network instability!! Try later!"
+		exit 1
+	fi
+fi
+}
+
+gitCheckout(){
+	if [ -e "$git_src_dir" ]; then
+		changeDirectory "$git_src_dir" 
+		git checkout $git_branch
+	fi
+}
+
+GitClone(){
+	git clone "$git_src_url" $git_src_dir
+		
+	if [ $? != 0 ]; then 
+		git clone "$git_src_url" $git_src_dir
+		check_error_and_exit "possible network instability!! Try later!"
+	fi
+
+	[ "$git_branch" != "" ] && gitCheckout
+}
+
+
+GitPull(){
+	if [ "$git_branch" != "" ]; then 
+		gitCheckout
+	else 
+		changeDirectory "$git_src_dir"
+	fi
+	git config pull.ff only
+	git pull
+	GitReset
+}
+
 getFromGit(){
 	local git_src_url="$1"
 	local git_src_dir="$2"
 	local git_branch="$3"
 
-	if [ ! -e "$git_src_dir" ]; then 
-		if [ $# -lt 3 ]; then 
-			local git_param=(clone "$git_src_url")
-		else 
-			local git_param=(clone "$git_src_url" -b "$git_branch" "$git_src_dir" )
-		fi
-		git ${git_param[@]}
-		if [ $? != 0 ]; then 
-			git ${git_param[@]}
-			check_error_and_exit "possible network instability!! Try later!"
-		fi
+	if [ ! -e "$git_src_dir" ]; then
+		GitClone
 	else
-		if [ $# -lt 3 ]; then 
-			local git_param=(pull)
-		else 
-			local git_param=(pull origin $git_branch )
-		fi
-		changeDirectory "$git_src_dir"
-		git config pull.ff only
-
-		git ${git_param[@]}
-		if [ $? != 0 ]; then
-		local git_reset_param=(reset --hard)
-			git ${git_reset_param[@]}
-			git ${git_param[@]}
-			if [ $? != 0 ]; then
-				changeDirectory .. 
-				rm -rf $git_src_dir
-				echo "possible network instability!! Try later!"
-				exit 1
-			fi
-		fi
+		GitPull
 	fi
 }
 
-
-getFromSVN(){
-	local svn_src_url="$1"
-	local svn_src_dir="$2"
-
-	svn checkout "$svn_src_url" --force
-	if [ $? != 0 ]; then
-		svn cleanup "$svn_src_dir"
-		svn checkout "$svn_src_url" --force
-		if [ $? != 0 ]; then 
-			svn cleanup "$svn_src_dir"
-			[ $? != 0 ] && rm -rf "$svn_src_dir" && echo "possible network instability! Try later!" && exit 1
-		fi
-	fi
-}
 
 
 getFPCStable(){
