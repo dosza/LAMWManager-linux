@@ -3,6 +3,11 @@
 
 This page contains information about new features and bug fixes.
 
+v0.4.4 - Dec 31, 2021
+---
+**Fixes**
++	Remove unnecessary files to fpc builder (*bootstrap*)
+
 v0.4.3.1 - Dec 13, 2021
 ---
 **Fixes**
