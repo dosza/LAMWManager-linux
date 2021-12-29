@@ -8,6 +8,9 @@ v0.4.4 - Dec 31, 2021
 **Fixes**
 +	Remove unnecessary files to fpc builder (*bootstrap*)
 
+**News**
++	Module [*api.sh*](https://github.com/dosza/LAMWManager-linux/tree/v0.4.3/lamw_manager/core/installer/api.sh) has renamed to [*services.sh*](https://github.com/dosza/LAMWManager-linux/tree/v0.4.4/lamw_manager/core/installer/services.sh)
+
 v0.4.3.1 - Dec 13, 2021
 ---
 **Fixes**
