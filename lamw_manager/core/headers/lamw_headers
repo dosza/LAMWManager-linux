@@ -19,7 +19,7 @@ CMD_SDK_TOOLS_VERSION_STR="4.0"
 LAZARUS_STABLE_VERSION="2.0.12"
 FPC_TRUNK_VERSION="3.2.2"
 FPC_LAZ_DEB_VERSION="2.0.12"
-FPC_DEB_VERSION="3.2.0-1"	
+FPC_DEB_VERSION="3.2.0-1"
 FPC_TRUNK_SVNTAG="release_${FPC_TRUNK_VERSION//\./_}"
 LAZARUS_STABLE="lazarus_"${LAZARUS_STABLE_VERSION//\./_} #expansão que remove todos '.' por _, obs '\.' barra invertida escapa '.'
 
@@ -40,8 +40,8 @@ OLD_FPC_SOURCES=(
 )
 
 OLD_FPC_STABLE=(
-	$LAMW4LINUX_HOME/usr/local/lib/fpc/3.0.4
-	$LAMW4LINUX_HOME/usr/lib/fpc/$FPC_VERSION
+	$LAMW4LINUX_HOME/usr/local/lib/fpc/{3.0.4,3.2.0}
+	$LAMW4LINUX_HOME/usr/lib/fpc/3.2.0
 )
 
 OLD_LAZARUS_STABLE_VERSION=(
@@ -51,7 +51,7 @@ OLD_LAZARUS_STABLE_VERSION=(
 )
 
 OLD_LAMW_INSTALL_VERSION=(
-	0.4.3{{.1},}
+	0.4.3{.1,}
 	0.4.2{.{2..1},}
 	0.4.1{.{6..1},}
 	0.4.0{.{9..1},}
@@ -111,8 +111,8 @@ OLD_FPC_CFG_PATH="$LAMW_USER_HOME/.fpc.cfg"
 OLD_JAVA_HOME="$ROOT_LAMW/jdk/zulu-8"
 
 FPC_CFG_PATH="$LAMW_USER_HOME/.fpc.cfg"
-FPC_LIB_PATH="$LAMW4LINUX_HOME/usr/local/lib/fpc/${FPC_DEB_VERSION//\-*}"
-FPC_MKCFG_EXE="$LAMW4LINUX_HOME/usr/local/bin/fpcmkcfg"
+FPC_LIB_PATH="$LAMW4LINUX_HOME/usr/local/bin"
+FPC_MKCFG_EXE="$LAMW4LINUX_HOME/usr/bin/fpcmkcfg"
 
 FPC_DEB="fpc-laz_${FPC_DEB_VERSION}_amd64.deb"
 
