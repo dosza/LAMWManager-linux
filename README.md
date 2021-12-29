@@ -4,7 +4,6 @@
 
 LAMW Manager is a command line tool,like *APT*, to automate the **installation**, **configuration** and **upgrade**<br/>the framework [LAMW - Lazarus Android Module Wizard](https://github.com/jmpessoa/lazandroidmodulewizard)
 
-Windows user, please, get here [*LAMW Manager for Windows*](https://github.com/dosza/LAMWManager-win)
 
 What do you get?
 ---
