@@ -241,7 +241,7 @@ LAMW4LinuxPostConfig(){
 		"if [ \"\$XDG_CURRENT_DESKTOP\" = \"XFCE\" ] && [ \"\$DESKTOP_SESSION\" = \"XFCE\" ]; then"
 		"	export XDG_CURRENT_DESKTOP=Gnome"
 		"	export DESKTOP_SESSION=xubuntu"
-		fi
+		"fi"
 		"exec \$LAMW4LINUX_EXE_PATH --pcp=\$LAMW4_LINUX_PATH_CFG \$*"
 	)
 
