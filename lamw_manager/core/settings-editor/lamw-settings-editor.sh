@@ -611,7 +611,7 @@ createLazarusEnvCfgFile(){
 		"		<TestBuildDirectory Value=\"/tmp\">"
 		"		</TestBuildDirectory>"
 		"		<FppkgConfigFile Value=\"${FPPKG_TRUNK_CFG_PATH}\"/>"
-		'    	<Debugger Class="TGDBMIDebugger">'
+		'		<Debugger Class="TGDBMIDebugger">'
 		'			<Configs>'
 		'				<Config ConfigName="FpDebug" ConfigClass="TFpDebugDebugger" Active="True"/>'
 		"				<Config ConfigName=\"Gdb\" ConfigClass=\"TGDBMIDebugger\" DebuggerFilename=\"$(which gdb)\"/>"
