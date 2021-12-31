@@ -238,6 +238,10 @@ LAMW4LinuxPostConfig(){
 		"	\${zenity_exec} --title \"\${zenity_title}\" --notification --width 480 --text \"\${zenity_message}\""
 		"	cp \${OLD_LAMW4LINUX_EXE_PATH} \${LAMW4LINUX_EXE_PATH}" 
 		"fi"
+		"if [ \"\$XDG_CURRENT_DESKTOP\" = \"XFCE\" ] && [ \"\$DESKTOP_SESSION\" = \"XFCE\" ]; then"
+		"	export XDG_CURRENT_DESKTOP=Gnome"
+		"	export DESKTOP_SESSION=xubuntu"
+		fi
 		"exec \$LAMW4LINUX_EXE_PATH --pcp=\$LAMW4_LINUX_PATH_CFG \$*"
 	)
 
