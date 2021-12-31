@@ -72,9 +72,18 @@ getStatusInstalation(){
 }
 
 
+checkNeedXfceMitigation(){
+	[ $NEED_XFCE_MITIGATION = 1 ] && return 
+	
+	if [ "$LAMW_USER_XDG_CURRENT_DESKTOP" = "XFCE" ] && [ "$LAMW_USER_DESKTOP_SESSION" = "XFCE" ]; then
+		NEED_XFCE_MITIGATION=1
+		PROG_TOOLS+=" gnome-terminal"
+	fi
+}
 #install deps
 installDependences(){
 	getCurrentDebianFrontend
+	checkNeedXfceMitigation
 	AptInstall $LIBS_ANDROID $PROG_TOOLS
 		
 }
