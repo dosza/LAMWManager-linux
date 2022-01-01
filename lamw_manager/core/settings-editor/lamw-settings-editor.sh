@@ -212,6 +212,7 @@ LAMW4LinuxPostConfig(){
 		"LAMW_MANAGER_PATH=$LAMW_MANAGER_PATH"
 		"LAMW4LINUX_EXE_PATH=$LAMW4LINUX_EXE_PATH"
 		"OLD_LAMW4LINUX_EXE_PATH=${LAMW4LINUX_EXE_PATH}.old"
+		"IGNORE_XFCE_LAMW_ERROR_PATH=$IGNORE_XFCE_LAMW_ERROR_PATH"
 	)
 
 	local startlamw4linux_str=(
@@ -239,7 +240,7 @@ LAMW4LinuxPostConfig(){
 		"	cp \${OLD_LAMW4LINUX_EXE_PATH} \${LAMW4LINUX_EXE_PATH}" 
 		"fi"
 
-		"if [ \"\${XDG_CURRENT_DESKTOP^^}\" = \"XFCE\" ] && [ \"\${DESKTOP_SESSION^^}\" = \"XFCE\" ]; then"
+		"if [ ! -e \"\$IGNORE_XFCE_LAMW_ERROR_PATH\" ] && [ \"\${XDG_CURRENT_DESKTOP^^}\" = \"XFCE\" ] && [ \"\${DESKTOP_SESSION^^}\" = \"XFCE\" ]; then"
 		"	export XDG_CURRENT_DESKTOP=Gnome"
 		"	export DESKTOP_SESSION=xubuntu"
 		"fi"
