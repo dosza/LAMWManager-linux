@@ -99,8 +99,8 @@
               2 If the LAMW4Linux launcher does not appear in the  start  menu, simply restart 
        the user session.
               3 You can launch LAMW4Linux with command: <em>startlamw4linux</em>. 
-              4 Cannot launch lazarus with XFCE ( bug in xfce mitigation), you need create file <strong>\$ROOT_LAMW/lamw4linux/etc/lamw-xfce-error.conf</strong>
-              <strong>Note: $ROOT_LAMW</strong> is LAMW installed path (default ~/LAMW or path setting in <strong>\$LOCAL_ROOT_LAMW</strong>)
+              4 Cannot launch lazarus with XFCE ( bug in xfce mitigation), you need create file <strong>$ROOT_LAMW/lamw4linux/etc/lamw-xfce-error.conf</strong>
+              <strong>Note: $ROOT_LAMW</strong> is LAMW installed path (default ~/LAMW or path setting in <strong>$LOCAL_ROOT_LAMW</strong>)
               Restart your session!
        </pre>
 </p>
