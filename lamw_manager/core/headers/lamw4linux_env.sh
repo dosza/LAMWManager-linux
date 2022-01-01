@@ -2,7 +2,7 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.4.3.1
+#Version: 0.4.4
 #Date: 12/13/2021
 #Description: The "lamw_headers" is part of the core of LAMW Manager. This script contains LAMW Manager variables.
 #-------------------------------------------------------------------------------------------------#
@@ -10,6 +10,7 @@ LAMW4_LINUX_PATH_CFG="$LAMW_USER_HOME/.lamw4linux"
 LAMW4LINUX_HOME="$ROOT_LAMW/lamw4linux"
 LAMW4LINUX_ETC="$LAMW4LINUX_HOME/etc"
 LAMW4LINUX_LOCAL_ENV="$LAMW4LINUX_ETC/environment"
+IGNORE_XFCE_LAMW_ERROR_PATH="$LAMW4LINUX_ETC/lamw-xfce-error.conf"
 LAMW_WORKSPACE_HOME="$LAMW_USER_HOME/Dev/LAMWProjects"  #path to lamw_workspace
 LAMW_MENU_ITEM_PATH="$LAMW_USER_HOME/.local/share/applications/lamw4linux.desktop"
 FPPKG_LOCAL_REPOSITORY="$LAMW4LINUX_HOME/.fppkg/config"
@@ -25,3 +26,4 @@ MAGIC_TRAP_INDEX=-1
 
 USE_PROXY=0
 TIME_WAIT=2
+NEED_XFCE_MITIGATION=0

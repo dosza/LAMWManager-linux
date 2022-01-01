@@ -2,7 +2,7 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.4.3.1
+#Version: 0.4.4
 #Date: 12/13/2021
 #Description: "installer.sh" is part of the core of LAMW Manager. Contains routines for installing LAMW development environment
 #-------------------------------------------------------------------------------------------------#
@@ -52,6 +52,13 @@ LAMWPackageManager(){
 		for old_fpc_stable in ${OLD_FPC_STABLE[*]}; do 
 			[ -e $old_fpc_stable ] && rm -rf $old_fpc_stable
 		done
+
+		#check and remove old  ppcx64 compiler (bootstrap)
+		if [ -e $LAMW4LINUX_HOME/usr/local/bin/ppcx64 ]; then 
+			local fpc_version=${FPC_DEB_VERSION%\-*}
+			$LAMW4LINUX_HOME/usr/local/bin/ppcx64 -help | grep "^Free Pascal Compiler version $fpc_version" > /dev/null
+			[ $? != 0 ] && rm  "$LAMW4LINUX_HOME/usr/local/bin/ppcx64"
+		fi
 	fi
 
 }
@@ -65,9 +72,18 @@ getStatusInstalation(){
 }
 
 
+checkNeedXfceMitigation(){
+	[ $NEED_XFCE_MITIGATION = 1 ] && return 
+	
+	if [ "$LAMW_USER_XDG_CURRENT_DESKTOP" = "XFCE" ] && [ "$LAMW_USER_DESKTOP_SESSION" = "XFCE" ]; then
+		NEED_XFCE_MITIGATION=1
+		PROG_TOOLS+=" gnome-terminal"
+	fi
+}
 #install deps
 installDependences(){
 	getCurrentDebianFrontend
+	checkNeedXfceMitigation
 	AptInstall $LIBS_ANDROID $PROG_TOOLS
 		
 }
@@ -104,81 +120,82 @@ getJDK(){
 	fi
 }
 
+GitReset(){
+if [ $? != 0 ]; then
+	git reset --hard
+	if [ $? != 0 ]; then
+		changeDirectory .. 
+		rm -rf $git_src_dir
+		echo "possible network instability!! Try later!"
+		exit 1
+	fi
+fi
+}
+
+gitCheckout(){
+	if [ -e "$git_src_dir" ]; then
+		changeDirectory "$git_src_dir" 
+		git checkout $git_branch
+	fi
+}
+
+GitClone(){
+	git clone "$git_src_url" $git_src_dir
+		
+	if [ $? != 0 ]; then 
+		git clone "$git_src_url" $git_src_dir
+		check_error_and_exit "possible network instability!! Try later!"
+	fi
+
+	[ "$git_branch" != "" ] && gitCheckout
+}
+
+
+GitPull(){
+	if [ "$git_branch" != "" ]; then 
+		gitCheckout
+	else 
+		changeDirectory "$git_src_dir"
+	fi
+	git config pull.ff only
+	git pull
+	GitReset
+}
+
 getFromGit(){
 	local git_src_url="$1"
 	local git_src_dir="$2"
 	local git_branch="$3"
 
-	if [ ! -e "$git_src_dir" ]; then 
-		if [ $# -lt 3 ]; then 
-			local git_param=(clone "$git_src_url")
-		else 
-			local git_param=(clone "$git_src_url" -b "$git_branch" "$git_src_dir" )
-		fi
-		git ${git_param[@]}
-		if [ $? != 0 ]; then 
-			git ${git_param[@]}
-			check_error_and_exit "possible network instability!! Try later!"
-		fi
+	if [ ! -e "$git_src_dir" ]; then
+		GitClone
 	else
-		if [ $# -lt 3 ]; then 
-			local git_param=(pull)
-		else 
-			local git_param=(pull origin $git_branch )
-		fi
-		changeDirectory "$git_src_dir"
-		git config pull.ff only
-
-		git ${git_param[@]}
-		if [ $? != 0 ]; then
-		local git_reset_param=(reset --hard)
-			git ${git_reset_param[@]}
-			git ${git_param[@]}
-			if [ $? != 0 ]; then
-				changeDirectory .. 
-				rm -rf $git_src_dir
-				echo "possible network instability!! Try later!"
-				exit 1
-			fi
-		fi
+		GitPull
 	fi
 }
 
 
-getFromSVN(){
-	local svn_src_url="$1"
-	local svn_src_dir="$2"
 
-	svn checkout "$svn_src_url" --force
-	if [ $? != 0 ]; then
-		svn cleanup "$svn_src_dir"
-		svn checkout "$svn_src_url" --force
-		if [ $? != 0 ]; then 
-			svn cleanup "$svn_src_dir"
-			[ $? != 0 ] && rm -rf "$svn_src_dir" && echo "possible network instability! Try later!" && exit 1
-		fi
-	fi
-}
-
-
-getFPCStable(){
+getFPCBuilder(){
+	local fpc_deb=${FPC_DEB_VERSION%\-*}
 	if [ ! -e "$LAMW4LINUX_HOME/usr" ]; then 
 		mkdir -p "$LAMW4LINUX_HOME/usr"
 	fi
 
 	cd "$LAMW4LINUX_HOME/usr"
-	if  [ ! -e "$FPC_LIB_PATH" ]; then
+	if  [ ! -e "$FPC_LIB_PATH/ppcx64" ]; then
 
 		getCompressFile "$FPC_DEB_LINK" "$FPC_DEB" "ar x $FPC_DEB data.tar.xz"
+		
 		if [ -e data.tar.xz ]; then 
-			tar -xf data.tar.xz 
+			tar -xf data.tar.xz ./usr/lib/fpc/${fpc_deb}/ppcx64
 			rm -rf $LAMW4LINUX_HOME/usr/local
 			[ -e $LAMW4LINUX_HOME/usr/usr ] && mv $LAMW4LINUX_HOME/usr/usr/ $LAMW4LINUX_HOME/usr/local
+			[ ! -e  $LAMW4LINUX_HOME/usr/local/bin ] && mkdir -p ${LAMW4LINUX_HOME}/usr/local/bin
+			mv "$LAMW4LINUX_HOME/usr/local/lib/fpc/$fpc_deb/ppcx64" "$LAMW4LINUX_HOME/usr/local/bin"
+			rm $LAMW4LINUX_HOME/usr/local/lib/fpc -rf
 			rm data.tar.xz
 		fi
-		export PPC_CONFIG_PATH=$FPC_LIB_PATH
-
-		$FPC_MKCFG_EXE -d basepath=$FPC_LIB_PATH -o $FPC_LIB_PATH/fpc.cfg;
 	fi
 }
 
@@ -293,7 +310,7 @@ runSDKManagerLicenses(){
 
 runSDKManager(){
 	local sdk_manager_cmd="$CMD_SDK_TOOLS_DIR/latest/bin/sdkmanager"
-	if [ $FORCE_YES = 1 ]; then 
+	if [ $force_yes = 1 ]; then 
 		yes | $sdk_manager_cmd $*
 
 		if [ $? != 0 ]; then
@@ -313,7 +330,7 @@ runSDKManager(){
 
 getAndroidAPIS(){
 	
-	FORCE_YES=1
+	local force_yes=1
 	changeDirectory $ANDROID_HOME
 	runSDKManagerLicenses
 	
@@ -324,7 +341,7 @@ getAndroidAPIS(){
 			
 			if [ $i = 0 ]; then 
 				runSDKManager ${SDK_MANAGER_CMD_PARAMETERS[i]} # instala sdk sem intervenção humana 
-				FORCE_YES=0
+				force_yes=0
 			else
 				runSDKManager ${SDK_MANAGER_CMD_PARAMETERS[i]} 
 			fi
@@ -332,8 +349,6 @@ getAndroidAPIS(){
 	else 
 		runSDKManager $*
 	fi
-
-	unset FORCE_YES
 }
 
 
@@ -547,7 +562,7 @@ mainInstall(){
 	getAndroidCmdLineTools
 	disableTrapActions
 	getAndroidAPIS 
-	getFPCStable
+	getFPCBuilder
 	getFPCSourcesTrunk
 	getLazarusSources
 	getLAMWFramework

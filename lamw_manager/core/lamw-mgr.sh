@@ -2,7 +2,7 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.4.3.1
+#Version: 0.4.4
 #Date: 12/13/2021
 #Description: The "lamw-install.sh" is part of the core of LAMW Manager. This script configures the development environment for LAMW
 #-------------------------------------------------------------------------------------------------#
@@ -15,7 +15,7 @@ LAMW_MANAGER_MODULES_PATH=${LAMW_MANAGER_MODULES_PATH%/lamw-mgr.sh*}
 #importando modulos de headers 
 
 source "$LAMW_MANAGER_MODULES_PATH/headers/.index"
-source "$LAMW_MANAGER_MODULES_PATH/installer/api.sh"
+source "$LAMW_MANAGER_MODULES_PATH/installer/services.sh"
 source "$LAMW_MANAGER_MODULES_PATH/installer/installer.sh"
 source "$LAMW_MANAGER_MODULES_PATH/settings-editor/lamw-settings-editor.sh"
 source "$LAMW_MANAGER_MODULES_PATH/settings-editor/root-lamw-settings-editor.sh"

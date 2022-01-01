@@ -1,5 +1,5 @@
 .\" Manpage for lamw_manager
-.TH lamw_manager 1 "2021 Jul 27 " "0.4.1" "LAMW manager man page"
+.TH lamw_manager 1 "2021 Dec  31" "0.4.4" "LAMW manager man page"
 .SH NAME
 lamw_manager -\ manager to LAMW framework
 .SH SINOPSIS
@@ -61,11 +61,17 @@ sample:
 .br
  ./lamw_manager \fBDEBUG=1\fR --reset
 .SH BUGS
-	¹	Fail! Folder /platforms is empty! Use command ./lamw_manager \fB\-\-reset-aapis\fR to fix this error.
+    1    Fail! Folder /platforms is empty! Use command ./lamw_manager \fB\-\-reset-aapis\fR to fix this error.
 .br
-	²	If the LAMW4Linux launcher does not appear in the start menu, simply restart the user session.
+    2    If the LAMW4Linux launcher does not appear in the start menu, simply restart the user session.
 .br
-	³	You can launch LAMW4Linux with command: \fBstartlamw4linux\fR .
+    3    You can launch LAMW4Linux with command: \fBstartlamw4linux\fR .
+.br
+    4    Cannot launch lazarus with XFCE ( bug in xfce mitigation), you need create file \fB$ROOT_LAMW/lamw4linux/etc/lamw-xfce-error.conf\fR 
+        \fBNote:\fR \fB$ROOT_LAMW\fR is LAMW installed path (default ~/LAMW or path setting in \fB$LOCAL_ROOT_LAMW\fR)
+        Restart your session!
+.br
+
 .SH AUTHOR
 Daniel Oliveira 
 
