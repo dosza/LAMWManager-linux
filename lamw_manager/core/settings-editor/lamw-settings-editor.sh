@@ -2,7 +2,7 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (mater-alma)
 #Course: Science Computer
-#Version: 0.4.3.1
+#Version: 0.4.4
 #Date: 12/13/2021
 #Description: The "lamw-manager-settings-editor.sh" is part of the core of LAMW Manager. Responsible for managing LAMW Manager / LAMW configuration files..
 #-----------------------------------------------------------------------f--------------------------#
@@ -212,6 +212,7 @@ LAMW4LinuxPostConfig(){
 		"LAMW_MANAGER_PATH=$LAMW_MANAGER_PATH"
 		"LAMW4LINUX_EXE_PATH=$LAMW4LINUX_EXE_PATH"
 		"OLD_LAMW4LINUX_EXE_PATH=${LAMW4LINUX_EXE_PATH}.old"
+		"IGNORE_XFCE_LAMW_ERROR_PATH=$IGNORE_XFCE_LAMW_ERROR_PATH"
 	)
 
 	local startlamw4linux_str=(
@@ -237,6 +238,11 @@ LAMW4LinuxPostConfig(){
 		"	zenity_title=\"Missing Lazarus\""
 		"	\${zenity_exec} --title \"\${zenity_title}\" --notification --width 480 --text \"\${zenity_message}\""
 		"	cp \${OLD_LAMW4LINUX_EXE_PATH} \${LAMW4LINUX_EXE_PATH}" 
+		"fi"
+
+		"if [ ! -e \"\$IGNORE_XFCE_LAMW_ERROR_PATH\" ] && [ \"\${XDG_CURRENT_DESKTOP^^}\" = \"XFCE\" ] && [ \"\${DESKTOP_SESSION^^}\" = \"XFCE\" ]; then"
+		"	export XDG_CURRENT_DESKTOP=Gnome"
+		"	export DESKTOP_SESSION=xubuntu"
 		"fi"
 		"exec \$LAMW4LINUX_EXE_PATH --pcp=\$LAMW4_LINUX_PATH_CFG \$*"
 	)
@@ -607,7 +613,7 @@ createLazarusEnvCfgFile(){
 		"		<TestBuildDirectory Value=\"/tmp\">"
 		"		</TestBuildDirectory>"
 		"		<FppkgConfigFile Value=\"${FPPKG_TRUNK_CFG_PATH}\"/>"
-		'    	<Debugger Class="TGDBMIDebugger">'
+		'		<Debugger Class="TGDBMIDebugger">'
 		'			<Configs>'
 		'				<Config ConfigName="FpDebug" ConfigClass="TFpDebugDebugger" Active="True"/>'
 		"				<Config ConfigName=\"Gdb\" ConfigClass=\"TGDBMIDebugger\" DebuggerFilename=\"$(which gdb)\"/>"

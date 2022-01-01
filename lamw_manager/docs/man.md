@@ -1,13 +1,13 @@
-**&nbsp;&nbsp;&nbsp;lamw_manager(1)&nbsp; 2021 Jul 27 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LAMW Manager man page&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lamw_manager(1)**
+**&nbsp;&nbsp;&nbsp;lamw_manager(1)&nbsp; 2021 Dec 31 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LAMW Manager man page&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lamw_manager(1)**
 
-**NAME**
+#### NAME ####
 <p>
        <pre>
               lamw_manager - manager to LAMW framework
        </pre>
 </p>
 
-**SINOPSIS**
+#### SINOPSIS ####
 <p>
        <pre>
               <strong>env LOCAL_ROOT_LAMW=[dir]</strong> ./lamw_manager  [<strong>ACTION</strong>] [<strong>OPTIONS</strong>]
@@ -20,7 +20,7 @@
        </pre>
 </p>
 
-**DESCRIPTION**
+#### DESCRIPTION ####
 
 <p>
        <pre>
@@ -29,7 +29,7 @@
        </pre>
 </p>
 
-**INSTALLING LAMW ON CUSTOM DIRECTORY**
+#### INSTALLING LAMW ON CUSTOM DIRECTORY #### 
 <p>
        <pre>
               To install LAMW environment on custom directory you need use 
@@ -40,14 +40,14 @@
 </p>
 
 
-**ACTIONS**
+#### ACTIONS ####
 
 <p>
        <pre>
               <strong>uninstall</strong>         Clean all LAMW</pre>
 </p>
 
-**OPTIONS**
+#### OPTIONS ####
 <p>
        <pre>
               <strong>--reset</strong>                  Clean and Install LAMW
@@ -59,7 +59,7 @@
        </pre>
 </p>
 
-**PROXY OPTIONS**
+#### PROXY OPTIONS ####
 <p>
        <pre>
               ./lamw_manager  [ACTIONS]||[OPTIONS]  <strong>--use-proxy</strong>  <strong>--server</strong> [HOST] <strong>--port</strong>
@@ -70,7 +70,7 @@
  </p>
 
 
-**Android SDK Manager**
+#### Android SDK Manager ####
 <p>
        <pre>
               ./lamw_manager  <strong>--sdkmanager</strong>    <strong>[ARGS]</strong>
@@ -80,7 +80,7 @@
  </p>
 
 
-**DEBUG**
+#### DEBUG ####
 <p>
        <pre>
               Use the <strong>DEBUG=1</strong> flag later in any position of ./lamw_manager (flag does 
@@ -91,7 +91,7 @@
        </pre>
 </p>
 
-**BUGS**
+#### BUGS ####
 
 <p>
        <pre>
@@ -99,10 +99,13 @@
               2 If the LAMW4Linux launcher does not appear in the  start  menu, simply restart 
        the user session.
               3 You can launch LAMW4Linux with command: <em>startlamw4linux</em>. 
+              4 Cannot launch lazarus with XFCE ( bug in xfce mitigation), you need create file <strong>$ROOT_LAMW/lamw4linux/etc/lamw-xfce-error.conf</strong>
+              <strong>Note: $ROOT_LAMW</strong> is LAMW installed path (default ~/LAMW or path setting in <strong>$LOCAL_ROOT_LAMW</strong>)
+              Restart your session!
        </pre>
 </p>
 
-**AUTHOR**
+#### AUTHOR ####
 <p>
        <pre>
               Daniel Oliveira Souza 
