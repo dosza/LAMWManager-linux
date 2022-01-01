@@ -10,7 +10,7 @@ v0.4.4 - Dec 31, 2021
 
 **News**
 +	Module [*api.sh*](https://github.com/dosza/LAMWManager-linux/tree/v0.4.3/lamw_manager/core/installer/api.sh) has renamed to [*services.sh*](https://github.com/dosza/LAMWManager-linux/tree/v0.4.4/lamw_manager/core/installer/services.sh)
-+	 Experimental mitigation to [*Xfce Terminal BUG*](https://github.com/jmpessoa/lazandroidmodulewizard/issues/110)
++	 Experimental mitigation to [*Xfce Terminal bug*](https://github.com/jmpessoa/lazandroidmodulewizard/issues/110)
 
 v0.4.3.1 - Dec 13, 2021
 ---
