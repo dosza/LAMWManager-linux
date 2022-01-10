@@ -67,10 +67,19 @@ getStatusInstalation(){
 	fi
 }
 
+checkNeedXfceMitigation(){
+	[ "$NEED_XFCE_MITIGATION" = "1" ] && return 
+	
+	if [ "$LAMW_USER_XDG_CURRENT_DESKTOP" = "XFCE" ] && [ "$LAMW_USER_DESKTOP_SESSION" = "XFCE" ]; then
+		NEED_XFCE_MITIGATION=1
+		PROG_TOOLS+=" gnome-terminal"
+	fi
+}
 
 #install deps
 installDependences(){
 	getCurrentDebianFrontend
+	checkNeedXfceMitigation
 	AptInstall $LIBS_ANDROID $PROG_TOOLS
 		
 }
@@ -159,22 +168,6 @@ getFromGit(){
 		GitClone
 	else
 		GitPull
-	fi
-}
-
-
-getFromSVN(){
-	local svn_src_url="$1"
-	local svn_src_dir="$2"
-
-	svn checkout "$svn_src_url" --force
-	if [ $? != 0 ]; then
-		svn cleanup "$svn_src_dir"
-		svn checkout "$svn_src_url" --force
-		if [ $? != 0 ]; then 
-			svn cleanup "$svn_src_dir"
-			[ $? != 0 ] && rm -rf "$svn_src_dir" && echo "possible network instability! Try later!" && exit 1
-		fi
 	fi
 }
 
