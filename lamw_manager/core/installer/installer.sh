@@ -210,7 +210,6 @@ getFPCSourcesTrunk(){
 		getCompressFile "$url_fpc_src" "$tar_fpc_src" "$untar_fpc_src"
 		mv $fpc_src_file $FPC_TRUNK_SVNTAG
 	fi
-	#getFromSVN "$FPC_TRUNK_URL" "$FPC_TRUNK_SVNTAG"
 	parseFPCTrunk
 }
 
@@ -555,7 +554,6 @@ mainInstall(){
 	setLAMWDeps
 	LAMWPackageManager
 	checkProxyStatus
-	wrapperParseFPC
 	getJDK
 	getAnt
 	getGradle
@@ -572,7 +570,6 @@ mainInstall(){
 	buildCrossAndroid
 	ConfigureFPCCrossAndroid
 	BuildLazarusIDE
-	changeDirectory $ROOT_LAMW
 	LAMW4LinuxPostConfig
 	enableADBtoUdev
 	writeLAMWLogInstall
