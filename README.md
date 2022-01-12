@@ -42,13 +42,13 @@ LAMW Manager install the following [dependencies] tools:
 		+	Google Play Services
 +	OpenJDK
 +	LAMW framework
-+	Create **LAMW4Linux launcher**² on Menu
++	Create launcher² on Menu
 +	Register **MIME**
 
 
 **Notes**
 1. The minimum Android API and Build Tools required by LAMW and specified in [*package.json*](https://github.com/jmpessoa/lazandroidmodulewizard/blob/master/package.json) are installed 
-2. Look for LAMW4Linux on Menu or use *startlamw4linux* command
+2. Look for **<img src="https://gitlab.com/freepascal.org/lazarus/lazarus/-/raw/main/images/icons/lazarus_orange.ico" style="width: 32px"/> LAMW4Linux** on Menu or use *startlamw4linux* command
 
 Getting Started!!
 ---
