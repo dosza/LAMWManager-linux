@@ -9,8 +9,8 @@
 
 # Verifica condicoes de inicializacao
 
-LAMW_MANAGER_MODULES_PATH=$0
-LAMW_MANAGER_MODULES_PATH=${LAMW_MANAGER_MODULES_PATH%/lamw-mgr.sh*}
+LAMW_MANAGER_MODULES_PATH=$(dirname "$0")
+
 
 #importando modulos de headers 
 
