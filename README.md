@@ -17,7 +17,7 @@ Linux Distro Supported:
 	<ul>
 		<li><img src="https://www.debian.org/logos/openlogo-nd.svg" style="width: 32px;"/> Debian GNU/ Linux 10</li>
 		<li><img src="https://assets.ubuntu.com/v1/29985a98-ubuntu-logo32.png" style="width: 32px;"/> Ubuntu 18.04 LTS</li>
-		<li><a href="https://github.com/dosza/LAMWManager-linux/blob/master/lamw_manager/docs/other-distros-info.md">Requirements for other Linux</a></li>
+		<li><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Tux.svg/249px-Tux.svg.png" style="width: 32px;"/> <a href="https://github.com/dosza/LAMWManager-linux/blob/master/lamw_manager/docs/other-distros-info.md">Requirements for other Linux</a></li>
 	</ul>
 </p>
 
