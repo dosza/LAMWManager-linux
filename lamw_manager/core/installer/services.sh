@@ -83,8 +83,6 @@ setLAMWDeps(){
 	GRADLE_ZIP_FILE="gradle-${GRADLE_VERSION}-bin.zip"
 	setAndroidSDKCMDParameters
 	setLAMWPackages
-
-	#printf "%b" "$ANDROID_SDK_TARGET\n$ANDROID_BUILD_TOOLS_TARGET\n$GRADLE_VERSION\n${SDK_MANAGER_CMD_PARAMETERS[*]}\n"
 }
 
 

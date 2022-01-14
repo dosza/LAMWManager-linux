@@ -202,6 +202,7 @@ getFPCBuilder(){
 getFPCSourcesTrunk(){
 	mkdir -p $FPC_TRUNK_SOURCE_PATH
 	changeDirectory $FPC_TRUNK_SOURCE_PATH
+	parseFPCTrunk
 	if [ ! -e $FPC_TRUNK_SVNTAG ]; then
 		local url_fpc_src="https://sourceforge.net/projects/freepascal/files/Source/${_FPC_TRUNK_VERSION}/fpc-${_FPC_TRUNK_VERSION}.source.tar.gz"
 		local tar_fpc_src="fpc-${_FPC_TRUNK_VERSION}.source.tar.gz"
@@ -210,7 +211,6 @@ getFPCSourcesTrunk(){
 		getCompressFile "$url_fpc_src" "$tar_fpc_src" "$untar_fpc_src"
 		mv $fpc_src_file $FPC_TRUNK_SVNTAG
 	fi
-	parseFPCTrunk
 }
 
 #get Lazarus Sources
