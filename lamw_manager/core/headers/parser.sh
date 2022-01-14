@@ -83,8 +83,7 @@ TrapActions(){
 			rm  -rv $file_deleted
 		fi
 	fi
-#	chattr -i "$LAMW_MANAGER_LOCK"
-	#exit 2
+	
 	rm "$LAMW_MANAGER_LOCK"
 }
 
@@ -113,7 +112,7 @@ startImplicitAction(){
 		mainInstall
 	else
 		echo "Please wait ..."
-		printf "${NEGRITO}Implicit LAMW Framework update starting in $TIME_WAIT seconds ... ${NORMAL}...\n"
+		printf "${NEGRITO}Implicit LAMW Framework update starting in $TIME_WAIT seconds ... ${NORMAL}\n"
 		printf "Press control+c to exit ...\n"
 		sleep $TIME_WAIT 
 		Repair

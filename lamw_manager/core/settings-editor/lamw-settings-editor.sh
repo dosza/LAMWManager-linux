@@ -103,12 +103,7 @@ changeOwnerAllLAMW(){
 }
 #write log lamw install 
 writeLAMWLogInstall(){
-	local fpc_version=$FPC_VERSION
-	if [ $FLAG_FORCE_ANDROID_AARCH64 = 1 ]; then
-		fpc_version=$FPC_TRUNK_VERSION
-
-	fi
-
+	local fpc_version=$FPC_TRUNK_VERSION
 	local lamw_log_str=(
 		"Generate LAMW_INSTALL_VERSION=$LAMW_INSTALL_VERSION" 
 		"Info:"
@@ -166,26 +161,32 @@ AddLAMWtoStartMenu(){
 
 #this  fuction create a INI file to config  all paths used in lamw framework 
 LAMW4LinuxPostConfig(){
+	local startup_error_lamw4linux="$LAMW4LINUX_ETC/startup-check-errors-lamw4linux.sh"
 	local old_lamw_workspace="$LAMW_USER_HOME/Dev/lamw_workspace"
-	[ ! -e $LAMW4_LINUX_PATH_CFG ] && mkdir $LAMW4_LINUX_PATH_CFG
-	[ -e $old_lamw_workspace ] && mv $old_lamw_workspace $LAMW_WORKSPACE_HOME
-	[ ! -e $LAMW_WORKSPACE_HOME ] && mkdir -p $LAMW_WORKSPACE_HOME
-
 	local ant_path=$ANT_HOME/bin
 	local breakline='\\'n
-	ant_path=${ant_path%/ant*} #
+	
+	[ ! -e $LAMW4_LINUX_PATH_CFG ] && 
+		mkdir $LAMW4_LINUX_PATH_CFG
+
+	[ -e $old_lamw_workspace ] && 
+		mv $old_lamw_workspace $LAMW_WORKSPACE_HOME
+
+	[ ! -e $LAMW_WORKSPACE_HOME ] && 
+		mkdir -p $LAMW_WORKSPACE_HOME
+
 
 	#testa modificação de workspace
 	if [ -e "$LAMW4_LINUX_PATH_CFG/LAMW.ini" ]; then 
 		local current_lamw_workspace=$(grep '^PathToWorkspace=' $LAMW4_LINUX_PATH_CFG/LAMW.ini  | sed 's/PathToWorkspace=//g')
-		[ "$current_lamw_workspace" != "$LAMW_WORKSPACE_HOME" ] && LAMW_WORKSPACE_HOME=$current_lamw_workspace	
+		[ "$current_lamw_workspace" != "$LAMW_WORKSPACE_HOME" ] && LAMW_WORKSPACE_HOME="$current_lamw_workspace"	
 	fi
 # contem o arquivo de configuração do lamw
 	local LAMW_init_str=(
 		"[NewProject]"
 		"PathToWorkspace=$LAMW_WORKSPACE_HOME"
-		"PathToSmartDesigner=$ROOT_LAMW/lazandroidmodulewizard/android_wizard/smartdesigner"
-		"PathToJavaTemplates=$ROOT_LAMW/lazandroidmodulewizard/android_wizard/smartdesigner/java"
+		"PathToSmartDesigner=$LAMW_FRAMEWORK_HOME/android_wizard/smartdesigner"
+		"PathToJavaTemplates=$LAMW_FRAMEWORK_HOME/android_wizard/smartdesigner/java"
 		"PathToJavaJDK=$JAVA_HOME"
 		"PathToAndroidNDK=$ROOT_LAMW/ndk"
 		"PathToAndroidSDK=$ANDROID_SDK_ROOT"
@@ -215,15 +216,8 @@ LAMW4LinuxPostConfig(){
 		"IGNORE_XFCE_LAMW_ERROR_PATH=$IGNORE_XFCE_LAMW_ERROR_PATH"
 	)
 
-	local startlamw4linux_str=(
+	local startup_error_lamw4linux_str=(
 		'#!/bin/bash'
-		'#-------------------------------------------------------------------------------------------------#'
-		'### THIS FILE IS AUTOMATICALLY CONFIGURED by LAMW Manager'
-		'###ou may comment out this entry, but any other modifications may be lost.'
-		'#Description: This script is script configure LAMW environment and startLAMW4Linux'
-		'#-------------------------------------------------------------------------------------------------#'
-		"source $LAMW4LINUX_LOCAL_ENV"
-		""
 		"if [ ! -e \$LAMW4_LINUX_PATH_CFG ]; then"
 		"	zenity_exec=\$(which zenity)"
 		"	zenity_message=\"Primary Config Path ( \$LAMW4_LINUX_PATH_CFG ) doesn't exists!!${breakline}Run: './lamw_manager' to fix that! \""
@@ -244,45 +238,44 @@ LAMW4LinuxPostConfig(){
 		"	export XDG_CURRENT_DESKTOP=Gnome"
 		"	export DESKTOP_SESSION=xubuntu"
 		"fi"
+	)
+
+	local startlamw4linux_str=(
+		'#!/bin/bash'
+		'#-------------------------------------------------------------------------------------------------#'
+		'### THIS FILE IS AUTOMATICALLY CONFIGURED by LAMW Manager'
+		'###ou may comment out this entry, but any other modifications may be lost.'
+		'#Description: This script is script configure LAMW environment and startLAMW4Linux'
+		'#-------------------------------------------------------------------------------------------------#'
+		"source $LAMW4LINUX_LOCAL_ENV"
+		"source $startup_error_lamw4linux"
 		"exec \$LAMW4LINUX_EXE_PATH --pcp=\$LAMW4_LINUX_PATH_CFG \$*"
 	)
 
 	WriterFileln "$LAMW4_LINUX_PATH_CFG/LAMW.ini" "LAMW_init_str"
 	WriterFileln "$LAMW_IDE_HOME/startlamw4linux" "startlamw4linux_str"
 	WriterFileln "$LAMW4LINUX_LOCAL_ENV" lamw4linux_env_str
+	WriterFileln "$startup_error_lamw4linux" startup_error_lamw4linux_str
 
 	if [ -e  $LAMW_IDE_HOME/startlamw4linux ]; then
 		chmod +x $LAMW_IDE_HOME/startlamw4linux
-		[ ! -e "/usr/bin/startlamw4linux" ] && ln -s "$LAMW_IDE_HOME/startlamw4linux" "/usr/bin/startlamw4linux"
+		[ ! -e "/usr/bin/startlamw4linux" ] && 
+			ln -s "$LAMW_IDE_HOME/startlamw4linux" "/usr/bin/startlamw4linux"
 	fi
 
 	AddLAMWtoStartMenu
 }
 
 ActiveProxy(){
-	svn --help > /dev/null
-	if  [ $1 = 1 ]; then
-		if [ -e ~/.subversion/servers ] ; then
-			aux=$(tail -1 ~/.subversion/servers)       #tail -1 mostra a última linha do arquivo 
-			if [ "$aux" != "" ] ; then   # verifica se a última linha é vazia
-				sed  -i '$a\' ~/.subversion/servers #adiciona uma linha ao fim do arquivo
-			fi
-			#echo "write proxy with svn"
-			echo "http-proxy-host=$PROXY_SERVER" >> ~/.subversion/servers
-			echo "http-proxy-port=$PORT_SERVER" >> ~/.subversion/servers
-			git config --global core.gitproxy $PROXY_URL #"http://$HOST:$PORTA"
-			git config --global http.gitproxy $PROXY_URL #"http://$HOST:$PORTA"
-		fi
+	if [ $1 = 1 ]; then
+		git config --global core.gitproxy $PROXY_URL #"http://$HOST:$PORTA"
+		git config --global http.gitproxy $PROXY_URL #"http://$HOST:$PORTA"
 
 	else
-		sed -i "/http-proxy-host=$HOST/d" ~/.subversion/servers
-		sed -i "/http-proxy-port=$PORTA/d" ~/.subversion/servers
 		git config --global --unset core.gitproxy
 		git config --global --unset http.gitproxy
 		if [ -e ~/.gitconfig ] ;then
-		#cat ~/.gitconfig
 			sed -i '/\[core\]/d' ~/.gitconfig
-			#cat ~/.gitconfig
 			sed -i '/\[http\]/d' ~/.gitconfig
 		fi
 	fi
@@ -419,8 +412,7 @@ CleanOldConfig(){
 
 	echo "Uninstalling LAMW4Linux IDE ..."
 
-	for((i=0;i<${#list_deleted_files[*]};i++))
-	do
+	for((i=0;i<${#list_deleted_files[*]};i++)); do
 		if [ -e "${list_deleted_files[i]}" ]; then 
 			[ -d  "${list_deleted_files[i]}" ] && local rm_opts="-rf"
 			validate_is_file_create_by_lamw_manager $i "${list_deleted_files[i]}"
@@ -472,11 +464,8 @@ CreateSDKSimbolicLinks(){
 	)
 
 
-	for ((i=0;i<${#tools_chains_orig[*]};i++))
-	do
-		if [  -e "${tools_chains_s_links[i]}" ]; then  
-			rm "${tools_chains_s_links[i]}"
-		fi		
+	for ((i=0;i<${#tools_chains_orig[*]};i++));do
+	 	[  -e "${tools_chains_s_links[i]}" ] && rm "${tools_chains_s_links[i]}"		
 		ln -sf "${tools_chains_orig[i]}" "${tools_chains_s_links[i]}"	
 	done 
 
@@ -484,8 +473,6 @@ CreateSDKSimbolicLinks(){
 #--------------------------AARCH64 SETTINGS--------------------------
 
 configureFPCTrunk(){
-	# parte do arquivo de configuração do fpc, 
-	#	if [ ! -e $FPC_CFG_PATH ]; then
 	parseFPCTrunk
 	$FPC_MKCFG_EXE -d basepath="$FPC_TRUNK_LIB_PATH" -o "$FPC_CFG_PATH"
 	local fpc_trunk_parent="$(dirname "$FPC_TRUNK_LIB_PATH")"
