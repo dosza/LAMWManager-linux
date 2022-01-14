@@ -15,9 +15,9 @@ Linux Distro Supported:
 	
 <p>
 	<ul>
-		<li><img src="https://www.debian.org/logos/openlogo-nd.svg" style="width: 32px;"/> Debian GNU/ Linux 10</li>
-		<li><img src="https://assets.ubuntu.com/v1/29985a98-ubuntu-logo32.png" style="width: 32px;"/> Ubuntu 18.04 LTS</li>
-		<li><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Tux.svg/249px-Tux.svg.png" style="width: 32px;"/> <a href="https://github.com/dosza/LAMWManager-linux/blob/master/lamw_manager/docs/other-distros-info.md">Requirements for other Linux</a></li>
+		<li><img src="https://www.debian.org/logos/openlogo-nd.svg" style="width: 16px;"/> Debian GNU/ Linux 10</li>
+		<li><img src="https://assets.ubuntu.com/v1/29985a98-ubuntu-logo32.png" style="width: 16px;"/> Ubuntu 18.04 LTS</li>
+		<li><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Tux.svg/249px-Tux.svg.png" style="width: 16px;"/> <a href="https://github.com/dosza/LAMWManager-linux/blob/master/lamw_manager/docs/other-distros-info.md">Requirements for other Linux</a></li>
 	</ul>
 </p>
 
@@ -42,13 +42,12 @@ LAMW Manager install the following [dependencies] tools:
 		+	Google Play Services
 +	OpenJDK
 +	LAMW framework
-+	Create launcher² on Menu
++	Create **<img src="https://gitlab.com/freepascal.org/lazarus/lazarus/-/raw/main/images/icons/lazarus_orange.ico" style="width: 20px"/> LAMW4Linux** menu launcher and **startlamw4linux** command!
 +	Register **MIME**
 
 
 **Notes**
 1. The minimum Android API and Build Tools required by LAMW and specified in [*package.json*](https://github.com/jmpessoa/lazandroidmodulewizard/blob/master/package.json) are installed 
-2. Look for **<img src="https://gitlab.com/freepascal.org/lazarus/lazarus/-/raw/main/images/icons/lazarus_orange.ico" style="width: 32px"/> LAMW4Linux** on Menu or use *startlamw4linux* command
 
 Getting Started!!
 ---
