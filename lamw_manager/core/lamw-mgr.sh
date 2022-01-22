@@ -41,6 +41,7 @@ case "$1" in
 	"--sdkmanager")
 	getStatusInstalation;
 	[ $LAMW_INSTALL_STATUS = 0 ] && mainInstall
+	echo "Please wait, starting ${NEGRITO}Android SDK Manager Command Line ${NORMAL} ..."
 	getAndroidAPIS  ${ARGS[@]:1}
 	changeOwnerAllLAMW
  

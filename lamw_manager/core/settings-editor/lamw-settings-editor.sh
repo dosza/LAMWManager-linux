@@ -128,8 +128,11 @@ writeLAMWLogInstall(){
 
 #Add LAMW4Linux to menu 
 AddLAMWtoStartMenu(){
-	[ ! -e $LAMW_USER_HOME/.local/share/applications ] && mkdir -p $LAMW_USER_HOME/.local/share/applications  #create a directory of local apps launcher, if not exists 	
-	[ ! -e $LAMW_USER_HOME/.local/share/mime/packages ] && mkdir -p $LAMW_USER_HOME/.local/share/mime/packages
+	[ ! -e $LAMW_USER_HOME/.local/share/applications ] && 
+		mkdir -p $LAMW_USER_HOME/.local/share/applications  #create a directory of local apps launcher, if not exists 	
+	[ ! -e $LAMW_USER_HOME/.local/share/mime/packages ] && 
+		mkdir -p $LAMW_USER_HOME/.local/share/mime/packages
+	
 	local lamw_desktop_file_str=(
 		"[Desktop Entry]"  
 		"Name=LAMW4Linux"
@@ -218,8 +221,8 @@ LAMW4LinuxPostConfig(){
 
 	local startup_error_lamw4linux_str=(
 		'#!/bin/bash'
+		"zenity_exec=\$(which zenity)"
 		"if [ ! -e \$LAMW4_LINUX_PATH_CFG ]; then"
-		"	zenity_exec=\$(which zenity)"
 		"	zenity_message=\"Primary Config Path ( \$LAMW4_LINUX_PATH_CFG ) doesn't exists!!${breakline}Run: './lamw_manager' to fix that! \""
 		"	zenity_title=\"Error on start LAMW4Linux\""
 		"	[ \"\$zenity_exec\" != \"\" ] &&"
@@ -227,7 +230,6 @@ LAMW4LinuxPostConfig(){
 		"		exit 1"
 		"fi"
 		"if [ ! -e \"\${LAMW4LINUX_EXE_PATH}\" ] && [  -e \"\${OLD_LAMW4LINUX_EXE_PATH}\" ]; then"
-		"	zenity_exec=\$(which zenity)"
 		"	zenity_message=\"lazarus not found, starting from lazarus.old...\""
 		"	zenity_title=\"Missing Lazarus\""
 		"	\${zenity_exec} --title \"\${zenity_title}\" --notification --width 480 --text \"\${zenity_message}\""
@@ -249,6 +251,7 @@ LAMW4LinuxPostConfig(){
 		'#-------------------------------------------------------------------------------------------------#'
 		"source $LAMW4LINUX_LOCAL_ENV"
 		"source $startup_error_lamw4linux"
+		''
 		"exec \$LAMW4LINUX_EXE_PATH --pcp=\$LAMW4_LINUX_PATH_CFG \$*"
 	)
 
@@ -561,8 +564,6 @@ configureFPCTrunk(){
 	fi
 }
 
-
-
 CreateSimbolicLinksAndroidAARCH64(){
 	ln -sf "$AARCH64_ANDROID_TOOLS/aarch64-linux-android-as" "$LLVM_ANDROID_TOOLCHAINS/aarch64-linux-as"
 	ln -sf "$AARCH64_ANDROID_TOOLS/aarch64-linux-android-ld" "$LLVM_ANDROID_TOOLCHAINS/aarch64-linux-ld"
@@ -581,8 +582,6 @@ CreateBinutilsSimbolicLinks(){
 		CreateSimbolicLinksAndroidAARCH64
 	fi
 }
-
-#echo "importei lamw-settings-editor.sh";read
 
 createLazarusEnvCfgFile(){
 	local lazarus_env_cfg_str=(
