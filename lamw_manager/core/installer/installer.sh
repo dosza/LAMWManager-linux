@@ -264,7 +264,6 @@ getGradle(){
 #Get Gradle and SDK Tools 
 getAndroidSDKTools(){
 	initROOT_LAMW
-	changeDirectory $ROOT_LAMW
 	changeDirectory $ANDROID_SDK_ROOT
 	
 	if [ ! -e "$CMD_SDK_TOOLS_DIR" ];then
@@ -280,10 +279,6 @@ getAndroidSDKTools(){
 getSDKAntSupportedTools(){
 	initROOT_LAMW
 	changeDirectory $ANDROID_SDK_ROOT
-	SDK_TOOLS_VERSION="r25.2.5"
-	SDK_TOOLS_URL="https://dl.google.com/android/repository/tools_r25.2.5-linux.zip"
-	SDK_TOOLS_ZIP="tools_r25.2.5-linux.zip"
-	SDK_TOOLS_DIR="$ANDROID_SDK_ROOT/tools"
 	if [ ! -e "$SDK_TOOLS_DIR" ];then
 		trap TrapControlC  2
 		MAGIC_TRAP_INDEX=4
@@ -292,8 +287,8 @@ getSDKAntSupportedTools(){
 }
 
 getAndroidCmdLineTools(){
-	getSDKAntSupportedTools
 	getAndroidSDKTools
+	getSDKAntSupportedTools
 	AntTrigger
 }
 
@@ -362,20 +357,12 @@ resetAndroidAPIS(){
 	echo "Only the default APIs will be reinstalled!"
 	for ((i=0;i<${#sdk_manager_fails[*]};i++)); do
 		local current_sdk_path="${ANDROID_SDK_ROOT}/${sdk_manager_fails[i]}"
-		if [ -e $current_sdk_path ]; then
-			rm -rf $current_sdk_path
-		fi
+		[ -e $current_sdk_path ] && rm -rf $current_sdk_path
 	done
 
 	setLAMWDeps
 	getAndroidAPIS
-	for ((i=0;i<${#sdk_manager_fails[*]};i++)); do
-		local current_sdk_path="${ANDROID_SDK_ROOT}/${sdk_manager_fails[i]}"
-		if [ -e $current_sdk_path ]; then
-			chown $LAMW_USER:$LAMW_USER -R $current_sdk_path
-		fi
-		chown $LAMW_USER:$LAMW_USER -R $LAMW_USER_HOME/.android
-	done
+	changeOwnerAllLAMW
 
 }
 
