@@ -55,7 +55,8 @@ checkJDKVersionStatus(){
 	setJDKDeps
 	JDK_STATUS=0
 	local java_release_path="$JAVA_HOME/release"
-	[ ! -e $JAVA_HOME ] || ( [ -e $java_release_path ]  && ! grep $JAVA_VERSION  $java_release_path > /dev/null ) && JDK_STATUS=1
+	[ ! -e $JAVA_HOME ] || ( [ -e $java_release_path ]  && 
+		! grep $JAVA_VERSION  $java_release_path > /dev/null ) && JDK_STATUS=1
 }
 
 getLAMWPackageJSON(){
