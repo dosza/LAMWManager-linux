@@ -378,7 +378,8 @@ Repair(){
 		checkLAMWManagerVersion > /dev/null
 
 		if [ "$(which git)" = "" ] || [ "$(which wget)" = "" ] || 
-		[ "$(which jq)" = "" ] || [ "$(which make)" = "" ]; then
+		[ "$(which jq)" = "" ] || [ "$(which make)" = "" ]|| 
+		[ "$(which xmlstarlet)" = "" ]; then
 			echo "Missing lamw_manager required tools!, starting install base Dependencies ..."
 			installDependences
 			flag_need_repair=1
