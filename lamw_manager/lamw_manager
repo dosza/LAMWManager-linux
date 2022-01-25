@@ -20,7 +20,14 @@ source "$LAMW_MGR_CORE/core/headers/common-shell.sh"
 source "$LAMW_MGR_CORE/core/headers/lamw_manager_headers"
 source "$LAMW_MGR_CORE/core/settings-editor/root-lamw-settings-editor.sh"
 
+GetInitialStatus(){
 
+	tty | grep -i 'dev/pts/[0-9]' > /dev/null
+
+	if [ ! -e $ROOT_LAMW ] && [ $? = 0 ]; then 
+		AUTO_START_LAMW4LINUX=1
+	fi
+}
 GetLocalJavaHome(){
 	local lamw4linux_env="$LAMW4LINUX_HOME/etc/environment"
 	if [ -e $lamw4linux_env ]; then
@@ -165,6 +172,17 @@ Run(){
 }
 
 #main function
+
+autoStartLAMW4Linux(){
+
+	if [ $EXIT_STATUS = 0 ] && [ $AUTO_START_LAMW4LINUX = 1 ];then
+		echo "${NEGRITO}Please wait,starting LAMW4Linux IDE ...${NORMAL}"
+		exec `which startlamw4linux`
+	else
+		exit $EXIT_STATUS
+	fi
+}
+
 main(){
 	
 	IsUserRoot "lamw_manager"
@@ -173,10 +191,11 @@ main(){
 	CheckFlags ENTER_TO_EXIT "ENTER=1"
 	CheckUserIsSudo
 	CheckLocalRootLAMW
+	GetInitialStatus
 	StopGradleDaemon
 	Run $ARGS
 	DelTempFiles
+	autoStartLAMW4Linux
 }
 
 main $*
-exit $EXIT_STATUS 
