@@ -140,4 +140,5 @@ LAMW_LINUX_SPP=(
 )
 
 ARGS=($@)
+EXIT_STATUS=0
 
