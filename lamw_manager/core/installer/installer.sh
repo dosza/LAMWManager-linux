@@ -499,7 +499,7 @@ installLAMWPackages(){
 		
 		if [ $? != 0 ]; then 
 			./lazbuild ${lamw_build_opts[*]} ${LAMW_PACKAGES[$i]}
-			[ $? != 0 ] && { echo "$error_lazbuild_msg" && return ; }
+			[ $? != 0 ] && { echo "$error_lazbuild_msg" && EXIT_STATUS=1 && return ; }
 		fi
 	done
 
