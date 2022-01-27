@@ -2,15 +2,15 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.4.4
-#Date: 12/13/2021
+#Version: 0.4.5
+#Date: 01/14/2022
 #Description: The "lamw-install.sh" is part of the core of LAMW Manager. This script configures the development environment for LAMW
 #-------------------------------------------------------------------------------------------------#
 
 # Verifica condicoes de inicializacao
 
-LAMW_MANAGER_MODULES_PATH=$0
-LAMW_MANAGER_MODULES_PATH=${LAMW_MANAGER_MODULES_PATH%/lamw-mgr.sh*}
+LAMW_MANAGER_MODULES_PATH=$(dirname "$0")
+
 
 #importando modulos de headers 
 
@@ -41,6 +41,7 @@ case "$1" in
 	"--sdkmanager")
 	getStatusInstalation;
 	[ $LAMW_INSTALL_STATUS = 0 ] && mainInstall
+	echo "Please wait, starting ${NEGRITO}Android SDK Manager Command Line ${NORMAL} ..."
 	getAndroidAPIS  ${ARGS[@]:1}
 	changeOwnerAllLAMW
  
@@ -105,3 +106,5 @@ case "$1" in
 		exit 1
 	;;
 esac
+
+exit $EXIT_STATUS

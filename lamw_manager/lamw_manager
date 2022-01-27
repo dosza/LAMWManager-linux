@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.4.4
-#Date: 12/13/2021
+#Version: 0.4.5
+#Date: 01/14/2022
 #Description:The "lamw_manager" is part of the core of LAMW Manager. This script is a wrapper for "core/lamw-instal.sh"
 #-------------------------------------------------------------------------------------------------#
 
@@ -20,7 +20,14 @@ source "$LAMW_MGR_CORE/core/headers/common-shell.sh"
 source "$LAMW_MGR_CORE/core/headers/lamw_manager_headers"
 source "$LAMW_MGR_CORE/core/settings-editor/root-lamw-settings-editor.sh"
 
+GetInitialStatus(){
 
+	tty | grep -i 'dev/pts/[0-9]' > /dev/null
+
+	if [ ! -e "$LAMW_INSTALL_LOG" ] && [ $? = 0 ]; then 
+		AUTO_START_LAMW4LINUX=1
+	fi
+}
 GetLocalJavaHome(){
 	local lamw4linux_env="$LAMW4LINUX_HOME/etc/environment"
 	if [ -e $lamw4linux_env ]; then
@@ -28,9 +35,8 @@ GetLocalJavaHome(){
 	fi	
 }
 StopGradleDaemon(){
-	local lamw_install_log="$LAMW4LINUX_HOME/lamw-install.log"
-	if [ -e $lamw_install_log ] ; then
-		local gradle_version="$(grep '^GRADLE_VERSION' $lamw_install_log | sed 's/GRADLE_VERSION=//g')"
+	if [ -e "$LAMW_INSTALL_LOG" ] ; then
+		local gradle_version="$(grep '^GRADLE_VERSION' $LAMW_INSTALL_LOG | sed 's/GRADLE_VERSION=//g')"
 		local gradle_path="$ROOT_LAMW/gradle-$gradle_version"
 		GetLocalJavaHome
 	fi
@@ -112,6 +118,7 @@ CheckLocalRootLAMW(){
 
 	LAMW_MANAGER_ENV+=(ROOT_LAMW=$ROOT_LAMW)
 	LAMW4LINUX_HOME=$ROOT_LAMW/lamw4linux
+	LAMW_INSTALL_LOG="$LAMW4LINUX_HOME/lamw-install.log"
 }
 
 RunAsSudo(){
@@ -141,7 +148,7 @@ RunAsPolkit(){
 getStatus(){
 	echo "$*" | grep "get-status" > /dev/null
 	if [ $? = 0 ]; then 
-		if [ -e "$LAMW4LINUX_HOME/lamw-install.log" ]; then
+		if [ -e "$LAMW_INSTALL_LOG" ]; then
 			exit 0
 		else
 			exit 1
@@ -165,6 +172,19 @@ Run(){
 }
 
 #main function
+
+autoStartLAMW4Linux(){
+
+	if [ $EXIT_STATUS = 0 ] && [ "${XDG_CURRENT_DESKTOP^^}" != "XFCE" ] && 
+	[ $AUTO_START_LAMW4LINUX = 1 ] && [ -e $LAMW_INSTALL_LOG ];then
+		echo "${NEGRITO}Please wait,starting LAMW4Linux IDE ...${NORMAL}"
+		startlamw4linux &
+		exit $EXIT_STATUS
+	else
+		exit $EXIT_STATUS
+	fi
+}
+
 main(){
 	
 	IsUserRoot "lamw_manager"
@@ -173,10 +193,11 @@ main(){
 	CheckFlags ENTER_TO_EXIT "ENTER=1"
 	CheckUserIsSudo
 	CheckLocalRootLAMW
+	GetInitialStatus
 	StopGradleDaemon
 	Run $ARGS
 	DelTempFiles
+	autoStartLAMW4Linux
 }
 
 main $*
-exit $EXIT_STATUS 

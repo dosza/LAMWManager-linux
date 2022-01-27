@@ -273,8 +273,8 @@ InsertUniqueBlankLine(){
 }
 
 IsUserRoot(){
-	if  [  "$(whoami)" = "root" ];then #impede que o script seja executado pelo root 
-		printf "Error: \"$1\" was designed  to run without root privileges\nExiting...\n" >&2 # >&2 is a file descriptor to /dev/stderror
+	if  [  $UID = 0 ];then #impede que o script seja executado pelo root 
+		printf "${VERMELHO}Error:${NORMAL} ${NEGRITO}$1${NORMAL} don't support running as root!!!\nExiting...\n" >&2 # >&2 is a file descriptor to /dev/stderror
 		exit 1
 	fi
 }

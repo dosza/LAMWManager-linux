@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.4.4
-#Date: 12/13/2021
+#Version: 0.4.5
+#Date: 01/14/2022
 #Description: The "lamw_headers" is part of the core of LAMW Manager. This script contains LAMW Manager variables.
 #-------------------------------------------------------------------------------------------------#
 
@@ -11,12 +11,13 @@
 #										Section Version Variables
 #--------------------------------------------------------------------------------------------------
 
-LAMW_INSTALL_VERSION="0.4.4"
+LAMW_INSTALL_VERSION="0.4.5"
 JDK_VERSION=11
 ANT_VERSION_STABLE='1.10.11'
 CMD_SDK_TOOLS_VERSION="7302050"
 CMD_SDK_TOOLS_VERSION_STR="4.0"
 LAZARUS_STABLE_VERSION="2.0.12"
+SDK_TOOLS_VERSION="25.2.5"
 FPC_TRUNK_VERSION="3.2.2"
 FPC_LAZ_DEB_VERSION="2.0.12"
 FPC_DEB_VERSION="3.2.0-1"
@@ -51,6 +52,7 @@ OLD_LAZARUS_STABLE_VERSION=(
 )
 
 OLD_LAMW_INSTALL_VERSION=(
+	0.4.4
 	0.4.3{.1,}
 	0.4.2{.{2..1},}
 	0.4.1{.{6..1},}
@@ -81,7 +83,9 @@ LAZARUS_STABLE_SRC_LNK="https://gitlab.com/freepascal.org/lazarus/lazarus.git"
 LAMW_PACKAGE_URL="https://raw.githubusercontent.com/jmpessoa/lazandroidmodulewizard/master/package.json"
 API_JDK_URL="https://api.adoptium.net/v3/assets/latest/$JDK_VERSION/hotspot?vendor=$JDK_VENDOR"
 FPC_TRUNK_URL="https://svn.freepascal.org/svn/fpc/tags/${FPC_TRUNK_SVNTAG}"
+SDK_TOOLS_URL="https://dl.google.com/android/repository/tools_r${SDK_TOOLS_VERSION}-linux.zip"
 
+	
 #------------------------------------------------------------------------------------------	
 #										Section Enviroment Variables
 #------------------------------------------------------------------------------------------	
@@ -103,6 +107,8 @@ LAMW_IDE_HOME="$LAMW4LINUX_HOME/lazarus_stable_git"
 LAMW4LINUX_EXE_PATH="$LAMW_IDE_HOME/lazarus"
 CMD_SDK_TOOLS_ZIP="commandlinetools-linux-${CMD_SDK_TOOLS_VERSION}_latest.zip"
 CMD_SDK_TOOLS_DIR="$ANDROID_SDK_ROOT/cmdline-tools"
+SDK_TOOLS_DIR="$ANDROID_SDK_ROOT/tools"
+SDK_TOOLS_ZIP="tools_r${SDK_TOOLS_VERSION}-linux.zip"
 SDK_LICENSES_PARAMETERS=(--licenses )
 ANT_TAR_FILE="apache-ant-${ANT_VERSION_STABLE}-bin.tar.xz"
 ANT_HOME="$ROOT_LAMW/apache-ant-${ANT_VERSION_STABLE}"
@@ -134,4 +140,5 @@ LAMW_LINUX_SPP=(
 )
 
 ARGS=($@)
+EXIT_STATUS=0
 
