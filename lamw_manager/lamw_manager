@@ -175,7 +175,8 @@ Run(){
 
 autoStartLAMW4Linux(){
 
-	if [ $EXIT_STATUS = 0 ] && [ $AUTO_START_LAMW4LINUX = 1 ] && [ -e $LAMW_INSTALL_LOG ];then
+	if [ $EXIT_STATUS = 0 ] && [ "${XDG_CURRENT_DESKTOP^^}" != "XFCE" ] 
+	&& [ $AUTO_START_LAMW4LINUX = 1 ] && [ -e $LAMW_INSTALL_LOG ];then
 		echo "${NEGRITO}Please wait,starting LAMW4Linux IDE ...${NORMAL}"
 		startlamw4linux &
 		exit $EXIT_STATUS
