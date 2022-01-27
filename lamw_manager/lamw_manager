@@ -22,11 +22,10 @@ source "$LAMW_MGR_CORE/core/settings-editor/root-lamw-settings-editor.sh"
 
 GetInitialStatus(){
 
-	tty | grep -i 'dev/pts/[0-9]' > /dev/null
+	tty | grep  'pts/[0-9]' > /dev/null
 
-	if [ ! -e "$LAMW_INSTALL_LOG" ] && [ $? = 0 ]; then 
+	[ $? = 0 ] && [ ! -e "$LAMW_INSTALL_LOG" ] && 
 		AUTO_START_LAMW4LINUX=1
-	fi
 }
 GetLocalJavaHome(){
 	local lamw4linux_env="$LAMW4LINUX_HOME/etc/environment"
@@ -176,7 +175,7 @@ Run(){
 autoStartLAMW4Linux(){
 
 	if [ $EXIT_STATUS = 0 ] && [ "${XDG_CURRENT_DESKTOP^^}" != "XFCE" ] && 
-	[ $AUTO_START_LAMW4LINUX = 1 ] && [ -e $LAMW_INSTALL_LOG ];then
+		[ $AUTO_START_LAMW4LINUX = 1 ] && [ -e $LAMW_INSTALL_LOG ];then
 		echo "${NEGRITO}Please wait,starting LAMW4Linux IDE ...${NORMAL}"
 		startlamw4linux &
 		exit $EXIT_STATUS
