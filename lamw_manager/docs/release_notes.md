@@ -3,7 +3,7 @@
 
 This page contains information about new features and bug fixes.
 
-v0.4.5 - Jan 26, 2021
+v0.4.5 - Jan 26, 2022
 ---
 **Fixes**
 +	Fixes missing *xmlstarlet*
