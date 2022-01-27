@@ -3,6 +3,15 @@
 
 This page contains information about new features and bug fixes.
 
+v0.4.5 - Jan 26, 2021
+---
+**Fixes**
++	Fixes missing *xmlstarlet*
++	Remove deprecated code from subversion actions 
+
+**News**
++	Autostart LAMW4Linux after first install
+
 v0.4.4 - Dec 31, 2021
 ---
 **Fixes**
@@ -15,7 +24,7 @@ v0.4.4 - Dec 31, 2021
 v0.4.3.1 - Dec 13, 2021
 ---
 **Fixes**
-+	Get Current *\*$ROOT_LAMW_PARENT*
++	Get Current *\$ROOT_LAMW_PARENT*
 
 v0.4.3 - Dec 11, 2021
 ---

@@ -2,15 +2,14 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.4.4
-#Date: 12/13/2021
+#Version: 0.4.5
+#Date: 01/14/2022
 #Description:The "cross-builder.sh" is part of the core of LAMW Manager.  This script contains crosscompile compiler generation routines for ARMv7 / AARCH64- Android
 #-------------------------------------------------------------------------------------------------#
 
 #this function set env to FPC_TRUNK 
 parseFPCTrunk(){
 	_FPC_TRUNK_VERSION=${FPC_TRUNK_VERSION%\-*}
-	FPC_INSTALL_TRUNK_ZIP="$LAMW4LINUX_HOME/usr/share/fpcsrc/${FPC_TRUNK_SVNTAG}/fpc-${FPC_TRUNK_VERSION}.x86_64-linux.tar.gz"
 	FPC_TRUNK_LIB_PATH=$LAMW4LINUX_HOME/usr/lib/fpc/${_FPC_TRUNK_VERSION}
 	FPC_TRUNK_EXEC_PATH="$LAMW4LINUX_HOME/usr/bin"
 	FPC_CFG_PATH="$FPC_TRUNK_LIB_PATH/fpc.cfg"
@@ -43,8 +42,8 @@ BuildCrossAll(){
 		make -s  clean crossall crossinstall  CPU_TARGET=aarch64 OS_TARGET=android OPT="-dFPC_ARMHF"\
 			INSTALL_PREFIX=$LAMW4LINUX_HOME/usr "PP=$FPC_LIB_PATH/ppcx64" ;;
 	1)
-		make -s  clean crossall crossinstall CPU_TARGET=arm OPT="-dFPC_ARMEL" OS_TARGET=android CROSSOPT="-CpARMV7A -CfVFPV3"\
-			 INSTALL_PREFIX=$LAMW4LINUX_HOME/usr "PP=$FPC_LIB_PATH/ppcx64";;
+		make -s  clean crossall crossinstall CPU_TARGET=arm OPT="-dFPC_ARMEL" OS_TARGET=android\
+			CROSSOPT="-CpARMV7A -CfVFPV3" INSTALL_PREFIX=$LAMW4LINUX_HOME/usr "PP=$FPC_LIB_PATH/ppcx64";;
 	2) 
 		make -s  clean crossall crossinstall CPU_TARGET=x86_64 OS_TARGET=android "PP=$FPC_LIB_PATH/ppcx64"\
 			 INSTALL_PREFIX=$LAMW4LINUX_HOME/usr OPT="-Cfsse3" CROSSOPT="-Cfsse3" ;;
@@ -74,7 +73,6 @@ BuildCrossAArch64(){
 
 	echo "cleaning sources..."
 	make -s  clean > /dev/null
-	#CreateFPCTrunkBootStrap
 }
 
 #wrapper to configureFPC

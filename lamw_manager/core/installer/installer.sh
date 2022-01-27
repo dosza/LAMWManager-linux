@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.4.4
-#Date: 12/13/2021
+#Version: 0.4.5
+#Date: 01/14/2022
 #Description: "installer.sh" is part of the core of LAMW Manager. Contains routines for installing LAMW development environment
 #-------------------------------------------------------------------------------------------------#
 
@@ -202,6 +202,7 @@ getFPCBuilder(){
 getFPCSourcesTrunk(){
 	mkdir -p $FPC_TRUNK_SOURCE_PATH
 	changeDirectory $FPC_TRUNK_SOURCE_PATH
+	parseFPCTrunk
 	if [ ! -e $FPC_TRUNK_SVNTAG ]; then
 		local url_fpc_src="https://sourceforge.net/projects/freepascal/files/Source/${_FPC_TRUNK_VERSION}/fpc-${_FPC_TRUNK_VERSION}.source.tar.gz"
 		local tar_fpc_src="fpc-${_FPC_TRUNK_VERSION}.source.tar.gz"
@@ -210,8 +211,6 @@ getFPCSourcesTrunk(){
 		getCompressFile "$url_fpc_src" "$tar_fpc_src" "$untar_fpc_src"
 		mv $fpc_src_file $FPC_TRUNK_SVNTAG
 	fi
-	#getFromSVN "$FPC_TRUNK_URL" "$FPC_TRUNK_SVNTAG"
-	parseFPCTrunk
 }
 
 #get Lazarus Sources
@@ -265,7 +264,6 @@ getGradle(){
 #Get Gradle and SDK Tools 
 getAndroidSDKTools(){
 	initROOT_LAMW
-	changeDirectory $ROOT_LAMW
 	changeDirectory $ANDROID_SDK_ROOT
 	
 	if [ ! -e "$CMD_SDK_TOOLS_DIR" ];then
@@ -281,10 +279,6 @@ getAndroidSDKTools(){
 getSDKAntSupportedTools(){
 	initROOT_LAMW
 	changeDirectory $ANDROID_SDK_ROOT
-	SDK_TOOLS_VERSION="r25.2.5"
-	SDK_TOOLS_URL="https://dl.google.com/android/repository/tools_r25.2.5-linux.zip"
-	SDK_TOOLS_ZIP="tools_r25.2.5-linux.zip"
-	SDK_TOOLS_DIR="$ANDROID_SDK_ROOT/tools"
 	if [ ! -e "$SDK_TOOLS_DIR" ];then
 		trap TrapControlC  2
 		MAGIC_TRAP_INDEX=4
@@ -293,8 +287,8 @@ getSDKAntSupportedTools(){
 }
 
 getAndroidCmdLineTools(){
-	getSDKAntSupportedTools
 	getAndroidSDKTools
+	getSDKAntSupportedTools
 	AntTrigger
 }
 
@@ -363,20 +357,12 @@ resetAndroidAPIS(){
 	echo "Only the default APIs will be reinstalled!"
 	for ((i=0;i<${#sdk_manager_fails[*]};i++)); do
 		local current_sdk_path="${ANDROID_SDK_ROOT}/${sdk_manager_fails[i]}"
-		if [ -e $current_sdk_path ]; then
-			rm -rf $current_sdk_path
-		fi
+		[ -e $current_sdk_path ] && rm -rf $current_sdk_path
 	done
 
 	setLAMWDeps
 	getAndroidAPIS
-	for ((i=0;i<${#sdk_manager_fails[*]};i++)); do
-		local current_sdk_path="${ANDROID_SDK_ROOT}/${sdk_manager_fails[i]}"
-		if [ -e $current_sdk_path ]; then
-			chown $LAMW_USER:$LAMW_USER -R $current_sdk_path
-		fi
-		chown $LAMW_USER:$LAMW_USER -R $LAMW_USER_HOME/.android
-	done
+	changeOwnerAllLAMW
 
 }
 
@@ -392,7 +378,8 @@ Repair(){
 		checkLAMWManagerVersion > /dev/null
 
 		if [ "$(which git)" = "" ] || [ "$(which wget)" = "" ] || 
-		[ "$(which jq)" = "" ] || [ "$(which make)" = "" ]; then
+		[ "$(which jq)" = "" ] || [ "$(which make)" = "" ]|| 
+		[ "$(which xmlstarlet)" = "" ]; then
 			echo "Missing lamw_manager required tools!, starting install base Dependencies ..."
 			installDependences
 			flag_need_repair=1
@@ -512,7 +499,7 @@ installLAMWPackages(){
 		
 		if [ $? != 0 ]; then 
 			./lazbuild ${lamw_build_opts[*]} ${LAMW_PACKAGES[$i]}
-			[ $? != 0 ] && { echo "$error_lazbuild_msg" && return ; }
+			[ $? != 0 ] && { echo "$error_lazbuild_msg" && EXIT_STATUS=1 && return ; }
 		fi
 	done
 
@@ -555,7 +542,6 @@ mainInstall(){
 	setLAMWDeps
 	LAMWPackageManager
 	checkProxyStatus
-	wrapperParseFPC
 	getJDK
 	getAnt
 	getGradle
@@ -572,7 +558,6 @@ mainInstall(){
 	buildCrossAndroid
 	ConfigureFPCCrossAndroid
 	BuildLazarusIDE
-	changeDirectory $ROOT_LAMW
 	LAMW4LinuxPostConfig
 	enableADBtoUdev
 	writeLAMWLogInstall
