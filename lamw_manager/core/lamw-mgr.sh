@@ -39,11 +39,11 @@ case "$1" in
 	;;
 
 	"--sdkmanager")
-	getStatusInstalation;
-	[ $LAMW_INSTALL_STATUS = 0 ] && mainInstall
-	echo "Please wait, starting ${NEGRITO}Android SDK Manager Command Line ${NORMAL} ..."
-	getAndroidAPIS  ${ARGS[@]:1}
-	changeOwnerAllLAMW
+		getStatusInstalation;
+		[ $LAMW_INSTALL_STATUS = 0 ] && mainInstall
+		echo "Please wait, starting ${NEGRITO}Android SDK Manager Command Line ${NORMAL} ..."
+		getAndroidAPIS  ${ARGS[@]:1}
+		changeOwnerAllLAMW
  
 	;;
 	"--update-lamw")
@@ -100,6 +100,9 @@ case "$1" in
 			BuildLazarusIDE
 			changeOwnerAllLAMW 1
 		fi
+	;;
+	"get-root-lamw")
+		echo "$ROOT_LAMW"
 	;;
 	*)
 		printf "${VERMELHO}Invalid argument!${NORMAL}\n$(lamw_manager_help)" >&2
