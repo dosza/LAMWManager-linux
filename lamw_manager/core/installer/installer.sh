@@ -392,7 +392,7 @@ Repair(){
 		fi
 		
 		if [ $flag_need_repair = 1 ]; then
-			ConfigureFPCCrossAndroid
+			configureFPCTrunk
 			CleanOldCrossCompileBins
 			buildCrossAndroid
 			BuildLazarusIDE
@@ -506,7 +506,7 @@ installLAMWPackages(){
 }
 #Build lazarus ide
 BuildLazarusIDE(){	
-	wrapperParseFPC
+	parseFPCTrunk
 	export PATH=$FPC_TRUNK_LIB_PATH:$FPC_TRUNK_EXEC_PATH:$PATH
 	local error_build_lazarus_msg="${VERMELHO}Fatal error:${NORMAL}Fails in build Lazarus!!"
 	local make_opts=( "clean all" "PP=${FPC_TRUNK_LIB_PATH}/ppcx64" "FPC_VERSION=$_FPC_TRUNK_VERSION" )
@@ -556,7 +556,7 @@ mainInstall(){
 	AddSDKPathstoProfile
 	CleanOldCrossCompileBins
 	buildCrossAndroid
-	ConfigureFPCCrossAndroid
+	configureFPCTrunk
 	BuildLazarusIDE
 	LAMW4LinuxPostConfig
 	enableADBtoUdev

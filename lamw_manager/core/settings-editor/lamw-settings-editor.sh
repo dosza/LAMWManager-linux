@@ -284,7 +284,7 @@ ActiveProxy(){
 	fi
 }
 CleanOldCrossCompileBins(){
-	wrapperParseFPC
+	parseFPCTrunk
 	local lamw_manager_v031=0.3.1
 	local clean_files=(
 		"$FPC_LIB_PATH/ppcrossarm"
@@ -388,7 +388,7 @@ validate_is_file_create_by_lamw_manager(){
 CleanOldConfig(){
 	getStatusInstalation
 	[ $LAMW_INSTALL_STATUS = 1 ] && checkLAMWManagerVersion > /dev/null
-	wrapperParseFPC
+	parseFPCTrunk
 	local list_deleted_files=(
 		"/usr/bin/ppcarm"
 		"/usr/bin/ppcrossarm"

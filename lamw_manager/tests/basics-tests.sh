@@ -1,4 +1,3 @@
-
 #!/bin/bash
 
 testLocalRootLAMW(){
@@ -7,6 +6,12 @@ testLocalRootLAMW(){
 	else 	
 		local lamw_manager_script=$(realpath ../lamw_manager)
 	fi
+
+	bash $lamw_manager_script get-status
+
+	[ $? != 0 ] && return 
+
+
 	env LOCAL_ROOT_LAMW="" $lamw_manager_script
 	assertEquals 1  $?
 
