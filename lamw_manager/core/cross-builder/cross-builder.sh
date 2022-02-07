@@ -44,19 +44,29 @@ BuildFPC(){
 	esac
 }
 
+
+buildCurrentFPC(){
+	local error_build_msg="${VERMELHO}Fatal Error:${NORMAL} Falls to build FPC to ${build_aarch[$i]}"
+	local build_msg="Please wait, starting build FPC to ${NEGRITO}${build_aarch[i]}${NORMAL}..."
+	local succes_msg="Build to FPC ${NEGRITO}${build_aarch[i]}${NORMAL}"
+	printf "%s" "$build_msg"
+	BuildFPC $i > /dev/null
+	if [ $? != 0 ]; then 
+		printf  "%s\n" "${FILLER:${#succes_msg}}${VERMELHO} [FALLS]${NORMAL}"
+		printf "%s" "$build_msg"
+		BuildFPC $i
+		check_error_and_exit ${error_build_msg[i]}
+	fi
+
+	printf  "%s\n" "${FILLER:${#succes_msg}}${VERDE} [OK]${NORMAL}"
+}
 #Function to build ARMv7 and AARCH64
 buildCrossAndroid(){
 	local build_aarch=( "x86_64/Linux" {AARCH64,ARMv7,x86_64,i386}/Android)
 	changeDirectory "$LAMW4LINUX_HOME/usr/share/fpcsrc/$FPC_TRUNK_SVNTAG"
 
 	for i in ${!build_aarch[*]}; do 
-		local error_build_msg="${VERMELHO}Fatal Error:${NORMAL} Falls to build FPC to ${build_aarch[$i]}"
-		local build_msg="Please wait, starting build FPC to ${NEGRITO}${build_aarch[i]}${NORMAL}..."
-		local succes_msg="Build to FPC ${NEGRITO}${build_aarch[i]}${NORMAL}"
-		printf "%s\n" "$build_msg"
-		BuildFPC $i 
-		check_error_and_exit ${error_build_msg[i]}
-		printf  "%s\n\n" "${succes_msg}${FILLER:${#succes_msg}}${VERDE} [OK]${NORMAL}"
+		buildCurrentFPC
 	done
 
 	echo "cleaning sources..."

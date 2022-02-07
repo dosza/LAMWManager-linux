@@ -134,7 +134,8 @@ fi
 
 gitCheckout(){
 	if [ -e "$git_src_dir" ]; then
-		changeDirectory "$git_src_dir" 
+		changeDirectory "$git_src_dir"
+		git config advice.detachedHead false
 		git checkout $git_branch
 	fi
 }
@@ -215,7 +216,7 @@ getFPCSourcesTrunk(){
 
 #get Lazarus Sources
 getLazarusSources(){
-	local msg="${VERMELHO}Warning:${NORMAL}${NEGRITO}Lazarus has been downgraded to version 2.0.12!!${NORMAL}"
+	local msg="${VERMELHO}Warning: ${NORMAL}${NEGRITO}Lazarus has been downgraded to version 2.0.12!!${NORMAL}"
 	printf "%s\n" "$msg"
 	changeDirectory $LAMW4LINUX_HOME
 	getFromGit "$LAZARUS_STABLE_SRC_LNK" "$LAMW_IDE_HOME" "$LAZARUS_STABLE"
@@ -509,13 +510,17 @@ BuildLazarusIDE(){
 	parseFPCTrunk
 	export PATH=$FPC_TRUNK_LIB_PATH:$FPC_TRUNK_EXEC_PATH:$PATH
 	local error_build_lazarus_msg="${VERMELHO}Fatal error:${NORMAL}Fails in build Lazarus!!"
-	local make_opts=( "clean all" "PP=${FPC_TRUNK_LIB_PATH}/ppcx64" "FPC_VERSION=$_FPC_TRUNK_VERSION" )
-	
+	local make_opts=( "all" "PP=${FPC_TRUNK_LIB_PATH}/ppcx64" )
+	local build_msg="Please wait, starting build Lazarus IDE ${NORMAL}..."
 	changeDirectory $LAMW_IDE_HOME
 
-	if [ $# = 0 ]; then 
-	 	make -s  ${make_opts[*]}
+	if [ $# = 0 ]; then
+		echo "Cleaning Lazarus IDE sources ..."
+		make clean &> /dev/null
+		printf "%s" "$build_msg"
+	 	make -s  ${make_opts[*]} &>/dev/null
 	 	check_error_and_exit "$error_build_lazarus_msg" #build all IDE
+	 	printf  "%s\n" "${FILLER:${#build_msg}}${VERDE} [OK]${NORMAL}"
 	fi
 	
 	initLAMw4LinuxConfig
