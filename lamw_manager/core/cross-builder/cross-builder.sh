@@ -49,7 +49,13 @@ buildCrossAndroid(){
 	local build_aarch=( "x86_64/Linux" {AARCH64,ARMv7,x86_64,i386}/Android)
 	changeDirectory "$LAMW4LINUX_HOME/usr/share/fpcsrc/$FPC_TRUNK_SVNTAG"
 
-	for i in ${!build_aarch[*]}; do 
+	if [ $LAMW_MINIMAL_INSTALL = 0 ]; then
+		local max_archs=${#build_aarch[*]}
+	else
+		local max_archs=$MIN_LAMW_ARCHS
+	fi
+	
+	for ((i=0;i<$max_archs;i++)) do 
 		local error_build_msg="${VERMELHO}Fatal Error:${NORMAL} Falls to build FPC to ${build_aarch[$i]}"
 		local build_msg="Please wait, starting build FPC to ${NEGRITO}${build_aarch[i]}${NORMAL}..."
 		local succes_msg="Build to FPC ${NEGRITO}${build_aarch[i]}${NORMAL}"
