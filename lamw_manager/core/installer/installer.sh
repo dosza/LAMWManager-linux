@@ -511,12 +511,15 @@ BuildLazarusIDE(){
 	export PATH=$FPC_TRUNK_LIB_PATH:$FPC_TRUNK_EXEC_PATH:$PATH
 	local error_build_lazarus_msg="${VERMELHO}Fatal error:${NORMAL}Fails in build Lazarus!!"
 	local make_opts=( "clean all" "PP=${FPC_TRUNK_LIB_PATH}/ppcx64" "FPC_VERSION=$_FPC_TRUNK_VERSION" )
-	
+	local build_msg="Please wait, starting build Lazarus to ${NEGRITO}x86_64/Linux${NORMAL}..."
+	local sucess_filler="$(getCurrentSucessFiller 1 x86_64/Linux)"
 	changeDirectory $LAMW_IDE_HOME
 
-	if [ $# = 0 ]; then 
-	 	make -s  ${make_opts[*]}
+	if [ $# = 0 ]; then
+		printf "%s" "$build_msg"
+		make -s ${make_opts[@]} > /dev/null 2>&1
 	 	check_error_and_exit "$error_build_lazarus_msg" #build all IDE
+	 	printf  "%s\n" "${FILLER:${#sucess_filler}}${VERDE} [OK]${NORMAL}"
 	fi
 	
 	initLAMw4LinuxConfig
