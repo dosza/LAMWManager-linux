@@ -16,7 +16,8 @@ lamw_manager
  ./lamw_manager 	[\fBACTIONS\fR][\fBOPTIONS\fR] DEBUG=1
 .br
  ./lamw_manager 	[\fBuninstall\fR] [\fB\-\-reset\fR] [\fB\-\-reset-aapis\fR]
- 			 	[\fB\-\-sdkmanager\fR] [\fB\-\-update-lamw\fR] [\fB\-\-help\fR]
+ 			 	[\fB\-\-sdkmanager\fR] [\fB\-\-update-lamw\fR] [\fBminimal\fR]
+                     [\fB\-\-help\fR]
 .SH DESCRIPTION
 LAMW Manager is a command line tool,like APT, to automate the installation, configuration and upgrade the framework 
 \.br
@@ -31,6 +32,8 @@ sample:
 .SH ACTIONS
 \fBuninstall\fR 		            Clean all LAMW
 .SH OPTIONS
+\fB\-\-minimal\fR                         Install LAMW and dependencies with minimal crosscompile to Android
+.br
 \fB\-\-reset\fR  			            Clean and Install LAMW
 .br
 \fB\-\-reset-aapis\fR   	            Reset Android API's to default
