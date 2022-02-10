@@ -384,7 +384,7 @@ Repair(){
 			installDependences
 			flag_need_repair=1
 		fi
-		wrapperParseFPC
+		parseFPCTrunk
 		setLAMWDeps
 		if [ ! -e $expected_fpc_src_path ]; then
 			getFPCSourcesTrunk
