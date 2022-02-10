@@ -165,6 +165,7 @@ AddLAMWtoStartMenu(){
 #this  fuction create a INI file to config  all paths used in lamw framework 
 LAMW4LinuxPostConfig(){
 	local startup_error_lamw4linux="$LAMW4LINUX_ETC/startup-check-errors-lamw4linux.sh"
+	local lazbuild_path="$LAMW4LINUX_HOME/usr/bin/lazbuild"
 	local old_lamw_workspace="$LAMW_USER_HOME/Dev/lamw_workspace"
 	local ant_path=$ANT_HOME/bin
 	local breakline='\\'n
@@ -255,10 +256,17 @@ LAMW4LinuxPostConfig(){
 		"exec \$LAMW4LINUX_EXE_PATH --pcp=\$LAMW4_LINUX_PATH_CFG \$*"
 	)
 
+	local lazbuild_str=(
+		'#!/bin/bash'
+		"source $LAMW4LINUX_LOCAL_ENV"
+		"exec $LAMW_IDE_HOME/lazbuild --pcp=\$LAMW4_LINUX_PATH_CFG \$*"
+	)
+
 	WriterFileln "$LAMW4_LINUX_PATH_CFG/LAMW.ini" "LAMW_init_str"
 	WriterFileln "$LAMW_IDE_HOME/startlamw4linux" "startlamw4linux_str"
 	WriterFileln "$LAMW4LINUX_LOCAL_ENV" lamw4linux_env_str
 	WriterFileln "$startup_error_lamw4linux" startup_error_lamw4linux_str
+	WriterFileln "$lazbuild_path" lazbuild_str && chmod +x $lazbuild_path
 
 	if [ -e  $LAMW_IDE_HOME/startlamw4linux ]; then
 		chmod +x $LAMW_IDE_HOME/startlamw4linux
