@@ -5,7 +5,7 @@ This page contains information about new features and bug fixes.
 
 v0.4.6 - Feb 11, 2022
 ---
-**News:
+**News:**
 +	Add *lazbuild* startup script on *\$LAMW4LINUX_HOME/usr/bin* with PPC_CONFIG_PATH and --pcp params
 +	Build FPC and Lazarus base on silence mode
 +	Add new command *minimal*, to install only minimal fpc/lazarus crosscompile to Android.
