@@ -135,6 +135,7 @@ fi
 gitCheckout(){
 	if [ -e "$git_src_dir" ]; then
 		changeDirectory "$git_src_dir" 
+		git config advice.detachedHead false
 		git checkout $git_branch
 	fi
 }
