@@ -1,4 +1,4 @@
-**&nbsp;&nbsp;&nbsp;lamw_manager(1)&nbsp; 2021 Dec 31 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LAMW Manager man page&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lamw_manager(1)**
+**&nbsp;&nbsp;&nbsp;lamw_manager(1)&nbsp; 2022 Feb 10 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LAMW Manager man page&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lamw_manager(1)**
 
 #### NAME ####
 <p>
@@ -16,7 +16,8 @@
               ./lamw_manager       [<strong>ACTION</strong>] [<strong>OPTIONS</strong>]
               ./lamw_manager       [<strong>OPTIONS</strong>]
               ./lamw_manager       [<strong>uninstall</strong>] [<strong>--reset</strong>] [<strong>--reset-aapis</strong>] 
-                                   [<strong>--sdkmanager</strong>] [<strong>--update-lamw</strong>] [<strong>--help</strong>]
+                                   [<strong>--sdkmanager</strong>] [<strong>--update-lamw</strong>] [<strong>--minimal</strong>]
+                                   [<strong>--help</strong>]
        </pre>
 </p>
 
@@ -50,6 +51,7 @@
 #### OPTIONS ####
 <p>
        <pre>
+              <strong>--minimal</strong>                Install LAMW and dependencies with minimal crosscompile to Android
               <strong>--reset</strong>                  Clean and Install LAMW
               <strong>--reset-aapis</strong>            Reset Android API's to default
               <strong>--help</strong>                   Show this help
