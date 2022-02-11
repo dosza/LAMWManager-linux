@@ -8,6 +8,7 @@
 #-------------------------------------------------------------------------------------------------#
 LAMW4_LINUX_PATH_CFG="$LAMW_USER_HOME/.lamw4linux"
 LAMW4LINUX_HOME="$ROOT_LAMW/lamw4linux"
+LAMW_INSTALL_LOG="$LAMW4LINUX_HOME/lamw-install.log"
 LAMW4LINUX_ETC="$LAMW4LINUX_HOME/etc"
 LAMW4LINUX_LOCAL_ENV="$LAMW4LINUX_ETC/environment"
 IGNORE_XFCE_LAMW_ERROR_PATH="$LAMW4LINUX_ETC/lamw-xfce-error.conf"

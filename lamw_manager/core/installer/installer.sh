@@ -6,6 +6,17 @@
 #Date: 02/10/2022
 #Description: "installer.sh" is part of the core of LAMW Manager. Contains routines for installing LAMW development environment
 #-------------------------------------------------------------------------------------------------#
+#set Remove Gradle from different 
+setOldGradleVersion(){
+	[ ! -e "$LAMW_INSTALL_LOG" ] && return 
+
+	local current_gradle_version=$(grep ^GRADLE_VERSION= $LAMW_INSTALL_LOG | awk -F= ' { print $NF }')
+
+	if [ "$SET_CURRENT_GRADLE" = "" ] && [ "$current_gradle_version" != "$GRADLE_VERSION" ]; then
+		OLD_GRADLE+=$("$ROOT_LAMW/$current_gradle_version")
+		SET_CURRENT_GRADLE=1
+	fi
+}
 
 #prepare upgrade
 LAMWPackageManager(){
@@ -38,7 +49,7 @@ LAMWPackageManager(){
 			[ -e ${OLD_FPC_SOURCES[i]} ] && rm  -rf ${OLD_FPC_SOURCES[i]}
 		done
 
-
+		setOldGradleVersion
 		for gradle in ${OLD_GRADLE[*]}; do
 			if [ -e "$gradle" ]; then
 				rm -rf $gradle 
