@@ -14,7 +14,7 @@ Example of installation from *lamw_manager_setup.sh*
 	<strong>To install LAMW and dependencies:</strong>
 	<pre>	bash lamw_manager_setup.sh</pre>
 	<strong>Install LAMW and dependencies with minimal crosscompile to Android</strong>
-	<pre>	./lamw_manager <strong>--</strong>	<em>--minimal</em></pre>
+	<pre>	bash lamw_manager_setup.sh <strong>--</strong>	<em>--minimal</em></pre>
 	<strong>To install LAMW and dependencies and Run Android SDK Manager</strong><sup>1</sup>
 	<pre>	bash lamw_manager_setup.sh        <strong>--</strong>	<em>--sdkmanager</em>	<em>[ARGS]</em></pre>
 	<strong>To clean and reinstall LAMW</strong>
