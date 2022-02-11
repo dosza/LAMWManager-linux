@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (mater-alma)
 #Course: Science Computer
-#Version: 0.4.5
-#Date: 01/14/2022
+#Version: v0.4.6
+#Date: 02/10/2022
 #Description: The "lamw-manager-settings-editor.sh" is part of the core of LAMW Manager. Responsible for managing LAMW Manager / LAMW configuration files..
 #-----------------------------------------------------------------------f--------------------------#
 #this function builds initial struct directory of LAMW env Development !
@@ -165,6 +165,7 @@ AddLAMWtoStartMenu(){
 #this  fuction create a INI file to config  all paths used in lamw framework 
 LAMW4LinuxPostConfig(){
 	local startup_error_lamw4linux="$LAMW4LINUX_ETC/startup-check-errors-lamw4linux.sh"
+	local lazbuild_path="$LAMW4LINUX_HOME/usr/bin/lazbuild"
 	local old_lamw_workspace="$LAMW_USER_HOME/Dev/lamw_workspace"
 	local ant_path=$ANT_HOME/bin
 	local breakline='\\'n
@@ -255,10 +256,17 @@ LAMW4LinuxPostConfig(){
 		"exec \$LAMW4LINUX_EXE_PATH --pcp=\$LAMW4_LINUX_PATH_CFG \$*"
 	)
 
+	local lazbuild_str=(
+		'#!/bin/bash'
+		"source $LAMW4LINUX_LOCAL_ENV"
+		"exec $LAMW_IDE_HOME/lazbuild --pcp=\$LAMW4_LINUX_PATH_CFG \$*"
+	)
+
 	WriterFileln "$LAMW4_LINUX_PATH_CFG/LAMW.ini" "LAMW_init_str"
 	WriterFileln "$LAMW_IDE_HOME/startlamw4linux" "startlamw4linux_str"
 	WriterFileln "$LAMW4LINUX_LOCAL_ENV" lamw4linux_env_str
 	WriterFileln "$startup_error_lamw4linux" startup_error_lamw4linux_str
+	WriterFileln "$lazbuild_path" lazbuild_str && chmod +x $lazbuild_path
 
 	if [ -e  $LAMW_IDE_HOME/startlamw4linux ]; then
 		chmod +x $LAMW_IDE_HOME/startlamw4linux
@@ -284,7 +292,7 @@ ActiveProxy(){
 	fi
 }
 CleanOldCrossCompileBins(){
-	wrapperParseFPC
+	parseFPCTrunk
 	local lamw_manager_v031=0.3.1
 	local clean_files=(
 		"$FPC_LIB_PATH/ppcrossarm"
@@ -388,7 +396,7 @@ validate_is_file_create_by_lamw_manager(){
 CleanOldConfig(){
 	getStatusInstalation
 	[ $LAMW_INSTALL_STATUS = 1 ] && checkLAMWManagerVersion > /dev/null
-	wrapperParseFPC
+	parseFPCTrunk
 	local list_deleted_files=(
 		"/usr/bin/ppcarm"
 		"/usr/bin/ppcrossarm"
