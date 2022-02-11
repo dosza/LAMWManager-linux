@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.4.5
-#Date: 01/14/2022
+#Version: v0.4.6
+#Date: 02/10/2022
 #Description: "installer.sh" is part of the core of LAMW Manager. Contains routines for installing LAMW development environment
 #-------------------------------------------------------------------------------------------------#
 
@@ -135,6 +135,7 @@ fi
 gitCheckout(){
 	if [ -e "$git_src_dir" ]; then
 		changeDirectory "$git_src_dir" 
+		git config advice.detachedHead false
 		git checkout $git_branch
 	fi
 }
@@ -384,7 +385,7 @@ Repair(){
 			installDependences
 			flag_need_repair=1
 		fi
-		wrapperParseFPC
+		parseFPCTrunk
 		setLAMWDeps
 		if [ ! -e $expected_fpc_src_path ]; then
 			getFPCSourcesTrunk
@@ -392,7 +393,7 @@ Repair(){
 		fi
 		
 		if [ $flag_need_repair = 1 ]; then
-			ConfigureFPCCrossAndroid
+			configureFPCTrunk
 			CleanOldCrossCompileBins
 			buildCrossAndroid
 			BuildLazarusIDE
@@ -506,16 +507,19 @@ installLAMWPackages(){
 }
 #Build lazarus ide
 BuildLazarusIDE(){	
-	wrapperParseFPC
+	parseFPCTrunk
 	export PATH=$FPC_TRUNK_LIB_PATH:$FPC_TRUNK_EXEC_PATH:$PATH
 	local error_build_lazarus_msg="${VERMELHO}Fatal error:${NORMAL}Fails in build Lazarus!!"
 	local make_opts=( "clean all" "PP=${FPC_TRUNK_LIB_PATH}/ppcx64" "FPC_VERSION=$_FPC_TRUNK_VERSION" )
-	
+	local build_msg="Please wait, starting build Lazarus to ${NEGRITO}x86_64/Linux${NORMAL}..."
+	local sucess_filler="$(getCurrentSucessFiller 1 x86_64/Linux)"
 	changeDirectory $LAMW_IDE_HOME
 
-	if [ $# = 0 ]; then 
-	 	make -s  ${make_opts[*]}
+	if [ $# = 0 ]; then
+		printf "%s" "$build_msg"
+		make -s ${make_opts[@]} > /dev/null 2>&1
 	 	check_error_and_exit "$error_build_lazarus_msg" #build all IDE
+	 	printf  "%s\n" "${FILLER:${#sucess_filler}}${VERDE} [OK]${NORMAL}"
 	fi
 	
 	initLAMw4LinuxConfig
@@ -556,7 +560,7 @@ mainInstall(){
 	AddSDKPathstoProfile
 	CleanOldCrossCompileBins
 	buildCrossAndroid
-	ConfigureFPCCrossAndroid
+	configureFPCTrunk
 	BuildLazarusIDE
 	LAMW4LinuxPostConfig
 	enableADBtoUdev

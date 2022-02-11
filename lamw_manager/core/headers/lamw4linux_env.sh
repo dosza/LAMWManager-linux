@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.4.5
-#Date: 01/14/2022
+#Version: v0.4.6
+#Date: 02/10/2022
 #Description: The "lamw_headers" is part of the core of LAMW Manager. This script contains LAMW Manager variables.
 #-------------------------------------------------------------------------------------------------#
 LAMW4_LINUX_PATH_CFG="$LAMW_USER_HOME/.lamw4linux"
@@ -27,3 +27,5 @@ MAGIC_TRAP_INDEX=-1
 USE_PROXY=0
 TIME_WAIT=2
 NEED_XFCE_MITIGATION=0
+LAMW_MINIMAL_INSTALL=0
+MIN_LAMW_ARCHS=3
