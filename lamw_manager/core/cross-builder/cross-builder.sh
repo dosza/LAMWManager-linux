@@ -59,16 +59,20 @@ buildCurrentFPC(){
 
 	printf  "%s\n" "${FILLER:${#sucess_filler}}${VERDE} [OK]${NORMAL}"
 }
+
+getMaxBuildArchs(){
+	if [ $LAMW_MINIMAL_INSTALL = 0 ]; then
+		echo ${#build_aarch[*]}
+	else
+		echo $MIN_LAMW_ARCHS
+	fi
+}
 #Function to build ARMv7 and AARCH64
 buildCrossAndroid(){
 	local build_aarch=( "x86_64/Linux" {AARCH64,ARMv7,x86_64,i386}/Android)
+	local max_archs=$(getMaxBuildArchs)
 	changeDirectory "$LAMW4LINUX_HOME/usr/share/fpcsrc/$FPC_TRUNK_SVNTAG"
-	if [ $LAMW_MINIMAL_INSTALL = 0 ]; then
-		local max_archs=${#build_aarch[*]}
-	else
-		local max_archs=$MIN_LAMW_ARCHS
-	fi
-
+	
 	for ((i=0;i<$max_archs;i++)) do 
 		buildCurrentFPC
 	done
