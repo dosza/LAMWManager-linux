@@ -13,7 +13,7 @@ setOldGradleVersion(){
 	local current_gradle_version=$(grep ^GRADLE_VERSION= $LAMW_INSTALL_LOG | awk -F= ' { print $NF }')
 
 	if [ "$SET_CURRENT_GRADLE" = "" ] && [ "$current_gradle_version" != "$GRADLE_VERSION" ]; then
-		OLD_GRADLE+=$("$ROOT_LAMW/$current_gradle_version")
+		OLD_GRADLE+=("$ROOT_LAMW/gradle-$current_gradle_version")
 		SET_CURRENT_GRADLE=1
 	fi
 }
