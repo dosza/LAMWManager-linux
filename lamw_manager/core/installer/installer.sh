@@ -227,8 +227,6 @@ getFPCSourcesTrunk(){
 
 #get Lazarus Sources
 getLazarusSources(){
-	local msg="${VERMELHO}Warning:${NORMAL}${NEGRITO}Lazarus has been downgraded to version 2.0.12!!${NORMAL}"
-	printf "%s\n" "$msg"
 	changeDirectory $LAMW4LINUX_HOME
 	getFromGit "$LAZARUS_STABLE_SRC_LNK" "$LAMW_IDE_HOME" "$LAZARUS_STABLE"
 }
