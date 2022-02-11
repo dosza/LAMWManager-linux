@@ -123,7 +123,7 @@ writeLAMWLogInstall(){
 		"Install-date:$(date)"
 	)
 
-	WriterFileln "$LAMW4LINUX_HOME/lamw-install.log" "lamw_log_str"	
+	WriterFileln "$LAMW_INSTALL_LOG" "lamw_log_str"	
 }
 
 #Add LAMW4Linux to menu 
