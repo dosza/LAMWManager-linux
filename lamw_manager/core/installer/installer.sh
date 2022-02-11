@@ -74,7 +74,7 @@ LAMWPackageManager(){
 
 }
 getStatusInstalation(){
-	if [  -e $LAMW4LINUX_HOME/lamw-install.log ]; then
+	if [  -e $LAMW_INSTALL_LOG ]; then
 		export LAMW_INSTALL_STATUS=1
 		return 1
 	else 
@@ -422,10 +422,9 @@ Repair(){
 
 checkLAMWManagerVersion(){
 	local ret=0
-	local lamw_install_log_path="$LAMW4LINUX_HOME/lamw-install.log"
-	[ ! -e  $lamw_install_log_path ] && return
+	[ ! -e  $LAMW_INSTALL_LOG ] && return
 
-	local current_lamw_mgr_version="$(grep "^Generate LAMW_INSTALL_VERSION="  "$lamw_install_log_path" | awk -F= '{ print $NF }')"
+	local current_lamw_mgr_version="$(grep "^Generate LAMW_INSTALL_VERSION="  "$LAMW_INSTALL_LOG" | awk -F= '{ print $NF }')"
 	for i  in ${!OLD_LAMW_INSTALL_VERSION[*]};do
 		if [ $current_lamw_mgr_version = ${OLD_LAMW_INSTALL_VERSION[i]} ]; then 
 			CURRENT_OLD_LAMW_INSTALL_INDEX=$i
@@ -465,12 +464,10 @@ checkChangeLAMWDeps(){
 #get implict install 
 getImplicitInstall(){
 
-	local lamw_install_log_path="$LAMW4LINUX_HOME/lamw-install.log"
-
-	if [ ! -e "$lamw_install_log_path" ]; then
+	if [ ! -e "$LAMW_INSTALL_LOG" ]; then
 		return 
 	else
-		grep "Generate LAMW_INSTALL_VERSION=$LAMW_INSTALL_VERSION" "$lamw_install_log_path" 	> /dev/null
+		grep "Generate LAMW_INSTALL_VERSION=$LAMW_INSTALL_VERSION" "$LAMW_INSTALL_LOG" 	> /dev/null
 		
 		if [ $? = 0 ]; then
 			checkChangeLAMWDeps
