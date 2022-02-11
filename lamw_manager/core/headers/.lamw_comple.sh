@@ -2,7 +2,7 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.4.5
+#Version: v0.4.6
 #Description: This script contains routines for completing LAMW Manager arguments.
 #Ref:https://www.vivaolinux.com.br/dica/Shell-script-autocompletion-Como-implementar
 #-------------------------------------------------------------------------------------------------#

@@ -15,6 +15,7 @@ lamw_manager_help(){
 	"${NEGRITO}Usage${NORMAL}:\n"
 	"\t${NEGRITO}env LOCAL_ROOT_LAMW=[dir]${NORMAL} ${lamw_mgr}    Installing LAMW and dependencies¹ on custom² directory\n"
 	"\t${NEGRITO}${lamw_mgr//\-\-/'      '}${NORMAL}                              Install LAMW and dependencies¹\n"
+	"\t$lamw_mgr\t${VERDE}--minimal${NORMAL}                   Install LAMW and dependencies with minimal crosscompile to Android¹\n"
 	"\t$lamw_mgr\t${VERDE}--sdkmanager${NORMAL}\t${VERDE}[ARGS]${NORMAL}      Install LAMW and Run Android SDK Manager³\n"
 	"\t$lamw_mgr\t${VERDE}--update-lamw${NORMAL}               To just upgrade LAMW framework (with the latest version available in git)\n"
 	"\t$lamw_mgr\t${VERDE}--reset${NORMAL}                     To clean and reinstall LAMW\n"
@@ -166,4 +167,12 @@ getFiller(){
 		FILLER='....................................................................................................'
 	fi
 
+}
+
+getCurrentSucessFiller(){
+	case $1 in 
+		0) echo "Build to FPC ${NEGRITO}${2}${NORMAL}";;
+		1) echo "Build to Lazarus ${NEGRITO}${2}${NORMAL}";;
+		3) echo "Cleaning to FPC Sources ${NEGRITO}${2}${NORMAL}";;
+	esac
 }

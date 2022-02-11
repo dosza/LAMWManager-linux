@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.4.5
-#Date: 01/14/2022
+#Version: v0.4.6
+#Date: 02/10/2022
 #Description: The "lamw-install.sh" is part of the core of LAMW Manager. This script configures the development environment for LAMW
 #-------------------------------------------------------------------------------------------------#
 
@@ -39,11 +39,11 @@ case "$1" in
 	;;
 
 	"--sdkmanager")
-	getStatusInstalation;
-	[ $LAMW_INSTALL_STATUS = 0 ] && mainInstall
-	echo "Please wait, starting ${NEGRITO}Android SDK Manager Command Line ${NORMAL} ..."
-	getAndroidAPIS  ${ARGS[@]:1}
-	changeOwnerAllLAMW
+		getStatusInstalation;
+		[ $LAMW_INSTALL_STATUS = 0 ] && mainInstall
+		echo "Please wait, starting ${NEGRITO}Android SDK Manager Command Line ${NORMAL} ..."
+		getAndroidAPIS  ${ARGS[@]:1}
+		changeOwnerAllLAMW
  
 	;;
 	"--update-lamw")
@@ -67,7 +67,8 @@ case "$1" in
 			changeOwnerAllLAMW "1";
 		fi
 	;;
-	"install")
+	"install" | "--minimal")
+		[ "$1" = "--minimal" ] && LAMW_MINIMAL_INSTALL=1
 		mainInstall
 	;;
 
@@ -100,6 +101,9 @@ case "$1" in
 			BuildLazarusIDE
 			changeOwnerAllLAMW 1
 		fi
+	;;
+	"get-root-lamw")
+		echo "$ROOT_LAMW"
 	;;
 	*)
 		printf "${VERMELHO}Invalid argument!${NORMAL}\n$(lamw_manager_help)" >&2
