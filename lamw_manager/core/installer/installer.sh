@@ -557,11 +557,11 @@ mainInstall(){
 	getGradle
 	getAndroidCmdLineTools
 	disableTrapActions
-	getAndroidAPIS 
 	getFPCBuilder
 	getFPCSourcesTrunk
 	getLazarusSources
 	getLAMWFramework
+	getAndroidAPIS
 	CreateBinutilsSimbolicLinks
 	AddSDKPathstoProfile
 	CleanOldCrossCompileBins
