@@ -491,7 +491,7 @@ getCurrentLazarusWidget(){
 
 getMaxLAMWPackages(){
 	local max_lamw_pcks=${#LAMW_PACKAGES[@]}
- 	[ $LAMW_MINIMAL_INSTALL= 1 ] && ((max_lamw_pcks--))
+ 	[ $LAMW_MINIMAL_INSTALL = 1 ] && ((max_lamw_pcks--))
 	echo $max_lamw_pcks
 }
 
