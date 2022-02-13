@@ -488,9 +488,17 @@ getCurrentLazarusWidget(){
 	echo "$current_widget_set"
 }
 
+
+getMaxLAMWPackages(){
+	local max_lamw_pcks=${#LAMW_PACKAGES[@]}
+ 	[ $LAMW_MINIMAL_INSTALL= 1 ] && ((max_lamw_pcks--))
+	echo $max_lamw_pcks
+}
+
 installLAMWPackages(){
 	local ide_make_cfg_path="$LAMW4_LINUX_PATH_CFG/idemake.cfg"
 	local error_lazbuild_msg="${VERMELHO}Error${NORMAL}: Fails on build ${NEGRITO}${LAMW_PACKAGES[i]}${NORMAL} package"
+	local max_lamw_pcks=$(getMaxLAMWPackages)
 	local lamw_build_opts=(
 		"--pcp=$LAMW4_LINUX_PATH_CFG"  
 		"--ws=$(getCurrentLazarusWidget)"
@@ -500,7 +508,7 @@ installLAMWPackages(){
 	)
 
 	#build ide with lamw framework 
-	for((i=0;i< ${#LAMW_PACKAGES[@]};i++)); do
+	for((i=0;i< $max_lamw_pcks;i++)); do
 		echo "Please wait, buiding ${NEGRITO}`basename ${LAMW_PACKAGES[i]}`${NORMAL} ... "
 		./lazbuild ${lamw_build_opts[*]} ${LAMW_PACKAGES[$i]}
 		
