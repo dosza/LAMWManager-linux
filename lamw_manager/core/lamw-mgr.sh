@@ -58,7 +58,7 @@ case "$1" in
 				echo "${VERMELHO}Warning:There are updates for LAMW4Linux${NORMAL}"
 				echo "run ${NEGRITO}./lamw_manager to update:${NORMAL}"
 			fi
-			
+			getFiller
 			checkProxyStatus;
 			echo "Updating LAMW";
 			getLAMWFramework;
