@@ -179,10 +179,9 @@ autoStartLAMW4Linux(){
 		echo "${NEGRITO}Please wait,starting LAMW4Linux IDE ...${NORMAL}"
 		echo "LAMW4Linux IDE  messages(errors) can read in ${NEGRITO}$LAMW4LINUX_FIRST_RUN_LOG${NORMAL} ..."
 		startlamw4linux > $LAMW4LINUX_FIRST_RUN_LOG 2>&1 &
-		exit $EXIT_STATUS
-	else
-		exit $EXIT_STATUS
 	fi
+
+	exit $EXIT_STATUS
 }
 
 main(){
