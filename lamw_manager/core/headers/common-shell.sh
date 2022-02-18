@@ -344,19 +344,3 @@ AptInstall(){
 	apt-get clean
 	apt-get autoclean
 }
-
-
-#Retorna verdadeiro se o pacote $1 está instalado
-isDebPackInstalled(){
-	if [ "$1" = "" ]; then
-		echo "missing package name";
-		return 0;
-	fi
-	exec 2> /dev/null dpkg -s "$1" | grep 'Status: install' > /dev/null #exec 2 redireciona a saída do stderror para /dev/null
-	
-	if [ $?  = 0 ]; then
-		return 1
-	else
-		return 0;
-	fi
-}
