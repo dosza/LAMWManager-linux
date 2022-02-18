@@ -24,6 +24,7 @@ APT_LOCKS=(
 	"/var/cache/apt/archives/lock"
 	"/var/lib/dpkg/lock-frontend"
 )
+SLEEP_TIME=0.2
 shopt  -s expand_aliases
 alias newPtr='declare -n'
 
@@ -280,12 +281,14 @@ IsFileBusy(){
 	local args=($*)
 	unset args[0]
 	local msg=0
+	
 	while fuser ${args[*]} > /dev/null 2<&1 #enquato os arquivos estiverem ocupados ....
 	do
 		if  [ $msg = 0 ]; then 
 			echo "Wait for $1..."
 			msg=1;
 		fi
+		sleep $SLEEP_TIME # sleep this process to $SLEEP_TIME ms ...
 	done
 }
 
