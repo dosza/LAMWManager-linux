@@ -37,7 +37,7 @@ BuildFPC(){
 			make -s  clean crossall crossinstall CPU_TARGET=x86_64 OS_TARGET=android "PP=$pp"\
 				 INSTALL_PREFIX=$install_prefix OPT="-Cfsse3" CROSSOPT="-Cfsse3" ;;
 		4)
-			make -s  clean crossall crossinstall CPU_TARGET=i386 CPU_TARGET=i386 OS_TARGET=android "PP=$pp"\
+			make -s  clean crossall crossinstall CPU_TARGET=i386 OS_TARGET=android "PP=$pp"\
 				INSTALL_PREFIX=$install_prefix OPT="-Cfsse3" CROSSOPT="-Cfsse3" ;;
 		*) 
 			check_error_and_exit "${VERMELHO}Fatal Error:${NORMAL}Invalid CrossOpts";;
