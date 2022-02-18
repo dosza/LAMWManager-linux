@@ -24,7 +24,7 @@ APT_LOCKS=(
 	"/var/cache/apt/archives/lock"
 	"/var/lib/dpkg/lock-frontend"
 )
-SLEEP_TIME=0.2
+SLEEP_TIME=1
 shopt  -s expand_aliases
 alias newPtr='declare -n'
 
