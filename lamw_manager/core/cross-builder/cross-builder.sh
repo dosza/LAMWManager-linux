@@ -77,7 +77,7 @@ buildCrossAndroid(){
 		buildCurrentFPC
 	done
 
-	local sucess_filler="$(getCurrentSucessFiller 3 android/Linux)"
+	local sucess_filler="$(getCurrentSucessFiller 2 android/Linux)"
 	printf "Please wait, cleaning FPC Sources to ${NEGRITO}Linux/Android${NORMAL}......................."	
 	make -s  clean > /dev/null 2>&1
 	printf  "%s\n" "${FILLER:${#sucess_filler}}${VERDE} [OK]${NORMAL}"

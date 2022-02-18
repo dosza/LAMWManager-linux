@@ -499,6 +499,10 @@ installLAMWPackages(){
 	local ide_make_cfg_path="$LAMW4_LINUX_PATH_CFG/idemake.cfg"
 	local error_lazbuild_msg="${VERMELHO}Error${NORMAL}: Fails on build ${NEGRITO}${LAMW_PACKAGES[i]}${NORMAL} package"
 	local max_lamw_pcks=$(getMaxLAMWPackages)
+	local sucess_filler=""
+	local build_msg=""
+	local current_pack=""
+
 	local lamw_build_opts=(
 		"--pcp=$LAMW4_LINUX_PATH_CFG"  
 		"--ws=$(getCurrentLazarusWidget)"
@@ -506,17 +510,25 @@ installLAMWPackages(){
 		"--build-ide=" 
 		"--add-package"
 	)
-
 	#build ide with lamw framework 
 	for((i=0;i< $max_lamw_pcks;i++)); do
-		echo "Please wait, buiding ${NEGRITO}`basename ${LAMW_PACKAGES[i]}`${NORMAL} ... "
-		./lazbuild ${lamw_build_opts[*]} ${LAMW_PACKAGES[$i]}
+		
+		current_pack="`basename ${LAMW_PACKAGES[i]}`"
+		build_msg="Please wait, starting buiding ${NEGRITO}${current_pack}${NORMAL}..........................."
+		sucess_filler="$(getCurrentSucessFiller 3 $current_pack)"
+		
+		printf "%s" "$build_msg"
+		./lazbuild ${lamw_build_opts[*]} ${LAMW_PACKAGES[$i]} >/dev/null
 		
 		if [ $? != 0 ]; then 
 			./lazbuild ${lamw_build_opts[*]} ${LAMW_PACKAGES[$i]}
 			[ $? != 0 ] && { echo "$error_lazbuild_msg" && EXIT_STATUS=1 && return ; }
 		fi
+		
+		printf  "%s\n" "${FILLER:${#sucess_filler}}${VERDE} [OK]${NORMAL}"
+
 	done
+
 
 }
 #Build lazarus ide
