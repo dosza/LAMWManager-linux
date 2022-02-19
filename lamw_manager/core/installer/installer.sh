@@ -514,7 +514,7 @@ installLAMWPackages(){
 	for((i=0;i< $max_lamw_pcks;i++)); do
 		
 		current_pack="`basename ${LAMW_PACKAGES[i]}`"
-		build_msg="Please wait, starting buiding ${NEGRITO}${current_pack}${NORMAL}..........................."
+		build_msg="Please wait, starting building ${NEGRITO}${current_pack}${NORMAL}..........................."
 		sucess_filler="$(getCurrentSucessFiller 3 $current_pack)"
 		
 		printf "%s" "$build_msg"
