@@ -2,10 +2,21 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: v0.4.6
-#Date: 02/10/2022
+#Version: 0.4.7
+#Date: 02/18/2022
 #Description: "installer.sh" is part of the core of LAMW Manager. Contains routines for installing LAMW development environment
 #-------------------------------------------------------------------------------------------------#
+#set Remove Gradle from different 
+setOldGradleVersion(){
+	[ ! -e "$LAMW_INSTALL_LOG" ] && return 
+
+	local current_gradle_version=$(grep ^GRADLE_VERSION= $LAMW_INSTALL_LOG | awk -F= ' { print $NF }')
+
+	if [ "$SET_CURRENT_GRADLE" = "" ] && [ "$current_gradle_version" != "$GRADLE_VERSION" ]; then
+		OLD_GRADLE+=("$ROOT_LAMW/gradle-$current_gradle_version")
+		SET_CURRENT_GRADLE=1
+	fi
+}
 
 #prepare upgrade
 LAMWPackageManager(){
@@ -38,7 +49,7 @@ LAMWPackageManager(){
 			[ -e ${OLD_FPC_SOURCES[i]} ] && rm  -rf ${OLD_FPC_SOURCES[i]}
 		done
 
-
+		setOldGradleVersion
 		for gradle in ${OLD_GRADLE[*]}; do
 			if [ -e "$gradle" ]; then
 				rm -rf $gradle 
@@ -63,7 +74,7 @@ LAMWPackageManager(){
 
 }
 getStatusInstalation(){
-	if [  -e $LAMW4LINUX_HOME/lamw-install.log ]; then
+	if [  -e $LAMW_INSTALL_LOG ]; then
 		export LAMW_INSTALL_STATUS=1
 		return 1
 	else 
@@ -216,8 +227,6 @@ getFPCSourcesTrunk(){
 
 #get Lazarus Sources
 getLazarusSources(){
-	local msg="${VERMELHO}Warning:${NORMAL}${NEGRITO}Lazarus has been downgraded to version 2.0.12!!${NORMAL}"
-	printf "%s\n" "$msg"
 	changeDirectory $LAMW4LINUX_HOME
 	getFromGit "$LAZARUS_STABLE_SRC_LNK" "$LAMW_IDE_HOME" "$LAZARUS_STABLE"
 }
@@ -411,10 +420,9 @@ Repair(){
 
 checkLAMWManagerVersion(){
 	local ret=0
-	local lamw_install_log_path="$LAMW4LINUX_HOME/lamw-install.log"
-	[ ! -e  $lamw_install_log_path ] && return
+	[ ! -e  $LAMW_INSTALL_LOG ] && return
 
-	local current_lamw_mgr_version="$(grep "^Generate LAMW_INSTALL_VERSION="  "$lamw_install_log_path" | awk -F= '{ print $NF }')"
+	local current_lamw_mgr_version="$(grep "^Generate LAMW_INSTALL_VERSION="  "$LAMW_INSTALL_LOG" | awk -F= '{ print $NF }')"
 	for i  in ${!OLD_LAMW_INSTALL_VERSION[*]};do
 		if [ $current_lamw_mgr_version = ${OLD_LAMW_INSTALL_VERSION[i]} ]; then 
 			CURRENT_OLD_LAMW_INSTALL_INDEX=$i
@@ -454,12 +462,10 @@ checkChangeLAMWDeps(){
 #get implict install 
 getImplicitInstall(){
 
-	local lamw_install_log_path="$LAMW4LINUX_HOME/lamw-install.log"
-
-	if [ ! -e "$lamw_install_log_path" ]; then
+	if [ ! -e "$LAMW_INSTALL_LOG" ]; then
 		return 
 	else
-		grep "Generate LAMW_INSTALL_VERSION=$LAMW_INSTALL_VERSION" "$lamw_install_log_path" 	> /dev/null
+		grep "Generate LAMW_INSTALL_VERSION=$LAMW_INSTALL_VERSION" "$LAMW_INSTALL_LOG" 	> /dev/null
 		
 		if [ $? = 0 ]; then
 			checkChangeLAMWDeps
@@ -482,9 +488,21 @@ getCurrentLazarusWidget(){
 	echo "$current_widget_set"
 }
 
+
+getMaxLAMWPackages(){
+	local max_lamw_pcks=${#LAMW_PACKAGES[@]}
+ 	[ $LAMW_MINIMAL_INSTALL = 1 ] && ((max_lamw_pcks--))
+	echo $max_lamw_pcks
+}
+
 installLAMWPackages(){
 	local ide_make_cfg_path="$LAMW4_LINUX_PATH_CFG/idemake.cfg"
 	local error_lazbuild_msg="${VERMELHO}Error${NORMAL}: Fails on build ${NEGRITO}${LAMW_PACKAGES[i]}${NORMAL} package"
+	local max_lamw_pcks=$(getMaxLAMWPackages)
+	local sucess_filler=""
+	local build_msg=""
+	local current_pack=""
+
 	local lamw_build_opts=(
 		"--pcp=$LAMW4_LINUX_PATH_CFG"  
 		"--ws=$(getCurrentLazarusWidget)"
@@ -492,17 +510,25 @@ installLAMWPackages(){
 		"--build-ide=" 
 		"--add-package"
 	)
-
 	#build ide with lamw framework 
-	for((i=0;i< ${#LAMW_PACKAGES[@]};i++)); do
-		echo "Please wait, buiding ${NEGRITO}`basename ${LAMW_PACKAGES[i]}`${NORMAL} ... "
-		./lazbuild ${lamw_build_opts[*]} ${LAMW_PACKAGES[$i]}
+	for((i=0;i< $max_lamw_pcks;i++)); do
+		
+		current_pack="`basename ${LAMW_PACKAGES[i]}`"
+		build_msg="Please wait, starting buiding ${NEGRITO}${current_pack}${NORMAL}..........................."
+		sucess_filler="$(getCurrentSucessFiller 3 $current_pack)"
+		
+		printf "%s" "$build_msg"
+		./lazbuild ${lamw_build_opts[*]} ${LAMW_PACKAGES[$i]} >/dev/null
 		
 		if [ $? != 0 ]; then 
 			./lazbuild ${lamw_build_opts[*]} ${LAMW_PACKAGES[$i]}
 			[ $? != 0 ] && { echo "$error_lazbuild_msg" && EXIT_STATUS=1 && return ; }
 		fi
+		
+		printf  "%s\n" "${FILLER:${#sucess_filler}}${VERDE} [OK]${NORMAL}"
+
 	done
+
 
 }
 #Build lazarus ide
@@ -511,7 +537,7 @@ BuildLazarusIDE(){
 	export PATH=$FPC_TRUNK_LIB_PATH:$FPC_TRUNK_EXEC_PATH:$PATH
 	local error_build_lazarus_msg="${VERMELHO}Fatal error:${NORMAL}Fails in build Lazarus!!"
 	local make_opts=( "clean all" "PP=${FPC_TRUNK_LIB_PATH}/ppcx64" "FPC_VERSION=$_FPC_TRUNK_VERSION" )
-	local build_msg="Please wait, starting build Lazarus to ${NEGRITO}x86_64/Linux${NORMAL}..."
+	local build_msg="Please wait, starting build Lazarus to ${NEGRITO}x86_64/Linux${NORMAL}.............."
 	local sucess_filler="$(getCurrentSucessFiller 1 x86_64/Linux)"
 	changeDirectory $LAMW_IDE_HOME
 
@@ -551,11 +577,11 @@ mainInstall(){
 	getGradle
 	getAndroidCmdLineTools
 	disableTrapActions
-	getAndroidAPIS 
 	getFPCBuilder
 	getFPCSourcesTrunk
 	getLazarusSources
 	getLAMWFramework
+	getAndroidAPIS
 	CreateBinutilsSimbolicLinks
 	AddSDKPathstoProfile
 	CleanOldCrossCompileBins
