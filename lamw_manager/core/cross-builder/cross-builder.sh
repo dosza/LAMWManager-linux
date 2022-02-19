@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: v0.4.6
-#Date: 02/10/2022
+#Version: 0.4.7
+#Date: 02/18/2022
 #Description:The "cross-builder.sh" is part of the core of LAMW Manager.  This script contains crosscompile compiler generation routines for ARMv7 / AARCH64- Android
 #-------------------------------------------------------------------------------------------------#
 
@@ -37,7 +37,7 @@ BuildFPC(){
 			make -s  clean crossall crossinstall CPU_TARGET=x86_64 OS_TARGET=android "PP=$pp"\
 				 INSTALL_PREFIX=$install_prefix OPT="-Cfsse3" CROSSOPT="-Cfsse3" ;;
 		4)
-			make -s  clean crossall crossinstall CPU_TARGET=i386 CPU_TARGET=i386 OS_TARGET=android "PP=$pp"\
+			make -s  clean crossall crossinstall CPU_TARGET=i386 OS_TARGET=android "PP=$pp"\
 				INSTALL_PREFIX=$install_prefix OPT="-Cfsse3" CROSSOPT="-Cfsse3" ;;
 		*) 
 			check_error_and_exit "${VERMELHO}Fatal Error:${NORMAL}Invalid CrossOpts";;
@@ -46,7 +46,7 @@ BuildFPC(){
 
 buildCurrentFPC(){
 	local error_build_msg="${VERMELHO}Fatal Error:${NORMAL} Falls to build FPC to ${build_aarch[$i]}"
-	local build_msg="Please wait, starting build FPC to ${NEGRITO}${build_aarch[i]}${NORMAL}..."
+	local build_msg="Please wait, starting build FPC to ${NEGRITO}${build_aarch[i]}${NORMAL}.............."
 	local sucess_filler="$(getCurrentSucessFiller 0 ${build_aarch[i]})"
 	printf "%s" "$build_msg"
 	BuildFPC $i > /dev/null
@@ -77,8 +77,8 @@ buildCrossAndroid(){
 		buildCurrentFPC
 	done
 
-	local sucess_filler="$(getCurrentSucessFiller 3 android/Linux)"
-	printf "Please wait, cleaning FPC Sources to ${NEGRITO}Linux/Android${NORMAL}............"	
+	local sucess_filler="$(getCurrentSucessFiller 2 android/Linux)"
+	printf "Please wait, cleaning FPC Sources to ${NEGRITO}Linux/Android${NORMAL}......................."	
 	make -s  clean > /dev/null 2>&1
 	printf  "%s\n" "${FILLER:${#sucess_filler}}${VERDE} [OK]${NORMAL}"
 }

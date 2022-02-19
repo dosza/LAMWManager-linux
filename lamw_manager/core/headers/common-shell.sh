@@ -10,20 +10,21 @@
 #GLOBAL VARIABLES
 #----ColorTerm
 export WARNING_COLOR=$'\033[93m'
-export VERDE=$'\e[1;32m'
-export AMARELO=$'\e[01;33m'
-export SUBLINHADO=$'\e[4'
-export NEGRITO=$'\e[1m'
-export VERMELHO=$'\e[1;31m'
-export VERMELHO_SUBLINHADO=$'\e[1;4;31m'
-export AZUL=$'\e[1;34m'
-export NORMAL=$'\e[0m'
+VERDE=$'\e[1;32m'
+AMARELO=$'\e[01;33m'
+SUBLINHADO=$'\e[4'
+NEGRITO=$'\e[1m'
+VERMELHO=$'\e[1;31m'
+VERMELHO_SUBLINHADO=$'\e[1;4;31m'
+AZUL=$'\e[1;34m'
+NORMAL=$'\e[0m'
 APT_LOCKS=(
 	"/var/lib/dpkg/lock"
 	"/var/lib/apt/lists/lock"
 	"/var/cache/apt/archives/lock"
 	"/var/lib/dpkg/lock-frontend"
 )
+SLEEP_TIME=1
 shopt  -s expand_aliases
 alias newPtr='declare -n'
 
@@ -32,32 +33,6 @@ check_error_and_exit(){
 	[ $? != 0 ] && echo "$1" && exit 1
 }
 
-CheckPackageDebIsInstalled(){
-	if [ "$1" = "" ]; then 
-		echo "Package cannot be empty"
-		return 2
-	fi
-	exec 2> /dev/null dpkg -s  "$1" | grep 'Status: install'  > /dev/null
-}
-getCurrentDebianFrontend(){
-	tty | grep pts/[0-9] > /dev/null 
-	if [ $? = 0 ]; then
-		CheckPackageDebIsInstalled libgtk3-perl 
-		local is_gnome_apt_frontend_installed=$?
-		
-		CheckPackageDebIsInstalled "debconf-kde-helper"
-		local is_kde_apt_frontend_installed=$?
-
-
-		if [ $is_gnome_apt_frontend_installed = 0 ]; then 
-			export DEBIAN_FRONTEND=gnome
-		else 
-			if [ $is_kde_apt_frontend_installed = 0 ];then
-				export DEBIAN_FRONTEND=kde
-			fi
-		fi
-	fi
-}
 
 
 isVariabelDeclared(){
@@ -306,14 +281,45 @@ IsFileBusy(){
 	local args=($*)
 	unset args[0]
 	local msg=0
+	
 	while fuser ${args[*]} > /dev/null 2<&1 #enquato os arquivos estiverem ocupados ....
 	do
 		if  [ $msg = 0 ]; then 
 			echo "Wait for $1..."
 			msg=1;
 		fi
+		sleep $SLEEP_TIME # sleep this process to $SLEEP_TIME ms ...
 	done
 }
+
+CheckPackageDebIsInstalled(){
+	if [ "$1" = "" ]; then 
+		echo "Package cannot be empty"
+		return 2
+	fi
+	exec 2> /dev/null dpkg -s  "$1" | grep 'Status: install'  > /dev/null
+}
+
+getCurrentDebianFrontend(){
+	tty | grep pts/[0-9] > /dev/null 
+	if [ $? = 0 ]; then
+		CheckPackageDebIsInstalled libgtk3-perl 
+		local is_gnome_apt_frontend_installed=$?
+		
+		CheckPackageDebIsInstalled "debconf-kde-helper"
+		local is_kde_apt_frontend_installed=$?
+
+
+		if [ $is_gnome_apt_frontend_installed = 0 ]; then 
+			export DEBIAN_FRONTEND=gnome
+		else 
+			if [ $is_kde_apt_frontend_installed = 0 ];then
+				export DEBIAN_FRONTEND=kde
+			fi
+		fi
+	fi
+}
+	
 
 #Essa instala um ou mais pacotes from apt 
 AptInstall(){
@@ -337,20 +343,4 @@ AptInstall(){
 	fi
 	apt-get clean
 	apt-get autoclean
-}
-
-
-#Retorna verdadeiro se o pacote $1 está instalado
-isDebPackInstalled(){
-	if [ "$1" = "" ]; then
-		echo "missing package name";
-		return 0;
-	fi
-	exec 2> /dev/null dpkg -s "$1" | grep 'Status: install' > /dev/null #exec 2 redireciona a saída do stderror para /dev/null
-	
-	if [ $?  = 0 ]; then
-		return 1
-	else
-		return 0;
-	fi
 }

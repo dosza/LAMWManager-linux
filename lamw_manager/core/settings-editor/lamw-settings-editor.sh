@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (mater-alma)
 #Course: Science Computer
-#Version: v0.4.6
-#Date: 02/10/2022
+#Version: 0.4.7
+#Date: 02/18/2022
 #Description: The "lamw-manager-settings-editor.sh" is part of the core of LAMW Manager. Responsible for managing LAMW Manager / LAMW configuration files..
 #-----------------------------------------------------------------------f--------------------------#
 #this function builds initial struct directory of LAMW env Development !
@@ -123,7 +123,7 @@ writeLAMWLogInstall(){
 		"Install-date:$(date)"
 	)
 
-	WriterFileln "$LAMW4LINUX_HOME/lamw-install.log" "lamw_log_str"	
+	WriterFileln "$LAMW_INSTALL_LOG" "lamw_log_str"	
 }
 
 #Add LAMW4Linux to menu 
@@ -208,16 +208,20 @@ LAMW4LinuxPostConfig(){
 
 	local lamw4linux_env_str=(
 		"#!/bin/bash"
-		"export PPC_CONFIG_PATH=$PPC_CONFIG_PATH"
-		"export JAVA_HOME=$JAVA_HOME"
-		"export ANDROID_HOME=$ANDROID_HOME"
-		"export ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
-		"export PATH=$ROOT_LAMW/lamw4linux/usr/bin:\$PPC_CONFIG_PATH:\$JAVA_HOME/bin:\$PATH"
-		"LAMW4_LINUX_PATH_CFG=$LAMW4_LINUX_PATH_CFG"
-		"LAMW_MANAGER_PATH=$LAMW_MANAGER_PATH"
-		"LAMW4LINUX_EXE_PATH=$LAMW4LINUX_EXE_PATH"
-		"OLD_LAMW4LINUX_EXE_PATH=${LAMW4LINUX_EXE_PATH}.old"
-		"IGNORE_XFCE_LAMW_ERROR_PATH=$IGNORE_XFCE_LAMW_ERROR_PATH"
+		"if [ \"\$LOCAL_LAMW_ENV\"  = \"\" ]; then "
+		"	export PPC_CONFIG_PATH=$PPC_CONFIG_PATH"
+		"	export JAVA_HOME=$JAVA_HOME"
+		"	export ANDROID_HOME=$ANDROID_HOME"
+		"	export ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
+		"	export PATH=$ROOT_LAMW/lamw4linux/usr/bin:\$PPC_CONFIG_PATH:\$JAVA_HOME/bin:\$PATH"
+		"	export LAMW4_LINUX_PATH_CFG=$LAMW4_LINUX_PATH_CFG"
+		"	export LAMW_MANAGER_PATH=$LAMW_MANAGER_PATH"
+		"	export LAMW4LINUX_EXE_PATH=$LAMW4LINUX_EXE_PATH"
+		"	export OLD_LAMW4LINUX_EXE_PATH=${LAMW4LINUX_EXE_PATH}.old"
+		"	export IGNORE_XFCE_LAMW_ERROR_PATH=$IGNORE_XFCE_LAMW_ERROR_PATH"
+		"	export LOCAL_LAMW_ENV=1"
+		"fi"
+
 	)
 
 	local startup_error_lamw4linux_str=(
