@@ -175,6 +175,6 @@ getCurrentSucessFiller(){
 		0) echo "Build to FPC ${NEGRITO}${2}${NORMAL}";;
 		1) echo "Build to Lazarus ${NEGRITO}${2}${NORMAL}";;
 		2) echo "Cleaning to FPC Sources ${NEGRITO}${2}${NORMAL}";;
-		3) echo "Please wait, buiding ${NEGRITO}${2}${NORMAL}";;
+		3) echo "Please wait, building ${NEGRITO}${2}${NORMAL}";;
 	esac
 }
