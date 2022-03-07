@@ -6,14 +6,14 @@ This page contains information about new features and bug fixes.
 v0.4.8 - Mar 7, 2022
 ---
 **Fixes**
-+	Fixes get LAMW Enviroment
++	Fixes get LAMW Environment
 
 v0.4.7 - Feb 19, 2022
 ---
 **News**
 +	Build LAMW Packages in silence mode
 +	Uninstall old gradle (from old package.json) automatically 
-+ 	Verify duplicated export LAMW Enviroment
++ 	Verify duplicated export LAMW Environment
 +	Adjust *--minimal* to install only what is strictly necessary for LAMW development 
 
 v0.4.6 - Feb 11, 2022
