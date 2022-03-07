@@ -3,6 +3,11 @@
 
 This page contains information about new features and bug fixes.
 
+v0.4.8 - Mar 7, 2022
+---
+**Fixes**
++	Fixes get LAMW Enviroment
+
 v0.4.7 - Feb 19, 2022
 ---
 **News**

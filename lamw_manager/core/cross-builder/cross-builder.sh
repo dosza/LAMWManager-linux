@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.4.7
-#Date: 02/18/2022
+#Version: 0.4.8
+#Date: 03/07/2022
 #Description:The "cross-builder.sh" is part of the core of LAMW Manager.  This script contains crosscompile compiler generation routines for ARMv7 / AARCH64- Android
 #-------------------------------------------------------------------------------------------------#
 
