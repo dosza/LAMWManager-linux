@@ -82,9 +82,9 @@ changeOwnerAllLAMW(){
 		#	
 		)
 
-		if [ "$NO_EXISTENT_ROOT_LAMW_PARENT" != "" ]; then
+		[ "$NO_EXISTENT_ROOT_LAMW_PARENT" != "" ] &&
 			files_chown+=($NO_EXISTENT_ROOT_LAMW_PARENT)
-		fi		
+	
 	fi
 	echo "Restoring directories ..."
 	for ((i=0;i<${#files_chown[*]};i++))
@@ -208,19 +208,19 @@ LAMW4LinuxPostConfig(){
 
 	local lamw4linux_env_str=(
 		"#!/bin/bash"
-		"if [ \"\$LOCAL_LAMW_ENV\"  = \"\" ]; then "
-		"	export PPC_CONFIG_PATH=$PPC_CONFIG_PATH"
-		"	export JAVA_HOME=$JAVA_HOME"
-		"	export ANDROID_HOME=$ANDROID_HOME"
-		"	export ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
-		"	export PATH=$ROOT_LAMW/lamw4linux/usr/bin:\$PPC_CONFIG_PATH:\$JAVA_HOME/bin:\$PATH"
-		"	export LAMW4_LINUX_PATH_CFG=$LAMW4_LINUX_PATH_CFG"
-		"	export LAMW_MANAGER_PATH=$LAMW_MANAGER_PATH"
-		"	export LAMW4LINUX_EXE_PATH=$LAMW4LINUX_EXE_PATH"
-		"	export OLD_LAMW4LINUX_EXE_PATH=${LAMW4LINUX_EXE_PATH}.old"
-		"	export IGNORE_XFCE_LAMW_ERROR_PATH=$IGNORE_XFCE_LAMW_ERROR_PATH"
-		"	export LOCAL_LAMW_ENV=1"
-		"fi"
+		"[ \"\$LOCAL_LAMW_ENV\"  = \"1\" ] && return"
+		"export PPC_CONFIG_PATH=$PPC_CONFIG_PATH"
+		"export JAVA_HOME=$JAVA_HOME"
+		"export ANDROID_HOME=$ANDROID_HOME"
+		"export ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
+		"export PATH=$ROOT_LAMW/lamw4linux/usr/bin:\$PPC_CONFIG_PATH:\$JAVA_HOME/bin:\$PATH"
+		"export LAMW4_LINUX_PATH_CFG=$LAMW4_LINUX_PATH_CFG"
+		"export LAMW_MANAGER_PATH=$LAMW_MANAGER_PATH"
+		"export LAMW4LINUX_EXE_PATH=$LAMW4LINUX_EXE_PATH"
+		"export OLD_LAMW4LINUX_EXE_PATH=${LAMW4LINUX_EXE_PATH}.old"
+		"export IGNORE_XFCE_LAMW_ERROR_PATH=$IGNORE_XFCE_LAMW_ERROR_PATH"
+		"export LOCAL_LAMW_ENV=1"
+
 
 	)
 
