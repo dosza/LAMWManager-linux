@@ -8,6 +8,9 @@ v0.4.8 - Mar 7, 2022
 **Fixes**
 +	Fixes get LAMW Environment
 
+**News**
++	Ubuntu 18.04 LTS is no longer officially supported!
+
 v0.4.7 - Feb 19, 2022
 ---
 **News**
