@@ -67,7 +67,7 @@ case "$1" in
 			changeOwnerAllLAMW "1";
 		fi
 	;;
-	"install" | "--minimal")
+	"--reinstall" | "--minimal")
 		[ "$1" = "--minimal" ] && LAMW_MINIMAL_INSTALL=1
 		mainInstall
 	;;
