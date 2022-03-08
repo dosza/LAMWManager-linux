@@ -38,7 +38,7 @@ lamw_manager_help(){
 	"\n\n${NEGRITO}Note:\n${NORMAL}"
 	"\t¹ By default the installation waives the use of parameters, if LAMW is installed, it will only be updated!\n"
 	"\t² After directory verification and validation (system directories and mount points will not be accepted)!\n"
-	"\t³ A complete reinstall with all crosscompile, without to make reset.\n"
+	"\t³ Force a complete reinstall [ with all Android crosscompile ].\n"
 	"\t⁴ If it is already installed, just run the Android SDK Tools with [ARGS].\n"
 	"\n"
 	"\t"
