@@ -5,7 +5,6 @@ ARGS="$*"
 USE_PKEXEC=0
 ENTER_TO_EXIT=0
 AUTO_START_LAMW4LINUX=0
-CALL_BASH="bash"
 EXIT_STATUS=0
 LAMW_MANAGER_LOCK=/tmp/lamw_manager.lock
 LAMW4LINUX_FIRST_RUN_LOG=/tmp/lamw4linux-first-run.txt
