@@ -3,10 +3,11 @@
 
 This page contains information about new features and bug fixes.
 
-v0.4.8 - Mar 7, 2022
+v0.4.8 - Mar 8, 2022
 ---
 **Fixes**
 +	Fixes get LAMW Environment
++	Add validation before delete *\$ANDROID_HOME*, *\$GRADLE_HOME* from \~/.bashrc
 
 **News**
 +	Ubuntu 18.04 LTS is no longer officially supported!
