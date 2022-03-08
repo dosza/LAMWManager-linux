@@ -44,7 +44,7 @@ LAMW Manager install the following [dependencies] tools:
 +	OpenJDK
 +	LAMW framework
 +	Create **<img src="https://gitlab.com/freepascal.org/lazarus/lazarus/-/raw/main/images/icons/lazarus_orange.ico" style="width: 20px"/> LAMW4Linux IDE** menu launcher and **startlamw4linux** command!
-+	Create **<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/GNOME_Terminal_icon_2019.svg/240px-GNOME_Terminal_icon_2019.svg.png" style="width: 20px;"/> LAMW4Linux Terminal**
++	Create **<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/GNOME_Terminal_icon_2019.svg/240px-GNOME_Terminal_icon_2019.svg.png" style="width: 20px;"/> LAMW4Linux Terminal** menu launcher!!
 +	Register **MIME**
 
 
