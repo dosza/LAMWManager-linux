@@ -10,6 +10,9 @@ v0.4.8 - Mar 7, 2022
 
 **News**
 +	Ubuntu 18.04 LTS is no longer officially supported!
++	*LAMW4Linux Terminal*, to run FPC, lazarus and LAMW scripts now is avalaible on start menu!
++	Now LAMW Manager not add *\$GRADLE_HOME* and *\$ANDROID_HOME/ndk-toolchain* in \~/.bashrc!!
+	+	**Recommended:** use LAMW4Linux Terminal!!
 
 v0.4.7 - Feb 19, 2022
 ---
