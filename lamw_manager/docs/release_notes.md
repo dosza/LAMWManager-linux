@@ -3,12 +3,28 @@
 
 This page contains information about new features and bug fixes.
 
+v0.4.8 - Mar 8, 2022
+---
+**Fixes**
++	Fixes get LAMW Environment
++	Add validation before delete *\$ANDROID_HOME*, *\$GRADLE_HOME* from \~/.bashrc
+
+**News**
++	Ubuntu 18.04 LTS is no longer officially supported!
++	*LAMW4Linux Terminal*, to run FPC, lazarus and LAMW scripts now is avalaible on start menu!
++	Now LAMW Manager not add *\$GRADLE_HOME* and *\$ANDROID_HOME/ndk-toolchain* in \~/.bashrc!!
++	**Recommended:** use LAMW4Linux Terminal!
++	LAMW4Linux Terminal starts from on your Current LAMW Workspace directory!!
++	**Warning:** from now on *lamw_manager_setup.sh* from [*assets*](https://github.com/dosza/LAMWManager-linux/tree/master/lamw_manager/assets) will not be available!
+
+**Note**: LAMW4Linux Terminal your LAMW Workspace from \~/.lamw4linux/LAMW.ini !
+
 v0.4.7 - Feb 19, 2022
 ---
 **News**
 +	Build LAMW Packages in silence mode
 +	Uninstall old gradle (from old package.json) automatically 
-+ 	Verify duplicated export LAMW Enviroment
++ 	Verify duplicated export LAMW Environment
 +	Adjust *--minimal* to install only what is strictly necessary for LAMW development 
 
 v0.4.6 - Feb 11, 2022

@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (mater-alma)
 #Course: Science Computer
-#Version: 0.4.7
-#Date: 02/18/2022
+#Version: 0.4.8
+#Date: 03/07/2022
 #Description: The "lamw-manager-settings-editor.sh" is part of the core of LAMW Manager. Responsible for managing LAMW Manager / LAMW configuration files..
 #-----------------------------------------------------------------------f--------------------------#
 #this function builds initial struct directory of LAMW env Development !
@@ -38,20 +38,7 @@ AddSDKPathstoProfile(){
 	local profile_file=$LAMW_USER_HOME/.bashrc
 	local flag_profile_paths=0
 	local profile_line_path='export PATH=$PATH:$GRADLE_HOME/bin'
-
-	InsertUniqueBlankLine "$LAMW_USER_HOME/.profile"
-	InsertUniqueBlankLine "$LAMW_USER_HOME/.bashrc"
 	cleanPATHS
-	searchLineinFile "$profile_file" "$profile_line_path"
-	flag_profile_paths=$?
-
-	if [ $flag_profile_paths = 0 ] ; then 
-		echo "export ANDROID_HOME=$ANDROID_HOME" >>  $LAMW_USER_HOME/.bashrc
-		echo "export GRADLE_HOME=$GRADLE_HOME" >> $LAMW_USER_HOME/.bashrc
-		echo 'export PATH=$PATH:$ANDROID_HOME/ndk-toolchain' >> $LAMW_USER_HOME/.bashrc
-		echo 'export PATH=$PATH:$GRADLE_HOME/bin' >> $LAMW_USER_HOME/.bashrc
-	fi
-
 	export PATH=$PATH:$ROOT_LAMW/ndk-toolchain
 	export PATH=$PATH:$GRADLE_HOME/bin
 }
@@ -82,9 +69,9 @@ changeOwnerAllLAMW(){
 		#	
 		)
 
-		if [ "$NO_EXISTENT_ROOT_LAMW_PARENT" != "" ]; then
+		[ "$NO_EXISTENT_ROOT_LAMW_PARENT" != "" ] &&
 			files_chown+=($NO_EXISTENT_ROOT_LAMW_PARENT)
-		fi		
+	
 	fi
 	echo "Restoring directories ..."
 	for ((i=0;i<${#files_chown[*]};i++))
@@ -128,16 +115,15 @@ writeLAMWLogInstall(){
 
 #Add LAMW4Linux to menu 
 AddLAMWtoStartMenu(){
-	[ ! -e $LAMW_USER_HOME/.local/share/applications ] && 
-		mkdir -p $LAMW_USER_HOME/.local/share/applications  #create a directory of local apps launcher, if not exists 	
-	[ ! -e $LAMW_USER_HOME/.local/share/mime/packages ] && 
-		mkdir -p $LAMW_USER_HOME/.local/share/mime/packages
+
+	[ ! -e  "$LAMW_USER_APPLICATIONS_PATH" ] && mkdir -p "$LAMW_USER_APPLICATIONS_PATH"  #create a directory of local apps launcher, if not exists 	
+	[ ! -e "$LAMW_USER_MIMES_PATH" ] && mkdir -p $LAMW_USER_MIMES_PATH
 	
 	local lamw_desktop_file_str=(
 		"[Desktop Entry]"  
-		"Name=LAMW4Linux"
+		"Name=LAMW4Linux IDE"
 		"Comment=A Lazarus IDE [and all equirements!] ready to develop for Android!" 
-		"GenericName=LAMW4Linux"   
+		"GenericName=LAMW4Linux IDE"   
 		"Exec=$LAMW_IDE_HOME/startlamw4linux"
 		"Icon=$LAMW_IDE_HOME/images/icons/lazarus_orange.ico"
 		"Terminal=false"
@@ -153,12 +139,26 @@ AddLAMWtoStartMenu(){
 		"X-Ubuntu-Gettext-Domain=desktop_kdelibs"
 	)
 
+	local lamw4linux_terminal_desktop_str=(
+		"[Desktop Entry]"  
+		"Name=LAMW4Linux Terminal"
+		"Comment=A Terminal with LAMW environment, here you can run FPC command line tools, Lazarus and LAMW scripts" 
+		"GenericName=LAMW4Linux Terminal"   
+		"Exec=$LAMW4LINUX_TERMINAL_EXEC_PATH"
+		"Icon=terminal"
+		"Terminal=true"
+		"Type=Application"
+		"Categories=Development;IDE;"  
+	)
+
+	WriterFileln "$LAMW4LINUX_TERMINAL_MENU_PATH" lamw4linux_terminal_desktop_str
 	WriterFileln "$LAMW_MENU_ITEM_PATH" "lamw_desktop_file_str"
 	chmod +x $LAMW_MENU_ITEM_PATH
+	chmod +x $LAMW4LINUX_TERMINAL_MENU_PATH
 	#mime association: ref https://help.gnome.org/admin/system-admin-guide/stable/mime-types-custom-user.html.en
-	cp $LAMW_IDE_HOME/install/lazarus-mime.xml $LAMW_USER_HOME/.local/share/mime/packages
-	update-mime-database   $LAMW_USER_HOME/.local/share/mime/
-	update-desktop-database $LAMW_USER_HOME/.local/share/applications
+	cp $LAMW_IDE_HOME/install/lazarus-mime.xml $LAMW_USER_MIMES_PATH
+	update-mime-database   $(dirname $LAMW_USER_MIMES_PATH)
+	update-desktop-database $LAMW_USER_APPLICATIONS_PATH
 	update-menus
 }
 
@@ -208,19 +208,20 @@ LAMW4LinuxPostConfig(){
 
 	local lamw4linux_env_str=(
 		"#!/bin/bash"
-		"if [ \"\$LOCAL_LAMW_ENV\"  = \"\" ]; then "
-		"	export PPC_CONFIG_PATH=$PPC_CONFIG_PATH"
-		"	export JAVA_HOME=$JAVA_HOME"
-		"	export ANDROID_HOME=$ANDROID_HOME"
-		"	export ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
-		"	export PATH=$ROOT_LAMW/lamw4linux/usr/bin:\$PPC_CONFIG_PATH:\$JAVA_HOME/bin:\$PATH"
-		"	export LAMW4_LINUX_PATH_CFG=$LAMW4_LINUX_PATH_CFG"
-		"	export LAMW_MANAGER_PATH=$LAMW_MANAGER_PATH"
-		"	export LAMW4LINUX_EXE_PATH=$LAMW4LINUX_EXE_PATH"
-		"	export OLD_LAMW4LINUX_EXE_PATH=${LAMW4LINUX_EXE_PATH}.old"
-		"	export IGNORE_XFCE_LAMW_ERROR_PATH=$IGNORE_XFCE_LAMW_ERROR_PATH"
-		"	export LOCAL_LAMW_ENV=1"
-		"fi"
+		"[ \"\$LOCAL_LAMW_ENV\"  = \"1\" ] && return"
+		"export PPC_CONFIG_PATH=$PPC_CONFIG_PATH"
+		"export JAVA_HOME=$JAVA_HOME"
+		"export ANDROID_HOME=$ANDROID_HOME"
+		"export ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
+		"export GRADLE_HOME=$GRADLE_HOME"
+		"export PATH=\$ANDROID_HOME/ndk-toolchain:\$GRADLE_HOME/bin:$ROOT_LAMW/lamw4linux/usr/bin:\$PPC_CONFIG_PATH:\$JAVA_HOME/bin:\$PATH"
+		"export LAMW4_LINUX_PATH_CFG=$LAMW4_LINUX_PATH_CFG"
+		"export LAMW_MANAGER_PATH=$LAMW_MANAGER_PATH"
+		"export LAMW4LINUX_EXE_PATH=$LAMW4LINUX_EXE_PATH"
+		"export OLD_LAMW4LINUX_EXE_PATH=${LAMW4LINUX_EXE_PATH}.old"
+		"export IGNORE_XFCE_LAMW_ERROR_PATH=$IGNORE_XFCE_LAMW_ERROR_PATH"
+		"export LOCAL_LAMW_ENV=1"
+
 
 	)
 
@@ -266,6 +267,26 @@ LAMW4LinuxPostConfig(){
 		"exec $LAMW_IDE_HOME/lazbuild --pcp=\$LAMW4_LINUX_PATH_CFG \$*"
 	)
 
+	local lamw4linux_terminal_str=(
+		'#!/bin/bash'
+		'#-------------------------------------------------------------------------------------------------#'
+		'### THIS FILE IS AUTOMATICALLY CONFIGURED by LAMW Manager'
+		'###ou may comment out this entry, but any other modifications may be lost.'
+		'#Description: This script is script configure LAMW environment and  run  a terminal'
+		'#-------------------------------------------------------------------------------------------------#'
+		"source $LAMW4LINUX_LOCAL_ENV"
+		"CURRENT_LAMW_WORKSPACE=\$(grep '^PathToWorkspace=' $LAMW4_LINUX_PATH_CFG/LAMW.ini  | sed 's/PathToWorkspace=//g')"
+		""
+		"echo \"${NEGRITO}Welcome LAMW4Linux Terminal!!${NORMAL}\""
+		"echo \"Here you can run FPC command line tools, Lazarus and LAMW scripts\""
+		""
+		"cd \$CURRENT_LAMW_WORKSPACE"
+		"exec bash"
+
+	)
+
+
+	WriterFileln "$LAMW4LINUX_TERMINAL_EXEC_PATH" lamw4linux_terminal_str && chmod +x $LAMW4LINUX_TERMINAL_EXEC_PATH
 	WriterFileln "$LAMW4_LINUX_PATH_CFG/LAMW.ini" "LAMW_init_str"
 	WriterFileln "$LAMW_IDE_HOME/startlamw4linux" "startlamw4linux_str"
 	WriterFileln "$LAMW4LINUX_LOCAL_ENV" lamw4linux_env_str
@@ -354,14 +375,18 @@ CleanOldCrossCompileBins(){
 	
 
 cleanPATHS(){
-	sed -i "/export ANDROID_HOME=*/d"  $LAMW_USER_HOME/.bashrc
-	sed -i "/export GRADLE_HOME=*/d" $LAMW_USER_HOME/.bashrc
-	sed -i '/export PATH=$PATH:$ANDROID_HOME\/android\/ndk-toolchain/d'  $LAMW_USER_HOME/.bashrc #\/ is scape of /
-	sed -i '/export PATH=$PATH:$ANDROID_HOME\/android\/gradle-4.1\/bin/d' $LAMW_USER_HOME/.bashrc
-	sed -i '/export PATH=$PATH:$ANDROID_HOME\/android\/ndk-toolchain/d'  $LAMW_USER_HOME/.profile
-	sed -i '/export PATH=$PATH:$ANDROID_HOME\/android\/gradle-4.1\/bin/d' $LAMW_USER_HOME/.profile	
-	sed -i '/export PATH=$PATH:$ANDROID_HOME\/ndk-toolchain/d'  $LAMW_USER_HOME/.bashrc
-	sed -i '/export PATH=$PATH:$GRADLE_HOME/d'  $LAMW_USER_HOME/.bashrc
+	local android_home_sc=$(GenerateScapesStr "$ANDROID_HOME")
+	grep "ANDROID_HOME=" $LAMW_USER_HOME/.bashrc | grep "$ROOT_LAMW" > /dev/null 
+	if [ $? = 0 ]; then 
+		sed -i "/export ANDROID_HOME=${android_home_sc}/d"  $LAMW_USER_HOME/.bashrc
+		sed -i '/export PATH=$PATH:$ANDROID_HOME\/ndk-toolchain/d' $LAMW_USER_HOME/.bashrc
+	fi
+
+	grep "GRADLE_HOME=" $LAMW_USER_HOME/.bashrc | grep "$ROOT_LAMW" > /dev/null
+	if [ $? = 0 ];then
+		sed -i "/export GRADLE_HOME=${android_home_sc}*/d" $LAMW_USER_HOME/.bashrc
+		sed -i '/export PATH=$PATH:$GRADLE_HOME\/bin/d'  $LAMW_USER_HOME/.bashrc
+	fi
 }
 
 
@@ -418,6 +443,7 @@ CleanOldConfig(){
 		"$LAMW4_LINUX_PATH_CFG"
 		"$ROOT_LAMW"
 		"$LAMW_MENU_ITEM_PATH"
+		"$LAMW4LINUX_TERMINAL_MENU_PATH"
 		"$WORK_HOME_DESKTOP/lamw4linux.desktop"
 		"$LAMW_USER_HOME/.local/share/mime/packages/lazarus-mime.xml"
 		"$FPC_TRUNK_LIB_PATH"
