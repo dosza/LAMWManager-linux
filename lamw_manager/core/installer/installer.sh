@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.4.7
-#Date: 02/18/2022
+#Version: 0.4.8
+#Date: 03/07/2022
 #Description: "installer.sh" is part of the core of LAMW Manager. Contains routines for installing LAMW development environment
 #-------------------------------------------------------------------------------------------------#
 #set Remove Gradle from different 
@@ -514,7 +514,7 @@ installLAMWPackages(){
 	for((i=0;i< $max_lamw_pcks;i++)); do
 		
 		current_pack="`basename ${LAMW_PACKAGES[i]}`"
-		build_msg="Please wait, starting buiding ${NEGRITO}${current_pack}${NORMAL}..........................."
+		build_msg="Please wait, starting building ${NEGRITO}${current_pack}${NORMAL}..........................."
 		sucess_filler="$(getCurrentSucessFiller 3 $current_pack)"
 		
 		printf "%s" "$build_msg"

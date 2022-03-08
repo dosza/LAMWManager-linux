@@ -16,7 +16,8 @@ lamw_manager_help(){
 	"\t${NEGRITO}env LOCAL_ROOT_LAMW=[dir]${NORMAL} ${lamw_mgr}    Installing LAMW and dependencies¹ on custom² directory\n"
 	"\t${NEGRITO}${lamw_mgr//\-\-/'      '}${NORMAL}                              Install LAMW and dependencies¹\n"
 	"\t$lamw_mgr\t${VERDE}--minimal${NORMAL}                   Install LAMW and dependencies with minimal crosscompile to Android¹\n"
-	"\t$lamw_mgr\t${VERDE}--sdkmanager${NORMAL}\t${VERDE}[ARGS]${NORMAL}      Install LAMW and Run Android SDK Manager³\n"
+	"\t$lamw_mgr\t${VERDE}--reinstall${NORMAL}                 Reinstall LAMW and dependencies without reset³\n"
+	"\t$lamw_mgr\t${VERDE}--sdkmanager${NORMAL}\t${VERDE}[ARGS]${NORMAL}      Install LAMW and Run Android SDK Manager⁴\n"
 	"\t$lamw_mgr\t${VERDE}--update-lamw${NORMAL}               To just upgrade LAMW framework (with the latest version available in git)\n"
 	"\t$lamw_mgr\t${VERDE}--reset${NORMAL}                     To clean and reinstall LAMW\n"
 	"\t$lamw_mgr\t${VERDE}--reset-aapis${NORMAL}               Reset Android API's to default\n"
@@ -37,7 +38,8 @@ lamw_manager_help(){
 	"\n\n${NEGRITO}Note:\n${NORMAL}"
 	"\t¹ By default the installation waives the use of parameters, if LAMW is installed, it will only be updated!\n"
 	"\t² After directory verification and validation (system directories and mount points will not be accepted)!\n"
-	"\t³ If it is already installed, just run the Android SDK Tools with [ARGS].\n"
+	"\t³ Force a complete reinstall [ with all Android crosscompile ].\n"
+	"\t⁴ If it is already installed, just run the Android SDK Tools with [ARGS].\n"
 	"\n"
 	"\t"
 	"\n"
@@ -175,6 +177,6 @@ getCurrentSucessFiller(){
 		0) echo "Build to FPC ${NEGRITO}${2}${NORMAL}";;
 		1) echo "Build to Lazarus ${NEGRITO}${2}${NORMAL}";;
 		2) echo "Cleaning to FPC Sources ${NEGRITO}${2}${NORMAL}";;
-		3) echo "Please wait, buiding ${NEGRITO}${2}${NORMAL}";;
+		3) echo "Please wait, building ${NEGRITO}${2}${NORMAL}";;
 	esac
 }

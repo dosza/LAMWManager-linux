@@ -24,7 +24,9 @@ Example of installation from sources:
 	<strong>To install LAMW and dependencies:</strong><sup>2</sup>
 	<pre>	./lamw_manager</pre>
 	strong>Install LAMW and dependencies with minimal crosscompile to Android</strong>
-	<pre>	./lamw_manager              <em>--minimal</pre>
+	<pre>	./lamw_manager              <em>--minimal</em></pre>
+	<strong>Reinstall (forced) LAMW and dependencies without reset</strong>
+	<pre>	./lamw_manager              <em>--reinstall</em></pre>
 	<strong>To install LAMW and dependencies and Run Android SDK Manager</strong><sup>3</sup>
 	<pre>	./lamw_manager              <em>--sdkmanager</em>	<em>[ARGS]</em></pre>
 	<strong>To clean and reinstall LAMW</strong>
