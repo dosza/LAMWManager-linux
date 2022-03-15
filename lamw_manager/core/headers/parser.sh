@@ -40,9 +40,6 @@ lamw_manager_help(){
 	"\t² After directory verification and validation (system directories and mount points will not be accepted)!\n"
 	"\t³ Force a complete reinstall [ with all Android crosscompile ].\n"
 	"\t⁴ If it is already installed, just run the Android SDK Tools with [ARGS].\n"
-	"\n"
-	"\t"
-	"\n"
 	)
 
 	printf "${LAMW_OPTS[*]}" 
