@@ -75,8 +75,9 @@ CheckFlags(){
 
 #Check if DEBUG flag is set 
 getBashCMD(){
+	
 	if [ $DEBUG = 1 ]; then
-		export LAMW_MGR_CORE="bash -x $LAMW_MGR_CORE"
+		LAMW_MGR_INSTALL="bash -x $LAMW_MGR_INSTALL"
 	fi
 }
 
@@ -121,7 +122,7 @@ CheckLocalRootLAMW(){
 }
 
 RunAsSudo(){
-	sudo -i env ${LAMW_MANAGER_ENV[@]} "$LAMW_MGR_INSTALL" $*
+	sudo -i env ${LAMW_MANAGER_ENV[@]} $LAMW_MGR_INSTALL $*
 	export EXIT_STATUS=$?
 }
 
@@ -131,7 +132,7 @@ RunAsPolkit(){
 	isSupportedPolkit
 	if [ $?  = 0 ]; then 
 		LAMW_MANAGER_ENV+=(DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY)
-		pkexec  env ${LAMW_MANAGER_ENV[@]} "$LAMW_MGR_INSTALL" $*
+		pkexec  env ${LAMW_MANAGER_ENV[@]} $LAMW_MGR_INSTALL $*
 		export EXIT_STATUS=$?
 	else
 		echo $error_msg
