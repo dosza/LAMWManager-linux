@@ -478,7 +478,7 @@ getImplicitInstall(){
 }
 
 getCurrentLazarusWidget(){
-	local lazarus_widget_default="gkt2"
+	local lazarus_widget_default="gtk2"
 	local current_widget_set="$lazarus_widget_default"
 	if [ -e  "$ide_make_cfg_path" ]; then 
 		current_widget_set="$(grep '\-dLCL.' "$ide_make_cfg_path" | sed 's/-dLCL//g')"
