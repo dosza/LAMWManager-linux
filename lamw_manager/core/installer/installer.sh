@@ -20,55 +20,55 @@ setOldGradleVersion(){
 
 #prepare upgrade
 LAMWPackageManager(){
-	if [ $FLAG_FORCE_ANDROID_AARCH64 = 1 ]; then 
-		
-		local old_lamw_ide_home="$LAMW4LINUX_HOME/lamw4linux"
-		local old_lamw4linux_exec=$old_lamw_ide_home/lamw4linux
-
-
-		[ -e /usr/bin/startlamw4linux ] && 	rm /usr/bin/startlamw4linux
-
-		if [ -e "$old_lamw_ide_home"  ] &&  [ -L $old_lamw_ide_home ] && [ -d $old_lamw_ide_home ]; then # remove deprecated symbolik links
-			if [ -e $old_lamw4linux_exec ]; then
-				rm $old_lamw4linux_exec
-			fi
-			rm "$old_lamw_ide_home"  -rf
-		fi
-
-		for((i=0;i<${#OLD_LAZARUS_STABLE_VERSION[*]};i++)); do
-			local old_lazarus_release=lazarus_${OLD_LAZARUS_STABLE_VERSION[i]//\./_}
-			local old_lazarus_home=$LAMW4LINUX_HOME/${old_lazarus_release}
-			[ -e "$old_lazarus_home" ] && rm "$old_lazarus_home" -rf
-		done
-		
-		[ -e "$OLD_FPC_CFG_PATH" ] && grep  "$ROOT_LAMW" "$OLD_FPC_CFG_PATH" && rm "$OLD_FPC_CFG_PATH"
 	
-		#fixs 0.3.1 to 0.3.2
+	local old_lamw_ide_home="$LAMW4LINUX_HOME/lamw4linux"
+	local old_lamw4linux_exec=$old_lamw_ide_home/lamw4linux
 
-		for i  in ${!OLD_FPC_SOURCES[*]}; do
-			[ -e ${OLD_FPC_SOURCES[i]} ] && rm  -rf ${OLD_FPC_SOURCES[i]}
-		done
 
-		setOldGradleVersion
-		for gradle in ${OLD_GRADLE[*]}; do
-			if [ -e "$gradle" ]; then
-				rm -rf $gradle 
-			fi
-		done
+	[ -e /usr/bin/startlamw4linux ] && 	rm /usr/bin/startlamw4linux
 
-		for ((i=0;i<${#OLD_ANT[*]};i++)); do
-			[ -e ${OLD_ANT[i]} ] && rm -rf ${OLD_ANT[i]}
-		done
+	if [ -e "$old_lamw_ide_home"  ] &&  [ -L $old_lamw_ide_home ] && [ -d $old_lamw_ide_home ]; then # remove deprecated symbolik links
+		if [ -e $old_lamw4linux_exec ]; then
+			rm $old_lamw4linux_exec
+		fi
+		rm "$old_lamw_ide_home"  -rf
+	fi
 
-		for old_fpc_stable in ${OLD_FPC_STABLE[*]}; do 
-			[ -e $old_fpc_stable ] && rm -rf $old_fpc_stable
-		done
+	for((i=0;i<${#OLD_LAZARUS_STABLE_VERSION[*]};i++)); do
+		local old_lazarus_release=lazarus_${OLD_LAZARUS_STABLE_VERSION[i]//\./_}
+		local old_lazarus_home=$LAMW4LINUX_HOME/${old_lazarus_release}
+		[ -e "$old_lazarus_home" ] && rm "$old_lazarus_home" -rf
+	done
+	
+	[ -e "$OLD_FPC_CFG_PATH" ] && grep  "$ROOT_LAMW" "$OLD_FPC_CFG_PATH" && rm "$OLD_FPC_CFG_PATH"
 
-		#check and remove old  ppcx64 compiler (bootstrap)
-		if [ -e $LAMW4LINUX_HOME/usr/local/bin/ppcx64 ]; then 
-			local fpc_version=${FPC_DEB_VERSION%\-*}
-			$LAMW4LINUX_HOME/usr/local/bin/ppcx64 -help | grep "^Free Pascal Compiler version $fpc_version" > /dev/null
-			[ $? != 0 ] && rm  "$LAMW4LINUX_HOME/usr/local/bin/ppcx64"
+	#fixs 0.3.1 to 0.3.2
+
+	for i  in ${!OLD_FPC_SOURCES[*]}; do
+		[ -e ${OLD_FPC_SOURCES[i]} ] && rm  -rf ${OLD_FPC_SOURCES[i]}
+	done
+
+	setOldGradleVersion
+	for gradle in ${OLD_GRADLE[*]}; do
+		if [ -e "$gradle" ]; then
+			rm -rf $gradle 
+		fi
+	done
+
+	for ((i=0;i<${#OLD_ANT[*]};i++)); do
+		[ -e ${OLD_ANT[i]} ] && rm -rf ${OLD_ANT[i]}
+	done
+
+	for old_fpc_stable in ${OLD_FPC_STABLE[*]}; do 
+		[ -e $old_fpc_stable ] && rm -rf $old_fpc_stable
+	done
+
+	#check and remove old  ppcx64 compiler (bootstrap)
+	if [ -e $LAMW4LINUX_HOME/usr/local/bin/ppcx64 ]; then 
+		local fpc_version=${FPC_DEB_VERSION%\-*}
+		
+		if ! $LAMW4LINUX_HOME/usr/local/bin/ppcx64 -help | grep "^Free Pascal Compiler version $fpc_version" > /dev/null; then 
+			rm  "$LAMW4LINUX_HOME/usr/local/bin/ppcx64"
 		fi
 	fi
 
