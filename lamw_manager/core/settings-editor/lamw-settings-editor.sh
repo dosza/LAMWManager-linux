@@ -275,14 +275,32 @@ LAMW4LinuxPostConfig(){
 		'#Description: This script is script configure LAMW environment and  run  a terminal'
 		'#-------------------------------------------------------------------------------------------------#'
 		"source $LAMW4LINUX_LOCAL_ENV"
-		"CURRENT_LAMW_WORKSPACE=\$(grep '^PathToWorkspace=' $LAMW4_LINUX_PATH_CFG/LAMW.ini  | sed 's/PathToWorkspace=//g')"
+		""
+		"_LAMW_MANAGER_COMPLETE_PATH=$LAMW_MANAGER_MODULES_PATH/headers/.lamw_comple.sh"
+		"_EXTRA_ARGS=\"--init-file \$_LAMW_MANAGER_COMPLETE_PATH\""
+		"CURRENT_LAMW_WORKSPACE=\$(grep '^PathToWorkspace=' \$LAMW4_LINUX_PATH_CFG/LAMW.ini  | sed 's/PathToWorkspace=//g')"
+		""
+		"#Run avdmanager"
+		"avdmanager(){"
+		"\t\$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/avdmanager \$*"
+		"}"
+		""
+		"#Run sdkmanager"
+		"sdkmanager(){"
+		"\t\$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager \$*"
+		"}"
+		""
+		"lamw_manager(){\n\t\$LAMW_MANAGER_PATH \$*\n}"
+		""
+		"export -f sdkmanager"
+		"export -f avdmanager"
+		"export -f lamw_manager"
 		""
 		"echo \"${NEGRITO}Welcome LAMW4Linux Terminal!!${NORMAL}\""
 		"echo \"Here you can run FPC command line tools, Lazarus and LAMW scripts\""
 		""
 		"cd \$CURRENT_LAMW_WORKSPACE"
-		"exec bash"
-
+		"exec bash \$* \$_EXTRA_ARGS"
 	)
 
 
