@@ -302,9 +302,6 @@ getAndroidSDKTools(){
 		MAGIC_TRAP_INDEX=4
 		getCompressFile "$CMD_SDK_TOOLS_URL" "$CMD_SDK_TOOLS_ZIP" "unzip -o -q  $CMD_SDK_TOOLS_ZIP" "MAGIC_TRAP_INDEX=5"
 		mv cmdline-tools latest
-		cp $ANDROID_SDK_ROOT/platform-tools/package.xml $CMD_SDK_TOOLS_DIR/latest/package.xml 
-		cmdlineExtraConfig
-
 	fi
 }
 
@@ -353,7 +350,6 @@ runSDKManager(){
 	fi
 }
 
-
 getAndroidAPIS(){
 	
 	local force_yes=1
@@ -372,6 +368,8 @@ getAndroidAPIS(){
 				runSDKManager ${SDK_MANAGER_CMD_PARAMETERS[i]} 
 			fi
 		done
+		
+		CmdLineToolsTrigger
 	else 
 		runSDKManager $*
 	fi
