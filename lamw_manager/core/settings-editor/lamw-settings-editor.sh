@@ -267,6 +267,7 @@ LAMW4LinuxPostConfig(){
 		"exec $LAMW_IDE_HOME/lazbuild --pcp=\$LAMW4_LINUX_PATH_CFG \$*"
 	)
 
+
 	local lamw4linux_terminal_str=(
 		'#!/bin/bash'
 		'#-------------------------------------------------------------------------------------------------#'
@@ -691,6 +692,16 @@ updateNodeAttrXML(){
 		
 	done
 
+}
+
+cmdlineExtraConfig(){
+	local cmdline_tools_major_version=${CMD_SDK_TOOLS_VERSION_STR/%\.*}
+	local cmdline_tools_package="$CMD_SDK_TOOLS_DIR/latest/package.xml"
+	local cmdline_tools_old_str=`grep '</license' $cmdline_tools_package`
+	local cmdline_tools_str="January 16, 2019</license><localPackage path=\"cmdline-tools;latest\" obsolete=\"false\"><type-details xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"ns3:genericDetailsType\"/><revision><major>${cmdline_tools_major_version}</major><minor>0</minor></revision><display-name>Android SDK Command-line Tools (latest)</display-name><uses-license ref=\"android-sdk-license\"/></localPackage></ns2:repository>"
+	cmdline_tools_old_str=$(GenerateScapesStr "${cmdline_tools_old_str:0:32}")
+	sed -i "/${cmdline_tools_old_str}/d" $cmdline_tools_package
+	printf "%s" "$cmdline_tools_str" >> $cmdline_tools_package
 }
 
 initLAMw4LinuxConfig(){
