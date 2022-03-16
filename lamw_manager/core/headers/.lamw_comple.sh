@@ -14,7 +14,7 @@ else
 	[ -e  /etc/bash.bashrc ] && source /etc/bash.bashrc
 fi
 
-_lamw_manager_completion() {
+_lamw_manager() {
 	local cur prev opts
 	COMPREPLY=()
 	cur="${COMP_WORDS[COMP_CWORD]}"
@@ -27,7 +27,7 @@ _lamw_manager_completion() {
 	fi
 }
 
-_sdkmanager_completion(){
+_sdkmanager(){
 	local cur prev opts
 	COMPREPLY=()
 	cur="${COMP_WORDS[COMP_CWORD]}"
@@ -39,6 +39,6 @@ _sdkmanager_completion(){
 		return 0
 	fi
 }
-complete -F _lamw_manager_completion lamw_manager
-complete -F _lamw_manager_completion ./lamw_manager
-complete -F  _sdkmanager_completion sdkmanager
+complete -F _lamw_manager lamw_manager
+complete -F _lamw_manager ./lamw_manager
+complete -F  _sdkmanager sdkmanager
