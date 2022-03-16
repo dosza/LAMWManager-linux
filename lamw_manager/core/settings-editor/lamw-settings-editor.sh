@@ -475,8 +475,9 @@ CleanOldConfig(){
 	for((i=0;i<${#list_deleted_files[*]};i++)); do
 		if [ -e "${list_deleted_files[i]}" ]; then 
 			[ -d  "${list_deleted_files[i]}" ] && local rm_opts="-rf"
-			validate_is_file_create_by_lamw_manager $i "${list_deleted_files[i]}"
-			[ $? = 0 ] && rm  "${list_deleted_files[i]}" $rm_opts
+			if validate_is_file_create_by_lamw_manager $i "${list_deleted_files[i]}"; then 
+				rm  "${list_deleted_files[i]}" $rm_opts
+			fi
 		fi
 	done
 
@@ -615,9 +616,9 @@ configureFPCTrunk(){
 	WriterFileln "$FPPKG_LOCAL_REPOSITORY_CFG" fppkg_local_cfg
 
 	if [ -e $FPC_CFG_PATH ] ; then  # se exiir /etc/fpc.cfg
-		searchLineinFile $FPC_CFG_PATH  "${fpc_cfg_str[0]}"
-		flag_fpc_cfg=$?
-		[ $flag_fpc_cfg != 1 ] && AppendFileln "$FPC_CFG_PATH" "fpc_cfg_str" # caso o arquvo ainda não esteja configurado
+		if searchLineinFile $FPC_CFG_PATH  "${fpc_cfg_str[0]}"; then 
+			AppendFileln "$FPC_CFG_PATH" "fpc_cfg_str" # caso o arquvo ainda não esteja configurado
+		fi
 	fi
 }
 
@@ -631,13 +632,10 @@ CreateSimbolicLinksAndroidAARCH64(){
 }
 
 CreateBinutilsSimbolicLinks(){
-	if [ ! -e "$ROOT_LAMW/lamw4linux/usr/bin" ]; then 
+	[ ! -e "$ROOT_LAMW/lamw4linux/usr/bin" ] &&
 		mkdir -p "$ROOT_LAMW/lamw4linux/usr/bin"
-	fi
 	CreateSDKSimbolicLinks
-	if [ $FLAG_FORCE_ANDROID_AARCH64 = 1 ]; then
-		CreateSimbolicLinksAndroidAARCH64
-	fi
+	CreateSimbolicLinksAndroidAARCH64
 }
 
 createLazarusEnvCfgFile(){
