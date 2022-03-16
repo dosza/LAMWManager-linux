@@ -6,7 +6,21 @@
 #Date: 03/07/2022
 #Description: "installer.sh" is part of the core of LAMW Manager. Contains routines for installing LAMW development environment
 #-------------------------------------------------------------------------------------------------#
-#set Remove Gradle from different 
+#set Remove Gradle from different
+
+
+checkOldCmdlineTools(){
+	local ret=1
+	local cmdline_tools_prop_path="$CMD_SDK_TOOLS_DIR/latest/source.properties"
+	if [ -e $cmdline_tools_prop_path ]; then 
+		local cmdline_tools_query="$CMD_SDK_TOOLS_VERSION_STR > $(grep Pkg.Revision= $cmdline_tools_prop_path | awk -F= ' { print $NF }')"
+		local cmdline_tools_query_result=$(echo "$cmdline_tools_query" | bc)
+		[ $cmdline_tools_query_result = 1 ] && ret=0
+	fi
+
+	return $ret
+} 
+
 setOldGradleVersion(){
 	[ ! -e "$LAMW_INSTALL_LOG" ] && return 
 
@@ -71,6 +85,11 @@ LAMWPackageManager(){
 			rm  "$LAMW4LINUX_HOME/usr/local/bin/ppcx64"
 		fi
 	fi
+
+	if checkOldCmdlineTools ; then 
+		rm -rf "$CMD_SDK_TOOLS_DIR"
+	fi
+
 
 }
 getStatusInstalation(){
