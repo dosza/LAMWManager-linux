@@ -118,6 +118,7 @@ CheckLocalRootLAMW(){
 
 	LAMW_MANAGER_ENV+=(ROOT_LAMW=$ROOT_LAMW)
 	LAMW4LINUX_HOME=$ROOT_LAMW/lamw4linux
+	LAMW_FRAMEWORK_HOME=$ROOT_LAMW/lazandroidmodulewizard
 	LAMW_INSTALL_LOG="$LAMW4LINUX_HOME/lamw-install.log"
 }
 
@@ -171,9 +172,19 @@ Run(){
 	exec 3>&-
 }
 
-#main function
+
+cacheGradle(){
+	echo "${NEGRITO}Please wait,starting caching Gradle"
+	lamw_termnal="$ROOT_LAMW/lamw4linux/usr/bin/lamw4linux-terminal"
+	$lamw_termnal -c cacheGradle
+}
 
 autoStartLAMW4Linux(){
+
+	if [ $EXIT_STATUS = 0 ] && [ $AUTO_START_LAMW4LINUX = 1 ] && [ -e $LAMW_INSTALL_LOG ]; then
+		cacheGradle
+	fi
+
 
 	if [ $EXIT_STATUS = 0 ] && [ "${XDG_CURRENT_DESKTOP^^}" != "XFCE" ] && 
 		[ $AUTO_START_LAMW4LINUX = 1 ] && [ -e $LAMW_INSTALL_LOG ];then
@@ -185,6 +196,7 @@ autoStartLAMW4Linux(){
 	exit $EXIT_STATUS
 }
 
+#main function
 main(){
 	
 	IsUserRoot "lamw_manager"
