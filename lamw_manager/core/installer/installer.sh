@@ -158,12 +158,18 @@ if [ $? != 0 ]; then
 	fi
 fi
 }
+
+
+gitAddSafeConfigRepository(){
+	git config --global --add safe.directory "$1"
+}
+
 getFromGit(){
 	local git_src_url="$1"
 	local git_src_dir="$2"
 	local git_branch="$3"
 
-
+	gitAddSafeConfigRepository "$2"
 	if [ ! -e "$git_src_dir" ]; then
 		GitClone
 	else
