@@ -1,7 +1,16 @@
 # LAMW Manager Release Notes
 
-
 This page contains information about new features and bug fixes.
+
+v0.5.0 - Jun 12, 2022
+--
+**Fixes**
++	Fixes wrong ld path on try build lazarus project to linux/x86_64
+**News**
++	Add new commands to LAMW4Linux Terminal, you can run directly (with auto-complete  tab)
+	+	sdkmanager
+	+	advmanager
+	+	lamw_manager
 
 v0.4.8 - Mar 8, 2022
 ---

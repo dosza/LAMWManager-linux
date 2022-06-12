@@ -1,9 +1,9 @@
-#!/bin/bash -x
+#!/usr/bin/env bash
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.4.8
-#Date: 03/07/2022
+#Version: 0.5.0
+#Date: 06/12/2022
 #Description: This script generates compiles LAMW Manager source code into an executable installer.
 #Note: This script requires makeself, read more in https://makeself.io/
 #-------------------------------------------------------------------------------------------------#
@@ -16,7 +16,7 @@ AUX=$PWD
 
 LAMW_MANAGER_TMP_BUILD="/tmp/lamw_manager_build"
 LAMW_MANAGER_INSTALLER="lamw_manager_setup.sh"
-LAMW_MANAGER_FINAL_INSTALLER="$LAMW_MANAGER_TMP_BUILD/$LAMW_MANAGER_INSTALLER"
+LAMW_MANAGER_FINAL_INSTALLER="/tmp/$LAMW_MANAGER_INSTALLER"
 START_LAMW_MANAGER_FILE='.start_lamw_manager'
 BUILD_GUI=0
 
@@ -122,7 +122,7 @@ main(){
 	changeDirectory $LAMW_MANAGER_TMP_BUILD
 	makeself  --quiet --xz --copy --target '$HOME/lamw_manager' $PWD $LAMW_MANAGER_INSTALLER "LAMW Manager Setup" "./${START_LAMW_MANAGER_FILE}"
 	chmod +x "$LAMW_MANAGER_FINAL_INSTALLER"
-	cp "$LAMW_MANAGER_FINAL_INSTALLER" "$AUX"
+	cp $LAMW_MANAGER_TMP_BUILD/$LAMW_MANAGER_INSTALLER /tmp
 	RemoveTmpFiles
 }
 

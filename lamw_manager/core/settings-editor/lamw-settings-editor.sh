@@ -1,9 +1,9 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (mater-alma)
 #Course: Science Computer
-#Version: 0.4.8
-#Date: 03/07/2022
+#Version: 0.5.0
+#Date: 06/12/2022
 #Description: The "lamw-manager-settings-editor.sh" is part of the core of LAMW Manager. Responsible for managing LAMW Manager / LAMW configuration files..
 #-----------------------------------------------------------------------f--------------------------#
 #this function builds initial struct directory of LAMW env Development !
@@ -214,7 +214,7 @@ LAMW4LinuxPostConfig(){
 		"export ANDROID_HOME=$ANDROID_HOME"
 		"export ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
 		"export GRADLE_HOME=$GRADLE_HOME"
-		"export PATH=\$ANDROID_HOME/ndk-toolchain:\$GRADLE_HOME/bin:$ROOT_LAMW/lamw4linux/usr/bin:\$PPC_CONFIG_PATH:\$JAVA_HOME/bin:\$PATH"
+		"export PATH=$ROOT_LAMW/lamw4linux/usr/bin:\$PPC_CONFIG_PATH:\$JAVA_HOME/bin:\$PATH:\$ANDROID_HOME/ndk-toolchain:\$GRADLE_HOME/bin"
 		"export LAMW4_LINUX_PATH_CFG=$LAMW4_LINUX_PATH_CFG"
 		"export LAMW_MANAGER_PATH=$LAMW_MANAGER_PATH"
 		"export LAMW4LINUX_EXE_PATH=$LAMW4LINUX_EXE_PATH"
@@ -267,6 +267,7 @@ LAMW4LinuxPostConfig(){
 		"exec $LAMW_IDE_HOME/lazbuild --pcp=\$LAMW4_LINUX_PATH_CFG \$*"
 	)
 
+
 	local lamw4linux_terminal_str=(
 		'#!/bin/bash'
 		'#-------------------------------------------------------------------------------------------------#'
@@ -275,14 +276,66 @@ LAMW4LinuxPostConfig(){
 		'#Description: This script is script configure LAMW environment and  run  a terminal'
 		'#-------------------------------------------------------------------------------------------------#'
 		"source $LAMW4LINUX_LOCAL_ENV"
-		"CURRENT_LAMW_WORKSPACE=\$(grep '^PathToWorkspace=' $LAMW4_LINUX_PATH_CFG/LAMW.ini  | sed 's/PathToWorkspace=//g')"
 		""
-		"echo \"${NEGRITO}Welcome LAMW4Linux Terminal!!${NORMAL}\""
-		"echo \"Here you can run FPC command line tools, Lazarus and LAMW scripts\""
+		"_LAMW_MANAGER_COMPLETE_PATH=$LAMW_MANAGER_MODULES_PATH/headers/.lamw_comple.sh"
+		"_EXTRA_ARGS=\"--init-file \$_LAMW_MANAGER_COMPLETE_PATH\""
+		"CURRENT_LAMW_WORKSPACE=\$(grep '^PathToWorkspace=' \$LAMW4_LINUX_PATH_CFG/LAMW.ini  | sed 's/PathToWorkspace=//g')"
+		"export LAMW_FRAMEWORK_HOME=\"$LAMW_FRAMEWORK_HOME\""
+		""
+		""
+		"cacheGradle(){"
+		""
+		"\texport PATH=\$ANDROID_SDK_ROOT/platform-tools:\$PATH"
+		""
+		"\tLAMW_DEMOS=("
+		"\t\tdemos/GUI/AppHelloWord"
+		"\t\tdemos/GUI/AppCompatBasicDemo1"
+		"\t)"
+		""
+		"\tlocal lamw_tmp=\"/tmp/\$(echo \$LAMW_FRAMEWORK_HOME | awk -F'/' '{ print \$NF }' )\""
+		""
+		'\t[ ! -e $lamw_tmp ] && mkdir -p $lamw_tmp'
+		""
+		"\tfor dir in \${LAMW_DEMOS[@]};do"
+		"\t\tdemo=\$lamw_tmp/\$(echo \$dir | awk -F'/' '{ print \$NF }' )"
+		"\t\tlamw_tmp_demos+=(\$demo)"
+		"\t\tcp \$LAMW_FRAMEWORK_HOME/\${dir} -r \$lamw_tmp"
+		"\tdone"
+		""
+		"\tfor demo in \${lamw_tmp_demos[@]};do"
+		"\t\tcd \$demo"
+		"\t\techo \"sdk.dir=\$ANDROID_SDK_ROOT\"> local.properties"
+		"\t\techo \"ndk.dir=\$ANDROID_SDK_ROOT/ndk-bundle\" >> local.properties"
+		"\t\tgradle clean build --info"
+		"\tdone"
+		""
+		"\t[ -e \$lamw_tmp ] && cd \$OLDPWD && rm -rf \$lamw_tmp"
+		""
+		"}"
+		"#Run avdmanager"
+		"avdmanager(){"
+		"\t\$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/avdmanager \$*"
+		"}"
+		""
+		"#Run sdkmanager"
+		"sdkmanager(){"
+		"\t\$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager \$*"
+		"}"
+		""
+		"lamw_manager(){\n\t\$LAMW_MANAGER_PATH \$*\n}"
+		""
+		"export -f sdkmanager"
+		"export -f avdmanager"
+		"export -f lamw_manager"
+		"export -f cacheGradle"
+		""
+		"if  ! echo \"\$*\" | grep cacheGradle > /dev/null; then"
+		"\techo \"${NEGRITO}Welcome LAMW4Linux Terminal!!${NORMAL}\""
+		"\techo \"Here you can run FPC command line tools, Lazarus and LAMW scripts\""
+		"fi"
 		""
 		"cd \$CURRENT_LAMW_WORKSPACE"
-		"exec bash"
-
+		"exec bash \$* \$_EXTRA_ARGS"
 	)
 
 
@@ -456,8 +509,9 @@ CleanOldConfig(){
 	for((i=0;i<${#list_deleted_files[*]};i++)); do
 		if [ -e "${list_deleted_files[i]}" ]; then 
 			[ -d  "${list_deleted_files[i]}" ] && local rm_opts="-rf"
-			validate_is_file_create_by_lamw_manager $i "${list_deleted_files[i]}"
-			[ $? = 0 ] && rm  "${list_deleted_files[i]}" $rm_opts
+			if validate_is_file_create_by_lamw_manager $i "${list_deleted_files[i]}"; then 
+				rm  "${list_deleted_files[i]}" $rm_opts
+			fi
 		fi
 	done
 
@@ -596,9 +650,9 @@ configureFPCTrunk(){
 	WriterFileln "$FPPKG_LOCAL_REPOSITORY_CFG" fppkg_local_cfg
 
 	if [ -e $FPC_CFG_PATH ] ; then  # se exiir /etc/fpc.cfg
-		searchLineinFile $FPC_CFG_PATH  "${fpc_cfg_str[0]}"
-		flag_fpc_cfg=$?
-		[ $flag_fpc_cfg != 1 ] && AppendFileln "$FPC_CFG_PATH" "fpc_cfg_str" # caso o arquvo ainda não esteja configurado
+		if searchLineinFile $FPC_CFG_PATH  "${fpc_cfg_str[0]}"; then 
+			AppendFileln "$FPC_CFG_PATH" "fpc_cfg_str" # caso o arquvo ainda não esteja configurado
+		fi
 	fi
 }
 
@@ -612,13 +666,10 @@ CreateSimbolicLinksAndroidAARCH64(){
 }
 
 CreateBinutilsSimbolicLinks(){
-	if [ ! -e "$ROOT_LAMW/lamw4linux/usr/bin" ]; then 
+	[ ! -e "$ROOT_LAMW/lamw4linux/usr/bin" ] &&
 		mkdir -p "$ROOT_LAMW/lamw4linux/usr/bin"
-	fi
 	CreateSDKSimbolicLinks
-	if [ $FLAG_FORCE_ANDROID_AARCH64 = 1 ]; then
-		CreateSimbolicLinksAndroidAARCH64
-	fi
+	CreateSimbolicLinksAndroidAARCH64
 }
 
 createLazarusEnvCfgFile(){
@@ -673,6 +724,28 @@ updateNodeAttrXML(){
 		
 	done
 
+}
+
+CmdLineToolsTrigger(){
+	local model_license_package="$ANDROID_SDK_ROOT/platform-tools/package.xml"
+	local cmdline_tools_package="$CMD_SDK_TOOLS_DIR/latest/package.xml"
+	[ ! -e $cmdline_tools_package ] && cp $model_license_package $cmdline_tools_package
+	cmdlineExtraConfig
+}
+
+cmdlineExtraConfig(){
+	local cmdline_tools_major_version=${CMD_SDK_TOOLS_VERSION_STR/%\.*}
+	local cmdline_tools_old_str=`grep '</license' $cmdline_tools_package`
+	local cmdline_tools_license_data=`grep '</license>' $cmdline_tools_package | awk -F'<' ' { printf $1 }'`
+	local cmdline_tools_str="${cmdline_tools_license_data}</license><localPackage path=\"cmdline-tools;latest\" "
+	cmdline_tools_str+="obsolete=\"false\"><type-details xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
+	cmdline_tools_str+="xsi:type=\"ns5:genericDetailsType\"/><revision>"
+	cmdline_tools_str+="<major>${cmdline_tools_major_version}</major><minor>0</minor></revision>"
+	cmdline_tools_str+="<display-name>Android SDK Command-line Tools (latest)</display-name>"
+	cmdline_tools_str+="<uses-license ref=\"android-sdk-license\"/></localPackage></ns2:repository>"
+	cmdline_tools_old_str=$(GenerateScapesStr "${cmdline_tools_old_str:0:32}")
+	sed -i "/${cmdline_tools_old_str}/d" $cmdline_tools_package
+	printf "%s" "$cmdline_tools_str" >> $cmdline_tools_package
 }
 
 initLAMw4LinuxConfig(){
