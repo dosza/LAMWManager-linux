@@ -12,6 +12,7 @@ A [Lazarus IDE](http://www.lazarus-ide.org) ready to develop applications for An
 
 Linux Distro Supported:
 ---	
+**Note**: Only Linux **x86_64** bits is supported!
 <p>
 	<ul>
 		<li><img src="https://www.debian.org/logos/openlogo-nd.svg" style="width: 16px;"/> Debian GNU/ Linux 10</li>
