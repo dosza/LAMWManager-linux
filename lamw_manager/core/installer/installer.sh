@@ -1,12 +1,26 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.4.8
-#Date: 03/07/2022
+#Version: 0.5.0
+#Date: 06/12/2022
 #Description: "installer.sh" is part of the core of LAMW Manager. Contains routines for installing LAMW development environment
 #-------------------------------------------------------------------------------------------------#
-#set Remove Gradle from different 
+#set Remove Gradle from different
+
+
+checkOldCmdlineTools(){
+	local ret=1
+	local cmdline_tools_prop_path="$CMD_SDK_TOOLS_DIR/latest/source.properties"
+	if [ -e $cmdline_tools_prop_path ]; then 
+		local cmdline_tools_query="$CMD_SDK_TOOLS_VERSION_STR > $(grep Pkg.Revision= $cmdline_tools_prop_path | awk -F= ' { print $NF }')"
+		local cmdline_tools_query_result=$(echo "$cmdline_tools_query" | bc)
+		[ $cmdline_tools_query_result = 1 ] && ret=0
+	fi
+
+	return $ret
+} 
+
 setOldGradleVersion(){
 	[ ! -e "$LAMW_INSTALL_LOG" ] && return 
 
@@ -20,57 +34,62 @@ setOldGradleVersion(){
 
 #prepare upgrade
 LAMWPackageManager(){
-	if [ $FLAG_FORCE_ANDROID_AARCH64 = 1 ]; then 
-		
-		local old_lamw_ide_home="$LAMW4LINUX_HOME/lamw4linux"
-		local old_lamw4linux_exec=$old_lamw_ide_home/lamw4linux
-
-
-		[ -e /usr/bin/startlamw4linux ] && 	rm /usr/bin/startlamw4linux
-
-		if [ -e "$old_lamw_ide_home"  ] &&  [ -L $old_lamw_ide_home ] && [ -d $old_lamw_ide_home ]; then # remove deprecated symbolik links
-			if [ -e $old_lamw4linux_exec ]; then
-				rm $old_lamw4linux_exec
-			fi
-			rm "$old_lamw_ide_home"  -rf
-		fi
-
-		for((i=0;i<${#OLD_LAZARUS_STABLE_VERSION[*]};i++)); do
-			local old_lazarus_release=lazarus_${OLD_LAZARUS_STABLE_VERSION[i]//\./_}
-			local old_lazarus_home=$LAMW4LINUX_HOME/${old_lazarus_release}
-			[ -e "$old_lazarus_home" ] && rm "$old_lazarus_home" -rf
-		done
-		
-		[ -e "$OLD_FPC_CFG_PATH" ] && grep  "$ROOT_LAMW" "$OLD_FPC_CFG_PATH" && rm "$OLD_FPC_CFG_PATH"
 	
-		#fixs 0.3.1 to 0.3.2
+	local old_lamw_ide_home="$LAMW4LINUX_HOME/lamw4linux"
+	local old_lamw4linux_exec=$old_lamw_ide_home/lamw4linux
 
-		for i  in ${!OLD_FPC_SOURCES[*]}; do
-			[ -e ${OLD_FPC_SOURCES[i]} ] && rm  -rf ${OLD_FPC_SOURCES[i]}
-		done
 
-		setOldGradleVersion
-		for gradle in ${OLD_GRADLE[*]}; do
-			if [ -e "$gradle" ]; then
-				rm -rf $gradle 
-			fi
-		done
+	[ -e /usr/bin/startlamw4linux ] && 	rm /usr/bin/startlamw4linux
 
-		for ((i=0;i<${#OLD_ANT[*]};i++)); do
-			[ -e ${OLD_ANT[i]} ] && rm -rf ${OLD_ANT[i]}
-		done
+	if [ -e "$old_lamw_ide_home"  ] &&  [ -L $old_lamw_ide_home ] && [ -d $old_lamw_ide_home ]; then # remove deprecated symbolik links
+		if [ -e $old_lamw4linux_exec ]; then
+			rm $old_lamw4linux_exec
+		fi
+		rm "$old_lamw_ide_home"  -rf
+	fi
 
-		for old_fpc_stable in ${OLD_FPC_STABLE[*]}; do 
-			[ -e $old_fpc_stable ] && rm -rf $old_fpc_stable
-		done
+	for((i=0;i<${#OLD_LAZARUS_STABLE_VERSION[*]};i++)); do
+		local old_lazarus_release=lazarus_${OLD_LAZARUS_STABLE_VERSION[i]//\./_}
+		local old_lazarus_home=$LAMW4LINUX_HOME/${old_lazarus_release}
+		[ -e "$old_lazarus_home" ] && rm "$old_lazarus_home" -rf
+	done
+	
+	[ -e "$OLD_FPC_CFG_PATH" ] && grep  "$ROOT_LAMW" "$OLD_FPC_CFG_PATH" && rm "$OLD_FPC_CFG_PATH"
 
-		#check and remove old  ppcx64 compiler (bootstrap)
-		if [ -e $LAMW4LINUX_HOME/usr/local/bin/ppcx64 ]; then 
-			local fpc_version=${FPC_DEB_VERSION%\-*}
-			$LAMW4LINUX_HOME/usr/local/bin/ppcx64 -help | grep "^Free Pascal Compiler version $fpc_version" > /dev/null
-			[ $? != 0 ] && rm  "$LAMW4LINUX_HOME/usr/local/bin/ppcx64"
+	#fixs 0.3.1 to 0.3.2
+
+	for i  in ${!OLD_FPC_SOURCES[*]}; do
+		[ -e ${OLD_FPC_SOURCES[i]} ] && rm  -rf ${OLD_FPC_SOURCES[i]}
+	done
+
+	setOldGradleVersion
+	for gradle in ${OLD_GRADLE[*]}; do
+		if [ -e "$gradle" ]; then
+			rm -rf $gradle 
+		fi
+	done
+
+	for ((i=0;i<${#OLD_ANT[*]};i++)); do
+		[ -e ${OLD_ANT[i]} ] && rm -rf ${OLD_ANT[i]}
+	done
+
+	for old_fpc_stable in ${OLD_FPC_STABLE[*]}; do 
+		[ -e $old_fpc_stable ] && rm -rf $old_fpc_stable
+	done
+
+	#check and remove old  ppcx64 compiler (bootstrap)
+	if [ -e $LAMW4LINUX_HOME/usr/local/bin/ppcx64 ]; then 
+		local fpc_version=${FPC_DEB_VERSION%\-*}
+		
+		if ! $LAMW4LINUX_HOME/usr/local/bin/ppcx64 -help | grep "^Free Pascal Compiler version $fpc_version" > /dev/null; then 
+			rm  "$LAMW4LINUX_HOME/usr/local/bin/ppcx64"
 		fi
 	fi
+
+	if checkOldCmdlineTools ; then 
+		rm -rf "$CMD_SDK_TOOLS_DIR"
+	fi
+
 
 }
 getStatusInstalation(){
@@ -336,7 +355,6 @@ runSDKManager(){
 	fi
 }
 
-
 getAndroidAPIS(){
 	
 	local force_yes=1
@@ -355,6 +373,8 @@ getAndroidAPIS(){
 				runSDKManager ${SDK_MANAGER_CMD_PARAMETERS[i]} 
 			fi
 		done
+		
+		CmdLineToolsTrigger
 	else 
 		runSDKManager $*
 	fi
@@ -483,7 +503,7 @@ getImplicitInstall(){
 }
 
 getCurrentLazarusWidget(){
-	local lazarus_widget_default="gkt2"
+	local lazarus_widget_default="gtk2"
 	local current_widget_set="$lazarus_widget_default"
 	if [ -e  "$ide_make_cfg_path" ]; then 
 		current_widget_set="$(grep '\-dLCL.' "$ide_make_cfg_path" | sed 's/-dLCL//g')"

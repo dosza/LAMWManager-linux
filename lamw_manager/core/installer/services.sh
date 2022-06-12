@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 getLAMWDep(){
 	if [ "$1" = "" ]; then
 		echo 'Need object arg!'

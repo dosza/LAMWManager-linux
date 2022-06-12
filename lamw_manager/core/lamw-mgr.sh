@@ -1,9 +1,9 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.4.8
-#Date: 03/07/2022
+#Version: 0.5.0
+#Date: 06/12/2022
 #Description: The "lamw-install.sh" is part of the core of LAMW Manager. This script configures the development environment for LAMW
 #-------------------------------------------------------------------------------------------------#
 

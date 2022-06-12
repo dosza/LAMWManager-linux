@@ -1,9 +1,9 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.4.8
-#Date: 03/07/2022
+#Version: 0.5.0
+#Date: 06/12/2022
 #Description:The "lamw_manager" is part of the core of LAMW Manager. This script is a wrapper for "core/lamw-instal.sh"
 #-------------------------------------------------------------------------------------------------#
 
@@ -75,8 +75,9 @@ CheckFlags(){
 
 #Check if DEBUG flag is set 
 getBashCMD(){
+	
 	if [ $DEBUG = 1 ]; then
-		export LAMW_MGR_CORE="bash -x $LAMW_MGR_CORE"
+		LAMW_MGR_INSTALL="bash -x $LAMW_MGR_INSTALL"
 	fi
 }
 
@@ -117,11 +118,12 @@ CheckLocalRootLAMW(){
 
 	LAMW_MANAGER_ENV+=(ROOT_LAMW=$ROOT_LAMW)
 	LAMW4LINUX_HOME=$ROOT_LAMW/lamw4linux
+	LAMW_FRAMEWORK_HOME=$ROOT_LAMW/lazandroidmodulewizard
 	LAMW_INSTALL_LOG="$LAMW4LINUX_HOME/lamw-install.log"
 }
 
 RunAsSudo(){
-	sudo -i env ${LAMW_MANAGER_ENV[@]} "$LAMW_MGR_INSTALL" $*
+	sudo -i env ${LAMW_MANAGER_ENV[@]} $LAMW_MGR_INSTALL $*
 	export EXIT_STATUS=$?
 }
 
@@ -131,7 +133,7 @@ RunAsPolkit(){
 	isSupportedPolkit
 	if [ $?  = 0 ]; then 
 		LAMW_MANAGER_ENV+=(DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY)
-		pkexec  env ${LAMW_MANAGER_ENV[@]} "$LAMW_MGR_INSTALL" $*
+		pkexec  env ${LAMW_MANAGER_ENV[@]} $LAMW_MGR_INSTALL $*
 		export EXIT_STATUS=$?
 	else
 		echo $error_msg
@@ -170,9 +172,19 @@ Run(){
 	exec 3>&-
 }
 
-#main function
+
+cacheGradle(){
+	echo "${NEGRITO}Please wait,starting caching Gradle"
+	lamw_termnal="$ROOT_LAMW/lamw4linux/usr/bin/lamw4linux-terminal"
+	$lamw_termnal -c cacheGradle &>/dev/null
+}
 
 autoStartLAMW4Linux(){
+
+	if [ $EXIT_STATUS = 0 ] && [ $AUTO_START_LAMW4LINUX = 1 ] && [ -e $LAMW_INSTALL_LOG ]; then
+		cacheGradle
+	fi
+
 
 	if [ $EXIT_STATUS = 0 ] && [ "${XDG_CURRENT_DESKTOP^^}" != "XFCE" ] && 
 		[ $AUTO_START_LAMW4LINUX = 1 ] && [ -e $LAMW_INSTALL_LOG ];then
@@ -184,6 +196,7 @@ autoStartLAMW4Linux(){
 	exit $EXIT_STATUS
 }
 
+#main function
 main(){
 	
 	IsUserRoot "lamw_manager"
