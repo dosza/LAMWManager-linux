@@ -37,8 +37,8 @@ local jdk_filters_query=(".[] | select(.binary.os==\"linux\")|select(.binary.arc
 	JDK_JSON="$(Wget -O- -q  "$API_JDK_URL" | jq "${jdk_filters_query[@]}")"
 	JDK_URL="`parseJSONString "$JDK_JSON" ".[0].package.link"`"
 	JDK_TAR="`parseJSONString "$JDK_JSON" ".[0].package.name"`"
-	JDK_FILE="`parseJSONString "$JDK_JSON" ".[0].scm_ref"`"
-	JAVA_VERSION="1.8.0_`parseJSONString "$JDK_JSON" ".[3].security"`"
+	JDK_FILE="`parseJSONString "$JDK_JSON" ".[2]"`"
+	JAVA_VERSION="11.0.`parseJSONString "$JDK_JSON" ".[4].security"`"
 	JDK_TAR="`parseJSONString "$JDK_JSON" ".[0].package.name"`"
 }
 
