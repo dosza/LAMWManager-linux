@@ -309,6 +309,8 @@ LAMW4LinuxPostConfig(){
 		"\t\tgradle clean build --info"
 		"\tdone"
 		""
+		"\t[ -e \$lamw_tmp ] && cd \$OLDPWD && rm -rf \$lamw_tmp"
+		""
 		"}"
 		"#Run avdmanager"
 		"avdmanager(){"
