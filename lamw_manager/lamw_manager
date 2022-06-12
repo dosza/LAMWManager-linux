@@ -176,7 +176,7 @@ Run(){
 cacheGradle(){
 	echo "${NEGRITO}Please wait,starting caching Gradle"
 	lamw_termnal="$ROOT_LAMW/lamw4linux/usr/bin/lamw4linux-terminal"
-	$lamw_termnal -c cacheGradle
+	$lamw_termnal -c cacheGradle &>/dev/null
 }
 
 autoStartLAMW4Linux(){
