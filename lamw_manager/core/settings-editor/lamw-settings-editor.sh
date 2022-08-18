@@ -27,7 +27,7 @@ initROOT_LAMW(){
 	done
 
 	[ ! -e $LAMW_USER_HOME/.android/repositories.cfg ] && touch $LAMW_USER_HOME/.android/repositories.cfg  
-	[ ! $HOME/.android/repositories.cfg ] && echo "" > $HOME/.android/repositories.cfg 
+	[ ! -e $HOME/.android/repositories.cfg ] && echo "" > $HOME/.android/repositories.cfg 
 }
 
 enableADBtoUdev(){
