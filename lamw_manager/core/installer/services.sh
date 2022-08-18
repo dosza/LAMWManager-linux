@@ -41,7 +41,7 @@ setJDKDeps(){
 }
 
 setLAMWPackages(){
-	isVariabelDeclared LAMW_PACKAGES
+	isVariableDeclared LAMW_PACKAGES
 	[ $? = 0 ] && return 
 
 	local lamw_pkgs_json="$(echo "$LAMW_PACKAGE_JSON" | jq '. |{packages:.packages}')"
