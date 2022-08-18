@@ -107,7 +107,7 @@ CheckLocalRootLAMW(){
 	if [ "$LOCAL_ROOT_LAMW" != "" ]; then
 		setRootLAMW
 	else 
-		isVariabelDeclared LOCAL_ROOT_LAMW
+		isVariableDeclared LOCAL_ROOT_LAMW
 		if [ $? = 0 ]; then
 			echo "${VERMELHO}Fatal error: LOCAL_ROOT_LAMW is declared as empty!${NORMAL}"
 			exit 1
