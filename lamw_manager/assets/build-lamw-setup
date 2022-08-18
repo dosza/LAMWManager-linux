@@ -121,8 +121,8 @@ main(){
 	CopyFiles
 	changeDirectory $LAMW_MANAGER_TMP_BUILD
 	makeself  --quiet --xz --copy --target '$HOME/lamw_manager' $PWD $LAMW_MANAGER_INSTALLER "LAMW Manager Setup" "./${START_LAMW_MANAGER_FILE}"
-	chmod +x "$LAMW_MANAGER_FINAL_INSTALLER"
 	cp $LAMW_MANAGER_TMP_BUILD/$LAMW_MANAGER_INSTALLER /tmp
+	chmod +x "$LAMW_MANAGER_FINAL_INSTALLER"
 	RemoveTmpFiles
 }
 
