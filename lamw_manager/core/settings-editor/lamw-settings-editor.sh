@@ -723,8 +723,10 @@ updateNodeAttrXML(){
 CmdLineToolsTrigger(){
 	local model_license_package="$ANDROID_SDK_ROOT/platform-tools/package.xml"
 	local cmdline_tools_package="$CMD_SDK_TOOLS_DIR/latest/package.xml"
-	[ ! -e $cmdline_tools_package ] && cp $model_license_package $cmdline_tools_package
-	cmdlineExtraConfig
+	if [ ! -e $cmdline_tools_package ];then
+		cp $model_license_package $cmdline_tools_package 
+		cmdlineExtraConfig
+	fi
 }
 
 cmdlineExtraConfig(){
