@@ -114,49 +114,36 @@ writeLAMWLogInstall(){
 
 	WriterFileln "$LAMW_INSTALL_LOG" "lamw_log_str"	
 }
+initTemplatePaths(){
+	arrayMap LAMW4LINUX_TEMPLATES_PATHS templatePath realPath '
+		cp $templatePath $realPath
+	'
+}
 
+menuTrigger(){
+	local path="$2"
+	arrayMap $1 value key '
+		local current_value="$(grep "^$key" "$path")" 
+		sed -i "s|$current_value|$key=$value|g" "$path"	
+	'
+	chmod +x $2
+}
 #Add LAMW4Linux to menu 
 AddLAMWtoStartMenu(){
-
-	[ ! -e  "$LAMW_USER_APPLICATIONS_PATH" ] && mkdir -p "$LAMW_USER_APPLICATIONS_PATH"  #create a directory of local apps launcher, if not exists 	
-	[ ! -e "$LAMW_USER_MIMES_PATH" ] && mkdir -p $LAMW_USER_MIMES_PATH
-	
-	local lamw_desktop_file_str=(
-		"[Desktop Entry]"  
-		"Name=LAMW4Linux IDE"
-		"Comment=A Lazarus IDE [and all equirements!] ready to develop for Android!" 
-		"GenericName=LAMW4Linux IDE"   
-		"Exec=$LAMW_IDE_HOME/startlamw4linux"
-		"Icon=$LAMW_IDE_HOME/images/icons/lazarus_orange.ico"
-		"Terminal=false"
-		"Type=Application"  
-		"Categories=Development;IDE;"  
-		"Categories=Application;IDE;Development;GTK;GUIDesigner;"
-		"StartupWMClass=LAMW4Linux"
-		"MimeType=text/x-pascal;text/lazarus-project-source;text/lazarus-project-information;text/lazarus-form;text/lazarus-resource;text/lazarus-package;text/lazarus-package-link;text/lazarus-code-inlay;"
-		"Keywords=editor;Pascal;IDE;FreePascal;fpc;Design;Designer;"
-		"[Property::X-KDE-NativeExtension]"
-		"Type=QString"
-		"Value=.pas"
-		"X-Ubuntu-Gettext-Domain=desktop_kdelibs"
+	local -A lamw_desktop_file_str=( 
+		["Name"]="LAMW4Linux IDE"
+		["Comment"]="A Lazarus IDE [and all equirements!] ready to develop for Android!"   
+		["Exec"]="$LAMW_IDE_HOME/startlamw4linux"
+		["Icon"]="$LAMW_IDE_HOME/images/icons/lazarus_orange.ico"
+		["StartupWMClass"]="LAMW4Linux"
 	)
 
-	local lamw4linux_terminal_desktop_str=(
-		"[Desktop Entry]"  
-		"Name=LAMW4Linux Terminal"
-		"Comment=A Terminal with LAMW environment, here you can run FPC command line tools, Lazarus and LAMW scripts" 
-		"GenericName=LAMW4Linux Terminal"   
-		"Exec=$LAMW4LINUX_TERMINAL_EXEC_PATH"
-		"Icon=terminal"
-		"Terminal=true"
-		"Type=Application"
-		"Categories=Development;IDE;"  
-	)
-
-	WriterFileln "$LAMW4LINUX_TERMINAL_MENU_PATH" lamw4linux_terminal_desktop_str
-	WriterFileln "$LAMW_MENU_ITEM_PATH" "lamw_desktop_file_str"
-	chmod +x $LAMW_MENU_ITEM_PATH
-	chmod +x $LAMW4LINUX_TERMINAL_MENU_PATH
+	local  -A lamw4linux_terminal_desktop_str=(  
+        ["Exec"]="$LAMW4LINUX_TERMINAL_EXEC_PATH"
+    )
+    initTemplatePaths
+	menuTrigger lamw_desktop_file_str $LAMW_MENU_ITEM_PATH
+	menuTrigger lamw4linux_terminal_desktop_str $LAMW4LINUX_TERMINAL_MENU_PATH
 	#mime association: ref https://help.gnome.org/admin/system-admin-guide/stable/mime-types-custom-user.html.en
 	cp $LAMW_IDE_HOME/install/lazarus-mime.xml $LAMW_USER_MIMES_PATH
 	update-mime-database   $(dirname $LAMW_USER_MIMES_PATH)

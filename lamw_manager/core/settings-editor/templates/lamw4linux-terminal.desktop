@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=LAMW4Linux Terminal
+Comment=A Terminal with LAMW environment, here you can run FPC command line tools, Lazarus and LAMW scripts
+GenericName=LAMW4Linux Terminal
+Exec=$ROOT_LAMW/lamw4linux-terminal
+Icon=terminal
+Terminal=true
+Type=Application
+Categories=Development;IDE;
