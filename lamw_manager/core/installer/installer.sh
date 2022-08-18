@@ -194,6 +194,8 @@ GitPull(){
 }
 
 gitAddSafeConfigRepository(){
+	local safe_pattern="directory = $(GenerateScapesStr "$1")"
+	grep "$safe_pattern"  ~/.gitconfig -q && return 
 	git config --global --add safe.directory "$1"
 }
 
