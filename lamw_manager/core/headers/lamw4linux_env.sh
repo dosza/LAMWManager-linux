@@ -6,7 +6,7 @@
 #Date: 08/13/2022
 #Description: The "lamw_headers" is part of the core of LAMW Manager. This script contains LAMW Manager variables.
 #-------------------------------------------------------------------------------------------------#
-LAMW4_LINUX_PATH_CFG="$LAMW_USER_HOME/.lamw4linux"
+LAMW_IDE_HOME_CFG="$LAMW_USER_HOME/.lamw4linux"
 LAMW4LINUX_HOME="$ROOT_LAMW/lamw4linux"
 LAMW_INSTALL_LOG="$LAMW4LINUX_HOME/lamw-install.log"
 LAMW4LINUX_ETC="$LAMW4LINUX_HOME/etc"
