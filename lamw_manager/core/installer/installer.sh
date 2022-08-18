@@ -437,7 +437,8 @@ Repair(){
 			changeOwnerAllLAMW
 		fi
 
-		if [ ! -e $LAMW4_LINUX_PATH_CFG ]; then 
+		if [ ! -e $LAMW_IDE_HOME_CFG ]; then
+			mkdir -p "$LAMW_IDE_HOME_CFG"
 			LAMW4LinuxPostConfig
 		fi
 	fi
@@ -521,7 +522,7 @@ getMaxLAMWPackages(){
 }
 
 installLAMWPackages(){
-	local ide_make_cfg_path="$LAMW4_LINUX_PATH_CFG/idemake.cfg"
+	local ide_make_cfg_path="$LAMW_IDE_HOME_CFG/idemake.cfg"
 	local error_lazbuild_msg="${VERMELHO}Error${NORMAL}: Fails on build ${NEGRITO}${LAMW_PACKAGES[i]}${NORMAL} package"
 	local max_lamw_pcks=$(getMaxLAMWPackages)
 	local sucess_filler=""
@@ -529,7 +530,7 @@ installLAMWPackages(){
 	local current_pack=""
 
 	local lamw_build_opts=(
-		"--pcp=$LAMW4_LINUX_PATH_CFG"  
+		"--pcp=$LAMW_IDE_HOME_CFG"  
 		"--ws=$(getCurrentLazarusWidget)"
 		"--quiet" 
 		"--build-ide=" 
