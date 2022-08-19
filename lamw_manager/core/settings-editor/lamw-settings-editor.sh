@@ -419,6 +419,7 @@ CleanOldCrossCompileBins(){
 	
 
 cleanPATHS(){
+	[ $CURRENT_OLD_LAMW_INSTALL_INDEX -lt  2 ] && return
 	local android_home_sc=$(GenerateScapesStr "$ANDROID_HOME")
 	grep "ANDROID_HOME=" $LAMW_USER_HOME/.bashrc | grep "$ROOT_LAMW" > /dev/null 
 	if [ $? = 0 ]; then 
