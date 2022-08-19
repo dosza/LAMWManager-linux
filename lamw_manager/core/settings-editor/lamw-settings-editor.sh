@@ -730,12 +730,15 @@ CmdLineToolsTrigger(){
 }
 
 cmdlineExtraConfig(){
+	local pattern_old_xml='xmlns:ns14'
+	local xml_ns_version='3'
+	grep "$pattern_old_xml" $cmdline_tools_package -q && xml_ns_version='5'
 	local cmdline_tools_major_version=${CMD_SDK_TOOLS_VERSION_STR/%\.*}
 	local cmdline_tools_old_str=`grep '</license' $cmdline_tools_package`
 	local cmdline_tools_license_data=`grep '</license>' $cmdline_tools_package | awk -F'<' ' { printf $1 }'`
 	local cmdline_tools_str="${cmdline_tools_license_data}</license><localPackage path=\"cmdline-tools;latest\" "
 	cmdline_tools_str+="obsolete=\"false\"><type-details xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
-	cmdline_tools_str+="xsi:type=\"ns5:genericDetailsType\"/><revision>"
+	cmdline_tools_str+="xsi:type=\"ns${xml_ns_version}:genericDetailsType\"/><revision>"
 	cmdline_tools_str+="<major>${cmdline_tools_major_version}</major><minor>0</minor></revision>"
 	cmdline_tools_str+="<display-name>Android SDK Command-line Tools (latest)</display-name>"
 	cmdline_tools_str+="<uses-license ref=\"android-sdk-license\"/></localPackage></ns2:repository>"
