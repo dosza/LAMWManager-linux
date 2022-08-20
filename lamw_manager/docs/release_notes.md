@@ -8,6 +8,7 @@ v0.5.1 - Ago 18, 2022
 +	Fixes missing /tmp/lamw_manager_setup.sh in assets/build-lamw-setup
 +	Fixes duplicate ```[safe]``` settings in *\~.gitconfig*
 +	Prevents downgrade of package.xml in cmdline-tools/latest
++	Adds support to old format of package.xml in cmdline-tools
 
 **News**
 +	Add templates in [*settings-editor*](https://github.com/dosza/LAMWManager-linux/blob/master/lamw_manager/core/settings-editor)
@@ -17,6 +18,7 @@ v0.5.0 - Jun 12, 2022
 --
 **Fixes**
 +	Fixes wrong ld path on try build lazarus project to linux/x86_64
+
 **News**
 +	Add new commands to LAMW4Linux Terminal, you can run directly (with auto-complete  tab)
 	+	sdkmanager
