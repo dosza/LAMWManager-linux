@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.5.0
-#Date: 06/12/2022
+#Version: 0.5.1
+#Date: 08/13/2022
 #Description: The "lamw_headers" is part of the core of LAMW Manager. This script contains LAMW Manager variables.
 #-------------------------------------------------------------------------------------------------#
 
@@ -11,11 +11,11 @@
 #										Section Version Variables
 #--------------------------------------------------------------------------------------------------
 
-LAMW_INSTALL_VERSION="0.5.0"
+LAMW_INSTALL_VERSION="0.5.1"
 JDK_VERSION=11
 ANT_VERSION_STABLE='1.10.11'
-CMD_SDK_TOOLS_VERSION="8092744"
-CMD_SDK_TOOLS_VERSION_STR="6.0"
+CMD_SDK_TOOLS_VERSION="8512546"
+CMD_SDK_TOOLS_VERSION_STR="7.0"
 LAZARUS_STABLE_VERSION="2.0.12"
 SDK_TOOLS_VERSION="25.2.5"
 FPC_TRUNK_VERSION="3.2.2"
@@ -52,6 +52,7 @@ OLD_LAZARUS_STABLE_VERSION=(
 )
 
 OLD_LAMW_INSTALL_VERSION=(
+	0.5.0
 	0.4.{8..4}
 	0.4.3{.1,}
 	0.4.2{.{2..1},}
@@ -138,6 +139,13 @@ LAMW_LINUX_SPP=(
 	"\t*Debian 10\n"
 	"\t*Ubuntu 20.04 LTS\n"
 )
+
+
+declare -A LAMW4LINUX_TEMPLATES_PATHS=(
+	["$LAMW_MENU_ITEM_PATH"]="$LAMW_IDE_HOME/install/lazarus.desktop"
+	["$LAMW4LINUX_TERMINAL_MENU_PATH"]="$LAMW4LINUX_TEMPLATES_BASE_PATH/$(basename $LAMW4LINUX_TERMINAL_MENU_PATH)"
+)
+
 
 ARGS=($@)
 EXIT_STATUS=0

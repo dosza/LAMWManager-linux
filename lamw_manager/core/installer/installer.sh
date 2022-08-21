@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.5.0
-#Date: 06/12/2022
+#Version: 0.5.1
+#Date: 08/13/2022
 #Description: "installer.sh" is part of the core of LAMW Manager. Contains routines for installing LAMW development environment
 #-------------------------------------------------------------------------------------------------#
 #set Remove Gradle from different
@@ -194,6 +194,8 @@ GitPull(){
 }
 
 gitAddSafeConfigRepository(){
+	local safe_pattern="directory = $(GenerateScapesStr "$1")"
+	grep "$safe_pattern"  ~/.gitconfig -q && return 
 	git config --global --add safe.directory "$1"
 }
 
@@ -437,7 +439,8 @@ Repair(){
 			changeOwnerAllLAMW
 		fi
 
-		if [ ! -e $LAMW4_LINUX_PATH_CFG ]; then 
+		if [ ! -e $LAMW_IDE_HOME_CFG ]; then
+			mkdir -p "$LAMW_IDE_HOME_CFG"
 			LAMW4LinuxPostConfig
 		fi
 	fi
@@ -521,7 +524,7 @@ getMaxLAMWPackages(){
 }
 
 installLAMWPackages(){
-	local ide_make_cfg_path="$LAMW4_LINUX_PATH_CFG/idemake.cfg"
+	local ide_make_cfg_path="$LAMW_IDE_HOME_CFG/idemake.cfg"
 	local error_lazbuild_msg="${VERMELHO}Error${NORMAL}: Fails on build ${NEGRITO}${LAMW_PACKAGES[i]}${NORMAL} package"
 	local max_lamw_pcks=$(getMaxLAMWPackages)
 	local sucess_filler=""
@@ -529,7 +532,7 @@ installLAMWPackages(){
 	local current_pack=""
 
 	local lamw_build_opts=(
-		"--pcp=$LAMW4_LINUX_PATH_CFG"  
+		"--pcp=$LAMW_IDE_HOME_CFG"  
 		"--ws=$(getCurrentLazarusWidget)"
 		"--quiet" 
 		"--build-ide=" 
@@ -546,6 +549,7 @@ installLAMWPackages(){
 		./lazbuild ${lamw_build_opts[*]} ${LAMW_PACKAGES[$i]} >/dev/null
 		
 		if [ $? != 0 ]; then 
+			printf  "%s\n" "${FILLER:${#sucess_filler}}${VERMELHO} [FAILS]${NORMAL}"
 			./lazbuild ${lamw_build_opts[*]} ${LAMW_PACKAGES[$i]}
 			[ $? != 0 ] && { echo "$error_lazbuild_msg" && EXIT_STATUS=1 && return ; }
 		fi
