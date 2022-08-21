@@ -114,7 +114,7 @@ setRootLAMW(){
 }
 
 unsetLocalRootLAMW(){
-	isVariabelDeclared UNINSTALL_LAMW
+	isVariableDeclared UNINSTALL_LAMW
 	if [ $? = 0 ] &&  [ -e $LAMW_MANAGER_LOCAL_CONFIG_DIR ]; then
 		rm -rf $LAMW_MANAGER_LOCAL_CONFIG_DIR	
 	fi

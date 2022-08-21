@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (mater-alma)
 #Course: Science Computer
-#Version: 0.5.0
-#Date: 06/12/2022
+#Version: 0.5.1
+#Date: 08/13/2022
 #Description: The "lamw-manager-settings-editor.sh" is part of the core of LAMW Manager. Responsible for managing LAMW Manager / LAMW configuration files..
 #-----------------------------------------------------------------------f--------------------------#
 #this function builds initial struct directory of LAMW env Development !
@@ -16,7 +16,9 @@ initROOT_LAMW(){
 		$LAMW_USER_HOME/.android
 		$HOME/.android
 		$FPPKG_LOCAL_REPOSITORY
-		$LAMW4_LINUX_PATH_CFG
+		$LAMW_IDE_HOME_CFG
+		"$LAMW_USER_MIMES_PATH"
+		"$LAMW_USER_APPLICATIONS_PATH"
 	)
 
 
@@ -25,7 +27,7 @@ initROOT_LAMW(){
 	done
 
 	[ ! -e $LAMW_USER_HOME/.android/repositories.cfg ] && touch $LAMW_USER_HOME/.android/repositories.cfg  
-	[ ! $HOME/.android/repositories.cfg ] && echo "" > $HOME/.android/repositories.cfg 
+	[ ! -e $HOME/.android/repositories.cfg ] && echo "" > $HOME/.android/repositories.cfg 
 }
 
 enableADBtoUdev(){
@@ -49,7 +51,7 @@ changeOwnerAllLAMW(){
 	#case only update-lamw
 	if [ $# = 1 ]; then
 		local files_chown=(
-			"$LAMW4_LINUX_PATH_CFG"
+			"$LAMW_IDE_HOME_CFG"
 			"$ROOT_LAMW/lazandroidmodulewizard"
 			"$LAMW_IDE_HOME"
 		)
@@ -63,7 +65,7 @@ changeOwnerAllLAMW(){
 			"$LAMW_USER_HOME/.bashrc"
 			"$LAMW_USER_HOME/.android"
 			"$LAMW_USER_HOME/.local/share"
-			"$LAMW4_LINUX_PATH_CFG"
+			"$LAMW_IDE_HOME_CFG"
 			"$LAMW_MANAGER_LOCAL_CONFIG_DIR"
 				
 		#	
@@ -112,49 +114,36 @@ writeLAMWLogInstall(){
 
 	WriterFileln "$LAMW_INSTALL_LOG" "lamw_log_str"	
 }
+initTemplatePaths(){
+	arrayMap LAMW4LINUX_TEMPLATES_PATHS templatePath realPath '
+		cp $templatePath $realPath
+	'
+}
 
+menuTrigger(){
+	local path="$2"
+	arrayMap $1 value key '
+		local current_value="$(grep "^$key" "$path")" 
+		sed -i "s|$current_value|$key=$value|g" "$path"	
+	'
+	chmod +x $2
+}
 #Add LAMW4Linux to menu 
 AddLAMWtoStartMenu(){
-
-	[ ! -e  "$LAMW_USER_APPLICATIONS_PATH" ] && mkdir -p "$LAMW_USER_APPLICATIONS_PATH"  #create a directory of local apps launcher, if not exists 	
-	[ ! -e "$LAMW_USER_MIMES_PATH" ] && mkdir -p $LAMW_USER_MIMES_PATH
-	
-	local lamw_desktop_file_str=(
-		"[Desktop Entry]"  
-		"Name=LAMW4Linux IDE"
-		"Comment=A Lazarus IDE [and all equirements!] ready to develop for Android!" 
-		"GenericName=LAMW4Linux IDE"   
-		"Exec=$LAMW_IDE_HOME/startlamw4linux"
-		"Icon=$LAMW_IDE_HOME/images/icons/lazarus_orange.ico"
-		"Terminal=false"
-		"Type=Application"  
-		"Categories=Development;IDE;"  
-		"Categories=Application;IDE;Development;GTK;GUIDesigner;"
-		"StartupWMClass=LAMW4Linux"
-		"MimeType=text/x-pascal;text/lazarus-project-source;text/lazarus-project-information;text/lazarus-form;text/lazarus-resource;text/lazarus-package;text/lazarus-package-link;text/lazarus-code-inlay;"
-		"Keywords=editor;Pascal;IDE;FreePascal;fpc;Design;Designer;"
-		"[Property::X-KDE-NativeExtension]"
-		"Type=QString"
-		"Value=.pas"
-		"X-Ubuntu-Gettext-Domain=desktop_kdelibs"
+	local -A lamw_desktop_file_str=( 
+		["Name"]="LAMW4Linux IDE"
+		["Comment"]="A Lazarus IDE [and all equirements!] ready to develop for Android!"   
+		["Exec"]="$LAMW_IDE_HOME/startlamw4linux"
+		["Icon"]="$LAMW_IDE_HOME/images/icons/lazarus_orange.ico"
+		["StartupWMClass"]="LAMW4Linux"
 	)
 
-	local lamw4linux_terminal_desktop_str=(
-		"[Desktop Entry]"  
-		"Name=LAMW4Linux Terminal"
-		"Comment=A Terminal with LAMW environment, here you can run FPC command line tools, Lazarus and LAMW scripts" 
-		"GenericName=LAMW4Linux Terminal"   
-		"Exec=$LAMW4LINUX_TERMINAL_EXEC_PATH"
-		"Icon=terminal"
-		"Terminal=true"
-		"Type=Application"
-		"Categories=Development;IDE;"  
-	)
-
-	WriterFileln "$LAMW4LINUX_TERMINAL_MENU_PATH" lamw4linux_terminal_desktop_str
-	WriterFileln "$LAMW_MENU_ITEM_PATH" "lamw_desktop_file_str"
-	chmod +x $LAMW_MENU_ITEM_PATH
-	chmod +x $LAMW4LINUX_TERMINAL_MENU_PATH
+	local  -A lamw4linux_terminal_desktop_str=(  
+        ["Exec"]="$LAMW4LINUX_TERMINAL_EXEC_PATH"
+    )
+    initTemplatePaths
+	menuTrigger lamw_desktop_file_str $LAMW_MENU_ITEM_PATH
+	menuTrigger lamw4linux_terminal_desktop_str $LAMW4LINUX_TERMINAL_MENU_PATH
 	#mime association: ref https://help.gnome.org/admin/system-admin-guide/stable/mime-types-custom-user.html.en
 	cp $LAMW_IDE_HOME/install/lazarus-mime.xml $LAMW_USER_MIMES_PATH
 	update-mime-database   $(dirname $LAMW_USER_MIMES_PATH)
@@ -169,9 +158,7 @@ LAMW4LinuxPostConfig(){
 	local old_lamw_workspace="$LAMW_USER_HOME/Dev/lamw_workspace"
 	local ant_path=$ANT_HOME/bin
 	local breakline='\\'n
-	
-	[ ! -e $LAMW4_LINUX_PATH_CFG ] && 
-		mkdir $LAMW4_LINUX_PATH_CFG
+
 
 	[ -e $old_lamw_workspace ] && 
 		mv $old_lamw_workspace $LAMW_WORKSPACE_HOME
@@ -181,8 +168,8 @@ LAMW4LinuxPostConfig(){
 
 
 	#testa modificação de workspace
-	if [ -e "$LAMW4_LINUX_PATH_CFG/LAMW.ini" ]; then 
-		local current_lamw_workspace=$(grep '^PathToWorkspace=' $LAMW4_LINUX_PATH_CFG/LAMW.ini  | sed 's/PathToWorkspace=//g')
+	if [ -e "$LAMW_IDE_HOME_CFG/LAMW.ini" ]; then 
+		local current_lamw_workspace=$(grep '^PathToWorkspace=' $LAMW_IDE_HOME_CFG/LAMW.ini  | sed 's/PathToWorkspace=//g')
 		[ "$current_lamw_workspace" != "$LAMW_WORKSPACE_HOME" ] && LAMW_WORKSPACE_HOME="$current_lamw_workspace"	
 	fi
 # contem o arquivo de configuração do lamw
@@ -215,7 +202,7 @@ LAMW4LinuxPostConfig(){
 		"export ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
 		"export GRADLE_HOME=$GRADLE_HOME"
 		"export PATH=$ROOT_LAMW/lamw4linux/usr/bin:\$PPC_CONFIG_PATH:\$JAVA_HOME/bin:\$PATH:\$ANDROID_HOME/ndk-toolchain:\$GRADLE_HOME/bin"
-		"export LAMW4_LINUX_PATH_CFG=$LAMW4_LINUX_PATH_CFG"
+		"export LAMW_IDE_HOME_CFG=$LAMW_IDE_HOME_CFG"
 		"export LAMW_MANAGER_PATH=$LAMW_MANAGER_PATH"
 		"export LAMW4LINUX_EXE_PATH=$LAMW4LINUX_EXE_PATH"
 		"export OLD_LAMW4LINUX_EXE_PATH=${LAMW4LINUX_EXE_PATH}.old"
@@ -228,8 +215,8 @@ LAMW4LinuxPostConfig(){
 	local startup_error_lamw4linux_str=(
 		'#!/bin/bash'
 		"zenity_exec=\$(which zenity)"
-		"if [ ! -e \$LAMW4_LINUX_PATH_CFG ]; then"
-		"	zenity_message=\"Primary Config Path ( \$LAMW4_LINUX_PATH_CFG ) doesn't exists!!${breakline}Run: './lamw_manager' to fix that! \""
+		"if [ ! -e \$LAMW_IDE_HOME_CFG ]; then"
+		"	zenity_message=\"Primary Config Path ( \$LAMW_IDE_HOME_CFG ) doesn't exists!!${breakline}Run: './lamw_manager' to fix that! \""
 		"	zenity_title=\"Error on start LAMW4Linux\""
 		"	[ \"\$zenity_exec\" != \"\" ] &&"
 		"		\$zenity_exec --title \"\$zenity_title\" --error --width 480 --text \"\$zenity_message\" &&"
@@ -258,13 +245,13 @@ LAMW4LinuxPostConfig(){
 		"source $LAMW4LINUX_LOCAL_ENV"
 		"source $startup_error_lamw4linux"
 		''
-		"exec \$LAMW4LINUX_EXE_PATH --pcp=\$LAMW4_LINUX_PATH_CFG \$*"
+		"exec \$LAMW4LINUX_EXE_PATH --pcp=\$LAMW_IDE_HOME_CFG \$*"
 	)
 
 	local lazbuild_str=(
 		'#!/bin/bash'
 		"source $LAMW4LINUX_LOCAL_ENV"
-		"exec $LAMW_IDE_HOME/lazbuild --pcp=\$LAMW4_LINUX_PATH_CFG \$*"
+		"exec $LAMW_IDE_HOME/lazbuild --pcp=\$LAMW_IDE_HOME_CFG \$*"
 	)
 
 
@@ -279,8 +266,9 @@ LAMW4LinuxPostConfig(){
 		""
 		"_LAMW_MANAGER_COMPLETE_PATH=$LAMW_MANAGER_MODULES_PATH/headers/.lamw_comple.sh"
 		"_EXTRA_ARGS=\"--init-file \$_LAMW_MANAGER_COMPLETE_PATH\""
-		"CURRENT_LAMW_WORKSPACE=\$(grep '^PathToWorkspace=' \$LAMW4_LINUX_PATH_CFG/LAMW.ini  | sed 's/PathToWorkspace=//g')"
+		"CURRENT_LAMW_WORKSPACE=\$(grep '^PathToWorkspace=' \$LAMW_IDE_HOME_CFG/LAMW.ini  | sed 's/PathToWorkspace=//g')"
 		"export LAMW_FRAMEWORK_HOME=\"$LAMW_FRAMEWORK_HOME\""
+		"export SDK_TARGET=$ANDROID_SDK_TARGET"
 		""
 		""
 		"cacheGradle(){"
@@ -304,6 +292,9 @@ LAMW4LinuxPostConfig(){
 		""
 		"\tfor demo in \${lamw_tmp_demos[@]};do"
 		"\t\tcd \$demo"
+		"\t\tlocal current_compile_sdk=\"\$(grep compileSdkVersion \$PWD/build.gradle | sed 's/^[[:blank:]]//g')\""
+		"\t\tlocal current_target_sdk=\"\$(grep targetSdkVersion \$PWD/build.gradle | sed 's/^[[:blank:]]//g')\""
+		"\t\tsed -i \"s/\$current_target_sdk/\t\ttargetSdkVersion \$SDK_TARGET/g;s/\$current_compile_sdk/\tcompileSdkVersion \$SDK_TARGET/g\"  \$PWD/build.gradle"
 		"\t\techo \"sdk.dir=\$ANDROID_SDK_ROOT\"> local.properties"
 		"\t\techo \"ndk.dir=\$ANDROID_SDK_ROOT/ndk-bundle\" >> local.properties"
 		"\t\tgradle clean build --info"
@@ -329,7 +320,7 @@ LAMW4LinuxPostConfig(){
 		"export -f lamw_manager"
 		"export -f cacheGradle"
 		""
-		"if  ! echo \"\$*\" | grep cacheGradle > /dev/null; then"
+		"if [[ ! \"\$*\" =~ ^cacheGradle ]];then"
 		"\techo \"${NEGRITO}Welcome LAMW4Linux Terminal!!${NORMAL}\""
 		"\techo \"Here you can run FPC command line tools, Lazarus and LAMW scripts\""
 		"fi"
@@ -340,7 +331,7 @@ LAMW4LinuxPostConfig(){
 
 
 	WriterFileln "$LAMW4LINUX_TERMINAL_EXEC_PATH" lamw4linux_terminal_str && chmod +x $LAMW4LINUX_TERMINAL_EXEC_PATH
-	WriterFileln "$LAMW4_LINUX_PATH_CFG/LAMW.ini" "LAMW_init_str"
+	WriterFileln "$LAMW_IDE_HOME_CFG/LAMW.ini" "LAMW_init_str"
 	WriterFileln "$LAMW_IDE_HOME/startlamw4linux" "startlamw4linux_str"
 	WriterFileln "$LAMW4LINUX_LOCAL_ENV" lamw4linux_env_str
 	WriterFileln "$startup_error_lamw4linux" startup_error_lamw4linux_str
@@ -428,6 +419,7 @@ CleanOldCrossCompileBins(){
 	
 
 cleanPATHS(){
+	[ $CURRENT_OLD_LAMW_INSTALL_INDEX -lt  2 ] && return
 	local android_home_sc=$(GenerateScapesStr "$ANDROID_HOME")
 	grep "ANDROID_HOME=" $LAMW_USER_HOME/.bashrc | grep "$ROOT_LAMW" > /dev/null 
 	if [ $? = 0 ]; then 
@@ -479,6 +471,7 @@ CleanOldConfig(){
 	getStatusInstalation
 	[ $LAMW_INSTALL_STATUS = 1 ] && checkLAMWManagerVersion > /dev/null
 	parseFPCTrunk
+	local scape_root_lamw="$(GenerateScapesStr "$ROOT_LAMW")"
 	local list_deleted_files=(
 		"/usr/bin/ppcarm"
 		"/usr/bin/ppcrossarm"
@@ -493,7 +486,7 @@ CleanOldConfig(){
 		"/usr/lib/fpc/$FPC_VERSION/fpmkinst/arm-android"
 		"/usr/bin/startlamw4linux"
 		"$FPC_CFG_PATH"
-		"$LAMW4_LINUX_PATH_CFG"
+		"$LAMW_IDE_HOME_CFG"
 		"$ROOT_LAMW"
 		"$LAMW_MENU_ITEM_PATH"
 		"$LAMW4LINUX_TERMINAL_MENU_PATH"
@@ -519,6 +512,8 @@ CleanOldConfig(){
 	update-mime-database   $LAMW_USER_HOME/.local/share/mime/
 	update-desktop-database $LAMW_USER_HOME/.local/share/applications
 	cleanPATHS
+	cp ~/.gitconfig ~/.old.git.config
+	sed -i "/directory = $scape_root_lamw/d" ~/.gitconfig
 	unsetLocalRootLAMW
 }
 
@@ -729,17 +724,22 @@ updateNodeAttrXML(){
 CmdLineToolsTrigger(){
 	local model_license_package="$ANDROID_SDK_ROOT/platform-tools/package.xml"
 	local cmdline_tools_package="$CMD_SDK_TOOLS_DIR/latest/package.xml"
-	[ ! -e $cmdline_tools_package ] && cp $model_license_package $cmdline_tools_package
-	cmdlineExtraConfig
+	if [ ! -e $cmdline_tools_package ];then
+		cp $model_license_package $cmdline_tools_package 
+		cmdlineExtraConfig
+	fi
 }
 
 cmdlineExtraConfig(){
+	local pattern_old_xml='xmlns:ns14'
+	local xml_ns_version='3'
+	grep "$pattern_old_xml" $cmdline_tools_package -q && xml_ns_version='5'
 	local cmdline_tools_major_version=${CMD_SDK_TOOLS_VERSION_STR/%\.*}
 	local cmdline_tools_old_str=`grep '</license' $cmdline_tools_package`
 	local cmdline_tools_license_data=`grep '</license>' $cmdline_tools_package | awk -F'<' ' { printf $1 }'`
 	local cmdline_tools_str="${cmdline_tools_license_data}</license><localPackage path=\"cmdline-tools;latest\" "
 	cmdline_tools_str+="obsolete=\"false\"><type-details xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
-	cmdline_tools_str+="xsi:type=\"ns5:genericDetailsType\"/><revision>"
+	cmdline_tools_str+="xsi:type=\"ns${xml_ns_version}:genericDetailsType\"/><revision>"
 	cmdline_tools_str+="<major>${cmdline_tools_major_version}</major><minor>0</minor></revision>"
 	cmdline_tools_str+="<display-name>Android SDK Command-line Tools (latest)</display-name>"
 	cmdline_tools_str+="<uses-license ref=\"android-sdk-license\"/></localPackage></ns2:repository>"
@@ -750,7 +750,7 @@ cmdlineExtraConfig(){
 
 initLAMw4LinuxConfig(){
 	local lazarus_version_str="`$LAMW_IDE_HOME/tools/install/get_lazarus_version.sh`"	
-	local lazarus_env_cfg_path="$LAMW4_LINUX_PATH_CFG/environmentoptions.xml"
+	local lazarus_env_cfg_path="$LAMW_IDE_HOME_CFG/environmentoptions.xml"
 	local fppkg_cfg_node_attr="//CONFIG/EnvironmentOptions/FppkgConfigFile/@Value"	
 	local env_opts_node="//CONFIG/EnvironmentOptions"
 	local fppkg_cfg_node_attr="$env_opts_node/FppkgConfigFile/@Value"

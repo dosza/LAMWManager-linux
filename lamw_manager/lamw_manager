@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.5.0
-#Date: 06/12/2022
+#Version: 0.5.1
+#Date: 08/13/2022
 #Description:The "lamw_manager" is part of the core of LAMW Manager. This script is a wrapper for "core/lamw-instal.sh"
 #-------------------------------------------------------------------------------------------------#
 
@@ -107,7 +107,7 @@ CheckLocalRootLAMW(){
 	if [ "$LOCAL_ROOT_LAMW" != "" ]; then
 		setRootLAMW
 	else 
-		isVariabelDeclared LOCAL_ROOT_LAMW
+		isVariableDeclared LOCAL_ROOT_LAMW
 		if [ $? = 0 ]; then
 			echo "${VERMELHO}Fatal error: LOCAL_ROOT_LAMW is declared as empty!${NORMAL}"
 			exit 1
@@ -174,7 +174,7 @@ Run(){
 
 
 cacheGradle(){
-	echo "${NEGRITO}Please wait,starting caching Gradle"
+	echo "Please wait, starting caching Gradle"
 	lamw_termnal="$ROOT_LAMW/lamw4linux/usr/bin/lamw4linux-terminal"
 	$lamw_termnal -c cacheGradle &>/dev/null
 }
@@ -188,9 +188,8 @@ autoStartLAMW4Linux(){
 
 	if [ $EXIT_STATUS = 0 ] && [ "${XDG_CURRENT_DESKTOP^^}" != "XFCE" ] && 
 		[ $AUTO_START_LAMW4LINUX = 1 ] && [ -e $LAMW_INSTALL_LOG ];then
-		echo "${NEGRITO}Please wait,starting LAMW4Linux IDE ...${NORMAL}"
-		echo "LAMW4Linux IDE  messages(errors) can read in ${NEGRITO}$LAMW4LINUX_FIRST_RUN_LOG${NORMAL} ..."
-		startlamw4linux > $LAMW4LINUX_FIRST_RUN_LOG 2>&1 &
+		echo "Please wait, starting ${NEGRITO}LAMW4Linux IDE${NORMAL} ..."
+		startlamw4linux &>/dev/null &
 	fi
 
 	exit $EXIT_STATUS
