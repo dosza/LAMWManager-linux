@@ -174,7 +174,9 @@ LAMW4LinuxPostConfig(){
 
 	#testa modificação de workspace
 	if [ -e "$LAMW4_LINUX_PATH_CFG/LAMW.ini" ]; then 
-		local current_lamw_workspace=$(grep '^PathToWorkspace=' $LAMW4_LINUX_PATH_CFG/LAMW.ini  | sed 's/PathToWorkspace=//g')
+		local current_lamw_workspace=$(
+			grep '^PathToWorkspace=' $LAMW4_LINUX_PATH_CFG/LAMW.ini  | 
+			sed 's/PathToWorkspace=//g')
 		[ "$current_lamw_workspace" != "$LAMW_WORKSPACE_HOME" ] && LAMW_WORKSPACE_HOME=$current_lamw_workspace	
 	fi
 # contem o arquivo de configuração do lamw
