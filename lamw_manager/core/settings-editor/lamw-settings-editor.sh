@@ -253,7 +253,8 @@ LAMW4LinuxPostConfig(){
 		"export LAMW_FRAMEWORK_HOME=\"$LAMW_FRAMEWORK_HOME\""
 		"export SDK_TARGET=$ANDROID_SDK_TARGET"
 		"export ANDROID_BUILD_TOOLS_TARGET=$ANDROID_BUILD_TOOLS_TARGET"
-		"source $LAMW4LINUX_ETC/lamw4linux-terminal"
+		""
+		"source $LAMW4LINUX_ETC/lamw4linux-terminal.rc"
 	)
 
 
