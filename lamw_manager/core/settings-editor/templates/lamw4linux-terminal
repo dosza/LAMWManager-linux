@@ -67,6 +67,11 @@ sdkmanager(){
 }
 
 lamw_manager(){
+	if [ ! -e "$LAMW_MANAGER_PATH" ]; then 
+		echo 'lamw_manager not found!'
+		return 1
+	fi
+	
 	$LAMW_MANAGER_PATH $*
 }
 
