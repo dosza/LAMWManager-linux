@@ -1,29 +1,53 @@
 #!/bin/bash
+
+updateBuildDotGradle(){
+	
+	[ "${FUNCNAME[1]}"	!= 'cacheGradle' ] && return 1
+
+	local current_compile_sdk="$(grep compileSdkVersion $PWD/build.gradle | sed 's/^[[:blank:]]//g')"
+	local current_target_sdk="$(grep targetSdkVersion $PWD/build.gradle | sed 's/^[[:blank:]]//g')"
+	local current_gradle_plugin=$( grep 'com\.android\.tools.build:gradle' $PWD/build.gradle )
+	local new_compile_sdk="\tcompileSdkVersion $SDK_TARGET\n\tbuildToolsVersion '$ANDROID_BUILD_TOOLS_TARGET'"
+	local new_target_sdk="\t\ttargetSdkVersion $SDK_TARGET"
+	
+	sed -i "s/$current_gradle_plugin/$new_plugin_gradle_applied/g" $PWD/build.gradle
+	sed -i "/^[[:blank:]]buildToolsVersion/d" build.gradle
+	sed -i "s/$current_target_sdk/$new_target_sdk/g;s/$current_compile_sdk/$new_compile_sdk/g"  $PWD/build.gradle
+	
+}
+
 cacheGradle(){
+
 
 	export PATH=$ANDROID_SDK_ROOT/platform-tools:$PATH
 
-	LAMW_DEMOS=(
+	local lamw_tmp="/tmp/$(echo $LAMW_FRAMEWORK_HOME | awk -F'/' '{ print $NF }' )"
+	local smartdesigner_path="$LAMW_FRAMEWORK_HOME/android_wizard/smartdesigner.pas"
+	
+	local lamw_demos=(
 		demos/GUI/AppHelloWord
 		demos/GUI/AppCompatBasicDemo1
 	)
+	
+	local gradle_plugin_version=$(
+		grep "else Result:=\s'[0-9]\.[0-9]\.[0-9]';\s*\/\/gradle" $smartdesigner_path  | 
+		awk -F ';' ' { print $1 }' | 
+		sed "s/[[:blank:]]else\sResult:=//g;s/'//g;s/[[:blank:]]//g"
+	)
 
-	local lamw_tmp="/tmp/$(echo $LAMW_FRAMEWORK_HOME | awk -F'/' '{ print $NF }' )"
+	local new_plugin_gradle_applied="classpath 'com.android.tools.build:gradle:${gradle_plugin_version}'"
 
 	[ ! -e $lamw_tmp ] && mkdir -p $lamw_tmp
 
-	for dir in ${LAMW_DEMOS[@]};do
+	for dir in ${lamw_demos[@]};do
 		demo=$lamw_tmp/$(echo $dir | awk -F'/' '{ print $NF }' )
 		lamw_tmp_demos+=($demo)
 		cp $LAMW_FRAMEWORK_HOME/${dir} -r $lamw_tmp
 	done
 
 	for demo in ${lamw_tmp_demos[@]};do
-		cd $demo
-		local current_compile_sdk="$(grep compileSdkVersion $PWD/build.gradle | sed 's/^[[:blank:]]//g')"
-		local current_target_sdk="$(grep targetSdkVersion $PWD/build.gradle | sed 's/^[[:blank:]]//g')"
-		sed -i "/^[[:blank:]]buildToolsVersion/d" build.gradle
-		sed -i "s/$current_target_sdk/\t\ttargetSdkVersion $SDK_TARGET/g;s/$current_compile_sdk/\tcompileSdkVersion $SDK_TARGET\n\tbuildToolsVersion '$ANDROID_BUILD_TOOLS_TARGET'/g"  $PWD/build.gradle
+		cd "$demo"
+		updateBuildDotGradle
 		echo "sdk.dir=$ANDROID_SDK_ROOT"> local.properties
 		echo "ndk.dir=$ANDROID_SDK_ROOT/ndk-bundle" >> local.properties
 		gradle clean build --info
@@ -50,6 +74,7 @@ export -f sdkmanager
 export -f avdmanager
 export -f lamw_manager
 export -f cacheGradle
+export -f updateBuildDotGradle
 
 if [[ ! "$*" =~ ^cacheGradle ]];then
 	echo "[1mWelcome LAMW4Linux Terminal!![0m"
