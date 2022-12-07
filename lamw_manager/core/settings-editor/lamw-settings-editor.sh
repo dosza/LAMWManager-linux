@@ -161,7 +161,6 @@ AddLAMWtoStartMenu(){
 
 #this  fuction create a INI file to config  all paths used in lamw framework 
 LAMW4LinuxPostConfig(){
-	local startup_error_lamw4linux="$LAMW4LINUX_ETC/startup-check-errors-lamw4linux.sh"
 	local lazbuild_path="$LAMW4LINUX_HOME/usr/bin/lazbuild"
 	local old_lamw_workspace="$LAMW_USER_HOME/Dev/lamw_workspace"
 	local ant_path=$ANT_HOME/bin
@@ -219,30 +218,6 @@ LAMW4LinuxPostConfig(){
 
 
 	)
-
-	local startup_error_lamw4linux_str=(
-		'#!/bin/bash'
-		"zenity_exec=\$(which zenity)"
-		"if [ ! -e \$LAMW_IDE_HOME_CFG ]; then"
-		"	zenity_message=\"Primary Config Path ( \$LAMW_IDE_HOME_CFG ) doesn't exists!!${breakline}Run: './lamw_manager' to fix that! \""
-		"	zenity_title=\"Error on start LAMW4Linux\""
-		"	[ \"\$zenity_exec\" != \"\" ] &&"
-		"		\$zenity_exec --title \"\$zenity_title\" --error --width 480 --text \"\$zenity_message\" &&"
-		"		exit 1"
-		"fi"
-		"if [ ! -e \"\${LAMW4LINUX_EXE_PATH}\" ] && [  -e \"\${OLD_LAMW4LINUX_EXE_PATH}\" ]; then"
-		"	zenity_message=\"lazarus not found, starting from lazarus.old...\""
-		"	zenity_title=\"Missing Lazarus\""
-		"	\${zenity_exec} --title \"\${zenity_title}\" --notification --width 480 --text \"\${zenity_message}\""
-		"	cp \${OLD_LAMW4LINUX_EXE_PATH} \${LAMW4LINUX_EXE_PATH}" 
-		"fi"
-
-		"if [ ! -e \"\$IGNORE_XFCE_LAMW_ERROR_PATH\" ] && [ \"\${XDG_CURRENT_DESKTOP^^}\" = \"XFCE\" ] && [ \"\${DESKTOP_SESSION^^}\" = \"XFCE\" ]; then"
-		"	export XDG_CURRENT_DESKTOP=Gnome"
-		"	export DESKTOP_SESSION=xubuntu"
-		"fi"
-	)
-
 	local startlamw4linux_str=(
 		'#!/bin/bash'
 		'#-------------------------------------------------------------------------------------------------#'
@@ -251,7 +226,7 @@ LAMW4LinuxPostConfig(){
 		'#Description: This script is script configure LAMW environment and startLAMW4Linux'
 		'#-------------------------------------------------------------------------------------------------#'
 		"source $LAMW4LINUX_LOCAL_ENV"
-		"source $startup_error_lamw4linux"
+		"source $STARTUP_ERROR_LAMW4LINUX_PATH"
 		''
 		"exec \$LAMW4LINUX_EXE_PATH --pcp=\$LAMW_IDE_HOME_CFG \$*"
 	)
@@ -286,7 +261,6 @@ LAMW4LinuxPostConfig(){
 	WriterFileln "$LAMW_IDE_HOME_CFG/LAMW.ini" "LAMW_init_str"
 	WriterFileln "$LAMW_IDE_HOME/startlamw4linux" "startlamw4linux_str"
 	WriterFileln "$LAMW4LINUX_LOCAL_ENV" lamw4linux_env_str
-	WriterFileln "$startup_error_lamw4linux" startup_error_lamw4linux_str
 	WriterFileln "$lazbuild_path" lazbuild_str && chmod +x $lazbuild_path
 
 	if [ -e  $LAMW_IDE_HOME/startlamw4linux ]; then
