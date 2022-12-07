@@ -593,6 +593,52 @@ checkProxyStatus(){
 	fi
 }
 
+requestGenerateFixLpSnapshot(){
+	local _page_=$(wget -qO- 'https://sourceforge.net/p/lazarus-ccr/svn/HEAD/tree/')
+	
+	local _sesion_id_=$(
+		echo "${_page_}" | 
+		grep -i session | 
+		sed 's/[<>]//g' | 
+		awk -F= ' { print $4 }'
+	)
+
+	FIXLP_VERSION=$(
+		echo "${_page_}" | 
+		grep 'Tree' | 
+		awk -F/ '{ print $5}'
+	)
+
+	FIXLP_URL="https://sourceforge.net/code-snapshots/svn/l/la/lazarus-ccr/svn/lazarus-ccr-svn-r${FIXLP_VERSION}-applications-fixlp.zip"
+	FIXLP_ZIP="lazarus-ccr-svn-r${FIXLP_VERSION}-applications-fixlp.zip"
+	wget  -O- --post-data "_session_id_=${_sesion_id_}&path=/applications/fixlp" 'https://sourceforge.net/p/lazarus-ccr/svn/HEAD/tarball'
+}
+
+getFixLp(){
+	if [ ! -e $LAMW4LINUX_HOME/usr/bin/fixlp ]; then
+		if ! requestGenerateFixLpSnapshot; then
+			USE_FIXLP=1
+			return 
+		fi
+		MAGIC_TRAP_INDEX=8
+		changeDirectory "$ROOT_LAMW"
+		getCompressFile "$FIXLP_URL" "$FIXLP_ZIP" "unzip  -o -q  $FIXLP_ZIP"
+	fi
+}
+
+installFixLp(){
+	[ $USE_FIXLP = 1 ] && return 
+	local fixlp_dir="$ROOT_LAMW/${FIXLP_ZIP//\.zip/}"
+	if [ -e "$fixlp_dir" ];then
+		changeDirectory "$fixlp_dir"
+		if "$LAMW_IDE_HOME/lazbuild" -q --pcp="$LAMW_IDE_HOME_CFG" --bm= fixlp.lpi &>/dev/null; then 
+			cp "./fixlp" "$LAMW4LINUX_HOME/usr/bin"
+			changeDirectory "$ROOT_LAMW"
+			rm "$fixlp_dir" -r
+		fi
+
+	fi
+}
 mainInstall(){
 	getFiller
 	checkLAMWManagerVersion > /dev/null
@@ -605,6 +651,7 @@ mainInstall(){
 	getAnt
 	getGradle
 	getAndroidCmdLineTools
+	getFixLp
 	disableTrapActions
 	getFPCBuilder
 	getFPCSourcesTrunk
@@ -617,6 +664,7 @@ mainInstall(){
 	buildCrossAndroid
 	configureFPCTrunk
 	BuildLazarusIDE
+	installFixLp
 	LAMW4LinuxPostConfig
 	enableADBtoUdev
 	writeLAMWLogInstall

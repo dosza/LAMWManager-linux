@@ -23,6 +23,7 @@ FPC_LAZ_DEB_VERSION="2.0.12"
 FPC_DEB_VERSION="3.2.0-1"
 FPC_TRUNK_SVNTAG="release_${FPC_TRUNK_VERSION//\./_}"
 LAZARUS_STABLE="lazarus_"${LAZARUS_STABLE_VERSION//\./_} #expansão que remove todos '.' por _, obs '\.' barra invertida escapa '.'
+FIXLP_VERSION='8635'
 
 #--------------------------------------------------------------------------------------------------
 #										Section Old Version Variables
