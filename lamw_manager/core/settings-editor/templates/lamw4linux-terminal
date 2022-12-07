@@ -1,0 +1,60 @@
+#!/bin/bash
+cacheGradle(){
+
+	export PATH=$ANDROID_SDK_ROOT/platform-tools:$PATH
+
+	LAMW_DEMOS=(
+		demos/GUI/AppHelloWord
+		demos/GUI/AppCompatBasicDemo1
+	)
+
+	local lamw_tmp="/tmp/$(echo $LAMW_FRAMEWORK_HOME | awk -F'/' '{ print $NF }' )"
+
+	[ ! -e $lamw_tmp ] && mkdir -p $lamw_tmp
+
+	for dir in ${LAMW_DEMOS[@]};do
+		demo=$lamw_tmp/$(echo $dir | awk -F'/' '{ print $NF }' )
+		lamw_tmp_demos+=($demo)
+		cp $LAMW_FRAMEWORK_HOME/${dir} -r $lamw_tmp
+	done
+
+	for demo in ${lamw_tmp_demos[@]};do
+		cd $demo
+		local current_compile_sdk="$(grep compileSdkVersion $PWD/build.gradle | sed 's/^[[:blank:]]//g')"
+		local current_target_sdk="$(grep targetSdkVersion $PWD/build.gradle | sed 's/^[[:blank:]]//g')"
+		sed -i "/^[[:blank:]]buildToolsVersion/d" build.gradle
+		sed -i "s/$current_target_sdk/\t\ttargetSdkVersion $SDK_TARGET/g;s/$current_compile_sdk/\tcompileSdkVersion $SDK_TARGET\n\tbuildToolsVersion '$ANDROID_BUILD_TOOLS_TARGET'/g"  $PWD/build.gradle
+		echo "sdk.dir=$ANDROID_SDK_ROOT"> local.properties
+		echo "ndk.dir=$ANDROID_SDK_ROOT/ndk-bundle" >> local.properties
+		gradle clean build --info
+	done
+
+	#[ -e $lamw_tmp ] && cd $OLDPWD && rm -rf $lamw_tmp
+
+}
+#Run avdmanager
+avdmanager(){
+	$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/avdmanager $*
+}
+
+#Run sdkmanager
+sdkmanager(){
+	$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager $*
+}
+
+lamw_manager(){
+	$LAMW_MANAGER_PATH $*
+}
+
+export -f sdkmanager
+export -f avdmanager
+export -f lamw_manager
+export -f cacheGradle
+
+if [[ ! "$*" =~ ^cacheGradle ]];then
+	echo "[1mWelcome LAMW4Linux Terminal!![0m"
+	echo "Here you can run FPC command line tools, Lazarus and LAMW scripts"
+fi
+
+cd $CURRENT_LAMW_WORKSPACE
+exec bash $* $_EXTRA_ARGS
