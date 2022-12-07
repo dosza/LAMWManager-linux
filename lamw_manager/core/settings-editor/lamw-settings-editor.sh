@@ -109,8 +109,16 @@ writeLAMWLogInstall(){
 		"FPC_VERSION=$fpc_version"
 		"LAZARUS_VERSION=$LAZARUS_STABLE_VERSION"
 		"AARCH64_SUPPORT=$FLAG_FORCE_ANDROID_AARCH64"
+		"CMD_SDK_TOOLS_VERSION_STR=$CMD_SDK_TOOLS_VERSION_STR"
+		""
 		"Install-date:$(date)"
 	)
+
+	if [ $USE_FIXLP = 0 ]; then 
+		local -i position_fix_lp=${#lamw_log_str[@]}
+		((position_fix_lp-=2))
+		lamw_log_str[$position_fix_lp]="FIXLP_VERSION=$FIXLP_VERSION"
+	fi
 
 	WriterFileln "$LAMW_INSTALL_LOG" "lamw_log_str"	
 }
