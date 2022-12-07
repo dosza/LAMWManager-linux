@@ -74,6 +74,7 @@ TrapActions(){
 		"$SDK_TOOLS_DIR" #5
 		"$CMD_SDK_TOOLS_ZIP" #6
 		"$CMD_SDK_TOOLS_DIR" #7
+		"$FIXLP_ZIP"
 	)
 	
 	if [ "$MAGIC_TRAP_INDEX" != "-1" ]; then
