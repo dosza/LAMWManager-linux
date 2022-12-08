@@ -26,7 +26,21 @@ GetInitialStatus(){
 
 	[ $? = 0 ] && [ ! -e "$LAMW_INSTALL_LOG" ] && 
 		AUTO_START_LAMW4LINUX=1
+
+	if [ -e "$LAMW_INSTALL_LOG" ]; then
+		LAMW_INSTALL_LOG_SHA['INITIAL']="$(sha256sum < "$LAMW_INSTALL_LOG")"
+	fi
 }
+
+GetFinalStatus(){
+	if [ -e "$LAMW_INSTALL_LOG" ]; then
+		LAMW_INSTALL_LOG_SHA['FINAL']="$(sha256sum < "$LAMW_INSTALL_LOG")"
+		if [ "${LAMW_INSTALL_LOG_SHA[INITIAL]}" != "${LAMW_INSTALL_LOG_SHA[FINAL]}" ]; then
+			IS_CHANGED_LAMW_INSTALL_LOG=0
+		fi
+	fi
+}
+
 GetLocalJavaHome(){
 	local lamw4linux_env="$LAMW4LINUX_HOME/etc/environment"
 	if [ -e $lamw4linux_env ]; then
@@ -192,17 +206,16 @@ CheckNeedLazarusProjectDowngradle(){
 	fi
 }
 
-downgradeLazarusProject(){
 
-	if [ $RUN_DOWNGRADE_LPI =1 ]; then
-		local lamw_termnal="$ROOT_LAMW/lamw4linux/usr/bin/lamw4linux-terminal"
-		$lamw_termnal -c DowngradleLazarusLpi 
+downgradeLazarusProject(){
+	if [ $IS_CHANGED_LAMW_INSTALL_LOG = 0 ] && [ $RUN_DOWNGRADE_LPI = 1 ]; then
+		callLamw4LinuxTerminal 'DowngradleAllProjectsFromLAMWWorkspace'
 	fi
 }
 
 autoStartLAMW4Linux(){
-
-	if [ $EXIT_STATUS = 0 ] && [ $AUTO_START_LAMW4LINUX = 1 ] && [ -e $LAMW_INSTALL_LOG ]; then
+	local minimal_regex='(\-\-minimal)'
+	if [ $EXIT_STATUS = 0 ] && [ $IS_CHANGED_LAMW_INSTALL_LOG  = 0 ] && [ -e $LAMW_INSTALL_LOG ]; then
 		cacheGradle
 	fi
 
@@ -230,6 +243,7 @@ main(){
 	StopGradleDaemon
 	Run $ARGS
 	DelTempFiles
+	GetFinalStatus
 	downgradeLazarusProject
 	autoStartLAMW4Linux
 }
