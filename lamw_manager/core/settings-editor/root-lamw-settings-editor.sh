@@ -4,16 +4,17 @@ checkisLocalRootLAMWInvalid(){
 	
 	local invalid_paths=(
 		/bin /boot /dev /lib64 /lib /lib32 /libx32   /proc  /sbin  /sys /var
-		/etc  /lost+found /cdrom /snap / /mnt /home  $LAMW_USER_HOME /media  
-		/root /tmp /opt /run /srv 
+		/etc  /lost+found /cdrom /snap /root / /mnt  /home   $LAMW_USER_HOME /media  
+		/tmp /opt /run /srv 
 		/usr{,/{bin,games,include,lib,lib32,libexec,libx32,local,sbin,share,src}})
 
-	local forbidden_index=15
+	local forbidden_index=16
 
 	for ((i = 0 ; i < ${#invalid_paths[*]};i++)); do
 		if [ $i -lt $forbidden_index ]; then
-			echo "$LOCAL_ROOT_LAMW" | grep "^${invalid_paths[i]}" >/dev/null
-			if [ $? = 0 ]; then 
+			local invalid_path_pattern="^($(GenerateScapesStr "${invalid_paths[$i]}"))"
+
+			if [[ "$LOCAL_ROOT_LAMW" =~ $invalid_path_pattern ]]; then 
 				echo "${VERMELHO}Fatal error: $LOCAL_ROOT_LAMW is a Filesystem Hierarchy Standard (FHS) folder!${NORMAL}"
 				echo "${NEGRITO}You cannot install here!${NORMAL}"
 				exit 1
