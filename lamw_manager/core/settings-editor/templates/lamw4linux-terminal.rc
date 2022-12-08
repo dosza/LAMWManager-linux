@@ -108,7 +108,7 @@ DowngradleLazarusLpi(){
 
 	if [ "${current_lazarus_project['Version']}" -ge "$project_version" ];then
 		if [ "${current_lazarus_project['CompatibilityMode']}" = "" ]; then 
-			fixlp $1
+			fixlp "$1"
 		fi
 	fi
 
