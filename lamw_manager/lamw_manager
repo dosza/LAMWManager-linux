@@ -181,6 +181,25 @@ cacheGradle(){
 	$lamw_termnal -c cacheGradle &>/dev/null
 }
 
+CheckNeedLazarusProjectDowngradle(){
+	if [ $AUTO_START_LAMW4LINUX = 0 ] && [ -e $LAMW_INSTALL_LOG ]; then
+		local lazarus_version=$(grep LAZARUS_VERSION $LAMW_INSTALL_LOG)
+		local lazarus_version_pattern='(2\.2\.[0-9])'
+
+		if [[ "$lazarus_version" =~ $lazarus_version_pattern ]];then 
+			RUN_DOWNGRADE_LPI=1
+		fi
+	fi
+}
+
+downgradeLazarusProject(){
+
+	if [ $RUN_DOWNGRADE_LPI =1 ]; then
+		local lamw_termnal="$ROOT_LAMW/lamw4linux/usr/bin/lamw4linux-terminal"
+		$lamw_termnal -c DowngradleLazarusLpi 
+	fi
+}
+
 autoStartLAMW4Linux(){
 
 	if [ $EXIT_STATUS = 0 ] && [ $AUTO_START_LAMW4LINUX = 1 ] && [ -e $LAMW_INSTALL_LOG ]; then
@@ -207,9 +226,11 @@ main(){
 	CheckUserIsSudo
 	CheckLocalRootLAMW
 	GetInitialStatus
+	CheckNeedLazarusProjectDowngradle
 	StopGradleDaemon
 	Run $ARGS
 	DelTempFiles
+	downgradeLazarusProject
 	autoStartLAMW4Linux
 }
 
