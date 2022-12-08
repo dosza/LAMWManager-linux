@@ -188,11 +188,15 @@ Run(){
 	exec 3>&-
 }
 
+callLamw4LinuxTerminal(){
+	export LAMW_MANAGER_CALL=1
+	local lamw_termnal="$ROOT_LAMW/lamw4linux/usr/bin/lamw4linux-terminal"
+	$lamw_termnal -c "$1"
+}
 
 cacheGradle(){
 	echo "Please wait, starting caching Gradle"
-	lamw_termnal="$ROOT_LAMW/lamw4linux/usr/bin/lamw4linux-terminal"
-	$lamw_termnal -c cacheGradle &>/dev/null
+	callLamw4LinuxTerminal 'cacheGradle' &>/dev/null
 }
 
 CheckNeedLazarusProjectDowngradle(){
