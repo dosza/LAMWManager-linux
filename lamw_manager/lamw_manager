@@ -65,9 +65,9 @@ CheckUserIsSudo(){
 
 CheckFlags(){
 	newPtr ref_flag="$1"
-	local flagFind=$2
-	echo "$ARGS" | grep "$flagFind" > /dev/null
-	if [ $? = 0 ]; then 
+	local flagFind="$2"
+
+	if [[ "$ARGS" =~ $flagFind  ]]; then 
 		export ref_flag=1
 		export ARGS=${ARGS//$flagFind/} # remove todas as ocorrencias de DEBUG=1
 	fi
