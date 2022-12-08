@@ -156,7 +156,7 @@ DowngradleAllProjectsFromLAMWWorkspace(){
 
 export -f $LAM4LINUX_TERMINAL_FUNCTIONS
 
-if [[ ! "$*" =~ ^cacheGradle ]];then
+if [ "$LAMW_MANAGER_CALL" = "" ];then
 	echo "[1mWelcome LAMW4Linux Terminal!![0m"
 	echo "Here you can run FPC command line tools, Lazarus and LAMW scripts"
 fi
