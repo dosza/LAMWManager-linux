@@ -121,6 +121,29 @@ DowngradleAllProjectsFromLAMWWorkspace(){
 
 	local backup_pattern='(\/backup)'
 
+	local zenity_text='LAMW Manager v0.4.2 downgraded Lazarus to 2.0.12\n'
+	zenity_text+="You want to repair lazarus project files (*.lpi) from your $CURRENT_LAMW_WORKSPACE\n\n"
+	zenity_more_text='About *.lpi file structure change read more at https://wiki.lazarus.freepascal.org/Lazarus_2.2.0_release_notes#LPI.26LPS_project_files:_XML_structure_changed\n'
+	
+	if tty |grep 'pts/[0-9]' >/dev/null ; then 
+		
+		if  ! zenity --question \
+			--title \
+			'Downgrade Lazarus Project' \
+			"--text" \
+			"$zenity_text $zenity_more_text"; then
+			return 
+		fi
+	else 
+		local answer
+		echo 'LAMW Manager v0.4.2 downgraded Lazarus to 2.0.12'
+		echo "You want to repair lazarus project files (*.lpi) from your $CURRENT_LAMW_WORKSPACE y/n ?"
+		read -n 1 answer 
+		echo "${zenity_more_text/\\n/}" 
+		[[ "${answer,,}" != 'y' ]] && return 
+
+	fi
+
 	cd  "$CURRENT_LAMW_WORKSPACE"
 
 	for project in $(find $PWD -name *.lpi); do
