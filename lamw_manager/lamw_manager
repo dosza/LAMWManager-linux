@@ -28,15 +28,17 @@ GetInitialStatus(){
 		AUTO_START_LAMW4LINUX=1
 
 	if [ -e "$LAMW_INSTALL_LOG" ]; then
-		LAMW_INSTALL_LOG_SHA['INITIAL']="$(sha256sum < "$LAMW_INSTALL_LOG")"
+		local sha256sum="$(sha256sum < "$LAMW_INSTALL_LOG")"
+		LAMW_INSTALL_LOG_SHA['INITIAL']="${sha256sum%%' '*}"
 	fi
 }
 
 GetFinalStatus(){
 	if [ -e "$LAMW_INSTALL_LOG" ]; then
-		LAMW_INSTALL_LOG_SHA['FINAL']="$(sha256sum < "$LAMW_INSTALL_LOG")"
+		local sha256sum="$(sha256sum < "$LAMW_INSTALL_LOG")"
+		LAMW_INSTALL_LOG_SHA['FINAL']="${sha256sum%%' '*}"
 		if [ "${LAMW_INSTALL_LOG_SHA[INITIAL]}" != "${LAMW_INSTALL_LOG_SHA[FINAL]}" ]; then
-			IS_CHANGED_LAMW_INSTALL_LOG=0
+			IS_CHANGED_LAMW_INSTALL_LOG=1
 		fi
 	fi
 }
@@ -212,14 +214,14 @@ CheckNeedLazarusProjectDowngradle(){
 
 
 downgradeLazarusProject(){
-	if [ $IS_CHANGED_LAMW_INSTALL_LOG = 0 ] && [ $RUN_DOWNGRADE_LPI = 1 ]; then
+	if [ $IS_CHANGED_LAMW_INSTALL_LOG = 1 ] && [ $RUN_DOWNGRADE_LPI = 1 ]; then
 		callLamw4LinuxTerminal 'DowngradleAllProjectsFromLAMWWorkspace'
 	fi
 }
 
 autoStartLAMW4Linux(){
 	local minimal_regex='(\-\-minimal)'
-	if [ $EXIT_STATUS = 0 ] && [ $IS_CHANGED_LAMW_INSTALL_LOG  = 0 ] && [ -e $LAMW_INSTALL_LOG ]; then
+	if [ $EXIT_STATUS = 0 ] && [ $IS_CHANGED_LAMW_INSTALL_LOG = 1 ] && [ -e $LAMW_INSTALL_LOG ]; then
 		cacheGradle
 	fi
 
