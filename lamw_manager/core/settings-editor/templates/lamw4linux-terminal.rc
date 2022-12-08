@@ -75,11 +75,63 @@ lamw_manager(){
 	$LAMW_MANAGER_PATH $*
 }
 
-export -f sdkmanager
-export -f avdmanager
-export -f lamw_manager
-export -f cacheGradle
-export -f updateBuildDotGradle
+DowngradleLazarusLpi(){
+	
+	local project_version=12
+
+	if [ "$(which fixlp)" = "" ]; then
+		echo 'fixlp is not available in your system!!'
+		return 1
+	fi
+
+	if [ ! -e "$1" ]; then 
+		echo "\"$1\" not found!" 
+		return 1
+	fi
+
+
+	local -A lazarus_project_nodes=(
+		['Version']='/CONFIG/ProjectOptions/Version/@Value'
+		['CompatibilityMode']='/CONFIG/ProjectOptions/General/Flags/CompatibilityMode/@Value'
+	)
+
+	local -A current_lazarus_project=(
+		['Version']=0
+		['CompatibilityMode']=''
+	)
+
+	for key in ${!lazarus_project_nodes[@]}; do
+		local node=${lazarus_project_nodes[$key]}
+		current_lazarus_project[$key]=$(xmlstarlet sel -t -v "$node" "$1")
+	done
+
+
+	if [ "${current_lazarus_project['Version']}" -ge "$project_version" ];then
+		if [ "${current_lazarus_project['CompatibilityMode']}" = "" ]; then 
+			fixlp $1
+		fi
+	fi
+
+}
+
+
+DowngradleAllProjectsFromLAMWWorkspace(){
+
+	[ "$(which fixlp)" = "" ] && return 1
+
+	local backup_pattern='(\/backup)'
+
+	cd  "$CURRENT_LAMW_WORKSPACE"
+
+	for project in $(find $PWD -name *.lpi); do
+		[[ "$project" =~ $backup_pattern ]] && continue;
+		DowngradleLazarusLpi "$project"
+	done
+
+}
+
+
+export -f $LAM4LINUX_TERMINAL_FUNCTIONS
 
 if [[ ! "$*" =~ ^cacheGradle ]];then
 	echo "[1mWelcome LAMW4Linux Terminal!![0m"

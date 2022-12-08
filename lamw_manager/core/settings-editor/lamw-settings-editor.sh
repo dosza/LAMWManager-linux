@@ -249,12 +249,15 @@ LAMW4LinuxPostConfig(){
 		""
 		"_LAMW_MANAGER_COMPLETE_PATH=$LAMW_MANAGER_COMPLETION"
 		"_EXTRA_ARGS=\"--init-file \$_LAMW_MANAGER_COMPLETE_PATH\""
+		""
 		"export CURRENT_LAMW_WORKSPACE=\$(grep '^PathToWorkspace=' \$LAMW_IDE_HOME_CFG/LAMW.ini  | sed 's/PathToWorkspace=//g')"
 		"export LAMW_FRAMEWORK_HOME=\"$LAMW_FRAMEWORK_HOME\""
 		"export SDK_TARGET=$ANDROID_SDK_TARGET"
 		"export ANDROID_BUILD_TOOLS_TARGET=$ANDROID_BUILD_TOOLS_TARGET"
+		"export LAMW4LINUX_TERMINAL_RC=\"$LAMW4LINUX_ETC/lamw4linux-terminal.rc\""
+		"export LAM4LINUX_TERMINAL_FUNCTIONS=\$(grep '(){' \$LAMW4LINUX_TERMINAL_RC | sed 's/(){//g' )"
 		""
-		"source $LAMW4LINUX_ETC/lamw4linux-terminal.rc"
+		"source \$LAMW4LINUX_TERMINAL_RC"
 	)
 
 
