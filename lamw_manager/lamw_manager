@@ -147,8 +147,10 @@ RunAsPolkit(){
 
 #get install status and exit
 getStatus(){
-	echo "$*" | grep "get-status" > /dev/null
-	if [ $? = 0 ]; then 
+	
+	local status_regex='(get\-status)'
+
+	if [[ "$*" =~ $status_regex  ]]; then 
 		if [ -e "$LAMW_INSTALL_LOG" ]; then
 			exit 0
 		else
