@@ -204,8 +204,11 @@ callLamw4LinuxTerminal(){
 }
 
 cacheGradle(){
-	echo "Please wait, starting caching Gradle"
+	getFiller
+	local sucess_filler="............"
+	printf "%s" "Please wait, starting caching Gradle ..."
 	callLamw4LinuxTerminal 'cacheGradle' &>/dev/null
+	printf  "%s\n" "${FILLER:${#sucess_filler}}${VERDE} [OK]${NORMAL}"
 }
 
 CheckNeedLazarusProjectDowngradle(){

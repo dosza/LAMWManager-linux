@@ -21,8 +21,7 @@ source "$LAMW_MANAGER_MODULES_PATH/settings-editor/lamw-settings-editor.sh"
 source "$LAMW_MANAGER_MODULES_PATH/settings-editor/root-lamw-settings-editor.sh"
 source "$LAMW_MANAGER_MODULES_PATH/cross-builder/cross-builder.sh"
 
-
-
+getFiller
 #Parameters are useful for understanding script operation
 case "$1" in
 	"version")
@@ -58,7 +57,6 @@ case "$1" in
 				echo "${VERMELHO}Warning:There are updates for LAMW4Linux${NORMAL}"
 				echo "run ${NEGRITO}./lamw_manager to update:${NORMAL}"
 			fi
-			getFiller
 			checkProxyStatus;
 			echo "Updating LAMW";
 			getLAMWFramework;
