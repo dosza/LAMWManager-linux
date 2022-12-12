@@ -873,3 +873,7 @@ CheckMinDeps(){
 		AptInstall ${COMMON_SHELL_MIN_DEPS[*]}
 	fi
 }
+
+getFiller(){
+	FILLER='..............................................................................'
+}
