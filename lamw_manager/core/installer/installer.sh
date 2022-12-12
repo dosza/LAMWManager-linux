@@ -609,9 +609,13 @@ requestGenerateFixLpSnapshot(){
 		awk -F/ '{ print $5}'
 	)
 
-	FIXLP_URL="https://sourceforge.net/code-snapshots/svn/l/la/lazarus-ccr/svn/lazarus-ccr-svn-r${FIXLP_VERSION}-applications-fixlp.zip"
-	FIXLP_ZIP="lazarus-ccr-svn-r${FIXLP_VERSION}-applications-fixlp.zip"
-	wget  -O- --post-data "_session_id_=${_sesion_id_}&path=/applications/fixlp" 'https://sourceforge.net/p/lazarus-ccr/svn/HEAD/tarball'
+	export FIXLP_URL="https://sourceforge.net/code-snapshots/svn/l/la/lazarus-ccr/svn/lazarus-ccr-svn-r${FIXLP_VERSION}-applications-fixlp.zip"
+	export FIXLP_ZIP="lazarus-ccr-svn-r${FIXLP_VERSION}-applications-fixlp.zip"
+	wget  -O- --post-data "_session_id_=${_sesion_id_}&path=/applications/fixlp" 'https://sourceforge.net/p/lazarus-ccr/svn/HEAD/tarball' >/dev/null
+}
+
+getFixLpInSubShell(){
+	getCompressFile "$FIXLP_URL" "$FIXLP_ZIP" "unzip  -o -q  $FIXLP_ZIP" 
 }
 
 getFixLp(){
@@ -621,8 +625,14 @@ getFixLp(){
 			return 
 		fi
 		MAGIC_TRAP_INDEX=8
+		export -f  getCompressFile Wget check_error_and_exit getFixLpInSubShell
+		export WGET_TIMEOUT
+		
 		changeDirectory "$ROOT_LAMW"
-		getCompressFile "$FIXLP_URL" "$FIXLP_ZIP" "unzip  -o -q  $FIXLP_ZIP"
+		echo "Please wait, trying get ${NEGRITO}fixlp${NORMAL}"
+		sleep 5
+		
+		bash -c getFixLpInSubShell
 	fi
 }
 
