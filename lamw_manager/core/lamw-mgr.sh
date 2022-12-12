@@ -65,8 +65,7 @@ case "$1" in
 			changeOwnerAllLAMW "1";
 		fi
 	;;
-	"--reinstall" | "--minimal")
-		[ "$1" = "--minimal" ] && LAMW_MINIMAL_INSTALL=1
+	"--reinstall")
 		mainInstall
 	;;
 
@@ -84,7 +83,7 @@ case "$1" in
 			mainInstall
 		fi
 	;;
-	"" | "--use_proxy")
+	"" | "--use_proxy" |"--minimal")
 		startImplicitAction	
 	;;
 	"--help"| "help") 
