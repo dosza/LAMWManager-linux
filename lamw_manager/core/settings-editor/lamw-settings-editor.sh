@@ -75,17 +75,18 @@ changeOwnerAllLAMW(){
 			files_chown+=($NO_EXISTENT_ROOT_LAMW_PARENT)
 	
 	fi
-	echo "Restoring directories ..."
+	printf "%s" "Restoring directories ......"
+	printf  "%s\n" "${FILLER:${#sucess_filler}}${VERDE} [OK]${NORMAL}"
 	for ((i=0;i<${#files_chown[*]};i++))
 	do
 		if [ -e ${files_chown[i]} ] ; then
 			if [ $i = 0 ] && [ $# = 0 ] ; then 
 				# caso $LAMW_USER não seja dono do diretório LAMW_USER_HOME/Dev ou $LAMW_WORKSPACE_HOME
 				if  [ $UID = 0 ] && ( [ -O ${files_chown[i]} ] || [ -O  "$LAMW_WORKSPACE_HOME" ] ); then 
-					chown $LAMW_USER:$LAMW_USER -R ${files_chown[i]}
+					chown $LAMW_USER_GROUP -R ${files_chown[i]}
 				fi
 			else 
-				chown $LAMW_USER:$LAMW_USER -R ${files_chown[i]}
+				chown $LAMW_USER_GROUP -R ${files_chown[i]}
 			fi
 		fi
 	done
