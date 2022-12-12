@@ -174,12 +174,19 @@ getStatus(){
 		fi
 	fi
 }
+
+setLAMWUserOnwerFiles(){
+	LAMW_MANAGER_ENV+=(
+		LAMW_USER_GROUP=$(stat -c '%U:%G' $LAMW_MANAGER_LOCK) 
+	)
+}
 #Wrapper function to Run LAMW Manager
 Run(){
 	getStatus $*
 	IsFileBusy lamw_manager $LAMW_MANAGER_LOCK
 	exec 3>$LAMW_MANAGER_LOCK
 	echo "" >&3
+	setLAMWUserOnwerFiles
 	getBashCMD
 	setUseLamwManagerSetup
 	if [ $USE_PKEXEC = 1 ] ; then
