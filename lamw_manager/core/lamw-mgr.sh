@@ -11,11 +11,13 @@
 
 LAMW_MANAGER_MODULES_PATH=$(dirname "$0")
 
+source /etc/os-release
 
 #importando modulos de headers 
-
 source "$LAMW_MANAGER_MODULES_PATH/headers/.index"
 source "$LAMW_MANAGER_MODULES_PATH/installer/services.sh"
+source "$LAMW_MANAGER_MODULES_PATH/installer/distro-overrides.sh"
+source "$LAMW_MANAGER_MODULES_PATH/installer/configure.sh"
 source "$LAMW_MANAGER_MODULES_PATH/installer/installer.sh"
 source "$LAMW_MANAGER_MODULES_PATH/settings-editor/lamw-settings-editor.sh"
 source "$LAMW_MANAGER_MODULES_PATH/settings-editor/root-lamw-settings-editor.sh"
