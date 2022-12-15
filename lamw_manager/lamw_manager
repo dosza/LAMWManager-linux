@@ -73,12 +73,10 @@ DelTempFiles(){
 
 #Check if $USER is a sudo member 
 CheckUserIsSudo(){
-	grep sudo /etc/group  | grep $USER > /dev/null 2>&1
-	if [ $? != 0 ]; then 
+	if ! isUsersSudo $USER ; then
 		export USE_PKEXEC=1
 	fi
 }
-
 CheckFlags(){
 	newPtr ref_flag="$1"
 	local flagFind="$2"
