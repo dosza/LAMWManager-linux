@@ -146,3 +146,11 @@ LAMW4LINUX_TEMPLATES_PATHS+=(["$LAMW_MENU_ITEM_PATH"]="$LAMW_IDE_HOME/install/la
 ARGS=($@)
 EXIT_STATUS=0
 
+IS_DEBIAN=0
+
+DEBIAN_FAMILY_ID=(
+	'ubuntu'
+	'linuxmint'
+	'debian'
+)
+	

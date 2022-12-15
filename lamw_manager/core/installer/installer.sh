@@ -111,7 +111,12 @@ checkNeedXfceMitigation(){
 	fi
 }
 #install deps
-installDependences(){
+installSystemDependencies(){
+	checkIfDistroIsLikeDebian
+	if [ $IS_DEBIAN = 0 ];then 
+		CheckIfYourLinuxIsSupported
+		return
+	fi
 	getCurrentDebianFrontend
 	checkNeedXfceMitigation
 	AptInstall $LIBS_ANDROID $PROG_TOOLS
@@ -418,7 +423,7 @@ Repair(){
 		[ "$(which jq)" = "" ] || [ "$(which make)" = "" ]|| 
 		[ "$(which xmlstarlet)" = "" ]; then
 			echo "Missing lamw_manager required tools!, starting install base Dependencies ..."
-			installDependences
+			installSystemDependencies
 			flag_need_repair=1
 		fi
 		parseFPCTrunk
@@ -614,6 +619,8 @@ requestGenerateFixLpSnapshot(){
 	wget  -O- --post-data "_session_id_=${_sesion_id_}&path=/applications/fixlp" 'https://sourceforge.net/p/lazarus-ccr/svn/HEAD/tarball' >/dev/null
 }
 
+#auxiliar function to get fixlp into subshell
+#in case of fails, subshell dies, without great consequences.
 getFixLpInSubShell(){
 	getCompressFile "$FIXLP_URL" "$FIXLP_ZIP" "unzip  -o -q  $FIXLP_ZIP" 
 }
@@ -631,7 +638,7 @@ getFixLp(){
 		changeDirectory "$ROOT_LAMW"
 		echo "Please wait, trying get ${NEGRITO}fixlp${NORMAL}"
 		sleep 5
-		
+		#call subshell to get fixlp,
 		bash -c getFixLpInSubShell
 	fi
 }
@@ -653,7 +660,7 @@ mainInstall(){
 	getFiller
 	checkLAMWManagerVersion > /dev/null
 	initROOT_LAMW
-	installDependences
+	installSystemDependencies
 	setLAMWDeps
 	LAMWPackageManager
 	checkProxyStatus
