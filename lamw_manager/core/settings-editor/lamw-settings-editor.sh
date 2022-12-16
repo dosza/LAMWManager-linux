@@ -31,8 +31,16 @@ initROOT_LAMW(){
 }
 
 enableADBtoUdev(){
-	  printf 'SUBSYSTEM=="usb", ATTR{idVendor}=="<VENDOR>", MODE="0666", GROUP="plugdev"\n' > /etc/udev/rules.d/51-android.rules
-	  systemctl restart udev.service
+	local expected_sha256sum='c2bcc120e3af1df5facd3b508dc1e4a5efff4614650ba4edb690554e548c6290'
+	local udev_usb_rule_path=/etc/udev/rules.d/51-android.rules
+	if [ -e $udev_usb_rule_path ]; then
+		local current_sha256sum=$(sha256sum < $udev_usb_rule_path)
+		if [ "${current_sha256sum%%' '*}" != "$expected_sha256sum" ]; then
+			cp $udev_usb_rule_path "${udev_usb_rule_path}.bak"
+		fi
+	fi
+	printf 'SUBSYSTEM=="usb", ATTR{idVendor}=="<VENDOR>", MODE="0666", GROUP="plugdev"\n' > $udev_usb_rule_path
+	systemctl restart udev.service &>/dev/null
 }
 
 
