@@ -229,7 +229,10 @@ downgradeLazarusProject(){
 
 autoStartLAMW4Linux(){
 	local minimal_regex='(\-\-minimal)'
-	if [ $EXIT_STATUS = 0 ] && [ $IS_CHANGED_LAMW_INSTALL_LOG = 1 ] && [ -e $LAMW_INSTALL_LOG ]; then
+	if 	[ $EXIT_STATUS = 0 ] && 
+		[ $IS_CHANGED_LAMW_INSTALL_LOG = 1 ] && 
+		[ -e $LAMW_INSTALL_LOG ]
+		[[ ! "$ARGS" =~ $minimal_regex ]]; then
 		cacheGradle
 	fi
 
