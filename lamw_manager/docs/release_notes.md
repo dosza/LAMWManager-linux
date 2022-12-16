@@ -2,6 +2,20 @@
 
 This page contains information about new features and bug fixes.
 
+v0.5.2 - Dec 21, 2022
+--
+**Fixes**
++	Remove unnecessary APT dependencies.
+
+**News**
++	Add support to user's sudo from wheel group
++	Add experimental support to downgrade Lazarus Project
++	Expands templates and simplify the [*settings-editor*](https://github.com/dosza/LAMWManager-linux/blob/master/lamw_manager/core/settings-editor)
++	*\-\-minimal* option can now be combined with *\-\-reset*, *\-\-reinstall*
++	Add experimental functionality: allows running lamw manager on non-debian based systems
++	LAMW Manager installs faster than previous versions.
+
+
 v0.5.1 - Ago 18, 2022
 ---
 **Fixes**
