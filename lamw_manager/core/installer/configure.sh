@@ -42,8 +42,6 @@ SOFTWARES=(
 	wget 
 	jq
 	xmlstarlet
-	flex
-	bison
 	unzip
 #	zenity
 )
