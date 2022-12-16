@@ -157,7 +157,6 @@ AddLAMWtoStartMenu(){
 	cp $LAMW_IDE_HOME/install/lazarus-mime.xml $LAMW_USER_MIMES_PATH
 	update-mime-database   $(dirname $LAMW_USER_MIMES_PATH)
 	update-desktop-database $LAMW_USER_APPLICATIONS_PATH
-	update-menus
 }
 
 #this  fuction create a INI file to config  all paths used in lamw framework 

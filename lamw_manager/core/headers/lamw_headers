@@ -129,7 +129,7 @@ FPC_DEB="fpc-laz_${FPC_DEB_VERSION}_amd64.deb"
 LAMW_FRAMEWORK_HOME="$ROOT_LAMW/lazandroidmodulewizard"
 
 LIBS_ANDROID="libx11-dev libgtk2.0-dev libgdk-pixbuf2.0-dev libcairo2-dev libpango1.0-dev libxtst-dev libatk1.0-dev freeglut3 freeglut3-dev "
-PROG_TOOLS="menu git make build-essential zip unzip android-tools-adb gdb wget jq xmlstarlet psmisc zenity"
+PROG_TOOLS="git make build-essential zip unzip android-tools-adb gdb wget jq xmlstarlet psmisc zenity"
 
 FPC_TRUNK_SOURCE_PATH="$LAMW4LINUX_HOME/usr/share/fpcsrc"
 
