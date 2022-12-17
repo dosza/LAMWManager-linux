@@ -216,7 +216,7 @@ LAMW4LinuxPostConfig(){
 		"export ANDROID_HOME=$ANDROID_HOME"
 		"export ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
 		"export GRADLE_HOME=$GRADLE_HOME"
-		"export PATH=$ROOT_LAMW/lamw4linux/usr/bin:\$PPC_CONFIG_PATH:\$JAVA_HOME/bin:\$PATH:\$ANDROID_HOME/ndk-toolchain:\$GRADLE_HOME/bin"
+		"export PATH=\$ANDROID_SDK_ROOT/platform-tools:\$ANDROID_HOME/lamw4linux/usr/bin:\$PPC_CONFIG_PATH:\$JAVA_HOME/bin:\$PATH:\$ANDROID_HOME/ndk-toolchain:\$GRADLE_HOME/bin"
 		"export LAMW_IDE_HOME_CFG=$LAMW_IDE_HOME_CFG"
 		"export LAMW_MANAGER_PATH=$LAMW_MANAGER_PATH"
 		"export LAMW4LINUX_EXE_PATH=$LAMW4LINUX_EXE_PATH"
