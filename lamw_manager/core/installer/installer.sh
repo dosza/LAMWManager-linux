@@ -639,7 +639,9 @@ getFixLp(){
 		echo "Please wait, trying get ${NEGRITO}fixlp${NORMAL}"
 		sleep 5
 		#call subshell to get fixlp,
-		bash -c getFixLpInSubShell
+		if ! bash -c getFixLpInSubShell; then 
+			bash -c getFixLpInSubShell
+		fi
 	fi
 }
 
