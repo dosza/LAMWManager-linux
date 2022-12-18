@@ -153,4 +153,5 @@ DEBIAN_FAMILY_ID=(
 	'linuxmint'
 	'debian'
 )
-	
+
+CPU_COUNT=$(grep -c ^processor /proc/cpuinfo)
