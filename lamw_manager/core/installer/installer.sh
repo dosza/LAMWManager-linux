@@ -630,7 +630,7 @@ getFixLp(){
 		fi
 		MAGIC_TRAP_INDEX=8
 		export -f  getCompressFile Wget check_error_and_exit getFixLpInSubShell
-		export WGET_TIMEOUT
+		export WGET_TIMEOUT FILLER VERDE VERMELHO NORMAL NEGRITO
 		
 		changeDirectory "$ROOT_LAMW"
 		echo "Please wait, trying get ${NEGRITO}fixlp${NORMAL}"
