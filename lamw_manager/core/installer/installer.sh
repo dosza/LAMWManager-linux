@@ -534,7 +534,7 @@ installLAMWPackages(){
 	local current_pack=""
 
 	local lamw_build_opts=(
-		"--max-process-count $CPU_COUNT"
+		"--max-process-count=$CPU_COUNT"
 		"--pcp=$LAMW_IDE_HOME_CFG"  
 		"--ws=$(getCurrentLazarusWidget)"
 		"--quiet" 
