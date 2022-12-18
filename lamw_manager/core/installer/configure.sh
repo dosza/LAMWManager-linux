@@ -43,7 +43,7 @@ SOFTWARES=(
 	jq
 	xmlstarlet
 	unzip
-#	zenity
+	zenity
 )
 
 LIBS=(
