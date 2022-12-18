@@ -530,7 +530,23 @@ systemHasToolsToRunLamwManager(){
 }
 
 
+CheckIfSystemNeedTerminalMitigation(){
+	[ $IS_DEBIAN = 1 ] && return 
+	
+	local desktop_env="$LAMW_USER_DESKTOP_SESSION $LAMW_USER_XDG_CURRENT_DESKTOP"
+	local gnome_regex="(GNOME)"
+	local xfce_regex="(XFCE)"
+
+	if 	[[ "$desktop_env" =~ $gnome_regex ]] ||
+		[[ "$desktop_env" =~ $xfce_regex ]]; then 
+			NEED_XFCE_MITIGATION=1
+			SOFTWARES+=(xterm)
+			>"$IGNORE_XFCE_LAMW_ERROR_PATH"
+	fi
+}
+
 CheckIfYourLinuxIsSupported(){
+	CheckIfSystemNeedTerminalMitigation
 	if systemHasToolsToRunLamwManager; then 
 		if systemHasHeadersToBuildLazarus ; then
 			if systemHasLibsToBuildLazarus ;then
