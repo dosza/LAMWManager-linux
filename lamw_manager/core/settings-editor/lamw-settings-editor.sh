@@ -167,6 +167,35 @@ AddLAMWtoStartMenu(){
 	update-desktop-database $LAMW_USER_APPLICATIONS_PATH
 }
 
+# This function prevents terminal runtime error (lazarus external processes) 
+# in xfce and gnome environments of non-debian systems
+
+SystemTerminalMitigation(){
+	[ $IS_DEBIAN = 1 ] && return 
+	
+	local xterm_path=$(which xterm)
+	local desktop_env="$LAMW_USER_DESKTOP_SESSION $LAMW_USER_XDG_CURRENT_DESKTOP"
+	local gnome_regex="(GNOME)"
+	local xfce_regex="(XFCE)"
+	local lamw4linux_bin="$LAMW4LINUX_HOME/usr/bin"
+	local lamw4linux_gnome_terminal="$lamw4linux_bin/gnome-terminal"
+	local lamw4linux_xfce_terminal="$lamw4linux_bin/xfce4-terminal"
+	
+	# is a gnome system 
+	if [[ "$desktop_env" =~ gnome_regex ]]; then
+		
+		[ -e "$lamw4linux_gnome_terminal" ] && rm $lamw4linux_gnome_terminal
+		ln -s $xterm_path "$lamw4linux_gnome_terminal"
+	
+	# is a xfce system 
+	elif [[ "$desktop_env" =~ $xfce_regex ]]; then 
+
+		[ -e "$lamw4linux_xfce_terminal" ] && rm "$lamw4linux_xfce_terminal"
+		ln -s $xterm_path  "$lamw4linux_xfce_terminal"
+
+	fi
+}
+
 #this  fuction create a INI file to config  all paths used in lamw framework 
 LAMW4LinuxPostConfig(){
 	local lazbuild_path="$LAMW4LINUX_HOME/usr/bin/lazbuild"
@@ -281,6 +310,9 @@ LAMW4LinuxPostConfig(){
 			ln -s "$LAMW_IDE_HOME/startlamw4linux" "/usr/bin/startlamw4linux"
 	fi
 
+	if [ $IS_DEBIAN = 0 ] && [ $NEED_XFCE_MITIGATION  = 1 ]; then 
+		SystemTerminalMitigation
+	fi
 	AddLAMWtoStartMenu
 }
 
@@ -298,6 +330,7 @@ ActiveProxy(){
 		fi
 	fi
 }
+
 CleanOldCrossCompileBins(){
 	parseFPCTrunk
 	local lamw_manager_v031=0.3.1
@@ -734,3 +767,4 @@ initLAMw4LinuxConfig(){
 		fi 
 	fi
 }
+
