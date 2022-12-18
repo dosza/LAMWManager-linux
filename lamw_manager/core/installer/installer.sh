@@ -110,17 +110,14 @@ checkNeedXfceMitigation(){
 		PROG_TOOLS+=" gnome-terminal"
 	fi
 }
+
+
 #install deps
 installSystemDependencies(){
-	checkIfDistroIsLikeDebian
 	if [ $IS_DEBIAN = 0 ];then 
-		CheckIfYourLinuxIsSupported
-		return
+		CheckIfYourLinuxIsSupported; return
 	fi
-	getCurrentDebianFrontend
-	checkNeedXfceMitigation
-	AptInstall $LIBS_ANDROID $PROG_TOOLS
-		
+	installDebianDependencies	
 }
 
 
