@@ -83,8 +83,11 @@ changeOwnerAllLAMW(){
 			files_chown+=($NO_EXISTENT_ROOT_LAMW_PARENT)
 	
 	fi
-	printf "%s" "Restoring directories ......"
-	printf  "%s\n" "${FILLER:${#sucess_filler}}${VERDE} [OK]${NORMAL}"
+	printf "%s" "Restoring directories ........."
+	local max=${#files_chown[*]}
+	local filler_size="${#FILLER}"
+	local -i rate=$((filler_size/max))
+	local -i offset=$((filler_size-rate))
 	for ((i=0;i<${#files_chown[*]};i++))
 	do
 		if [ -e ${files_chown[i]} ] ; then
@@ -97,7 +100,11 @@ changeOwnerAllLAMW(){
 				chown $LAMW_USER_GROUP -R ${files_chown[i]}
 			fi
 		fi
+		printf "%s" "${FILLER:$offset}"
 	done
+	filler_size=$(len '.....')
+	offset=$((offset+filler_size))
+	printf  "%s\n" "${FILLER:$offset}${VERDE} [OK]${NORMAL}"
 }
 #write log lamw install 
 writeLAMWLogInstall(){
@@ -468,7 +475,12 @@ CleanOldConfig(){
 		"$OLD_FPC_CFG_PATH"
 	)
 
-	echo "Uninstalling LAMW4Linux IDE ..."
+	local max=${#list_deleted_files[*]}
+	local filler_size="${#FILLER}"
+	local -i rate=$((filler_size/max))
+	local -i offset=$((filler_size-rate))
+
+	printf "%s" "Uninstalling LAMW4Linux IDE ........."
 
 	for((i=0;i<${#list_deleted_files[*]};i++)); do
 		if [ -e "${list_deleted_files[i]}" ]; then 
@@ -477,7 +489,12 @@ CleanOldConfig(){
 				rm  "${list_deleted_files[i]}" $rm_opts
 			fi
 		fi
+		printf "%s" "${FILLER:$offset}"
 	done
+
+	filler_size=$(len '')
+	offset=$((offset+filler_size))
+	printf  "%s\n" "${FILLER:$offset}${VERDE} [OK]${NORMAL}"
 
 	CleanOldCrossCompileBins
 	update-mime-database   $LAMW_USER_HOME/.local/share/mime/
