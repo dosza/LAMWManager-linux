@@ -633,7 +633,7 @@ getFixLp(){
 		export WGET_TIMEOUT FILLER VERDE VERMELHO NORMAL NEGRITO
 		
 		changeDirectory "$ROOT_LAMW"
-		echo "Please wait, trying get ${NEGRITO}fixlp${NORMAL}"
+		echo "Please wait, trying get ${NEGRITO}fixlp${NORMAL} ...${FILLER:5} ${NEGRITO}[⏳]$NORMAL"
 		sleep 5
 		#call subshell to get fixlp,
 		if ! bash -c getFixLpInSubShell; then 
