@@ -24,21 +24,23 @@ BuildFPC(){
 	local install_prefix="$LAMW4LINUX_HOME/usr"
 
 	case $1 in
-		0)
-			make -s  clean all install INSTALL_PREFIX=$install_prefix "PP=$pp";;
+		0)	
+			#ref: https://www.freepascal.org/docs-html/current/prog/progsu221.html
+			#ref: https://wiki.freepascal.org/FPC_recompilation_automation
+			make -s  clean all install INSTALL_PREFIX=$install_prefix "PP=$pp" -j $CPU_COUNT  FPMAKEOPT="-T $CPU_COUNT";; 
 
 		1)
 			make -s  clean crossall crossinstall CPU_TARGET=aarch64 OS_TARGET=android OPT="-dFPC_ARMHF"\
-				INSTALL_PREFIX=$install_prefix "PP=$pp" ;;
+				INSTALL_PREFIX=$install_prefix "PP=$pp"  -j $CPU_COUNT  FPMAKEOPT="-T $CPU_COUNT" ;;
 		2)
 			make -s  clean crossall crossinstall CPU_TARGET=arm OPT="-dFPC_ARMEL" OS_TARGET=android\
-				CROSSOPT="-CpARMV7A -CfVFPV3" INSTALL_PREFIX=$install_prefix "PP=$pp";;
+				CROSSOPT="-CpARMV7A -CfVFPV3" INSTALL_PREFIX=$install_prefix "PP=$pp" -j $CPU_COUNT  FPMAKEOPT="-T $CPU_COUNT";;
 		3) 
 			make -s  clean crossall crossinstall CPU_TARGET=x86_64 OS_TARGET=android "PP=$pp"\
-				 INSTALL_PREFIX=$install_prefix OPT="-Cfsse3" CROSSOPT="-Cfsse3" ;;
+				 INSTALL_PREFIX=$install_prefix OPT="-Cfsse3" CROSSOPT="-Cfsse3" -j $CPU_COUNT  FPMAKEOPT="-T $CPU_COUNT" ;;
 		4)
 			make -s  clean crossall crossinstall CPU_TARGET=i386 OS_TARGET=android "PP=$pp"\
-				INSTALL_PREFIX=$install_prefix OPT="-Cfsse3" CROSSOPT="-Cfsse3" ;;
+				INSTALL_PREFIX=$install_prefix OPT="-Cfsse3" CROSSOPT="-Cfsse3"  -j $CPU_COUNT  FPMAKEOPT="-T $CPU_COUNT" ;;
 		*) 
 			check_error_and_exit "${VERMELHO}Fatal Error:${NORMAL}Invalid CrossOpts";;
 	esac
