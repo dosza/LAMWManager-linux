@@ -189,7 +189,7 @@ SystemTerminalMitigation(){
 	local lamw4linux_xfce_terminal="$lamw4linux_bin/xfce4-terminal"
 	
 	# is a gnome system 
-	if [[ "$desktop_env" =~ gnome_regex ]]; then
+	if [[ "$desktop_env" =~ $gnome_regex ]]; then
 		
 		[ -e "$lamw4linux_gnome_terminal" ] && rm $lamw4linux_gnome_terminal
 		ln -s $xterm_path "$lamw4linux_gnome_terminal"
