@@ -15,4 +15,9 @@ checkIfDistroIsLikeDebian(){
 }
 
 
-
+installDebianDependencies(){
+	[ $IS_DEBIAN = 0 ] && return 
+	getCurrentDebianFrontend
+	checkNeedXfceMitigation
+	AptInstall $LIBS_ANDROID $PROG_TOOLS
+}
