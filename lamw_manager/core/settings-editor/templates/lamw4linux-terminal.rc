@@ -27,9 +27,6 @@ updateBuildDotGradle(){
 
 cacheGradle(){
 
-
-	export PATH=$ANDROID_SDK_ROOT/platform-tools:$PATH
-
 	local lamw_tmp="/tmp/$(echo $LAMW_FRAMEWORK_HOME | awk -F'/' '{ print $NF }' )"
 
 	local lamw_demos=(
