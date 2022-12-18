@@ -5,6 +5,8 @@ checkisLocalRootLAMWInvalid(){
 	local invalid_paths_pattern=(
 		'^\/'{'$',bin,boot,cdrom,dev,etc,lib{,32,64,x32},'lost\+found',proc} 
 		'^\/'{root,snap,sbin,sys,var}
+		"^$(GenerateScapesStr $LAMW_USER_HOME)\/snap"
+		'^\/usr\/lib\/lazarus'
 	)
 
 	local invalid_paths=(
