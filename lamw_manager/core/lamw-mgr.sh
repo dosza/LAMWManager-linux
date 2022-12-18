@@ -24,6 +24,7 @@ source "$LAMW_MANAGER_MODULES_PATH/settings-editor/root-lamw-settings-editor.sh"
 source "$LAMW_MANAGER_MODULES_PATH/cross-builder/cross-builder.sh"
 
 getFiller
+checkIfDistroIsLikeDebian
 #Parameters are useful for understanding script operation
 case "$1" in
 	"version")
