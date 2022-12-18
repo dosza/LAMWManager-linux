@@ -84,7 +84,7 @@ changeOwnerAllLAMW(){
 	
 	fi
 	printf "%s" "Restoring directories ........."
-	local max=${#files_chown[*]}
+	local max=${#files_chown[*]} ; [ $max -lt 4 ] && max=4
 	local filler_size="${#FILLER}"
 	local -i rate=$((filler_size/max))
 	local -i offset=$((filler_size-rate))
@@ -102,7 +102,7 @@ changeOwnerAllLAMW(){
 		fi
 		printf "%s" "${FILLER:$offset}"
 	done
-	filler_size=$(len '.....')
+	filler_size=$(len '.....'); [ $max = 4 ] && filler_size=$(len '.')
 	offset=$((offset+filler_size))
 	printf  "%s\n" "${FILLER:$offset}${VERDE} [OK]${NORMAL}"
 }
