@@ -100,11 +100,13 @@ DowngradleLazarusLpi(){
 	local -A lazarus_project_nodes=(
 		['Version']='/CONFIG/ProjectOptions/Version/@Value'
 		['CompatibilityMode']='/CONFIG/ProjectOptions/General/Flags/CompatibilityMode/@Value'
+		['Count']='/CONFIG/ProjectOptions/Units/@Count'
 	)
 
 	local -A current_lazarus_project=(
 		['Version']=0
 		['CompatibilityMode']=''
+		['Count']=''
 	)
 
 	for key in ${!lazarus_project_nodes[@]}; do
@@ -113,10 +115,12 @@ DowngradleLazarusLpi(){
 	done
 
 
-	if [ "${current_lazarus_project['Version']}" -ge "$project_version" ];then
+	if [ "${current_lazarus_project['Version']}" -ge "$project_version" ] ;then
 		if [ "${current_lazarus_project['CompatibilityMode']}" = "" ]; then 
 			fixlp "$1"
 		fi
+	elif [ "${current_lazarus_project['Count']}" = "" ]; then 
+		 fixlp "$1"
 	fi
 
 }
