@@ -28,7 +28,7 @@ declare -A LAMW4LINUX_TEMPLATES_PATHS=(
 	["$LAMW_MENU_ITEM_PATH"]="$LAMW_IDE_HOME/install/lazarus.desktop"
 	["$LAMW4LINUX_TERMINAL_MENU_PATH"]="$LAMW4LINUX_TEMPLATES_BASE_PATH/$(basename $LAMW4LINUX_TERMINAL_MENU_PATH)"
 	["$STARTUP_ERROR_LAMW4LINUX_PATH"]="$LAMW4LINUX_TEMPLATES_BASE_PATH/startup-check-errors-lamw4linux.sh"
-	["$LAMW4LINUX_ETC/lamw4linux-terminal.rc"]="$LAMW4LINUX_TEMPLATES_BASE_PATH/lamw4linux-terminal.rc"
+	["$LAMW4LINUX_ETC/lamw4linux-terminalrc"]="$LAMW4LINUX_TEMPLATES_BASE_PATH/lamw4linux-terminalrc"
 	["$LAMW_MANAGER_COMPLETION"]="$LAMW_MANAGER_MODULES_PATH/headers/.lamw_comple.sh"
 )
 
