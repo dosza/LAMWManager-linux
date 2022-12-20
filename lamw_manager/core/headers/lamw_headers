@@ -125,7 +125,6 @@ FPC_MKCFG_EXE="$LAMW4LINUX_HOME/usr/bin/fpcmkcfg"
 
 FPC_DEB="fpc-laz_${FPC_DEB_VERSION}_amd64.deb"
 
-
 LAMW_FRAMEWORK_HOME="$ROOT_LAMW/lazandroidmodulewizard"
 
 LIBS_ANDROID="libx11-dev libgtk2.0-dev libgdk-pixbuf2.0-dev libcairo2-dev libpango1.0-dev libxtst-dev libatk1.0-dev freeglut3 freeglut3-dev "
@@ -155,3 +154,30 @@ DEBIAN_FAMILY_ID=(
 )
 
 CPU_COUNT=$(grep -c ^processor /proc/cpuinfo)
+
+
+declare -A FPC_DEB_SUM=(
+	['checksum_type']=sha1sum
+	['sha1sum']='c43e884d4f6b2a3acf239ddc6221b83500faba78'
+)
+declare -A CMD_SDK_TOOLS_ZIP_SUM=(
+	['checksum_type']=sha256sum
+	['sha256sum']='0bebf59339eaa534f4217f8aa0972d14dc49e7207be225511073c661ae01da0a'
+)
+declare -A SDK_TOOLS_ZIP_SUM=(
+	['checksum_type']=sha1sum
+	['sha1sum']='72df3aa1988c0a9003ccdfd7a13a7b8bd0f47fc1'
+)
+declare -A GRADLE_ZIP_SUM=(
+	['checksum_type']=sha256sum
+	['sha256sum']=''
+)
+declare -A FIXLP_ZIP_SUM=(
+	['checksum_type']=none
+	['none']=''
+)
+
+declare -A JDK_SUM=(
+	['checksum_type']=sha256sum
+	['sha256sum']=''
+)
