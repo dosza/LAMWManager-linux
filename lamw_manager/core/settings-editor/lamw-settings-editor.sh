@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (mater-alma)
 #Course: Science Computer
-#Version: 0.4.0.7
-#Date: 12/24/2021
+#Version: 0.4.0.9
+#Date: 12/20/2022
 #Description: The "lamw-manager-settings-editor.sh" is part of the core of LAMW Manager. Responsible for managing LAMW Manager / LAMW configuration files..
 #-------------------------------------------------------------------------------------------------#
 #this function builds initial struct directory of LAMW env Development !
@@ -159,7 +159,6 @@ AddLAMWtoStartMenu(){
 	cp $LAMW_IDE_HOME/install/lazarus-mime.xml $LAMW_USER_HOME/.local/share/mime/packages
 	update-mime-database   $LAMW_USER_HOME/.local/share/mime/
 	update-desktop-database $LAMW_USER_HOME/.local/share/applications
-	update-menus
 }
 
 #this  fuction create a INI file to config  all paths used in lamw framework 

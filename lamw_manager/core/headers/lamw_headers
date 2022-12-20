@@ -2,13 +2,13 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.4.0.7
-#Date: 12/24/2021
+#Version: 0.4.0.9
+#Date: 12/20/2022
 #Description: The "lamw_headers" is part of the core of LAMW Manager. This script contains LAMW Manager variables.
 #-------------------------------------------------------------------------------------------------#
 #						Section Version 
 #------------------------------------------------------------------------------------------
-LAMW_INSTALL_VERSION="0.4.0.8"
+LAMW_INSTALL_VERSION="0.4.0.9"
 JDK_VERSION=8
 ANT_VERSION_STABLE='1.10.11'
 CMD_SDK_TOOLS_VERSION="7302050"
@@ -45,7 +45,7 @@ OLD_LAZARUS_STABLE_VERSION=(
 )
 
 OLD_LAMW_INSTALL_VERSION=(
-	0.4.0{.{7..1},}
+	0.4.0{.{8..1},}
 	0.3.6{.{2,1},}
 	0.3.{5,4}{r1,}
 	"0.3.3r2"
@@ -116,8 +116,8 @@ LAMW_PACKAGES=(
 )
 
 
-LIBS_ANDROID="libx11-dev libgtk2.0-dev libgdk-pixbuf2.0-dev libcairo2-dev libpango1.0-dev libxtst-dev libatk1.0-dev libghc-x11-dev freeglut3 freeglut3-dev "
-PROG_TOOLS="menu git subversion make build-essential zip unzip android-tools-adb gdb wget jq xmlstarlet psmisc"
+LIBS_ANDROID="libx11-dev libgtk2.0-dev libgdk-pixbuf2.0-dev libcairo2-dev libpango1.0-dev libxtst-dev libatk1.0-dev freeglut3 freeglut3-dev "
+PROG_TOOLS="git make build-essential zip unzip android-tools-adb gdb wget jq xmlstarlet psmisc"
 
 FPC_TRUNK_SOURCE_PATH="$LAMW4LINUX_HOME/usr/share/fpcsrc"
 
