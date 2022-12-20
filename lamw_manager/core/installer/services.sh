@@ -30,6 +30,12 @@ parseJSONString(){
 	echo "$1" | jq "${@:2}"  | sed 's/"//g'
 }
 
+
+setCheckSum(){
+	newPtr ref_sum=$1
+	local type_sum="${ref_sum['checksum_type']}"
+	ref_sum[$type_sum]="$2"
+}
 setJDKDeps(){
 	local jdk_filters_query=(".[] | select(.binary.os==\"linux\")|select(.binary.architecture==\"x64\")|select(.binary.image_type==\"jdk\")|map(.)")
 	JDK_JSON="$(Wget -O- -q  "$API_JDK_URL" | jq "${jdk_filters_query[@]}")"
@@ -38,6 +44,7 @@ setJDKDeps(){
 	JDK_FILE="`parseJSONString "$JDK_JSON" ".[2]"`"
 	JAVA_VERSION="11.0.`parseJSONString "$JDK_JSON" ".[4].security"`"
 	JDK_TAR="`parseJSONString "$JDK_JSON" ".[0].package.name"`"
+	setCheckSum JDK_SUM `parseJSONString  "$JDK_JSON" ".[0].package.checksum"` 
 }
 
 setLAMWPackages(){
@@ -72,6 +79,12 @@ fi
 setLAMWDepsJSON(){
 	LAMW_DEPENDENCIES=$( echo $LAMW_PACKAGE_JSON | jq '. |{ dependencies:.dependencies}' )
 }
+
+setGradleCheckSum(){
+	local sum=$(Wget '-qO-' $GRADLE_ZIP_SUM_URL)
+	[ "$sum" = "" ] && echo 'Cannot get Gradle Checksum !!' 1>&2
+	setCheckSum GRADLE_ZIP_SUM "$sum"
+}
 setLAMWDeps(){
 	[ "$LAMW_PACKAGE_JSON" != "" ] && return 
 	getLAMWPackageJSON
@@ -81,7 +94,9 @@ setLAMWDeps(){
 	GRADLE_VERSION=$(getLAMWDep '.dependencies.gradle')
 	GRADLE_HOME="$ROOT_LAMW/gradle-${GRADLE_VERSION}"
 	GRADLE_ZIP_LNK="https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip"
+	GRADLE_ZIP_SUM_URL="https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip.sha256"
 	GRADLE_ZIP_FILE="gradle-${GRADLE_VERSION}-bin.zip"
+	setGradleCheckSum
 	setAndroidSDKCMDParameters
 	setLAMWPackages
 }

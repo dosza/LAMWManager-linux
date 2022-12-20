@@ -121,8 +121,34 @@ installSystemDependencies(){
 }
 
 
+getNameSumByParent(){
+	parent=$1
+	local -A sum_names=(
+		['getGradle']=GRADLE_ZIP_SUM
+		['getJDK']=JDK_SUM
+		['getAndroidSDKTools']=CMD_SDK_TOOLS_ZIP_SUM
+		['getSDKAntSupportedTools']=SDK_TOOLS_ZIP_SUM
+		['getFPCBuilder']=FPC_DEB_SUM
+	)
 
 
+	echo "${sum_names[$1]}"
+}
+
+runCheckSum(){
+	newPtr ref_sum=$1
+	local sum_type=${ref_sum['checksum_type']}
+	local sum_value=${ref_sum[$sum_type]}
+	
+	case "$sum_type" in 
+		*"sha256"*)
+			sha256sum "$compress_file" | grep -i "$sum_value" -q
+		;;
+		*"sha1sum"*)
+			sha1sum "$compress_file" | grep -i "$sum_value" -q
+		;;
+	esac
+}
 getCompressFile(){
 	local compress_url="$1"
 	local compress_file="$2"
@@ -130,10 +156,22 @@ getCompressFile(){
 	local before_uncompress="$4"
 	local error_uncompress_msg="${VERMELHO}Error:${NORMAL} corrupt/unsupported file"
 	local initial_msg="Please wait, extracting ${NEGRITO}$compress_file${NORMAL} ..." 
+	local sum_name=$(getNameSumByParent "${FUNCNAME[1]}")
+
 	Wget $compress_url
 	if [ -e $compress_file ]; then
 		printf "%s" "$initial_msg"	
 		[ "$before_uncompress" != "" ] &&  eval "$before_uncompress"
+
+		if [ "$sum_name" != '' ]; then 
+			if ! runCheckSum "$sum_name"; then 
+				rm $compress_file
+				printf  "%s\n" "${FILLER:${#compress_file}}${VERMELHO} [FAIL]${NORMAL}"
+				echo 'Checksum not matched!!'
+				exit 1;
+			fi
+		fi
+
 		$uncompress_command
 		check_error_and_exit "$error_uncompress_msg"
 		printf  "%s\n" "${FILLER:${#compress_file}}${VERDE} [OK]${NORMAL}"
@@ -633,7 +671,7 @@ getFixLp(){
 			return 
 		fi
 		MAGIC_TRAP_INDEX=8
-		export -f  getCompressFile Wget check_error_and_exit getFixLpInSubShell
+		export -f  getCompressFile Wget check_error_and_exit getFixLpInSubShell getNameSumByParent
 		export WGET_TIMEOUT FILLER VERDE VERMELHO NORMAL NEGRITO
 		
 		changeDirectory "$ROOT_LAMW"
