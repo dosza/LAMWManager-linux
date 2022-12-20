@@ -84,7 +84,7 @@ ANT_TAR_URL="https://archive.apache.org/dist/ant/binaries/apache-ant-${ANT_VERSI
 LAZARUS_STABLE_SRC_LNK="https://gitlab.com/freepascal.org/lazarus/lazarus.git"
 LAMW_PACKAGE_URL="https://raw.githubusercontent.com/jmpessoa/lazandroidmodulewizard/master/package.json"
 API_JDK_URL="https://api.adoptium.net/v3/assets/latest/$JDK_VERSION/hotspot?vendor=$JDK_VENDOR"
-FPC_TRUNK_URL="https://svn.freepascal.org/svn/fpc/tags/${FPC_TRUNK_SVNTAG}"
+FPC_TRUNK_URL="https://gitlab.com/freepascal.org/fpc/source.git"
 SDK_TOOLS_URL="https://dl.google.com/android/repository/tools_r${SDK_TOOLS_VERSION}-linux.zip"
 
 
