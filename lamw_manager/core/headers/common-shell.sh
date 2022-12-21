@@ -459,7 +459,6 @@ changeDirectory(){
 	
 }
 
-
 # Verify se user is sudo member (return  1 false, 0 to true 	yttttt)
 isUsersSudo(){
 	if [ "$1" = "" ]; then 
@@ -468,9 +467,9 @@ isUsersSudo(){
 	fi
 
  	local sudo_line=$(grep sudo  /etc/group)
+ 	local wheel_line=$(grep wheel /etc/group)
  	local sudo_regex="($1)"
- 	[[ $sudo_line =~ $sudo_regex ]]
-
+ 	[[ $sudo_line =~ $sudo_regex ]] || [[ $wheel_line =~ $sudo_regex ]]
 }
 # searchLineinFile(FILE *fp, char * str )
 #$1 is File Path
@@ -506,7 +505,7 @@ GenerateScapesStr(){
 		echo "$1"; return 
 	fi
 
-	echo "$1" | sed "s|\/|\\\/|g;s|\.|\\\.|g;s|\-|\\\-|g;s|\"|\\\"|g;s/'/\\\'/g"
+	echo "$1" | sed "s|\/|\\\/|g;s|\.|\\\.|g;s|\-|\\\-|g;s|\"|\\\"|g;s/'/\\\'/g;s/\+/\\\\+/g"
 }
 
 
@@ -873,4 +872,8 @@ CheckMinDeps(){
 	if [ $(len filterNotFoundPackage) -gt 0 ]; then 
 		AptInstall ${COMMON_SHELL_MIN_DEPS[*]}
 	fi
+}
+
+getFiller(){
+	FILLER='..............................................................................'
 }

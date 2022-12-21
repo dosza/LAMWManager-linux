@@ -2,28 +2,32 @@
 
 checkisLocalRootLAMWInvalid(){
 	
+	local invalid_paths_pattern=(
+		'^\/'{'$',bin,boot,cdrom,dev,etc,lib{,32,64,x32},'lost\+found',proc} 
+		'^\/'{root,snap,sbin,sys,var}
+		"^$(GenerateScapesStr $LAMW_USER_HOME)\/snap$"
+		'^\/usr\/lib\/lazarus$'
+	)
+
 	local invalid_paths=(
-		/bin /boot /dev /lib64 /lib /lib32 /libx32   /proc  /sbin  /sys /var
-		/etc  /lost+found /cdrom /snap / /mnt /home  $LAMW_USER_HOME /media  
-		/root /tmp /opt /run /srv 
-		/usr{,/{bin,games,include,lib,lib32,libexec,libx32,local,sbin,share,src}})
+		/mnt  /home   $LAMW_USER_HOME /media  
+		/tmp /opt /run /srv 
+		/usr{,/{bin,games,include,lib,lib32,libexec,libx32,local,sbin,share,src}}
+	)
 
-	local forbidden_index=15
+	for ((i = 0 ; i < ${#invalid_paths_pattern[@]};i++)); do
 
-	for ((i = 0 ; i < ${#invalid_paths[*]};i++)); do
-		if [ $i -lt $forbidden_index ]; then
-			echo "$LOCAL_ROOT_LAMW" | grep "^${invalid_paths[i]}" >/dev/null
-			if [ $? = 0 ]; then 
-				echo "${VERMELHO}Fatal error: $LOCAL_ROOT_LAMW is a Filesystem Hierarchy Standard (FHS) folder!${NORMAL}"
-				echo "${NEGRITO}You cannot install here!${NORMAL}"
-				exit 1
-			fi
-		else 
-			if [ "$LOCAL_ROOT_LAMW" = "${invalid_paths[i]}" ]; then
-				echo "${VERMELHO}Fatal error: this a Filesystem Hierarchy Standard (FHS) folder, need a  unique subfolder!${NORMAL}"
-				echo "${NEGRITO}Sample: LOCAL_ROOT_LAMW=$LOCAL_ROOT_LAMW/LAMW${NORMAL}"
-				exit 1;
-			fi
+		if [[ "$LOCAL_ROOT_LAMW" =~ ${invalid_paths_pattern[$i]} ]]; then 
+			echo "${VERMELHO}Fatal error${NORMAL}: You cannot install in ${VERMELHO}${LOCAL_ROOT_LAMW}${NORMAL} !!"
+			exit 1
+		fi
+	done
+
+	for ((i = 0 ; i < ${#invalid_paths[@]};i++)); do
+		if [ "$LOCAL_ROOT_LAMW" = "${invalid_paths[i]}" ]; then
+			echo "${VERMELHO}Fatal error: this a Filesystem Hierarchy Standard (FHS) folder, need a  unique subfolder!${NORMAL}"
+			echo "${NEGRITO}Sample: LOCAL_ROOT_LAMW=$LOCAL_ROOT_LAMW/LAMW${NORMAL}"
+			exit 1;
 		fi
 	done
 

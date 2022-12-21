@@ -1,0 +1,176 @@
+#!/bin/bash
+
+updateBuildDotGradle(){
+	
+	[ "${FUNCNAME[1]}"	!= 'cacheGradle' ] && return 1
+
+	local current_compile_sdk="$(grep compileSdkVersion $PWD/build.gradle | sed 's/^[[:blank:]]//g')"
+	local current_target_sdk="$(grep targetSdkVersion $PWD/build.gradle | sed 's/^[[:blank:]]//g')"
+	local current_gradle_plugin=$( grep 'com\.android\.tools.build:gradle' $PWD/build.gradle )
+	local new_compile_sdk="\tcompileSdkVersion $SDK_TARGET\n\tbuildToolsVersion '$ANDROID_BUILD_TOOLS_TARGET'"
+	local new_target_sdk="\t\ttargetSdkVersion $SDK_TARGET"
+	local smartdesigner_path="$LAMW_FRAMEWORK_HOME/android_wizard/smartdesigner.pas"
+	local lint_option="abortOnError false"
+	local lint_new_option='checkReleaseBuilds false'
+	local gradle_plugin_version=$(
+		grep "else Result:=\s'[0-9]\.[0-9]\.[0-9]';\s*\/\/gradle" $smartdesigner_path  | 
+		awk -F ';' ' { print $1 }' | 
+		sed "s/[[:blank:]]else\sResult:=//g;s/'//g;s/[[:blank:]]//g"
+	)
+
+	local new_plugin_gradle_applied="\tclasspath 'com.android.tools.build:gradle:${gradle_plugin_version}'"
+
+	sed -i "s/$current_gradle_plugin/$new_plugin_gradle_applied/g" $PWD/build.gradle
+	sed -i "/^[[:blank:]]buildToolsVersion/d" build.gradle
+	sed -i "s/$current_target_sdk/$new_target_sdk/g;s/$current_compile_sdk/$new_compile_sdk/g"  $PWD/build.gradle
+	sed -i "s/$lint_option/\t$lint_new_option\n\t$lint_option/g" build.gradle 
+
+	if grep androidx build.gradle -i -q ;then 
+		echo 'android.useAndroidX=true' >> gradle.properties
+		echo 'android.enableJetifier=true' >>gradle.properties
+	fi
+}
+
+cacheGradle(){
+
+	local lamw_tmp_base=$(mktemp -d -t lamw.XXXXXXXX)
+	local lamw_tmp="$lamw_tmp_base/$(echo $LAMW_FRAMEWORK_HOME | awk -F'/' '{ print $NF }' )"
+
+	local lamw_demos=(
+		demos/GUI/AppHelloWord
+		demos/GUI/AppCompatBasicDemo1
+	)
+	
+	[ ! -e $lamw_tmp ] && mkdir -p $lamw_tmp
+
+	for dir in ${lamw_demos[@]};do
+		demo=$lamw_tmp/$(echo $dir | awk -F'/' '{ print $NF }' )
+		lamw_tmp_demos+=($demo)
+		cp $LAMW_FRAMEWORK_HOME/${dir} -r $lamw_tmp
+	done
+
+	for demo in ${lamw_tmp_demos[@]};do
+		cd "$demo"
+		updateBuildDotGradle
+		echo "sdk.dir=$ANDROID_SDK_ROOT"> local.properties
+		echo "ndk.dir=$ANDROID_SDK_ROOT/ndk-bundle" >> local.properties
+		gradle clean build --info
+
+	done
+
+	gradle --stop
+
+	[ -e $lamw_tmp ] && cd /tmp && rm -rf $lamw_tmp_base
+	
+}
+#Run avdmanager
+avdmanager(){
+	$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/avdmanager $*
+}
+
+#Run sdkmanager
+sdkmanager(){
+	$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager $*
+}
+
+lamw_manager(){
+	if [ ! -e "$LAMW_MANAGER_PATH" ]; then 
+		echo 'lamw_manager not found!'
+		return 1
+	fi
+	
+	$LAMW_MANAGER_PATH $*
+}
+
+DowngradleLazarusLpi(){
+	
+	local project_version=12
+
+	if [ "$(which fixlp)" = "" ]; then
+		echo 'fixlp is not available in your system!!'
+		return 1
+	fi
+
+	if [ ! -e "$1" ]; then 
+		echo "\"$1\" not found!" 
+		return 1
+	fi
+
+
+	local -A lazarus_project_nodes=(
+		['Version']='/CONFIG/ProjectOptions/Version/@Value'
+		['CompatibilityMode']='/CONFIG/ProjectOptions/General/Flags/CompatibilityMode/@Value'
+		['Count']='/CONFIG/ProjectOptions/Units/@Count'
+	)
+
+	local -A current_lazarus_project=(
+		['Version']=0
+		['CompatibilityMode']=''
+		['Count']=''
+	)
+
+	for key in ${!lazarus_project_nodes[@]}; do
+		local node=${lazarus_project_nodes[$key]}
+		current_lazarus_project[$key]=$(xmlstarlet sel -t -v "$node" "$1")
+	done
+
+
+	if [ "${current_lazarus_project['Version']}" -ge "$project_version" ] ;then
+		if [ "${current_lazarus_project['CompatibilityMode']}" = "" ]; then 
+			fixlp "$1"
+		fi
+	elif [ "${current_lazarus_project['Count']}" = "" ]; then 
+		 fixlp "$1"
+	fi
+
+}
+
+
+DowngradleAllProjectsFromLAMWWorkspace(){
+
+	[ "$(which fixlp)" = "" ] && return 1
+
+	local backup_pattern='(\/backup)'
+
+	local zenity_text='LAMW Manager v0.4.2 downgraded Lazarus to 2.0.12\n'
+	zenity_text+="Do you want to repair lazarus project files (*.lpi) from your $CURRENT_LAMW_WORKSPACE ?\n\n"
+	zenity_more_text='About *.lpi file structure change read more at https://wiki.lazarus.freepascal.org/Lazarus_2.2.0_release_notes#LPI.26LPS_project_files:_XML_structure_changed\n'
+	
+	if tty |grep 'pts/[0-9]' >/dev/null ; then 
+		
+		if  ! zenity --question \
+			--title \
+			'Downgrade Lazarus Project' \
+			"--text" \
+			"$zenity_text $zenity_more_text"; then
+			return 
+		fi
+	else 
+		local answer
+		echo 'LAMW Manager v0.4.2 downgraded Lazarus to 2.0.12'
+		echo "Do you want to repair lazarus project files (*.lpi) from your $CURRENT_LAMW_WORKSPACE y/n ?"
+		read -n 1 answer 
+		echo "${zenity_more_text/\\n/}" 
+		[[ "${answer,,}" != 'y' ]] && return 
+
+	fi
+
+	cd  "$CURRENT_LAMW_WORKSPACE"
+
+	for project in $(find $PWD -name *.lpi); do
+		[[ "$project" =~ $backup_pattern ]] && continue;
+		DowngradleLazarusLpi "$project"
+	done
+
+}
+
+
+export -f $LAM4LINUX_TERMINAL_FUNCTIONS
+
+if [ "$LAMW_MANAGER_CALL" = "" ];then
+	echo "[1mWelcome LAMW4Linux Terminal!![0m"
+	echo "Here you can run FPC command line tools, Lazarus and LAMW scripts"
+fi
+
+cd $CURRENT_LAMW_WORKSPACE
+exec bash $* $_EXTRA_ARGS

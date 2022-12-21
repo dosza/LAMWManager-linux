@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.5.1
-#Date: 08/13/2022
+#Version: 0.5.2
+#Date: 12/06/2022
 #Description: The "lamw-install.sh" is part of the core of LAMW Manager. This script configures the development environment for LAMW
 #-------------------------------------------------------------------------------------------------#
 
@@ -11,18 +11,20 @@
 
 LAMW_MANAGER_MODULES_PATH=$(dirname "$0")
 
+source /etc/os-release
 
 #importando modulos de headers 
-
 source "$LAMW_MANAGER_MODULES_PATH/headers/.index"
 source "$LAMW_MANAGER_MODULES_PATH/installer/services.sh"
+source "$LAMW_MANAGER_MODULES_PATH/installer/distro-overrides.sh"
+source "$LAMW_MANAGER_MODULES_PATH/installer/configure.sh"
 source "$LAMW_MANAGER_MODULES_PATH/installer/installer.sh"
 source "$LAMW_MANAGER_MODULES_PATH/settings-editor/lamw-settings-editor.sh"
 source "$LAMW_MANAGER_MODULES_PATH/settings-editor/root-lamw-settings-editor.sh"
 source "$LAMW_MANAGER_MODULES_PATH/cross-builder/cross-builder.sh"
 
-
-
+getFiller
+checkIfDistroIsLikeDebian
 #Parameters are useful for understanding script operation
 case "$1" in
 	"version")
@@ -58,7 +60,6 @@ case "$1" in
 				echo "${VERMELHO}Warning:There are updates for LAMW4Linux${NORMAL}"
 				echo "run ${NEGRITO}./lamw_manager to update:${NORMAL}"
 			fi
-			getFiller
 			checkProxyStatus;
 			echo "Updating LAMW";
 			getLAMWFramework;
@@ -67,8 +68,7 @@ case "$1" in
 			changeOwnerAllLAMW "1";
 		fi
 	;;
-	"--reinstall" | "--minimal")
-		[ "$1" = "--minimal" ] && LAMW_MINIMAL_INSTALL=1
+	"--reinstall")
 		mainInstall
 	;;
 
@@ -86,7 +86,7 @@ case "$1" in
 			mainInstall
 		fi
 	;;
-	"" | "--use_proxy")
+	"" | "--use_proxy" |"--minimal")
 		startImplicitAction	
 	;;
 	"--help"| "help") 

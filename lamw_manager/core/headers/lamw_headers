@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.5.1
-#Date: 08/13/2022
+#Version: 0.5.2
+#Date: 12/06/2022
 #Description: The "lamw_headers" is part of the core of LAMW Manager. This script contains LAMW Manager variables.
 #-------------------------------------------------------------------------------------------------#
 
@@ -11,11 +11,11 @@
 #										Section Version Variables
 #--------------------------------------------------------------------------------------------------
 
-LAMW_INSTALL_VERSION="0.5.1"
+LAMW_INSTALL_VERSION="0.5.2"
 JDK_VERSION=11
 ANT_VERSION_STABLE='1.10.11'
-CMD_SDK_TOOLS_VERSION="8512546"
-CMD_SDK_TOOLS_VERSION_STR="7.0"
+CMD_SDK_TOOLS_VERSION="9123335"
+CMD_SDK_TOOLS_VERSION_STR="8.0"
 LAZARUS_STABLE_VERSION="2.0.12"
 SDK_TOOLS_VERSION="25.2.5"
 FPC_TRUNK_VERSION="3.2.2"
@@ -23,6 +23,7 @@ FPC_LAZ_DEB_VERSION="2.0.12"
 FPC_DEB_VERSION="3.2.0-1"
 FPC_TRUNK_SVNTAG="release_${FPC_TRUNK_VERSION//\./_}"
 LAZARUS_STABLE="lazarus_"${LAZARUS_STABLE_VERSION//\./_} #expansão que remove todos '.' por _, obs '\.' barra invertida escapa '.'
+FIXLP_VERSION='8635'
 
 #--------------------------------------------------------------------------------------------------
 #										Section Old Version Variables
@@ -52,7 +53,7 @@ OLD_LAZARUS_STABLE_VERSION=(
 )
 
 OLD_LAMW_INSTALL_VERSION=(
-	0.5.0
+	0.5.{1,0}
 	0.4.{8..4}
 	0.4.3{.1,}
 	0.4.2{.{2..1},}
@@ -83,8 +84,9 @@ ANT_TAR_URL="https://archive.apache.org/dist/ant/binaries/apache-ant-${ANT_VERSI
 LAZARUS_STABLE_SRC_LNK="https://gitlab.com/freepascal.org/lazarus/lazarus.git"
 LAMW_PACKAGE_URL="https://raw.githubusercontent.com/jmpessoa/lazandroidmodulewizard/master/package.json"
 API_JDK_URL="https://api.adoptium.net/v3/assets/latest/$JDK_VERSION/hotspot?vendor=$JDK_VENDOR"
-FPC_TRUNK_URL="https://svn.freepascal.org/svn/fpc/tags/${FPC_TRUNK_SVNTAG}"
+FPC_TRUNK_URL="https://gitlab.com/freepascal.org/fpc/source.git"
 SDK_TOOLS_URL="https://dl.google.com/android/repository/tools_r${SDK_TOOLS_VERSION}-linux.zip"
+
 
 	
 #------------------------------------------------------------------------------------------	
@@ -123,11 +125,10 @@ FPC_MKCFG_EXE="$LAMW4LINUX_HOME/usr/bin/fpcmkcfg"
 
 FPC_DEB="fpc-laz_${FPC_DEB_VERSION}_amd64.deb"
 
-
 LAMW_FRAMEWORK_HOME="$ROOT_LAMW/lazandroidmodulewizard"
 
-LIBS_ANDROID="libx11-dev libgtk2.0-dev libgdk-pixbuf2.0-dev libcairo2-dev libpango1.0-dev libxtst-dev libatk1.0-dev libghc-x11-dev freeglut3 freeglut3-dev "
-PROG_TOOLS="menu git make build-essential zip unzip android-tools-adb gdb wget jq xmlstarlet psmisc zenity"
+LIBS_ANDROID="libx11-dev libgtk2.0-dev libgdk-pixbuf2.0-dev libcairo2-dev libpango1.0-dev libxtst-dev libatk1.0-dev freeglut3 freeglut3-dev "
+PROG_TOOLS="git make build-essential zip unzip gdb wget jq xmlstarlet psmisc zenity"
 
 FPC_TRUNK_SOURCE_PATH="$LAMW4LINUX_HOME/usr/share/fpcsrc"
 
@@ -140,13 +141,43 @@ LAMW_LINUX_SPP=(
 	"\t*Ubuntu 20.04 LTS\n"
 )
 
-
-declare -A LAMW4LINUX_TEMPLATES_PATHS=(
-	["$LAMW_MENU_ITEM_PATH"]="$LAMW_IDE_HOME/install/lazarus.desktop"
-	["$LAMW4LINUX_TERMINAL_MENU_PATH"]="$LAMW4LINUX_TEMPLATES_BASE_PATH/$(basename $LAMW4LINUX_TERMINAL_MENU_PATH)"
-)
-
-
+LAMW4LINUX_TEMPLATES_PATHS+=(["$LAMW_MENU_ITEM_PATH"]="$LAMW_IDE_HOME/install/lazarus.desktop")
 ARGS=($@)
 EXIT_STATUS=0
 
+IS_DEBIAN=0
+
+DEBIAN_FAMILY_ID=(
+	'ubuntu'
+	'linuxmint'
+	'debian'
+)
+
+CPU_COUNT=$(grep -c ^processor /proc/cpuinfo)
+
+
+declare -A FPC_DEB_SUM=(
+	['checksum_type']=sha1sum
+	['sha1sum']='c43e884d4f6b2a3acf239ddc6221b83500faba78'
+)
+declare -A CMD_SDK_TOOLS_ZIP_SUM=(
+	['checksum_type']=sha256sum
+	['sha256sum']='0bebf59339eaa534f4217f8aa0972d14dc49e7207be225511073c661ae01da0a'
+)
+declare -A SDK_TOOLS_ZIP_SUM=(
+	['checksum_type']=sha1sum
+	['sha1sum']='72df3aa1988c0a9003ccdfd7a13a7b8bd0f47fc1'
+)
+declare -A GRADLE_ZIP_SUM=(
+	['checksum_type']=sha256sum
+	['sha256sum']=''
+)
+declare -A FIXLP_ZIP_SUM=(
+	['checksum_type']=none
+	['none']=''
+)
+
+declare -A JDK_SUM=(
+	['checksum_type']=sha256sum
+	['sha256sum']=''
+)
