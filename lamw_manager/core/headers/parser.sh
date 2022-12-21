@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-
+MINIMAL_REGEX='(\-\-minimal)'
 lamw_manager_help(){
 	local lamw_mgr="./lamw_manager"
 	if [ "$USE_SETUP" = "1" ]; then
@@ -74,6 +74,7 @@ TrapActions(){
 		"$SDK_TOOLS_DIR" #5
 		"$CMD_SDK_TOOLS_ZIP" #6
 		"$CMD_SDK_TOOLS_DIR" #7
+		"$FIXLP_ZIP"
 	)
 	
 	if [ "$MAGIC_TRAP_INDEX" != "-1" ]; then
@@ -160,14 +161,12 @@ else
 fi
 
 
-getFiller(){
-	FILLER='................................................................................'
-	max_col=$(tput cols)
-	if [ $max_col -ge 160 ]; then 
-		FILLER='....................................................................................................'
-	fi
+if [[ "${ARGS[*]}" =~ $MINIMAL_REGEX ]];then 
+	LAMW_MINIMAL_INSTALL=1
+	ARGS=(${ARGS[@]//'--minimal'/})
+fi
 
-}
+
 
 getCurrentSucessFiller(){
 	case $1 in 

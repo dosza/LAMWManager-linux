@@ -1,5 +1,5 @@
 .\" Manpage for lamw_manager
-.TH lamw_manager 1 "2022 Mar  8" "v0.4.8" "LAMW manager"
+.TH lamw_manager 1 "2022 Mar  20" "v0.5.2" "LAMW manager"
 .SH NAME
 lamw_manager -\ manager to LAMW framework
 .SH SINOPSIS
@@ -32,7 +32,8 @@ sample:
 .SH ACTIONS
 \fBuninstall\fR 		            Clean all LAMW
 .SH OPTIONS
-\fB\-\-minimal\fR                       Install LAMW and dependencies with minimal crosscompile to Android
+\fB\-\-minimal\fR                       Install LAMW and dependencies with minimal crosscompile to 
+                                Android
 .br
 \fB\-\-reinstall\fR                     Reinstall LAMW and dependencies without reset
 .br
@@ -70,11 +71,9 @@ sample:
 .br
     2    If the LAMW4Linux launcher does not appear in the start menu, simply restart the user session.
 .br
-    3    You can launch LAMW4Linux with command: \fBstartlamw4linux\fR .
 .br
-    4    Cannot launch lazarus with XFCE ( bug in xfce mitigation), you need create file \fB$ROOT_LAMW/lamw4linux/etc/lamw-xfce-error.conf\fR 
-        \fBNote:\fR \fB$ROOT_LAMW\fR is LAMW installed path (default ~/LAMW or path setting in \fB$LOCAL_ROOT_LAMW\fR)
-        Restart your session!
+    3    Xfce terminal closes quickly (lazarus ant/gradle build)
+    Close all xfce terminal windows and try again!
 .br
 
 .SH AUTHOR

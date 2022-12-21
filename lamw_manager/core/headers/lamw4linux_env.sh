@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.5.1
-#Date: 08/13/2022
+#Version: 0.5.2
+#Date: 12/06/2022
 #Description: The "lamw_headers" is part of the core of LAMW Manager. This script contains LAMW Manager variables.
 #-------------------------------------------------------------------------------------------------#
 LAMW_IDE_HOME_CFG="$LAMW_USER_HOME/.lamw4linux"
@@ -22,10 +22,14 @@ FPPKG_LOCAL_REPOSITORY="$LAMW4LINUX_HOME/.fppkg/config"
 FPPKG_LOCAL_REPOSITORY_CFG=$FPPKG_LOCAL_REPOSITORY/default
 LAMW4LINUX_TEMPLATES_BASE_PATH=$LAMW_MANAGER_MODULES_PATH/settings-editor/templates
 STARTUP_ERROR_LAMW4LINUX_PATH="$LAMW4LINUX_ETC/startup-check-errors-lamw4linux.sh"
+LAMW_MANAGER_COMPLETION="$LAMW4LINUX_ETC/lamw_manager_completion.sh"
 
 declare -A LAMW4LINUX_TEMPLATES_PATHS=(
 	["$LAMW_MENU_ITEM_PATH"]="$LAMW_IDE_HOME/install/lazarus.desktop"
 	["$LAMW4LINUX_TERMINAL_MENU_PATH"]="$LAMW4LINUX_TEMPLATES_BASE_PATH/$(basename $LAMW4LINUX_TERMINAL_MENU_PATH)"
+	["$STARTUP_ERROR_LAMW4LINUX_PATH"]="$LAMW4LINUX_TEMPLATES_BASE_PATH/startup-check-errors-lamw4linux.sh"
+	["$LAMW4LINUX_ETC/lamw4linux-terminalrc"]="$LAMW4LINUX_TEMPLATES_BASE_PATH/lamw4linux-terminalrc"
+	["$LAMW_MANAGER_COMPLETION"]="$LAMW_MANAGER_MODULES_PATH/headers/.lamw_comple.sh"
 )
 
 OLD_ANDROID_SDK=0
@@ -42,3 +46,4 @@ TIME_WAIT=2
 NEED_XFCE_MITIGATION=0
 LAMW_MINIMAL_INSTALL=0
 MIN_LAMW_ARCHS=3
+USE_FIXLP=0

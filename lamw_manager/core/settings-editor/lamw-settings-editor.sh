@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (mater-alma)
 #Course: Science Computer
-#Version: 0.5.1
-#Date: 08/13/2022
+#Version: 0.5.2
+#Date: 12/06/2022
 #Description: The "lamw-manager-settings-editor.sh" is part of the core of LAMW Manager. Responsible for managing LAMW Manager / LAMW configuration files..
 #-----------------------------------------------------------------------f--------------------------#
 #this function builds initial struct directory of LAMW env Development !
@@ -31,8 +31,16 @@ initROOT_LAMW(){
 }
 
 enableADBtoUdev(){
-	  printf 'SUBSYSTEM=="usb", ATTR{idVendor}=="<VENDOR>", MODE="0666", GROUP="plugdev"\n' > /etc/udev/rules.d/51-android.rules
-	  systemctl restart udev.service
+	local expected_sha256sum='c2bcc120e3af1df5facd3b508dc1e4a5efff4614650ba4edb690554e548c6290'
+	local udev_usb_rule_path=/etc/udev/rules.d/51-android.rules
+	if [ -e $udev_usb_rule_path ]; then
+		local current_sha256sum=$(sha256sum < $udev_usb_rule_path)
+		if [ "${current_sha256sum%%' '*}" != "$expected_sha256sum" ]; then
+			cp $udev_usb_rule_path "${udev_usb_rule_path}.bak"
+		fi
+	fi
+	printf 'SUBSYSTEM=="usb", ATTR{idVendor}=="<VENDOR>", MODE="0666", GROUP="plugdev"\n' > $udev_usb_rule_path
+	systemctl restart udev.service &>/dev/null
 }
 
 
@@ -75,20 +83,28 @@ changeOwnerAllLAMW(){
 			files_chown+=($NO_EXISTENT_ROOT_LAMW_PARENT)
 	
 	fi
-	echo "Restoring directories ..."
+	printf "%s" "Restoring directories ........."
+	local max=${#files_chown[*]} ; [ $max -lt 4 ] && max=4
+	local filler_size="${#FILLER}"
+	local -i rate=$((filler_size/max))
+	local -i offset=$((filler_size-rate))
 	for ((i=0;i<${#files_chown[*]};i++))
 	do
 		if [ -e ${files_chown[i]} ] ; then
 			if [ $i = 0 ] && [ $# = 0 ] ; then 
 				# caso $LAMW_USER não seja dono do diretório LAMW_USER_HOME/Dev ou $LAMW_WORKSPACE_HOME
 				if  [ $UID = 0 ] && ( [ -O ${files_chown[i]} ] || [ -O  "$LAMW_WORKSPACE_HOME" ] ); then 
-					chown $LAMW_USER:$LAMW_USER -R ${files_chown[i]}
+					chown $LAMW_USER_GROUP -R ${files_chown[i]}
 				fi
 			else 
-				chown $LAMW_USER:$LAMW_USER -R ${files_chown[i]}
+				chown $LAMW_USER_GROUP -R ${files_chown[i]}
 			fi
 		fi
+		printf "%s" "${FILLER:$offset}"
 	done
+	filler_size=$(len '.....'); [ $max = 4 ] && filler_size=$(len '.')
+	offset=$((offset+filler_size))
+	printf  "%s\n" "${FILLER:$offset}${VERDE} [OK]${NORMAL}"
 }
 #write log lamw install 
 writeLAMWLogInstall(){
@@ -109,8 +125,16 @@ writeLAMWLogInstall(){
 		"FPC_VERSION=$fpc_version"
 		"LAZARUS_VERSION=$LAZARUS_STABLE_VERSION"
 		"AARCH64_SUPPORT=$FLAG_FORCE_ANDROID_AARCH64"
+		"CMD_SDK_TOOLS_VERSION_STR=$CMD_SDK_TOOLS_VERSION_STR"
+		""
 		"Install-date:$(date)"
 	)
+
+	if [ $USE_FIXLP = 0 ]; then 
+		local -i position_fix_lp=${#lamw_log_str[@]}
+		((position_fix_lp-=2))
+		lamw_log_str[$position_fix_lp]="FIXLP_VERSION=$FIXLP_VERSION"
+	fi
 
 	WriterFileln "$LAMW_INSTALL_LOG" "lamw_log_str"	
 }
@@ -148,12 +172,39 @@ AddLAMWtoStartMenu(){
 	cp $LAMW_IDE_HOME/install/lazarus-mime.xml $LAMW_USER_MIMES_PATH
 	update-mime-database   $(dirname $LAMW_USER_MIMES_PATH)
 	update-desktop-database $LAMW_USER_APPLICATIONS_PATH
-	update-menus
+}
+
+# This function prevents terminal runtime error (lazarus external processes) 
+# in xfce and gnome environments of non-debian systems
+
+SystemTerminalMitigation(){
+	[ $IS_DEBIAN = 1 ] && return 
+	
+	local xterm_path=$(which xterm)
+	local desktop_env="$LAMW_USER_DESKTOP_SESSION $LAMW_USER_XDG_CURRENT_DESKTOP"
+	local gnome_regex="(GNOME)"
+	local xfce_regex="(XFCE)"
+	local lamw4linux_bin="$LAMW4LINUX_HOME/usr/bin"
+	local lamw4linux_gnome_terminal="$lamw4linux_bin/gnome-terminal"
+	local lamw4linux_xfce_terminal="$lamw4linux_bin/xfce4-terminal"
+	
+	# is a gnome system 
+	if [[ "$desktop_env" =~ $gnome_regex ]]; then
+		
+		[ -e "$lamw4linux_gnome_terminal" ] && rm $lamw4linux_gnome_terminal
+		ln -s $xterm_path "$lamw4linux_gnome_terminal"
+	
+	# is a xfce system 
+	elif [[ "$desktop_env" =~ $xfce_regex ]]; then 
+
+		[ -e "$lamw4linux_xfce_terminal" ] && rm "$lamw4linux_xfce_terminal"
+		ln -s $xterm_path  "$lamw4linux_xfce_terminal"
+
+	fi
 }
 
 #this  fuction create a INI file to config  all paths used in lamw framework 
 LAMW4LinuxPostConfig(){
-	local startup_error_lamw4linux="$LAMW4LINUX_ETC/startup-check-errors-lamw4linux.sh"
 	local lazbuild_path="$LAMW4LINUX_HOME/usr/bin/lazbuild"
 	local old_lamw_workspace="$LAMW_USER_HOME/Dev/lamw_workspace"
 	local ant_path=$ANT_HOME/bin
@@ -201,7 +252,7 @@ LAMW4LinuxPostConfig(){
 		"export ANDROID_HOME=$ANDROID_HOME"
 		"export ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
 		"export GRADLE_HOME=$GRADLE_HOME"
-		"export PATH=$ROOT_LAMW/lamw4linux/usr/bin:\$PPC_CONFIG_PATH:\$JAVA_HOME/bin:\$PATH:\$ANDROID_HOME/ndk-toolchain:\$GRADLE_HOME/bin"
+		"export PATH=\$ANDROID_SDK_ROOT/platform-tools:\$ANDROID_HOME/lamw4linux/usr/bin:\$PPC_CONFIG_PATH:\$JAVA_HOME/bin:\$PATH:\$ANDROID_HOME/ndk-toolchain:\$GRADLE_HOME/bin"
 		"export LAMW_IDE_HOME_CFG=$LAMW_IDE_HOME_CFG"
 		"export LAMW_MANAGER_PATH=$LAMW_MANAGER_PATH"
 		"export LAMW4LINUX_EXE_PATH=$LAMW4LINUX_EXE_PATH"
@@ -211,30 +262,6 @@ LAMW4LinuxPostConfig(){
 
 
 	)
-
-	local startup_error_lamw4linux_str=(
-		'#!/bin/bash'
-		"zenity_exec=\$(which zenity)"
-		"if [ ! -e \$LAMW_IDE_HOME_CFG ]; then"
-		"	zenity_message=\"Primary Config Path ( \$LAMW_IDE_HOME_CFG ) doesn't exists!!${breakline}Run: './lamw_manager' to fix that! \""
-		"	zenity_title=\"Error on start LAMW4Linux\""
-		"	[ \"\$zenity_exec\" != \"\" ] &&"
-		"		\$zenity_exec --title \"\$zenity_title\" --error --width 480 --text \"\$zenity_message\" &&"
-		"		exit 1"
-		"fi"
-		"if [ ! -e \"\${LAMW4LINUX_EXE_PATH}\" ] && [  -e \"\${OLD_LAMW4LINUX_EXE_PATH}\" ]; then"
-		"	zenity_message=\"lazarus not found, starting from lazarus.old...\""
-		"	zenity_title=\"Missing Lazarus\""
-		"	\${zenity_exec} --title \"\${zenity_title}\" --notification --width 480 --text \"\${zenity_message}\""
-		"	cp \${OLD_LAMW4LINUX_EXE_PATH} \${LAMW4LINUX_EXE_PATH}" 
-		"fi"
-
-		"if [ ! -e \"\$IGNORE_XFCE_LAMW_ERROR_PATH\" ] && [ \"\${XDG_CURRENT_DESKTOP^^}\" = \"XFCE\" ] && [ \"\${DESKTOP_SESSION^^}\" = \"XFCE\" ]; then"
-		"	export XDG_CURRENT_DESKTOP=Gnome"
-		"	export DESKTOP_SESSION=xubuntu"
-		"fi"
-	)
-
 	local startlamw4linux_str=(
 		'#!/bin/bash'
 		'#-------------------------------------------------------------------------------------------------#'
@@ -243,7 +270,7 @@ LAMW4LinuxPostConfig(){
 		'#Description: This script is script configure LAMW environment and startLAMW4Linux'
 		'#-------------------------------------------------------------------------------------------------#'
 		"source $LAMW4LINUX_LOCAL_ENV"
-		"source $startup_error_lamw4linux"
+		"source $STARTUP_ERROR_LAMW4LINUX_PATH"
 		''
 		"exec \$LAMW4LINUX_EXE_PATH --pcp=\$LAMW_IDE_HOME_CFG \$*"
 	)
@@ -264,69 +291,17 @@ LAMW4LinuxPostConfig(){
 		'#-------------------------------------------------------------------------------------------------#'
 		"source $LAMW4LINUX_LOCAL_ENV"
 		""
-		"_LAMW_MANAGER_COMPLETE_PATH=$LAMW_MANAGER_MODULES_PATH/headers/.lamw_comple.sh"
+		"_LAMW_MANAGER_COMPLETE_PATH=$LAMW_MANAGER_COMPLETION"
 		"_EXTRA_ARGS=\"--init-file \$_LAMW_MANAGER_COMPLETE_PATH\""
-		"CURRENT_LAMW_WORKSPACE=\$(grep '^PathToWorkspace=' \$LAMW_IDE_HOME_CFG/LAMW.ini  | sed 's/PathToWorkspace=//g')"
+		""
+		"export CURRENT_LAMW_WORKSPACE=\$(grep '^PathToWorkspace=' \$LAMW_IDE_HOME_CFG/LAMW.ini  | sed 's/PathToWorkspace=//g')"
 		"export LAMW_FRAMEWORK_HOME=\"$LAMW_FRAMEWORK_HOME\""
 		"export SDK_TARGET=$ANDROID_SDK_TARGET"
+		"export ANDROID_BUILD_TOOLS_TARGET=$ANDROID_BUILD_TOOLS_TARGET"
+		"export LAMW4LINUX_TERMINAL_RC=\"$LAMW4LINUX_ETC/lamw4linux-terminalrc\""
+		"export LAM4LINUX_TERMINAL_FUNCTIONS=\$(grep '(){' \$LAMW4LINUX_TERMINAL_RC | sed 's/(){//g' )"
 		""
-		""
-		"cacheGradle(){"
-		""
-		"\texport PATH=\$ANDROID_SDK_ROOT/platform-tools:\$PATH"
-		""
-		"\tLAMW_DEMOS=("
-		"\t\tdemos/GUI/AppHelloWord"
-		"\t\tdemos/GUI/AppCompatBasicDemo1"
-		"\t)"
-		""
-		"\tlocal lamw_tmp=\"/tmp/\$(echo \$LAMW_FRAMEWORK_HOME | awk -F'/' '{ print \$NF }' )\""
-		""
-		'\t[ ! -e $lamw_tmp ] && mkdir -p $lamw_tmp'
-		""
-		"\tfor dir in \${LAMW_DEMOS[@]};do"
-		"\t\tdemo=\$lamw_tmp/\$(echo \$dir | awk -F'/' '{ print \$NF }' )"
-		"\t\tlamw_tmp_demos+=(\$demo)"
-		"\t\tcp \$LAMW_FRAMEWORK_HOME/\${dir} -r \$lamw_tmp"
-		"\tdone"
-		""
-		"\tfor demo in \${lamw_tmp_demos[@]};do"
-		"\t\tcd \$demo"
-		"\t\tlocal current_compile_sdk=\"\$(grep compileSdkVersion \$PWD/build.gradle | sed 's/^[[:blank:]]//g')\""
-		"\t\tlocal current_target_sdk=\"\$(grep targetSdkVersion \$PWD/build.gradle | sed 's/^[[:blank:]]//g')\""
-		"\t\tsed -i \"s/\$current_target_sdk/\t\ttargetSdkVersion \$SDK_TARGET/g;s/\$current_compile_sdk/\tcompileSdkVersion \$SDK_TARGET/g\"  \$PWD/build.gradle"
-		"\t\techo \"sdk.dir=\$ANDROID_SDK_ROOT\"> local.properties"
-		"\t\techo \"ndk.dir=\$ANDROID_SDK_ROOT/ndk-bundle\" >> local.properties"
-		"\t\tgradle clean build --info"
-		"\tdone"
-		""
-		"\t[ -e \$lamw_tmp ] && cd \$OLDPWD && rm -rf \$lamw_tmp"
-		""
-		"}"
-		"#Run avdmanager"
-		"avdmanager(){"
-		"\t\$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/avdmanager \$*"
-		"}"
-		""
-		"#Run sdkmanager"
-		"sdkmanager(){"
-		"\t\$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager \$*"
-		"}"
-		""
-		"lamw_manager(){\n\t\$LAMW_MANAGER_PATH \$*\n}"
-		""
-		"export -f sdkmanager"
-		"export -f avdmanager"
-		"export -f lamw_manager"
-		"export -f cacheGradle"
-		""
-		"if [[ ! \"\$*\" =~ ^cacheGradle ]];then"
-		"\techo \"${NEGRITO}Welcome LAMW4Linux Terminal!!${NORMAL}\""
-		"\techo \"Here you can run FPC command line tools, Lazarus and LAMW scripts\""
-		"fi"
-		""
-		"cd \$CURRENT_LAMW_WORKSPACE"
-		"exec bash \$* \$_EXTRA_ARGS"
+		"source \$LAMW4LINUX_TERMINAL_RC"
 	)
 
 
@@ -334,7 +309,6 @@ LAMW4LinuxPostConfig(){
 	WriterFileln "$LAMW_IDE_HOME_CFG/LAMW.ini" "LAMW_init_str"
 	WriterFileln "$LAMW_IDE_HOME/startlamw4linux" "startlamw4linux_str"
 	WriterFileln "$LAMW4LINUX_LOCAL_ENV" lamw4linux_env_str
-	WriterFileln "$startup_error_lamw4linux" startup_error_lamw4linux_str
 	WriterFileln "$lazbuild_path" lazbuild_str && chmod +x $lazbuild_path
 
 	if [ -e  $LAMW_IDE_HOME/startlamw4linux ]; then
@@ -343,6 +317,9 @@ LAMW4LinuxPostConfig(){
 			ln -s "$LAMW_IDE_HOME/startlamw4linux" "/usr/bin/startlamw4linux"
 	fi
 
+	if [ $IS_DEBIAN = 0 ] && [ $NEED_XFCE_MITIGATION  = 1 ]; then 
+		SystemTerminalMitigation
+	fi
 	AddLAMWtoStartMenu
 }
 
@@ -360,6 +337,7 @@ ActiveProxy(){
 		fi
 	fi
 }
+
 CleanOldCrossCompileBins(){
 	parseFPCTrunk
 	local lamw_manager_v031=0.3.1
@@ -497,7 +475,12 @@ CleanOldConfig(){
 		"$OLD_FPC_CFG_PATH"
 	)
 
-	echo "Uninstalling LAMW4Linux IDE ..."
+	local max=${#list_deleted_files[*]}
+	local filler_size="${#FILLER}"
+	local -i rate=$((filler_size/max))
+	local -i offset=$((filler_size-rate))
+
+	printf "%s" "Uninstalling LAMW4Linux IDE ........."
 
 	for((i=0;i<${#list_deleted_files[*]};i++)); do
 		if [ -e "${list_deleted_files[i]}" ]; then 
@@ -506,7 +489,12 @@ CleanOldConfig(){
 				rm  "${list_deleted_files[i]}" $rm_opts
 			fi
 		fi
+		printf "%s" "${FILLER:$offset}"
 	done
+
+	filler_size=$(len '')
+	offset=$((offset+filler_size))
+	printf  "%s\n" "${FILLER:$offset}${VERDE} [OK]${NORMAL}"
 
 	CleanOldCrossCompileBins
 	update-mime-database   $LAMW_USER_HOME/.local/share/mime/
@@ -796,3 +784,4 @@ initLAMw4LinuxConfig(){
 		fi 
 	fi
 }
+

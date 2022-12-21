@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.5.1
-#Date: 08/13/2022
+#Version: 0.5.2
+#Date: 12/06/2022
 #Description: "installer.sh" is part of the core of LAMW Manager. Contains routines for installing LAMW development environment
 #-------------------------------------------------------------------------------------------------#
 #set Remove Gradle from different
@@ -110,17 +110,45 @@ checkNeedXfceMitigation(){
 		PROG_TOOLS+=" gnome-terminal"
 	fi
 }
+
+
 #install deps
-installDependences(){
-	getCurrentDebianFrontend
-	checkNeedXfceMitigation
-	AptInstall $LIBS_ANDROID $PROG_TOOLS
-		
+installSystemDependencies(){
+	if [ $IS_DEBIAN = 0 ];then 
+		CheckIfYourLinuxIsSupported; return
+	fi
+	installDebianDependencies	
 }
 
 
+getNameSumByParent(){
+	parent=$1
+	local -A sum_names=(
+		['getGradle']=GRADLE_ZIP_SUM
+		['getJDK']=JDK_SUM
+		['getAndroidSDKTools']=CMD_SDK_TOOLS_ZIP_SUM
+		['getSDKAntSupportedTools']=SDK_TOOLS_ZIP_SUM
+		['getFPCBuilder']=FPC_DEB_SUM
+	)
 
 
+	echo "${sum_names[$1]}"
+}
+
+runCheckSum(){
+	newPtr ref_sum=$1
+	local sum_type=${ref_sum['checksum_type']}
+	local sum_value=${ref_sum[$sum_type]}
+	
+	case "$sum_type" in 
+		*"sha256"*)
+			sha256sum "$compress_file" | grep -i "$sum_value" -q
+		;;
+		*"sha1sum"*)
+			sha1sum "$compress_file" | grep -i "$sum_value" -q
+		;;
+	esac
+}
 getCompressFile(){
 	local compress_url="$1"
 	local compress_file="$2"
@@ -128,10 +156,22 @@ getCompressFile(){
 	local before_uncompress="$4"
 	local error_uncompress_msg="${VERMELHO}Error:${NORMAL} corrupt/unsupported file"
 	local initial_msg="Please wait, extracting ${NEGRITO}$compress_file${NORMAL} ..." 
+	local sum_name=$(getNameSumByParent "${FUNCNAME[1]}")
+
 	Wget $compress_url
 	if [ -e $compress_file ]; then
 		printf "%s" "$initial_msg"	
 		[ "$before_uncompress" != "" ] &&  eval "$before_uncompress"
+
+		if [ "$sum_name" != '' ]; then 
+			if ! runCheckSum "$sum_name"; then 
+				rm $compress_file
+				printf  "%s\n" "${FILLER:${#compress_file}}${VERMELHO} [FAIL]${NORMAL}"
+				echo 'Checksum not matched!!'
+				exit 1;
+			fi
+		fi
+
 		$uncompress_command
 		check_error_and_exit "$error_uncompress_msg"
 		printf  "%s\n" "${FILLER:${#compress_file}}${VERDE} [OK]${NORMAL}"
@@ -241,14 +281,12 @@ getFPCSourcesTrunk(){
 	mkdir -p $FPC_TRUNK_SOURCE_PATH
 	changeDirectory $FPC_TRUNK_SOURCE_PATH
 	parseFPCTrunk
-	if [ ! -e $FPC_TRUNK_SVNTAG ]; then
-		local url_fpc_src="https://sourceforge.net/projects/freepascal/files/Source/${_FPC_TRUNK_VERSION}/fpc-${_FPC_TRUNK_VERSION}.source.tar.gz"
-		local tar_fpc_src="fpc-${_FPC_TRUNK_VERSION}.source.tar.gz"
-		local untar_fpc_src="tar -zxf $tar_fpc_src"
-		local fpc_src_file="fpc-${_FPC_TRUNK_VERSION}"
-		getCompressFile "$url_fpc_src" "$tar_fpc_src" "$untar_fpc_src"
-		mv $fpc_src_file $FPC_TRUNK_SVNTAG
-	fi
+	
+	[ -e "$FPC_TRUNK_SVNTAG" ] && 
+	[ ! -e "$FPC_TRUNK_SVNTAG/.git" ] && 
+		rm -rf "$FPC_TRUNK_SVNTAG"
+
+	getFromGit "$FPC_TRUNK_URL" "$FPC_TRUNK_SVNTAG" "$FPC_TRUNK_SVNTAG"
 }
 
 #get Lazarus Sources
@@ -418,7 +456,7 @@ Repair(){
 		[ "$(which jq)" = "" ] || [ "$(which make)" = "" ]|| 
 		[ "$(which xmlstarlet)" = "" ]; then
 			echo "Missing lamw_manager required tools!, starting install base Dependencies ..."
-			installDependences
+			installSystemDependencies
 			flag_need_repair=1
 		fi
 		parseFPCTrunk
@@ -532,6 +570,7 @@ installLAMWPackages(){
 	local current_pack=""
 
 	local lamw_build_opts=(
+		"--max-process-count=$CPU_COUNT"
 		"--pcp=$LAMW_IDE_HOME_CFG"  
 		"--ws=$(getCurrentLazarusWidget)"
 		"--quiet" 
@@ -565,15 +604,20 @@ BuildLazarusIDE(){
 	parseFPCTrunk
 	export PATH=$FPC_TRUNK_LIB_PATH:$FPC_TRUNK_EXEC_PATH:$PATH
 	local error_build_lazarus_msg="${VERMELHO}Fatal error:${NORMAL}Fails in build Lazarus!!"
-	local make_opts=( "clean all" "PP=${FPC_TRUNK_LIB_PATH}/ppcx64" "FPC_VERSION=$_FPC_TRUNK_VERSION" )
+	
+	local make_opts=( 
+		"clean all" "PP=${FPC_TRUNK_LIB_PATH}/ppcx64" "FPC_VERSION=$_FPC_TRUNK_VERSION" )
 	local build_msg="Please wait, starting build Lazarus to ${NEGRITO}x86_64/Linux${NORMAL}.............."
 	local sucess_filler="$(getCurrentSucessFiller 1 x86_64/Linux)"
 	changeDirectory $LAMW_IDE_HOME
 
 	if [ $# = 0 ]; then
 		printf "%s" "$build_msg"
-		make -s ${make_opts[@]} > /dev/null 2>&1
-	 	check_error_and_exit "$error_build_lazarus_msg" #build all IDE
+		if ! make -s ${make_opts[@]} > /dev/null 2>&1; then
+			make -s ${make_opts[@]}
+			check_error_and_exit "$error_build_lazarus_msg" #build all IDE
+		fi
+	 	
 	 	printf  "%s\n" "${FILLER:${#sucess_filler}}${VERDE} [OK]${NORMAL}"
 	fi
 	
@@ -593,11 +637,71 @@ checkProxyStatus(){
 	fi
 }
 
+requestGenerateFixLpSnapshot(){
+	local _page_=$(wget -qO- 'https://sourceforge.net/p/lazarus-ccr/svn/HEAD/tree/')
+	
+	local _sesion_id_=$(
+		echo "${_page_}" | 
+		grep -i session | 
+		sed 's/[<>]//g' | 
+		awk -F= ' { print $4 }'
+	)
+
+	FIXLP_VERSION=$(
+		echo "${_page_}" | 
+		grep 'Tree' | 
+		awk -F/ '{ print $5}'
+	)
+
+	export FIXLP_URL="https://sourceforge.net/code-snapshots/svn/l/la/lazarus-ccr/svn/lazarus-ccr-svn-r${FIXLP_VERSION}-applications-fixlp.zip"
+	export FIXLP_ZIP="lazarus-ccr-svn-r${FIXLP_VERSION}-applications-fixlp.zip"
+	wget  -O- --post-data "_session_id_=${_sesion_id_}&path=/applications/fixlp" 'https://sourceforge.net/p/lazarus-ccr/svn/HEAD/tarball' >/dev/null
+}
+
+#auxiliar function to get fixlp into subshell
+#in case of fails, subshell dies, without great consequences.
+getFixLpInSubShell(){
+	getCompressFile "$FIXLP_URL" "$FIXLP_ZIP" "unzip  -o -q  $FIXLP_ZIP" 
+}
+
+getFixLp(){
+	if [ ! -e $LAMW4LINUX_HOME/usr/bin/fixlp ]; then
+		if ! requestGenerateFixLpSnapshot; then
+			USE_FIXLP=1
+			return 
+		fi
+		MAGIC_TRAP_INDEX=8
+		export -f  getCompressFile Wget check_error_and_exit getFixLpInSubShell getNameSumByParent
+		export WGET_TIMEOUT FILLER VERDE VERMELHO NORMAL NEGRITO
+		
+		changeDirectory "$ROOT_LAMW"
+		echo "Please wait, trying get ${NEGRITO}fixlp${NORMAL} ...${FILLER:5} ${NEGRITO}[⏳]$NORMAL"
+		sleep 5
+		#call subshell to get fixlp,
+		if ! bash -c getFixLpInSubShell; then 
+			bash -c getFixLpInSubShell
+		fi
+	fi
+}
+
+installFixLp(){
+	[ $USE_FIXLP = 1 ] && return 
+	local fixlp_dir="$ROOT_LAMW/${FIXLP_ZIP//\.zip/}"
+	if [ -e "$fixlp_dir" ];then
+		changeDirectory "$fixlp_dir"
+		if "$LAMW_IDE_HOME/lazbuild" -q --pcp="$LAMW_IDE_HOME_CFG" --bm= fixlp.lpi &>/dev/null; then 
+			cp "./fixlp" "$LAMW4LINUX_HOME/usr/bin"
+			changeDirectory "$ROOT_LAMW"
+			rm "$fixlp_dir" -r
+		fi
+
+	fi
+}
 mainInstall(){
 	getFiller
 	checkLAMWManagerVersion > /dev/null
 	initROOT_LAMW
-	installDependences
+	installSystemDependencies
 	setLAMWDeps
 	LAMWPackageManager
 	checkProxyStatus
@@ -605,6 +709,7 @@ mainInstall(){
 	getAnt
 	getGradle
 	getAndroidCmdLineTools
+	getFixLp
 	disableTrapActions
 	getFPCBuilder
 	getFPCSourcesTrunk
@@ -617,6 +722,7 @@ mainInstall(){
 	buildCrossAndroid
 	configureFPCTrunk
 	BuildLazarusIDE
+	installFixLp
 	LAMW4LinuxPostConfig
 	enableADBtoUdev
 	writeLAMWLogInstall

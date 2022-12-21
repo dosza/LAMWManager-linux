@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.5.1
-#Date: 08/13/2022
+#Version: 0.5.2
+#Date: 12/06/2022
 #Description:The "lamw_manager" is part of the core of LAMW Manager. This script is a wrapper for "core/lamw-instal.sh"
 #-------------------------------------------------------------------------------------------------#
 
@@ -26,7 +26,23 @@ GetInitialStatus(){
 
 	[ $? = 0 ] && [ ! -e "$LAMW_INSTALL_LOG" ] && 
 		AUTO_START_LAMW4LINUX=1
+
+	if [ -e "$LAMW_INSTALL_LOG" ]; then
+		local sha256sum="$(sha256sum < "$LAMW_INSTALL_LOG")"
+		LAMW_INSTALL_LOG_SHA['INITIAL']="${sha256sum%%' '*}"
+	fi
 }
+
+GetFinalStatus(){
+	if [ -e "$LAMW_INSTALL_LOG" ]; then
+		local sha256sum="$(sha256sum < "$LAMW_INSTALL_LOG")"
+		LAMW_INSTALL_LOG_SHA['FINAL']="${sha256sum%%' '*}"
+		if [ "${LAMW_INSTALL_LOG_SHA[INITIAL]}" != "${LAMW_INSTALL_LOG_SHA[FINAL]}" ]; then
+			IS_CHANGED_LAMW_INSTALL_LOG=1
+		fi
+	fi
+}
+
 GetLocalJavaHome(){
 	local lamw4linux_env="$LAMW4LINUX_HOME/etc/environment"
 	if [ -e $lamw4linux_env ]; then
@@ -57,17 +73,15 @@ DelTempFiles(){
 
 #Check if $USER is a sudo member 
 CheckUserIsSudo(){
-	grep sudo /etc/group  | grep $USER > /dev/null 2>&1
-	if [ $? != 0 ]; then 
+	if ! isUsersSudo $USER ; then
 		export USE_PKEXEC=1
 	fi
 }
-
 CheckFlags(){
 	newPtr ref_flag="$1"
-	local flagFind=$2
-	echo "$ARGS" | grep "$flagFind" > /dev/null
-	if [ $? = 0 ]; then 
+	local flagFind="$2"
+
+	if [[ "$ARGS" =~ $flagFind  ]]; then 
 		export ref_flag=1
 		export ARGS=${ARGS//$flagFind/} # remove todas as ocorrencias de DEBUG=1
 	fi
@@ -147,8 +161,10 @@ RunAsPolkit(){
 
 #get install status and exit
 getStatus(){
-	echo "$*" | grep "get-status" > /dev/null
-	if [ $? = 0 ]; then 
+	
+	local status_regex='(get\-status)'
+
+	if [[ "$*" =~ $status_regex  ]]; then 
 		if [ -e "$LAMW_INSTALL_LOG" ]; then
 			exit 0
 		else
@@ -156,12 +172,19 @@ getStatus(){
 		fi
 	fi
 }
+
+setLAMWUserOnwerFiles(){
+	LAMW_MANAGER_ENV+=(
+		LAMW_USER_GROUP=$(stat -c '%U:%G' $LAMW_MANAGER_LOCK) 
+	)
+}
 #Wrapper function to Run LAMW Manager
 Run(){
 	getStatus $*
 	IsFileBusy lamw_manager $LAMW_MANAGER_LOCK
 	exec 3>$LAMW_MANAGER_LOCK
 	echo "" >&3
+	setLAMWUserOnwerFiles
 	getBashCMD
 	setUseLamwManagerSetup
 	if [ $USE_PKEXEC = 1 ] ; then
@@ -172,16 +195,44 @@ Run(){
 	exec 3>&-
 }
 
+callLamw4LinuxTerminal(){
+	export LAMW_MANAGER_CALL=1
+	local lamw_termnal="$ROOT_LAMW/lamw4linux/usr/bin/lamw4linux-terminal"
+	$lamw_termnal -c "$1"
+}
 
 cacheGradle(){
-	echo "Please wait, starting caching Gradle"
-	lamw_termnal="$ROOT_LAMW/lamw4linux/usr/bin/lamw4linux-terminal"
-	$lamw_termnal -c cacheGradle &>/dev/null
+	getFiller
+	local sucess_filler="............"
+	printf "%s" "Please wait, starting caching Gradle ..."
+	callLamw4LinuxTerminal 'cacheGradle' &>/dev/null
+	printf  "%s\n" "${FILLER:${#sucess_filler}}${VERDE} [OK]${NORMAL}"
+}
+
+CheckNeedLazarusProjectDowngradle(){
+	if [ $AUTO_START_LAMW4LINUX = 0 ] && [ -e $LAMW_INSTALL_LOG ]; then
+		local lazarus_version=$(grep LAZARUS_VERSION $LAMW_INSTALL_LOG)
+		local lazarus_version_pattern='(2\.2\.[0-9])'
+
+		if [[ "$lazarus_version" =~ $lazarus_version_pattern ]];then 
+			RUN_DOWNGRADE_LPI=1
+		fi
+	fi
+}
+
+
+downgradeLazarusProject(){
+	if [ $IS_CHANGED_LAMW_INSTALL_LOG = 1 ] && [ $RUN_DOWNGRADE_LPI = 1 ]; then
+		callLamw4LinuxTerminal 'DowngradleAllProjectsFromLAMWWorkspace'
+	fi
 }
 
 autoStartLAMW4Linux(){
-
-	if [ $EXIT_STATUS = 0 ] && [ $AUTO_START_LAMW4LINUX = 1 ] && [ -e $LAMW_INSTALL_LOG ]; then
+	local minimal_regex='(\-\-minimal)'
+	if 	[ $EXIT_STATUS = 0 ] && 
+		[ $IS_CHANGED_LAMW_INSTALL_LOG = 1 ] && 
+		[ -e $LAMW_INSTALL_LOG ] &&
+		[[ ! "$ARGS" =~ $minimal_regex ]]; then
 		cacheGradle
 	fi
 
@@ -205,9 +256,12 @@ main(){
 	CheckUserIsSudo
 	CheckLocalRootLAMW
 	GetInitialStatus
+	CheckNeedLazarusProjectDowngradle
 	StopGradleDaemon
 	Run $ARGS
 	DelTempFiles
+	GetFinalStatus
+	downgradeLazarusProject
 	autoStartLAMW4Linux
 }
 
