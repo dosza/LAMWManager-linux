@@ -14,6 +14,12 @@ Other Linux Distributions
 From version 0.5.2 it is possible to use the LAMW Manager in other Linux distributions, without major complications.
 To do so, just install (using your system's package manager) the necessary packages to compile lazarus , freepascal and the specifics of the lamw manager.
 
+Compatible Linux Distro
+---
++	[Fedora **GNOME**](#Fedora)
++	[Manjaro **KDE**](#Manjaro)
++	[Slackware **XFCE**](#Slackware)
+
 
 ## Requirements ##
 
@@ -41,25 +47,20 @@ sudo apt-get install libx11-dev libgtk2.0-dev libgdk-pixbuf2.0-dev libcairo2-dev
 
 After installing the dependencies on the system, you will be able to run lamw_manager
 
-Compatible Linux Distro
+Fedora
 ---
-+	[Fedora **GNOME**](#Fedora)
-+	[Manjaro **KDE**](#Manjaro)
-+	[Slackware **XFCE**](#Slackware)
-
-
-### Fedora ###
-
 ```bash
 	sudo dnf install libX11-devel.x86_64 libX11.x86_64 gdk-pixbuf2.x86_64 gdk-pixbuf2-devel.x86_64 librsvg2.x86_64 pango-devel.x86_64 freeglut-devel.x86_64 libXtst-devel.x86_64 atk-devel.x86_64 gtk2-devel.x86_64 wget.x86_64 git.x86_64 xterm make.x86_64  gdb.x86_64 zip.x86_64 unzip.x86_64 jq.x86_64 xmlstarlet.x86_64 -y
 ```
 
-### Manjaro ###
+Manjaro
+---
 ```bash 
 	sudo pacman -Syyu gtk2 binutils make unzip gdb xterm jq xmlstarlet wget git zenity --noconfirm
 ```
 
-### Slackware ###
+Slackware
+---
 +	You need install: jq, xmlstarlet, xterm ( to XFCE users)
 	+	tips: 
 		+	use [sbopkg](https://sbopkg.org/) or [slapt-get](https://github.com/jaos/slapt-get) and [slapt-src](https://github.com/jaos/slapt-src)
