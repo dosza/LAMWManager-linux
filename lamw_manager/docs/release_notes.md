@@ -6,6 +6,7 @@ v0.5.2 - Dec 21, 2022
 --
 **Fixes**
 +	Remove unnecessary APT dependencies.
++	Prevents lamw_manager from not installing in \~/snap and /usr/lib/lazarus folders
 
 **News**
 +	Add support to user's sudo from wheel group
