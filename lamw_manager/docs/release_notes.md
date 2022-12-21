@@ -13,7 +13,11 @@ v0.5.2 - Dec 21, 2022
 +	Expands templates and simplify the [*settings-editor*](https://github.com/dosza/LAMWManager-linux/blob/master/lamw_manager/core/settings-editor)
 +	*\-\-minimal* option can now be combined with *\-\-reset*, *\-\-reinstall*
 +	Add experimental functionality: allows running lamw manager on non-debian based systems
+	+	It only requires the user to install the libraries and utilities to run lamw_manager
+	+	Automatically detect missing dependencies
 +	LAMW Manager installs faster than previous versions.
++	Compiles freepascal using multi-threading processing.
++	Check tools download integrity before extracting
 
 
 v0.5.1 - Ago 18, 2022
