@@ -214,7 +214,7 @@ GitClone(){
 	git clone "$git_src_url" $git_src_dir
 		
 	if [ $? != 0 ]; then 
-		git clone "$git_src_url" $git_src_dir
+		git clone "$git_src_url" $git_src_dir --jobs $CPU_COUNT
 		check_error_and_exit "possible network instability!! Try later!"
 	fi
 
