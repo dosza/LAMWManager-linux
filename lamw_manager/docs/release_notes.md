@@ -4,6 +4,9 @@ This page contains information about new features and bug fixes.
 
 v0.5.3 - Jan 7, 2023
 --
+**Fixes**
++	Fix fpc source code path in git (ambiguous path)
+
 **News**
 +	Optimizes LAMW4Linux installation/update time
 	+	Use multi-thread in build lazarus
