@@ -236,7 +236,7 @@ GitPull(){
 
 gitAddSafeConfigRepository(){
 	local safe_pattern="directory = $(GenerateScapesStr "$1")"
-	grep "$safe_pattern"  ~/.gitconfig -q && return 
+	grep "$safe_pattern"  ~/.gitconfig -q  2>/dev/null && return 
 	git config --global --add safe.directory "$1"
 }
 
@@ -282,12 +282,12 @@ getFPCSourcesTrunk(){
 	mkdir -p $FPC_TRUNK_SOURCE_PATH
 	changeDirectory $FPC_TRUNK_SOURCE_PATH
 	parseFPCTrunk
-	
+	local fpc_current_source="$FPC_TRUNK_SOURCE_PATH/$FPC_TRUNK_SVNTAG"
 	[ -e "$FPC_TRUNK_SVNTAG" ] && 
 	[ ! -e "$FPC_TRUNK_SVNTAG/.git" ] && 
 		rm -rf "$FPC_TRUNK_SVNTAG"
 
-	getFromGit "$FPC_TRUNK_URL" "$FPC_TRUNK_SVNTAG" "$FPC_TRUNK_SVNTAG"
+	getFromGit "$FPC_TRUNK_URL" "$fpc_current_source" "$FPC_TRUNK_SVNTAG"
 }
 
 #get Lazarus Sources
