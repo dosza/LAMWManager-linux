@@ -77,6 +77,7 @@ LAMWPackageManager(){
 		[ -e $old_fpc_stable ] && rm -rf $old_fpc_stable
 	done
 
+
 	#check and remove old  ppcx64 compiler (bootstrap)
 	if [ -e $LAMW4LINUX_HOME/usr/local/bin/ppcx64 ]; then 
 		local fpc_version=${FPC_DEB_VERSION%\-*}
@@ -291,6 +292,14 @@ getFPCSourcesTrunk(){
 
 #get Lazarus Sources
 getLazarusSources(){
+	local old_lazarus_trunk="$LAMW4LINUX_HOME/lazarus_trunk"
+	if [ -e "$old_lazarus_trunk" ];then 
+		if [ ! -e "$LAMW_IDE_HOME" ]; then 
+			mv "$old_lazarus_trunk" "$LAMW_IDE_HOME"
+		else
+			rm "$old_lazarus_trunk" -rf
+		fi
+	fi
 	changeDirectory $LAMW4LINUX_HOME
 	getFromGit "$LAZARUS_STABLE_SRC_LNK" "$LAMW_IDE_HOME" "$LAZARUS_STABLE"
 }
