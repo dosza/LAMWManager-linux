@@ -62,48 +62,69 @@ Manjaro
 Slackware
 ---
 
+1.	[Enable polkitd](#enable-polkitd)
+2.	[Installing dependencies with sbopkg](#installing-dependencies-with-sbopkg)
+	1. [Login as root](#login-as-root)
+	2.	[Getting sbopkg](#getting-sbopkg)
+	3.	[Check integrity](#check-integrity)
+	4.	[Install sbopkg](#installing-sbopkg)
+	5.	[Configuring sbopkg mirrros](#configuring-sbopkg-mirrros)
+	6.	[Sync sbopkg repo](#sync-sbopkg-repo)
+	7.	[Installing dependencies](#installing-dependencies)
+	8. 	[Restart your session](#restart-your-session)
+
+
+### Enable polkitd ###
+
+**Note**:Execute this command as user
+
+```bash 
+	su -c "usermod -a $USER -G polkitd"
+```
+
 ### Installing dependencies with sbopkg ####
 
+#### Login as root #### 
+```bash
+	su 
+```
 #### Getting sbopkg ####
 ```bash
-wget -c "https://github.com/sbopkg/sbopkg/releases/download/0.38.2/sbopkg-0.38.2-noarch-1_wsr.tgz"
+	wget -c "https://github.com/sbopkg/sbopkg/releases/download/0.38.2/sbopkg-0.38.2-noarch-1_wsr.tgz"
 ```
 #### Check integrity ####
 ```bash
-md5sum sbopkg-0.38.2-noarch-1_wsr.tgz | grep -i 'df40c7c991a30c1129a612a40be9f590' --color=auto
+	md5sum sbopkg-0.38.2-noarch-1_wsr.tgz | grep -i 'df40c7c991a30c1129a612a40be9f590' --color=auto
 ``` 
 #### Installing sbopkg ####
 ```bash
-su -c "installpkg ./sbopkg-0.38.2-noarch-1_wsr.tgz"
+	installpkg ./sbopkg-0.38.2-noarch-1_wsr.tgz
 ```
 #### Configuring sbopkg mirrros ####
 
 Uncomment line
+
 ```conf
 # SRC_REPO="http://slackware.uk/sbosrcarch"
 ```
 to
+
 ```conf
 SRC_REPO="http://slackware.uk/sbosrcarch"
 ```
+
 ```bash
-su -c "nano /etc/sbopkg/sbopkg.conf"
+	nano /etc/sbopkg/sbopkg.conf
 ```
 
 #### Sync sbopkg repo #### 
 ```bash
-su -c sbopkg -r
+	sbopkg -r
 ```
 #### Installing dependencies ####
 ```bash
-su -c sbopkg -i "jq zenity xmlstarlet"
+	sbopkg -i "jq zenity xmlstarlet"
 ```
-#### Enable polkitd #### 
-**Note**:Execute this command as user
-```bash 
-su -c "usermod -a $USER -G polkitd"
-```
-
 
 #### Restart your session #####
 
