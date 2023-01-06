@@ -17,7 +17,7 @@ To do so, just install (using your system's package manager) the necessary packa
 Compatible Linux Distro
 ---
 +	[Fedora **GNOME**](#Fedora)
-+	[Manjaro **KDE**](#Manjaro)
++	[Manjaro **XFCE**](#Manjaro)
 +	[Slackware **XFCE**](#Slackware)
 
 
@@ -32,7 +32,7 @@ The LAMW Manager will look for these tools and libraries, indicate which librari
 
 ### Tools ###
 
-git,gdb, binutils,make, **fuser**, unzip, zip, wget, **jq**, **xmlstarlet**,
+git,gdb, binutils,make, **fuser**, unzip, zip, wget, **jq**, **xmlstarlet**,bc
 
 ### Libraries and headers ###
 
@@ -61,6 +61,49 @@ Manjaro
 
 Slackware
 ---
-+	You need install: jq, xmlstarlet, xterm ( to XFCE users)
-	+	tips: 
-		+	use [sbopkg](https://sbopkg.org/) or [slapt-get](https://github.com/jaos/slapt-get) and [slapt-src](https://github.com/jaos/slapt-src)
+
+### Installing dependencies with sbopkg ####
+
+#### Getting sbopkg ####
+```bash
+wget -c "https://github.com/sbopkg/sbopkg/releases/download/0.38.2/sbopkg-0.38.2-noarch-1_wsr.tgz"
+```
+#### Check integrity ####
+```bash
+md5sum sbopkg-0.38.2-noarch-1_wsr.tgz | grep -i 'df40c7c991a30c1129a612a40be9f590' --color=auto
+``` 
+#### Installing sbopkg ####
+```bash
+su -c "installpkg ./sbopkg-0.38.2-noarch-1_wsr.tgz"
+```
+#### Configuring sbopkg mirrros ####
+
+Uncomment line
+```conf
+# SRC_REPO="http://slackware.uk/sbosrcarch"
+```
+to
+```conf
+SRC_REPO="http://slackware.uk/sbosrcarch"
+```
+```bash
+su -c "nano /etc/sbopkg/sbopkg.conf"
+```
+
+#### Sync sbopkg repo #### 
+```bash
+su -c sbopkg -r
+```
+#### Installing dependencies ####
+```bash
+su -c sbopkg -i "jq zenity xmlstarlet"
+```
+#### Enable polkitd #### 
+**Note**:Execute this command as user
+```bash 
+su -c "usermod -a $USER -G polkitd"
+```
+
+
+#### Restart your session #####
+
