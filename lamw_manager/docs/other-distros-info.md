@@ -61,7 +61,6 @@ Manjaro
 
 Slackware
 ---
-
 1.	[Enable polkitd](#enable-polkitd)
 2.	[Installing dependencies with sbopkg](#installing-dependencies-with-sbopkg)
 	1. [Login as root](#login-as-root)
@@ -76,7 +75,7 @@ Slackware
 
 ### Enable polkitd ###
 
-**Note**:Execute this command as user
+**Note**: Execute this command as user
 
 ```bash 
 	su -c "usermod -a $USER -G polkitd"
