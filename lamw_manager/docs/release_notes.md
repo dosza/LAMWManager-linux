@@ -6,6 +6,7 @@ v0.5.3 - Jan 7, 2023
 --
 **Fixes**
 +	Fix fpc source code path in git (ambiguous path)
++	Fix missing bc
 
 **News**
 +	Optimizes LAMW4Linux installation/update time
