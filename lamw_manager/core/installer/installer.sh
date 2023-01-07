@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.5.2
-#Date: 12/06/2022
+#Version: 0.5.3
+#Date: 01/05/2023
 #Description: "installer.sh" is part of the core of LAMW Manager. Contains routines for installing LAMW development environment
 #-------------------------------------------------------------------------------------------------#
 #set Remove Gradle from different
@@ -76,6 +76,7 @@ LAMWPackageManager(){
 	for old_fpc_stable in ${OLD_FPC_STABLE[*]}; do 
 		[ -e $old_fpc_stable ] && rm -rf $old_fpc_stable
 	done
+
 
 	#check and remove old  ppcx64 compiler (bootstrap)
 	if [ -e $LAMW4LINUX_HOME/usr/local/bin/ppcx64 ]; then 
@@ -214,7 +215,7 @@ GitClone(){
 	git clone "$git_src_url" $git_src_dir
 		
 	if [ $? != 0 ]; then 
-		git clone "$git_src_url" $git_src_dir
+		git clone "$git_src_url" $git_src_dir --jobs $CPU_COUNT
 		check_error_and_exit "possible network instability!! Try later!"
 	fi
 
@@ -235,7 +236,7 @@ GitPull(){
 
 gitAddSafeConfigRepository(){
 	local safe_pattern="directory = $(GenerateScapesStr "$1")"
-	grep "$safe_pattern"  ~/.gitconfig -q && return 
+	grep "$safe_pattern"  ~/.gitconfig -q  2>/dev/null && return 
 	git config --global --add safe.directory "$1"
 }
 
@@ -281,16 +282,24 @@ getFPCSourcesTrunk(){
 	mkdir -p $FPC_TRUNK_SOURCE_PATH
 	changeDirectory $FPC_TRUNK_SOURCE_PATH
 	parseFPCTrunk
-	
+	local fpc_current_source="$FPC_TRUNK_SOURCE_PATH/$FPC_TRUNK_SVNTAG"
 	[ -e "$FPC_TRUNK_SVNTAG" ] && 
 	[ ! -e "$FPC_TRUNK_SVNTAG/.git" ] && 
 		rm -rf "$FPC_TRUNK_SVNTAG"
 
-	getFromGit "$FPC_TRUNK_URL" "$FPC_TRUNK_SVNTAG" "$FPC_TRUNK_SVNTAG"
+	getFromGit "$FPC_TRUNK_URL" "$fpc_current_source" "$FPC_TRUNK_SVNTAG"
 }
 
 #get Lazarus Sources
 getLazarusSources(){
+	local old_lazarus_trunk="$LAMW4LINUX_HOME/lazarus_trunk"
+	if [ -e "$old_lazarus_trunk" ];then 
+		if [ ! -e "$LAMW_IDE_HOME" ]; then 
+			mv "$old_lazarus_trunk" "$LAMW_IDE_HOME"
+		else
+			rm "$old_lazarus_trunk" -rf
+		fi
+	fi
 	changeDirectory $LAMW4LINUX_HOME
 	getFromGit "$LAZARUS_STABLE_SRC_LNK" "$LAMW_IDE_HOME" "$LAZARUS_STABLE"
 }
@@ -606,7 +615,7 @@ BuildLazarusIDE(){
 	local error_build_lazarus_msg="${VERMELHO}Fatal error:${NORMAL}Fails in build Lazarus!!"
 	
 	local make_opts=( 
-		"clean all" "PP=${FPC_TRUNK_LIB_PATH}/ppcx64" "FPC_VERSION=$_FPC_TRUNK_VERSION" )
+		"clean all" "PP=${FPC_TRUNK_LIB_PATH}/ppcx64" "FPC_VERSION=$_FPC_TRUNK_VERSION"  "FPMAKEOPT=-T${CPU_COUNT}")
 	local build_msg="Please wait, starting build Lazarus to ${NEGRITO}x86_64/Linux${NORMAL}.............."
 	local sucess_filler="$(getCurrentSucessFiller 1 x86_64/Linux)"
 	changeDirectory $LAMW_IDE_HOME
