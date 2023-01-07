@@ -41,7 +41,7 @@ x11,gtk2,pango,gdk-pixbuf2.0,xtst,atk1,freeglut3
 Are equivalent to command
 
 ```bash 
-sudo apt-get install git gdb binutils make psmisc build-essential unzip zip wget jq xmlstarlet -y
+sudo apt-get install git gdb binutils make psmisc build-essential unzip zip wget jq xmlstarlet bc -y
 sudo apt-get install libx11-dev libgtk2.0-dev libgdk-pixbuf2.0-dev libcairo2-dev libpango1.0-dev libxtst-dev libatk1.0-dev freeglut3 freeglut3-dev -y
 ```
 
@@ -50,13 +50,13 @@ After installing the dependencies on the system, you will be able to run lamw_ma
 Fedora
 ---
 ```bash
-	sudo dnf install libX11-devel.x86_64 libX11.x86_64 gdk-pixbuf2.x86_64 gdk-pixbuf2-devel.x86_64 librsvg2.x86_64 pango-devel.x86_64 freeglut-devel.x86_64 libXtst-devel.x86_64 atk-devel.x86_64 gtk2-devel.x86_64 wget.x86_64 git.x86_64 xterm make.x86_64  gdb.x86_64 zip.x86_64 unzip.x86_64 jq.x86_64 xmlstarlet.x86_64 -y
+	sudo dnf install libX11-devel.x86_64 libX11.x86_64 gdk-pixbuf2.x86_64 gdk-pixbuf2-devel.x86_64 librsvg2.x86_64 pango-devel.x86_64 freeglut-devel.x86_64 libXtst-devel.x86_64 atk-devel.x86_64 gtk2-devel.x86_64 wget.x86_64 git.x86_64 xterm make.x86_64  gdb.x86_64 zip.x86_64 unzip.x86_64 jq.x86_64 xmlstarlet.x86_64 bc.x86_64 -y
 ```
 
 Manjaro
 ---
 ```bash 
-	sudo pacman -Syyu gtk2 binutils make unzip gdb xterm jq xmlstarlet wget git zenity --noconfirm
+	sudo pacman -Syyu gtk2 binutils make unzip gdb xterm jq xmlstarlet wget git zenity bc --noconfirm
 ```
 
 Slackware
