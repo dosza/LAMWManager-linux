@@ -44,6 +44,7 @@ SOFTWARES=(
 	xmlstarlet
 	unzip
 	zenity
+	bc
 )
 
 LIBS=(
