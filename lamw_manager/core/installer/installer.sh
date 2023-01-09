@@ -496,6 +496,7 @@ installLAMWPackages(){
 	for((i=0;i< ${#LAMW_PACKAGES[@]};i++)); do
 		
 		local lamw_build_opts=(
+			"--max-process-count=$CPU_COUNT"
 			--build-ide= --add-package ${LAMW_PACKAGES[i]} 
 			--pcp=$LAMW4_LINUX_PATH_CFG  
 			--lazarusdir=$LAMW_IDE_HOME 
@@ -515,7 +516,7 @@ BuildLazarusIDE(){
 	wrapperParseFPC
 	export PATH=$FPC_TRUNK_LIB_PATH:$FPC_TRUNK_EXEC_PATH:$PATH
 	local error_build_lazarus_msg="${VERMELHO}Fatal error:${NORMAL}Fails in build Lazarus!!"
-	local make_opts=( "clean all" "PP=${FPC_TRUNK_LIB_PATH}/ppcx64" "FPC_VERSION=$_FPC_TRUNK_VERSION" )
+	local make_opts=( "clean all" "PP=${FPC_TRUNK_LIB_PATH}/ppcx64" "FPC_VERSION=$_FPC_TRUNK_VERSION" "FPMAKEOPT=-T${CPU_COUNT}" )
 	
 	changeDirectory $LAMW_IDE_HOME
 

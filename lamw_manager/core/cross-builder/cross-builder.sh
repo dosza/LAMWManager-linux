@@ -37,18 +37,18 @@ BuildCrossAll(){
 	case $1 in
 	0)
 		make -s  clean crossall crossinstall  CPU_TARGET=aarch64 OS_TARGET=android OPT="-dFPC_ARMHF"\
-			INSTALL_PREFIX=$LAMW4LINUX_HOME/usr "PP=$FPC_LIB_PATH/ppcx64" ;;
+			INSTALL_PREFIX=$LAMW4LINUX_HOME/usr "PP=$FPC_LIB_PATH/ppcx64" -j $CPU_COUNT  FPMAKEOPT="-T $CPU_COUNT" ;;
 	1)
 		make -s  clean crossall crossinstall CPU_TARGET=arm OPT="-dFPC_ARMEL" OS_TARGET=android CROSSOPT="-CpARMV7A -CfVFPV3"\
-			 INSTALL_PREFIX=$LAMW4LINUX_HOME/usr "PP=$FPC_LIB_PATH/ppcx64";;
+			 INSTALL_PREFIX=$LAMW4LINUX_HOME/usr "PP=$FPC_LIB_PATH/ppcx64" -j $CPU_COUNT  FPMAKEOPT="-T $CPU_COUNT" ;;
 	2) 
 		make -s  clean crossall crossinstall CPU_TARGET=x86_64 OS_TARGET=android "PP=$FPC_LIB_PATH/ppcx64"\
-			 INSTALL_PREFIX=$LAMW4LINUX_HOME/usr OPT="-Cfsse3" CROSSOPT="-Cfsse3" ;;
+			 INSTALL_PREFIX=$LAMW4LINUX_HOME/usr OPT="-Cfsse3" CROSSOPT="-Cfsse3" -j $CPU_COUNT  FPMAKEOPT="-T $CPU_COUNT"  ;;
 	3)
 		make -s  clean crossall crossinstall CPU_TARGET=i386 CPU_TARGET=i386 OS_TARGET=android "PP=$FPC_LIB_PATH/ppcx64"\
-			INSTALL_PREFIX=$LAMW4LINUX_HOME/usr OPT="-Cfsse3" CROSSOPT="-Cfsse3" ;;
+			INSTALL_PREFIX=$LAMW4LINUX_HOME/usr OPT="-Cfsse3" CROSSOPT="-Cfsse3" -j $CPU_COUNT  FPMAKEOPT="-T $CPU_COUNT" ;;
 	*) 
-		check_error_and_exit "${VERMELHO}Fatal Error:${NORMAL}Invalid CrossOpts";;
+		check_error_and_exit "${VERMELHO}Fatal Error:${NORMAL}Invalid CrossOpts" -j $CPU_COUNT  FPMAKEOPT="-T $CPU_COUNT" ;;
 	esac
 }
 
