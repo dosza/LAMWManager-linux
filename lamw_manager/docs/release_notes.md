@@ -74,7 +74,7 @@ v0.4.0.3 - Jul 28, 2021
 +	Apache Ant 1.10.11
 +	Hybrid install: latest version that will work with Apache Ant!
 +	Hybrid install: new *Android Command Line Tools* to get Android API's and Apache Ant + JDK 8.
-+	[*headers*](https://github.com/dosza/LAMW4Linux-installer/blob/v0.4.0/lamw_manager/core/headers) module was divided in new submodule: [*lamw4linux_env*](https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/tree/v0.4.0/lamw_manager/core/headers/lamw4linux_env.sh)
++	[*headers*](https://github.com/dosza/LAMWManager-linux/blob/v0.4.0/lamw_manager/core/headers) module was divided in new submodule: [*lamw4linux_env*](https://github.com/dosza/LAMWManager-linux/tree/v0.4.0/lamw_manager/core/headers/lamw4linux_env.sh)
 +	**Backported from v0.4.1**:  
 	+	FPC i386/amd64-android crosscompile ! 
 +	Removed code deprecated
@@ -95,7 +95,7 @@ v0.4.0.1 - Jul 18, 2021
 +	LAMW Manager now supports JDK 8 on Debian GNU/Linux 
 +	Now LAMW Manager installs OpenJDK in *$ROOT_LAMW/jdk*
 +	Now the default OpenJDK distribution is ZuluOpenjdk and the default version is JDK 8 
-+	The [*api*](https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/tree/v0.4.0/lamw_manager/core/installer/api.sh) submodule has been updated to support getting the latest version of JDK8
++	The [*api*](https://github.com/dosza/LAMWManager-linux/tree/v0.4.0/lamw_manager/core/installer/api.sh) submodule has been updated to support getting the latest version of JDK8
 +	update-alternatives --config java no longer run on the system
 + 	*\$LAMW_USER* and *\$LAMW_USER_HOME* is passed by env command.
 
@@ -135,7 +135,7 @@ v0.3.6 - November 23, 2020
 +	Gradle 6.6.1
 +	Updates minimum usage requirements.
 +	**New:** Detects and updates the minimum **Android API's** without the need to install a new version of LAMW Manager!
-+	Add New module [*api.sh*](https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/tree/v0.3.6/lamw_manager/core/installer/api.sh) to get Gradle and Android APIS	
++	Add New module [*api.sh*](https://github.com/dosza/LAMWManager-linux/tree/v0.3.6/lamw_manager/core/installer/api.sh) to get Gradle and Android APIS	
 
 **Fixed:**
 +	Try run pkexec in tty
@@ -158,7 +158,7 @@ v0.3.5 - July 19, 2020
 +	Lazarus 2.0.10
 +	New FPC installation method without using APT!
 +	Debian GNU/ Linux 9 is no longer officially supported!
-+	The [*core*](https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/tree/v0.3.5/lamw_manager/core) module was divided into four sub-modules: [*cross-builder*](https://github.com/dosza/LAMW4Linux-installer/tree/v0.3.5/lamw_manager/core/cross-builder), [*headers*](https://github.com/dosza/LAMW4Linux-installer/tree/v0.3.5/lamw_manager/core/headers), [*installer*](https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/tree/v0.3.5/lamw_manager/core/installer) and [*settings-editor*](https://github.com/DanielOliveiraSouza/LAMW4Linux-installer/tree/v0.3.5/lamw_manager/core/settings-editor)
++	The [*core*](https://github.com/dosza/LAMWManager-linux/tree/v0.3.5/lamw_manager/core) module was divided into four sub-modules: [*cross-builder*](https://github.com/dosza/LAMWManager-linux/tree/v0.3.5/lamw_manager/core/cross-builder), [*headers*](https://github.com/dosza/LAMWManager-linux/tree/v0.3.5/lamw_manager/core/headers), [*installer*](https://github.com/dosza/LAMWManager-linux/tree/v0.3.5/lamw_manager/core/installer) and [*settings-editor*](https://github.com/dosza/LAMWManager-linux/tree/v0.3.5/lamw_manager/core/settings-editor)
 	
 **Fixed:**
 +	Missing *fpcres*
