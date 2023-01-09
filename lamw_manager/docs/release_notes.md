@@ -5,7 +5,7 @@ v0.4.0.10 - Jan 9, 2023
 ---
 **Fixes**
 +	Backported from v0.5.3
-	+	Fix fpc source code path in git (ambiguous path)
+	+	Fixed fpc lazarus sources code path in git (ambiguous path)
 +	Backported from v0.5.1
 	+	Fixes duplicate ```[safe]``` settings in *\~.gitconfig*;
 
