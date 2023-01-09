@@ -48,7 +48,7 @@ BuildCrossAll(){
 		make -s  clean crossall crossinstall CPU_TARGET=i386 CPU_TARGET=i386 OS_TARGET=android "PP=$FPC_LIB_PATH/ppcx64"\
 			INSTALL_PREFIX=$LAMW4LINUX_HOME/usr OPT="-Cfsse3" CROSSOPT="-Cfsse3" -j $CPU_COUNT  FPMAKEOPT="-T $CPU_COUNT" ;;
 	*) 
-		check_error_and_exit "${VERMELHO}Fatal Error:${NORMAL}Invalid CrossOpts" -j $CPU_COUNT  FPMAKEOPT="-T $CPU_COUNT" ;;
+		check_error_and_exit "${VERMELHO}Fatal Error:${NORMAL}Invalid CrossOpts"
 	esac
 }
 
