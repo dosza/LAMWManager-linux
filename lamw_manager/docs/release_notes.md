@@ -1,6 +1,36 @@
 # LAMW Manager Release Notes
 This page contains information about new features and bug fixes.
 
+v0.4.0.10 - Jan 9, 2023
+---
+**Fixes**
++	Backported from v0.5.3
+	+	Fix fpc source code path in git (ambiguous path)
++	Backported from v0.5.1
+	+	Fixes duplicate ```[safe]``` settings in *\~.gitconfig*;
+
+**News**
++	Backported from v0.5.3
+	+	Optimizes LAMW4Linux installation/update time
+		+	Use multi-thread in build lazarus
+		+	Do git clone *\-\-jobs* param.
++	Backported from v0.5.2
+	+	Compiles freepascal using multi-threading processing.
++	Backported from v0.4.8
+	+	**Warning:** from now on *lamw_manager_setup.sh* from [*assets*](https://github.com/dosza/LAMWManager-linux/tree/v0.4.0/lamw_manager/assets) will not be available!
+
+v0.4.0.9 - Dec 21, 2022
+---
+**Fixes**
++	Backported from v0.5.2
+	+	Remove unnecessary dependencies
+
+v0.4.0.8 - Jan 9, 2022
+---
+**Fixes**
++	Backported from v0.4.4
+	+	Xfce mitigation
+
 v0.4.0.7 - Dec 24, 2021
 ---
 **Fixes**
