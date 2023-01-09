@@ -161,6 +161,8 @@ fi
 
 
 gitAddSafeConfigRepository(){
+	local safe_pattern="directory = $(GenerateScapesStr "$1")"
+	grep "$safe_pattern"  ~/.gitconfig -q  2>/dev/null && return 
 	git config --global --add safe.directory "$1"
 }
 
@@ -222,7 +224,7 @@ getFPCSourcesTrunk(){
 #get Lazarus Sources
 getLazarusSources(){
 	changeDirectory $LAMW4LINUX_HOME
-	getFromGit "$LAZARUS_STABLE_SRC_LNK"  "$LAZARUS_STABLE" $LAZARUS_STABLE_TAG
+	getFromGit "$LAZARUS_STABLE_SRC_LNK"  "$LAMW_IDE_HOME" $LAZARUS_STABLE_TAG
 }
 
 #GET LAMW FrameWork

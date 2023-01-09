@@ -362,6 +362,7 @@ validate_is_file_create_by_lamw_manager(){
 	fi
 }
 CleanOldConfig(){
+	local scape_root_lamw="$(GenerateScapesStr "$ROOT_LAMW")"
 	getStatusInstalation
 	[ $LAMW_INSTALL_STATUS = 1 ] && checkLAMWManagerVersion > /dev/null
 	wrapperParseFPC
@@ -407,6 +408,9 @@ CleanOldConfig(){
 	update-mime-database   $LAMW_USER_HOME/.local/share/mime/
 	update-desktop-database $LAMW_USER_HOME/.local/share/applications
 	cleanPATHS
+	cp ~/.gitconfig ~/.old.git.config
+	sed -i "/directory = $scape_root_lamw/d" ~/.gitconfig
+	sed -i "/directory = $LAZARUS_STABLE_VERSION/d" ~/.gitconfig
 	unsetLocalRootLAMW
 }
 
