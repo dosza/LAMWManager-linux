@@ -511,19 +511,19 @@ systemHasLibsToBuildLazarus(){
 systemHasHeadersToBuildLazarus(){
 	local -i count=0
 	local libs
+	
 	for i in ${HEADERS[@]}; do
 		libs="$(basename $i)"
 		printf "Checking $libs"
 		if [ -e $i ]; then 
-			((count++))
 			printOK "$libs"
 		else 
 			printFail "$libs"
-			showPackageNameByIndex "$i"
+			showPackageNameByIndex "$count"
 			exit 1
 		fi
+		((count++))
 	done
-	[ $count = ${#HEADERS[@]} ]
 }
 
 
