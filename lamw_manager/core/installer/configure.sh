@@ -551,8 +551,10 @@ CheckIfSystemNeedTerminalMitigation(){
 	local desktop_env="$LAMW_USER_DESKTOP_SESSION $LAMW_USER_XDG_CURRENT_DESKTOP"
 	local gnome_regex="(GNOME)"
 	local xfce_regex="(XFCE)"
+	local cinnamon_regex="(X\-CINNAMON)"
 
 	if 	[[ "$desktop_env" =~ $gnome_regex ]] ||
+		[[ "$desktop_env" =~ $cinnamon_regex ]] || 
 		[[ "$desktop_env" =~ $xfce_regex ]]; then 
 			NEED_XFCE_MITIGATION=1
 			SOFTWARES+=(xterm)
