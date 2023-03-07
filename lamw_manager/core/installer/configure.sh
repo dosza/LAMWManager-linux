@@ -1,5 +1,14 @@
 #!/bin/bash
 
+declare -i X11_INDEX=11
+declare -i GTK2_INDEX=265
+declare -i GDK_INDEX=278
+declare -i CAIRO_INDEX=292
+declare -i PANGO_INDEX=326
+declare -i XTST_INDEX=328
+declare -i ATK_INDEX=362
+declare -i FREEGLUT_INDEX=366
+
 declare -A LIBS_DEB_EQUIVALENT=(
 	['libgdk-x11-2.0.so']=libgtk2.0-dev
 	['libgtk-x11-2.0.so']=libx11-dev
@@ -17,15 +26,17 @@ declare -A LIBS_DEB_EQUIVALENT=(
 	['libglut.so']='freeglut3-deb.so freeglut3-dev'
 )
 
+
+
 declare -A HEADERS_EQUIVALENT_DEB=(
-	['11']=libx11-dev
-	['265']=libgtk2.0-dev
-	['278']=libgdk-pixbuf2.0-dev
-	['292']=libcairo2-dev
-	['327']=libpango1.0-dev
-	['329']=libxtst-dev
-	['363']=libatk1.0-dev
-	['367']=freeglut3-dev
+	[$X11_INDEX]=libx11-dev
+	[$GTK2_INDEX]=libgtk2.0-dev
+	[$GDK_INDEX]=libgdk-pixbuf2.0-dev
+	[$CAIRO_INDEX]=libcairo2-dev
+	[$PANGO_INDEX]=libpango1.0-dev
+	[$XTST_INDEX]=libxtst-dev
+	[$ATK_INDEX]=libatk1.0-dev
+	[$FREEGLUT_INDEX]=freeglut3-dev
 )
 
 
@@ -355,7 +366,7 @@ HEADERS=(
 	/usr/include/cairo/cairo-script-interpreter.h
 	/usr/include/cairo/cairo-script.h
 	/usr/include/cairo/cairo-svg.h
-	/usr/include/cairo/cairo-tee.h
+	#/usr/include/cairo/cairo-tee.h
 	/usr/include/cairo/cairo-version.h
 	/usr/include/cairo/cairo-xcb.h
 	/usr/include/cairo/cairo-xlib-xrender.h
@@ -440,33 +451,35 @@ HEADERS=(
 
 MESSAGE_INSTALL='Install on your system the package equivalent to:'
 
+
 showPackageNameByIndex(){
 	local -i index=$1
 
-	if [ $index -le  11 ]; then 
-		echo "$MESSAGE_INSTALL: ${HEADERS_EQUIVALENT_DEB[11]}"
+	if [ $index -le  $X11_INDEX ]; then 
+		echo "$MESSAGE_INSTALL: ${HEADERS_EQUIVALENT_DEB[$X11_INDEX]}"
 		
-		elif [ $index -le 265 ]; then 
-			echo "$MESSAGE_INSTALL: ${HEADERS_EQUIVALENT_DEB[265]}"
+		elif [ $index -le $GTK2_INDEX ]; then 
+			echo "$MESSAGE_INSTALL: ${HEADERS_EQUIVALENT_DEB[$GTK2_INDEX]}"
 		
-		elif [ $index -le 278 ]; then 
-			echo "$MESSAGE_INSTALL: ${HEADERS_EQUIVALENT_DEB[278]}"
+		elif [ $index -le $GDK_INDEX ]; then 
+			echo "$MESSAGE_INSTALL: ${HEADERS_EQUIVALENT_DEB[$GDK_INDEX]}"
 		
-		elif [ $index -le 292 ]; then 
-			echo "$MESSAGE_INSTALL: ${HEADERS_EQUIVALENT_DEB[292]}"
+		elif [ $index -le $CAIRO_INDEX ]; then 
+			echo "$MESSAGE_INSTALL: ${HEADERS_EQUIVALENT_DEB[$CAIRO_INDEX]}"
 		
-		elif [ $index -le 327 ]; then 
-			echo "$MESSAGE_INSTALL: ${HEADERS_EQUIVALENT_DEB[327]}"
+		elif [ $index -le $PANGO_INDEX ]; then 
+			echo "$MESSAGE_INSTALL: ${HEADERS_EQUIVALENT_DEB[$PANGO_INDEX]}"
 		
-		elif [ $index -le 329 ]; then 
-			echo "$MESSAGE_INSTALL: ${HEADERS_EQUIVALENT_DEB[329]}"
+		elif [ $index -le $XTST_INDEX ]; then 
+			echo "$MESSAGE_INSTALL: ${HEADERS_EQUIVALENT_DEB[$XTST_INDEX]}"
 		
-		elif [ $index -le 363 ]; then 
-			echo "$MESSAGE_INSTALL: ${HEADERS_EQUIVALENT_DEB[363]}"
+		elif [ $index -le $ATK_INDEX ]; then 
+			echo "$MESSAGE_INSTALL: ${HEADERS_EQUIVALENT_DEB[$ATK_INDEX]}"
 		
-		elif [ $index -le 367 ]; then 
-			echo "$MESSAGE_INSTALL: ${HEADERS_EQUIVALENT_DEB[367]}"
+		elif [ $index -le $FREEGLUT_INDEX ]; then 
+			echo "$MESSAGE_INSTALL: ${HEADERS_EQUIVALENT_DEB[$FREEGLUT_INDEX]}"
 		fi
+
 }
 
 printOK(){
