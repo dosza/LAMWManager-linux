@@ -487,6 +487,7 @@ printOK(){
 }
 printFail(){
 	printf "%s\n" "${FILLER:${#1}}${VERMELHO} [FAILS]${NORMAL}"
+	echo "Please, get more info in https://github.com/dosza/LAMWManager-linux/blob/master/lamw_manager/docs/other-distros-info.md#compatible-linux-distro"
 }
 
 systemHasLibsToBuildLazarus(){
