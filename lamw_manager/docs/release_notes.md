@@ -5,7 +5,7 @@ This page contains information about new features and bug fixes.
 v0.5.3-r1 - Mar 9, 2023
 ---
 
-This is a maintenance release, the upgrade to this release is intended for those who have problems with **CINNAMON**or **Manjaro**
+This is a maintenance release, the upgrade to this release is intended for those who have problems with **CINNAMON** or **Manjaro**
 
 **Fixes**
 +	Fixes to non-debian systems
