@@ -2,6 +2,14 @@
 
 This page contains information about new features and bug fixes.
 
+v0.5.3-r1 - Mar 9, 2023
+---
+**Fixes**
++	Fixes to non-debian systems
+	+	Fixes missing cairo-tee.h
+	+	Detect Cinnamon 
+	+	Fix showPackageNameByIndex ( get debian package name equivalent)
+
 v0.5.3 - Jan 7, 2023
 --
 **Fixes**
