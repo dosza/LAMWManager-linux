@@ -19,6 +19,7 @@ Compatible Linux Distro
 +	[Fedora **GNOME**](#Fedora)
 +	[Manjaro **XFCE**](#Manjaro)
 +	[Slackware **XFCE**](#Slackware)
++	[OpenSuse **XFCE**](#opensuse-tumbleweed)
 
 
 ## Requirements ##
@@ -57,6 +58,11 @@ Manjaro
 ---
 ```bash 
 	sudo pacman -Syyu gtk2 binutils make unzip gdb xterm jq xmlstarlet wget git zenity bc --noconfirm
+```
+openSUSE Tumbleweed
+---
+```bash
+	sudo zypper install binutils wget unzip git zenity xmlstarlet gdb glibc-devel make jq  freeglut-devel libXtst-devel  pango-devel gdk-pixbuf-devel gtk2-devel libX11-devel  atkmm-devel cairo-devel gcc bc
 ```
 
 Slackware
