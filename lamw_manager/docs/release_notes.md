@@ -4,11 +4,17 @@ This page contains information about new features and bug fixes.
 
 v0.5.3-r1 - Mar 9, 2023
 ---
+
+This is a maintenance release, the upgrade to this release is intended for those who have problems with **CINNAMON**or **Manjaro**
+
 **Fixes**
 +	Fixes to non-debian systems
 	+	Fixes missing cairo-tee.h
 	+	Detect Cinnamon 
 	+	Fix showPackageNameByIndex ( get debian package name equivalent)
+
+**News**
++	Added OpenSuse Docs
 
 v0.5.3 - Jan 7, 2023
 --
