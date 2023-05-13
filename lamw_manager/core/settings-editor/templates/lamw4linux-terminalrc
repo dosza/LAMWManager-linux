@@ -3,7 +3,7 @@
 updateBuildDotGradle(){
 	
 	[ "${FUNCNAME[1]}"	!= 'cacheGradle' ] && return 1
-
+	local max_cpu="$(grep -c ^processor /proc/cpuinfo)"
 	local current_compile_sdk="$(grep compileSdkVersion $PWD/build.gradle | sed 's/^[[:blank:]]//g')"
 	local current_target_sdk="$(grep targetSdkVersion $PWD/build.gradle | sed 's/^[[:blank:]]//g')"
 	local current_gradle_plugin=$( grep 'com\.android\.tools.build:gradle' $PWD/build.gradle )
@@ -28,6 +28,13 @@ updateBuildDotGradle(){
 	if grep androidx build.gradle -i -q ;then 
 		echo 'android.useAndroidX=true' >> gradle.properties
 		echo 'android.enableJetifier=true' >>gradle.properties
+	fi
+
+	if ! grep  "^org\.gradle\.workers\.max" local.properties; then
+		echo 'org.gradle.configureondemand=true' >> local.properties
+		echo 'org.gradle.daemon=true'	>> local.properties
+		echo 'org.gradle.parallel=true' >> local.properties
+		echo "org.gradle.workers.max=$max_cpu"  >>local.properties
 	fi
 }
 
