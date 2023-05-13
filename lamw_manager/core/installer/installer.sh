@@ -660,7 +660,7 @@ checkProxyStatus(){
 	fi
 }
 
-requestGenerateFixLpSnapshot(){
+requestFixlpSnapshot(){
 	local _page_=$(wget -qO- 'https://sourceforge.net/p/lazarus-ccr/svn/HEAD/tree/')
 	
 	local _sesion_id_=$(
@@ -678,7 +678,11 @@ requestGenerateFixLpSnapshot(){
 
 	export FIXLP_URL="https://sourceforge.net/code-snapshots/svn/l/la/lazarus-ccr/svn/lazarus-ccr-svn-r${FIXLP_VERSION}-applications-fixlp.zip"
 	export FIXLP_ZIP="lazarus-ccr-svn-r${FIXLP_VERSION}-applications-fixlp.zip"
-	wget  -O- --post-data "_session_id_=${_sesion_id_}&path=/applications/fixlp" 'https://sourceforge.net/p/lazarus-ccr/svn/HEAD/tarball' >/dev/null
+
+	if ! wget  -O- --post-data "_session_id_=${_sesion_id_}&path=/applications/fixlp" 'https://sourceforge.net/p/lazarus-ccr/svn/HEAD/tarball' >/dev/null;  then 
+		USE_FIXLP=1
+	fi
+
 }
 
 #auxiliar function to get fixlp into subshell
@@ -688,18 +692,15 @@ getFixLpInSubShell(){
 }
 
 getFixLp(){
+
+	[ $USE_FIXLP = 1 ] && return  
 	if [ ! -e $LAMW4LINUX_HOME/usr/bin/fixlp ]; then
-		if ! requestGenerateFixLpSnapshot; then
-			USE_FIXLP=1
-			return 
-		fi
 		MAGIC_TRAP_INDEX=8
 		export -f  getCompressFile Wget check_error_and_exit getFixLpInSubShell getNameSumByParent
 		export WGET_TIMEOUT FILLER VERDE VERMELHO NORMAL NEGRITO
 		
 		changeDirectory "$ROOT_LAMW"
 		echo "Please wait, trying get ${NEGRITO}fixlp${NORMAL} ...${FILLER:5} ${NEGRITO}[⏳]$NORMAL"
-		sleep 5
 		#call subshell to get fixlp,
 		if ! bash -c getFixLpInSubShell; then 
 			bash -c getFixLpInSubShell
@@ -729,6 +730,7 @@ mainInstall(){
 	setLAMWDeps
 	LAMWPackageManager
 	checkProxyStatus
+	requestFixlpSnapshot
 	getJDK
 	getAnt
 	getGradle
