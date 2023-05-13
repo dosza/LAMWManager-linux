@@ -183,13 +183,15 @@ SystemTerminalMitigation(){
 	local xterm_path=$(which xterm)
 	local desktop_env="$LAMW_USER_DESKTOP_SESSION $LAMW_USER_XDG_CURRENT_DESKTOP"
 	local gnome_regex="(GNOME)"
+	local cinnamon_regex="(X\-CINNAMON)"
 	local xfce_regex="(XFCE)"
 	local lamw4linux_bin="$LAMW4LINUX_HOME/usr/bin"
 	local lamw4linux_gnome_terminal="$lamw4linux_bin/gnome-terminal"
 	local lamw4linux_xfce_terminal="$lamw4linux_bin/xfce4-terminal"
 	
-	# is a gnome system 
-	if [[ "$desktop_env" =~ $gnome_regex ]]; then
+	# is a gnome system or cinnamon
+	if 	[[ "$desktop_env" =~ $gnome_regex ]] ||
+		[[ "$desktop_env" =~ $cinnamon_regex ]]; then
 		
 		[ -e "$lamw4linux_gnome_terminal" ] && rm $lamw4linux_gnome_terminal
 		ln -s $xterm_path "$lamw4linux_gnome_terminal"
