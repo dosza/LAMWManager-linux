@@ -18,7 +18,7 @@ singleCoreWarning(){
 	isMultiCoreProcessor && return 
 	printf "\n%s\n" "${VERMELHO}Warning:${NORMAL} running the LAMW Manager on a ${NEGRITO}single core processor${NORMAL}, this can make processing ${NEGRITO}very slow${NORMAL}!"
 	sleep 1
-	if !  systemd-detect-virt -q &>/dev/null ; then 
+	if  systemd-detect-virt -q &>/dev/null ; then 
 		printf "%s\n\n" "${VERMELHO}Warning:${NORMAL} running in a ${NEGRITO}VM${NORMAL}, check the settings to enable using ${NEGRITO}more cores${NORMAL}!"
 		sleep 1.5
 	fi
