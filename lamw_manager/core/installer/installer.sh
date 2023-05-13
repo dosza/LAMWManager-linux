@@ -6,8 +6,21 @@
 #Date: 01/05/2023
 #Description: "installer.sh" is part of the core of LAMW Manager. Contains routines for installing LAMW development environment
 #-------------------------------------------------------------------------------------------------#
-#set Remove Gradle from different
 
+#this function return true if computer is multicore processor
+isMultiCoreProcessor(){
+	local dualcore=2
+	[  $CPU_COUNT -ge $dualcore ]
+}
+
+#This function issues slow execution warnings on single computers (or VMs).
+singleCoreWarning(){
+	isMultiCoreProcessor && return 
+	echo "${VERMELHO}:Warning:${NORMAL} running the LAMW Manager on a single core processor, this can make processing very slow!"
+	if  systemd-detect-virt -q &>/dev/null ; then 
+		echo "${VERMELHO}Warning${NORMAL}: running in a VM, check the settings to enable using more cores!"
+	fi
+}
 
 checkOldCmdlineTools(){
 	local ret=1
@@ -710,6 +723,7 @@ installFixLp(){
 mainInstall(){
 	getFiller
 	checkLAMWManagerVersion > /dev/null
+	singleCoreWarning
 	initROOT_LAMW
 	installSystemDependencies
 	setLAMWDeps
