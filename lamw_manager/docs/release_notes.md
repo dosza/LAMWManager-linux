@@ -2,6 +2,18 @@
 
 This page contains information about new features and bug fixes.
 
+v0.5.4 - May 13, 2023
+---
+
+**Fixes**
++	Fixes getFixLp
++	Fixes to non-debian systems
+	+	Fixes Gnome Terminal mitigation
+
+**News**
++	Adds slow running warnings on single core machines (or VMs)
++	Remove unnecessary APT dependencies
+
 v0.5.3-r1 - Mar 9, 2023
 ---
 
