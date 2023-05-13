@@ -21,6 +21,7 @@ checkOldCmdlineTools(){
 	return $ret
 } 
 
+#set old Gradle from $LAMW_INSTALL_LOG
 setOldGradleVersion(){
 	[ ! -e "$LAMW_INSTALL_LOG" ] && return 
 
