@@ -61,7 +61,7 @@ cacheGradle(){
 		updateBuildDotGradle
 		echo "sdk.dir=$ANDROID_SDK_ROOT"> local.properties
 		echo "ndk.dir=$ANDROID_SDK_ROOT/ndk-bundle" >> local.properties
-		gradle clean build --info
+		gradle clean build
 
 	done
 
