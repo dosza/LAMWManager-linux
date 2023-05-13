@@ -16,9 +16,9 @@ isMultiCoreProcessor(){
 #This function issues slow execution warnings on single computers (or VMs).
 singleCoreWarning(){
 	isMultiCoreProcessor && return 
-	echo "${VERMELHO}:Warning:${NORMAL} running the LAMW Manager on a single core processor, this can make processing very slow!"
+	echo "${VERMELHO}Warning:${NORMAL} running the LAMW Manager on a ${NEGRITO}single core processor${NORMAL}, this can make processing ${NEGRITO}very slow${NORMAL}!"
 	if  systemd-detect-virt -q &>/dev/null ; then 
-		echo "${VERMELHO}Warning${NORMAL}: running in a VM, check the settings to enable using more cores!"
+		echo "${VERMELHO}Warning:${NORMAL} running in a ${NEGRITO}VM${NORMAL}, check the settings to enable using ${NEGRITO}more cores${NORMAL}!"
 	fi
 }
 
