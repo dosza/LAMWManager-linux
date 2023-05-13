@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (mater-alma)
 #Course: Science Computer
-#Version: 0.5.3
-#Date: 01/05/2023
+#Version: 0.5.4
+#Date: 05/13/2023
 #Description: The "lamw-manager-settings-editor.sh" is part of the core of LAMW Manager. Responsible for managing LAMW Manager / LAMW configuration files..
 #-----------------------------------------------------------------------f--------------------------#
 #this function builds initial struct directory of LAMW env Development !
@@ -183,13 +183,15 @@ SystemTerminalMitigation(){
 	local xterm_path=$(which xterm)
 	local desktop_env="$LAMW_USER_DESKTOP_SESSION $LAMW_USER_XDG_CURRENT_DESKTOP"
 	local gnome_regex="(GNOME)"
+	local cinnamon_regex="(X\-CINNAMON)"
 	local xfce_regex="(XFCE)"
 	local lamw4linux_bin="$LAMW4LINUX_HOME/usr/bin"
 	local lamw4linux_gnome_terminal="$lamw4linux_bin/gnome-terminal"
 	local lamw4linux_xfce_terminal="$lamw4linux_bin/xfce4-terminal"
 	
-	# is a gnome system 
-	if [[ "$desktop_env" =~ $gnome_regex ]]; then
+	# is a gnome system or cinnamon
+	if 	[[ "$desktop_env" =~ $gnome_regex ]] ||
+		[[ "$desktop_env" =~ $cinnamon_regex ]]; then
 		
 		[ -e "$lamw4linux_gnome_terminal" ] && rm $lamw4linux_gnome_terminal
 		ln -s $xterm_path "$lamw4linux_gnome_terminal"

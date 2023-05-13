@@ -19,5 +19,5 @@ installDebianDependencies(){
 	[ $IS_DEBIAN = 0 ] && return 
 	getCurrentDebianFrontend
 	checkNeedXfceMitigation
-	AptInstall $LIBS_ANDROID $PROG_TOOLS
+	AptInstall $LIBS_ANDROID $PROG_TOOLS --no-install-recommends
 }
