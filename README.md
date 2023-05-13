@@ -1,7 +1,7 @@
 # LAMW Manager
 
 
-[![Version](https://img.shields.io/badge/Release-v0.5.3-blue)](https://github.com/dosza/LAMWManager-linux/blob/v0.5.x/lamw_manager/docs/release_notes.md#v053-r1---mar-9-2023) [![Build-status](https://img.shields.io/badge/build-stable-brightgreen)](https://github.com/dosza/LAMWManager-linux/releases/download/v0.5.3/lamw_manager_setup.sh) [![license](https://img.shields.io/github/license/dosza/LAMWManager-linux)](https://github.com/dosza/LAMWManager-linux/blob/master/LICENSE) [![Stars](https://img.shields.io/github/stars/dosza/LAMWManager-linux?style=default)](https://github.com/dosza/LAMWManager-linux/stargazers)
+[![Version](https://img.shields.io/badge/Release-v0.5.4-blue)](https://github.com/dosza/LAMWManager-linux/blob/v0.5.x/lamw_manager/docs/release_notes.md#v054---may-13-2023) [![Build-status](https://img.shields.io/badge/build-stable-brightgreen)](https://github.com/dosza/LAMWManager-linux/releases/download/v0.5.4/lamw_manager_setup.sh) [![license](https://img.shields.io/github/license/dosza/LAMWManager-linux)](https://github.com/dosza/LAMWManager-linux/blob/master/LICENSE) [![Stars](https://img.shields.io/github/stars/dosza/LAMWManager-linux?style=default)](https://github.com/dosza/LAMWManager-linux/stargazers)
 
 LAMW Manager is a command line tool,like *APT*, to automate the **installation**, **configuration** and **upgrade**<br/>the framework [LAMW - Lazarus Android Module Wizard](https://github.com/jmpessoa/lazandroidmodulewizard)
 
@@ -60,7 +60,7 @@ LAMW Manager install the following [dependencies] tools:
 Getting Started!!
 ---
 **How to use LAMW Manager:**
-+	Click here to download [*LAMW Manager Setup*](https://github.com/dosza/LAMWManager-linux/releases/download/v0.5.3/lamw_manager_setup.sh)
++	Click here to download [*LAMW Manager Setup*](https://github.com/dosza/LAMWManager-linux/releases/download/v0.5.4/lamw_manager_setup.sh)
 +	Go to download directory and right click *Open in Terminal*
 +	Run command : *bash lamw_manager_setup.sh*¹
 
@@ -98,11 +98,11 @@ Recommended:
 
 Release Notes:
 ---
-For information on new features and bug fixes read the [*Release Notes*](https://github.com/dosza/LAMWManager-linux/blob/v0.5.x/lamw_manager/docs/release_notes.md#v053-r1---mar-9-2023)
+For information on new features and bug fixes read the [*Release Notes*](https://github.com/dosza/LAMWManager-linux/blob/v0.5.x/lamw_manager/docs/release_notes.md#v054---may-13-2023)
 
 Congratulations!!
 ---
 You are now a Lazarus for Android developer!</br>[Building Android application with **LAMW** is **RAD**!](https://drive.google.com/open?id=1CeDDpuDfRwYrKpN7VHbossH6GfZUfqjm)
 
-For more info read [**LAMW Manager v0.5.3 Manual**](https://github.com/dosza/LAMWManager-linux/blob/v0.5.x/lamw_manager/docs/man.md)
+For more info read [**LAMW Manager v0.5.4 Manual**](https://github.com/dosza/LAMWManager-linux/blob/v0.5.x/lamw_manager/docs/man.md)
 

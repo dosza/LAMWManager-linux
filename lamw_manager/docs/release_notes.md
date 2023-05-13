@@ -2,6 +2,15 @@
 
 This page contains information about new features and bug fixes.
 
+v0.5.4 - May 13, 2023
+---
+
+**Fixes**
++	Fixes getFixLp
+
+**News**
++	Adds slow running warnings on single core machines (or VMs)	
+
 v0.5.3-r1 - Mar 9, 2023
 ---
 
