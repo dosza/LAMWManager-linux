@@ -20,6 +20,7 @@ singleCoreWarning(){
 	if  systemd-detect-virt -q &>/dev/null ; then 
 		echo "${VERMELHO}Warning:${NORMAL} running in a ${NEGRITO}VM${NORMAL}, check the settings to enable using ${NEGRITO}more cores${NORMAL}!"
 	fi
+	sleep 1.5
 }
 
 checkOldCmdlineTools(){
