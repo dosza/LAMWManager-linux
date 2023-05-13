@@ -680,7 +680,7 @@ requestFixlpSnapshot(){
 	export FIXLP_URL="https://sourceforge.net/code-snapshots/svn/l/la/lazarus-ccr/svn/lazarus-ccr-svn-r${FIXLP_VERSION}-applications-fixlp.zip"
 	export FIXLP_ZIP="lazarus-ccr-svn-r${FIXLP_VERSION}-applications-fixlp.zip"
 
-	if ! wget  -O- --post-data "_session_id_=${_sesion_id_}&path=/applications/fixlp" 'https://sourceforge.net/p/lazarus-ccr/svn/HEAD/tarball' >/dev/null;  then 
+	if ! wget  -qO- --post-data "_session_id_=${_sesion_id_}&path=/applications/fixlp" 'https://sourceforge.net/p/lazarus-ccr/svn/HEAD/tarball' >/dev/null;  then 
 		USE_FIXLP=1
 	fi
 
