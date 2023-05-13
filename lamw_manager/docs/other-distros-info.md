@@ -51,7 +51,7 @@ After installing the dependencies on the system, you will be able to run lamw_ma
 Fedora
 ---
 ```bash
-	sudo dnf install libX11-devel.x86_64 libX11.x86_64 gdk-pixbuf2.x86_64 gdk-pixbuf2-devel.x86_64 librsvg2.x86_64 pango-devel.x86_64 freeglut-devel.x86_64 libXtst-devel.x86_64 atk-devel.x86_64 gtk2-devel.x86_64 wget.x86_64 git.x86_64 xterm make.x86_64  gdb.x86_64 zip.x86_64 unzip.x86_64 jq.x86_64 xmlstarlet.x86_64 bc.x86_64 -y
+	sudo dnf install libX11-devel.x86_64 libX11.x86_64 gdk-pixbuf2.x86_64 gdk-pixbuf2-devel.x86_64 librsvg2.x86_64 pango-devel.x86_64 freeglut-devel.x86_64 libXtst-devel.x86_64 atk-devel.x86_64 gtk2-devel.x86_64 wget.x86_64 git.x86_64 xterm make.x86_64  gdb.x86_64 zip.x86_64 unzip.x86_64 jq.x86_64 xmlstarlet.x86_64 bc.x86_64 binutils.x86_64 gcc.x86_64 -y
 ```
 
 Manjaro
