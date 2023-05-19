@@ -210,7 +210,7 @@ LAMW4LinuxPostConfig(){
 		"export JAVA_HOME=$JAVA_HOME"
 		"export ANDROID_HOME=$ANDROID_HOME"
 		"export ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
-		"export PATH=$ROOT_LAMW/lamw4linux/usr/bin:\$PPC_CONFIG_PATH:\$JAVA_HOME/bin:\$PATH"
+		"export PATH=\$ANDROID_SDK_ROOT/platform-tools:$ROOT_LAMW/lamw4linux/usr/bin:\$PPC_CONFIG_PATH:\$JAVA_HOME/bin:\$PATH"
 		"IGNORE_XFCE_LAMW_ERROR_PATH=$IGNORE_XFCE_LAMW_ERROR_PATH"
 		"if [ ! -e \"\$IGNORE_XFCE_LAMW_ERROR_PATH\" ] && [ \"\${XDG_CURRENT_DESKTOP^^}\" = \"XFCE\" ] && [ \"\${DESKTOP_SESSION^^}\" = \"XFCE\" ]; then"
 		"	export XDG_CURRENT_DESKTOP=Gnome"
