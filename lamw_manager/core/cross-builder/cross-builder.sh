@@ -26,7 +26,9 @@ parseFPCTrunk(){
 buildFPCTrunk(){
 	if [ -e "$FPC_TRUNK_SOURCE_PATH" ]; then
 		changeDirectory "$FPC_TRUNK_SOURCE_PATH/$FPC_TRUNK_SVNTAG"
-		make clean all install "PP=$FPC_LIB_PATH/ppcx64" INSTALL_PREFIX="$LAMW4LINUX_HOME/usr"
+		make clean all install "PP=$FPC_LIB_PATH/ppcx64" INSTALL_PREFIX="$LAMW4LINUX_HOME/usr" \
+			-j $CPU_COUNT  FPMAKEOPT="-T $CPU_COUNT" 
+			
 		check_error_and_exit "${VERMELHO}Fatal Error: Falls build FPC to x86_64-linux${NORMAL}" 
 
 	fi
