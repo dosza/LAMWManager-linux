@@ -232,23 +232,10 @@ LAMW4LinuxPostConfig(){
 }
 
 ActiveProxy(){
-	svn --help > /dev/null
 	if  [ $1 = 1 ]; then
-		if [ -e ~/.subversion/servers ] ; then
-			aux=$(tail -1 ~/.subversion/servers)       #tail -1 mostra a última linha do arquivo 
-			if [ "$aux" != "" ] ; then   # verifica se a última linha é vazia
-				sed  -i '$a\' ~/.subversion/servers #adiciona uma linha ao fim do arquivo
-			fi
-			#echo "write proxy with svn"
-			echo "http-proxy-host=$PROXY_SERVER" >> ~/.subversion/servers
-			echo "http-proxy-port=$PORT_SERVER" >> ~/.subversion/servers
 			git config --global core.gitproxy $PROXY_URL #"http://$HOST:$PORTA"
 			git config --global http.gitproxy $PROXY_URL #"http://$HOST:$PORTA"
-		fi
-
 	else
-		sed -i "/http-proxy-host=$HOST/d" ~/.subversion/servers
-		sed -i "/http-proxy-port=$PORTA/d" ~/.subversion/servers
 		git config --global --unset core.gitproxy
 		git config --global --unset http.gitproxy
 		if [ -e ~/.gitconfig ] ;then
