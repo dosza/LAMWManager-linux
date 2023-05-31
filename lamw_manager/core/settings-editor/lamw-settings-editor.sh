@@ -588,6 +588,7 @@ configureFPCTrunk(){
 	parseFPCTrunk
 	$FPC_MKCFG_EXE -d basepath="$FPC_TRUNK_LIB_PATH" -o "$FPC_CFG_PATH"
 	local fpc_trunk_parent="$(dirname "$FPC_TRUNK_LIB_PATH")"
+	local fpc_extra_cfg="$LAMW4LINUX_ETC/fpc-extra.cfg"
 
 	#this config enable to crosscompile in fpc 
 	local fpc_cfg_str=(
@@ -611,6 +612,9 @@ configureFPCTrunk(){
 
 	if [ -e $FPC_CFG_PATH ] ; then  # se exiir /etc/fpc.cfg
 		if searchLineinFile $FPC_CFG_PATH  "${fpc_cfg_str[0]}"; then 
+			if [ -e "$fpc_extra_cfg" ]; then 
+				fpc_cfg_str+=("#INCLUDE $fpc_extra_cfg")
+			fi
 			AppendFileln "$FPC_CFG_PATH" "fpc_cfg_str" # caso o arquvo ainda não esteja configurado
 		fi
 	fi
@@ -765,4 +769,3 @@ initLAMw4LinuxConfig(){
 		fi 
 	fi
 }
-
