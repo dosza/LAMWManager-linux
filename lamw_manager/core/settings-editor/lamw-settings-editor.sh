@@ -21,7 +21,6 @@ initROOT_LAMW(){
 		"$LAMW_USER_APPLICATIONS_PATH"
 	)
 
-
 	for lamw_dir in ${init_root_lamw_dirs[@]}; do
 		[ ! -e "$lamw_dir" ] && mkdir -p "$lamw_dir"
 	done
@@ -43,7 +42,6 @@ enableADBtoUdev(){
 	systemctl restart udev.service &>/dev/null
 }
 
-
 AddSDKPathstoProfile(){
 	local profile_file=$LAMW_USER_HOME/.bashrc
 	local flag_profile_paths=0
@@ -61,10 +59,8 @@ changeOwnerAllLAMW(){
 		local files_chown=(
 			"$LAMW_IDE_HOME_CFG"
 			"$ROOT_LAMW/lazandroidmodulewizard"
-			"$LAMW_IDE_HOME"
-		)
+			"$LAMW_IDE_HOME" )
 	else
-
 		local files_chown=(
 			"$LAMW_USER_HOME/Dev"
 			"$ROOT_LAMW"
@@ -74,15 +70,12 @@ changeOwnerAllLAMW(){
 			"$LAMW_USER_HOME/.android"
 			"$LAMW_USER_HOME/.local/share"
 			"$LAMW_IDE_HOME_CFG"
-			"$LAMW_MANAGER_LOCAL_CONFIG_DIR"
-				
-		#	
-		)
+			"$LAMW_MANAGER_LOCAL_CONFIG_DIR" )
 
 		[ "$NO_EXISTENT_ROOT_LAMW_PARENT" != "" ] &&
 			files_chown+=($NO_EXISTENT_ROOT_LAMW_PARENT)
-	
 	fi
+
 	printf "%s" "Restoring directories ........."
 	local max=${#files_chown[*]} ; [ $max -lt 4 ] && max=4
 	local filler_size="${#FILLER}"
@@ -138,6 +131,7 @@ writeLAMWLogInstall(){
 
 	WriterFileln "$LAMW_INSTALL_LOG" "lamw_log_str"	
 }
+
 initTemplatePaths(){
 	arrayMap LAMW4LINUX_TEMPLATES_PATHS templatePath realPath '
 		cp $templatePath $realPath
@@ -153,6 +147,7 @@ menuTrigger(){
 	'
 	chmod +x $2
 }
+
 #Add LAMW4Linux to menu 
 AddLAMWtoStartMenu(){
 	local -A lamw_desktop_file_str=( 
@@ -163,9 +158,10 @@ AddLAMWtoStartMenu(){
 		["StartupWMClass"]="LAMW4Linux"
 	)
 
-	local  -A lamw4linux_terminal_desktop_str=(  
-        ["Exec"]="$LAMW4LINUX_TERMINAL_EXEC_PATH"
-    )
+	local  -A lamw4linux_terminal_desktop_str=(
+		["Exec"]="$LAMW4LINUX_TERMINAL_EXEC_PATH" 
+	)
+
     initTemplatePaths
 	menuTrigger lamw_desktop_file_str $LAMW_MENU_ITEM_PATH
 	menuTrigger lamw4linux_terminal_desktop_str $LAMW4LINUX_TERMINAL_MENU_PATH
@@ -205,7 +201,6 @@ SystemTerminalMitigation(){
 
 	fi
 }
-
 
 changeBashHeaderDescription(){
 	bash_header[$description_index]="#$1"
@@ -312,7 +307,6 @@ LAMW4LinuxPostConfig(){
 		"source \$LAMW4LINUX_TERMINAL_RC"
 	)
 
-
 	WriterFileln "$LAMW4LINUX_TERMINAL_EXEC_PATH" lamw4linux_terminal_str && chmod +x $LAMW4LINUX_TERMINAL_EXEC_PATH
 	WriterFileln "$LAMW_IDE_HOME_CFG/LAMW.ini" "LAMW_init_str"
 	WriterFileln "$LAMW_IDE_HOME/startlamw4linux" "startlamw4linux_str"
@@ -368,14 +362,11 @@ CleanOldCrossCompileBins(){
 		"/usr/bin/ppcrossa64"
 	)
 
-
 	local index_clean_files_v031=${#clean_files[*]}
 	local current_old_lamw_manager=${OLD_LAMW_INSTALL_VERSION[$CURRENT_OLD_LAMW_INSTALL_INDEX]}
 	((index_clean_files_v031-=1))
 
 	[ $CURRENT_OLD_LAMW_INSTALL_INDEX -lt  0 ] && return 1
-
-
 
 	for((i=0;i<${#list_deleted_files[*]};i++)); do 
 		if [ -e ${list_deleted_files[i]} ]; then 
@@ -402,8 +393,6 @@ CleanOldCrossCompileBins(){
 	
 }
 
-	
-
 cleanPATHS(){
 	[ $CURRENT_OLD_LAMW_INSTALL_INDEX -lt  2 ] && return
 	local android_home_sc=$(GenerateScapesStr "$ANDROID_HOME")
@@ -417,7 +406,6 @@ cleanPATHS(){
 		sed -i '/export PATH=$PATH:$GRADLE_HOME\/bin/d'  $LAMW_USER_HOME/.bashrc
 	fi
 }
-
 
 #adiciona criterios de validação para a desinstalação de arquivos criados pelo lamw_manager
 validate_last_files_created_by_lamw_manager(){
@@ -456,6 +444,7 @@ CleanOldConfig(){
 	[ $LAMW_INSTALL_STATUS = 1 ] && checkLAMWManagerVersion > /dev/null
 	parseFPCTrunk
 	local scape_root_lamw="$(GenerateScapesStr "$ROOT_LAMW")"
+	
 	local list_deleted_files=(
 		"/usr/bin/ppcarm"
 		"/usr/bin/ppcrossarm"
@@ -527,10 +516,8 @@ CreateSDKSimbolicLinks(){
 		"$ROOT_LAMW/sdk/ndk-bundle/toolchains/arm-linux-androideabi-4.9"
 		"$real_ppcarm"
 		"$real_ppcarm"
-		"$FPC_TRUNK_LIB_PATH/ppcx64"
-
+		"$FPC_TRUNK_LIB_PATH/ppcx64" 
 	)
-
 
 	local tools_chains_s_links=(
 		"$ROOT_LAMW/ndk"
@@ -546,7 +533,6 @@ CreateSDKSimbolicLinks(){
 		"$ROOT_LAMW/lamw4linux/usr/bin/ppcarm"
 		"$ROOT_LAMW/lamw4linux/usr/bin/ppcx64"
 	)
-
 
 	for ((i=0;i<${#tools_chains_orig[*]};i++));do
 	 	[  -e "${tools_chains_s_links[i]}" ] && rm "${tools_chains_s_links[i]}"		
@@ -578,10 +564,10 @@ updateFppkgConfig(){
 		['Prefix=%GlobalPrefix%']="Prefix=$LAMW4LINUX_HOME/usr"
 	)
 
-
 	arrayMap fppkg_changes_str realPath templatePath '
     	sed -i "s|${templatePath}|${realPath}|g" "$FPPKG_TRUNK_CFG_PATH" 2>/dev/null'
 }
+
 configureFPCTrunk(){
 	parseFPCTrunk
 	$FPC_MKCFG_EXE -d basepath="$FPC_TRUNK_LIB_PATH" -o "$FPC_CFG_PATH"
@@ -604,7 +590,6 @@ configureFPCTrunk(){
 		"Compiler=$FPC_TRUNK_EXEC_PATH/fpc"
 		'OS=Linux'
 	)
-	
 	
 	WriterFileln "$FPPKG_LOCAL_REPOSITORY_CFG" fppkg_local_cfg
 
@@ -669,11 +654,9 @@ createLazarusEnvCfgFile(){
 	fi
 }
 
-
 getNodeAttrXML(){
 	xmlstarlet sel -t -v "$1" "$2"
 }
-
 
 updateNodeAttrXML(){
 	newPtr xml_node_attr_ref=$1
@@ -749,15 +732,12 @@ initLAMw4LinuxConfig(){
 			local expected_env_xml_nodes_attr['last_laz_full_path']=$LAMW4LINUX_EXE_PATH
 		fi
 
-		[ -e  "${lazarus_env_cfg_path}.bak" ] && 
-			rm "${lazarus_env_cfg_path}.bak" 
+		[ -e  "${lazarus_env_cfg_path}.bak" ] && rm "${lazarus_env_cfg_path}.bak" 
 		cp $lazarus_env_cfg_path "${lazarus_env_cfg_path}.bak" 
 
 		updateNodeAttrXML lazarus_env_xml_nodes_attr expected_env_xml_nodes_attr "$lazarus_env_cfg_path"
 
-		grep 'FppkgConfigFile' $lazarus_env_cfg_path > /dev/null 
-
-		if [ $? != 0 ]; then #insert fppkg_config ref: https://stackoverflow.com/questions/7837879/xmlstarlet-update-an-attribute
+		if grep 'FppkgConfigFile' $lazarus_env_cfg_path > /dev/null ; then  #insert fppkg_config ref: https://stackoverflow.com/questions/7837879/xmlstarlet-update-an-attribute
 			xmlstarlet ed  --inplace -s "$env_opts_node" -t elem -n "FppkgConfigFile" -v "" -i $fppkg_cfg_node -t attr -n "Value" -v "$FPPKG_TRUNK_CFG_PATH" $lazarus_env_cfg_path
 		else # update fppkg_config
 			local current_fppkg_config_value=$(getNodeAttrXML "$fppkg_cfg_node_attr" $lazarus_env_cfg_path )
