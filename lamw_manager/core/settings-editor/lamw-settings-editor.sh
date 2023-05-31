@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (mater-alma)
 #Course: Science Computer
-#Version: 0.5.4
-#Date: 05/13/2023
+#Version: 0.5.5
+#Date: 05/29/2023
 #Description: The "lamw-manager-settings-editor.sh" is part of the core of LAMW Manager. Responsible for managing LAMW Manager / LAMW configuration files..
 #-----------------------------------------------------------------------f--------------------------#
 #this function builds initial struct directory of LAMW env Development !
@@ -142,6 +142,7 @@ initTemplatePaths(){
 	arrayMap LAMW4LINUX_TEMPLATES_PATHS templatePath realPath '
 		cp $templatePath $realPath
 	'
+
 }
 
 menuTrigger(){
