@@ -2,6 +2,17 @@
 
 This page contains information about new features and bug fixes.
 
+v0.5.5 - May 31, 2023
+---
+
+**News**
++	Install *fpc-android.cfg* and *fppkg.cfg* using templates
++	fpc-extra.cfg
+	+	Now you can add an extra fpc configuration file, just add it to *\$ROOT_LAMW/lamw4linux/etc/fpc-extra.cfg*,
+	where \$ROOT_LAMW is the directory where LAMW is installed.
+	+	**Note**: requires reinstallation
+
+
 v0.5.4 - May 13, 2023
 ---
 
