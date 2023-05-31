@@ -407,14 +407,12 @@ CleanOldCrossCompileBins(){
 cleanPATHS(){
 	[ $CURRENT_OLD_LAMW_INSTALL_INDEX -lt  2 ] && return
 	local android_home_sc=$(GenerateScapesStr "$ANDROID_HOME")
-	grep "ANDROID_HOME=" $LAMW_USER_HOME/.bashrc | grep "$ROOT_LAMW" > /dev/null 
-	if [ $? = 0 ]; then 
+	if grep "ANDROID_HOME=" $LAMW_USER_HOME/.bashrc | grep "$ROOT_LAMW" > /dev/null; then 
 		sed -i "/export ANDROID_HOME=${android_home_sc}/d"  $LAMW_USER_HOME/.bashrc
 		sed -i '/export PATH=$PATH:$ANDROID_HOME\/ndk-toolchain/d' $LAMW_USER_HOME/.bashrc
 	fi
 
-	grep "GRADLE_HOME=" $LAMW_USER_HOME/.bashrc | grep "$ROOT_LAMW" > /dev/null
-	if [ $? = 0 ];then
+	if grep "GRADLE_HOME=" $LAMW_USER_HOME/.bashrc | grep "$ROOT_LAMW" > /dev/null; then 
 		sed -i "/export GRADLE_HOME=${android_home_sc}*/d" $LAMW_USER_HOME/.bashrc
 		sed -i '/export PATH=$PATH:$GRADLE_HOME\/bin/d'  $LAMW_USER_HOME/.bashrc
 	fi
@@ -746,8 +744,7 @@ initLAMw4LinuxConfig(){
 	if [ ! -e "$lazarus_env_cfg_path" ]; then
 		createLazarusEnvCfgFile
 	else
-		grep 'LastCalledByLazarusFullPath' $lazarus_env_cfg_path > /dev/null
-		if [ $? = 0 ]; then 
+		if grep 'LastCalledByLazarusFullPath' $lazarus_env_cfg_path > /dev/null; then 
 			local lazarus_env_xml_nodes_attr['last_laz_full_path']="${env_opts_node}/LastCalledByLazarusFullPath/@Value"
 			local expected_env_xml_nodes_attr['last_laz_full_path']=$LAMW4LINUX_EXE_PATH
 		fi
