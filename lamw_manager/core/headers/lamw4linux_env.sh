@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.5.4
-#Date: 05/13/2023
+#Version: 0.5.5
+#Date: 05/29/2023
 #Description: The "lamw_headers" is part of the core of LAMW Manager. This script contains LAMW Manager variables.
 #-------------------------------------------------------------------------------------------------#
 LAMW_IDE_HOME_CFG="$LAMW_USER_HOME/.lamw4linux"
@@ -23,6 +23,7 @@ FPPKG_LOCAL_REPOSITORY_CFG=$FPPKG_LOCAL_REPOSITORY/default
 LAMW4LINUX_TEMPLATES_BASE_PATH=$LAMW_MANAGER_MODULES_PATH/settings-editor/templates
 STARTUP_ERROR_LAMW4LINUX_PATH="$LAMW4LINUX_ETC/startup-check-errors-lamw4linux.sh"
 LAMW_MANAGER_COMPLETION="$LAMW4LINUX_ETC/lamw_manager_completion.sh"
+FPC_ANDROID_CFG=$LAMW4LINUX_ETC/fpc-android.cfg
 
 declare -A LAMW4LINUX_TEMPLATES_PATHS=(
 	["$LAMW_MENU_ITEM_PATH"]="$LAMW_IDE_HOME/install/lazarus.desktop"
