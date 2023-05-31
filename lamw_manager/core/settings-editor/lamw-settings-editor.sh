@@ -206,13 +206,18 @@ SystemTerminalMitigation(){
 	fi
 }
 
+
+changeBashHeaderDescription(){
+	bash_header[$description_index]="#$1"
+}
+
 #this  fuction create a INI file to config  all paths used in lamw framework 
 LAMW4LinuxPostConfig(){
 	local lazbuild_path="$LAMW4LINUX_HOME/usr/bin/lazbuild"
 	local old_lamw_workspace="$LAMW_USER_HOME/Dev/lamw_workspace"
 	local ant_path=$ANT_HOME/bin
 	local breakline='\\'n
-
+	local description_index=4
 
 	[ -e $old_lamw_workspace ] && 
 		mv $old_lamw_workspace $LAMW_WORKSPACE_HOME
@@ -226,6 +231,16 @@ LAMW4LinuxPostConfig(){
 		local current_lamw_workspace=$(grep '^PathToWorkspace=' $LAMW_IDE_HOME_CFG/LAMW.ini  | sed 's/PathToWorkspace=//g')
 		[ "$current_lamw_workspace" != "$LAMW_WORKSPACE_HOME" ] && LAMW_WORKSPACE_HOME="$current_lamw_workspace"	
 	fi
+
+	local bash_header=(
+		'#!/usr/bin/env bash'
+		'#-------------------------------------------------------------------------------------------------#'
+		'### THIS FILE IS AUTOMATICALLY CONFIGURED by LAMW Manager'
+		'###ou may comment out this entry, but any other modifications may be lost.'
+		''
+		'#-------------------------------------------------------------------------------------------------#'
+	)
+
 # contem o arquivo de configuração do lamw
 	local LAMW_init_str=(
 		"[NewProject]"
@@ -248,7 +263,7 @@ LAMW4LinuxPostConfig(){
 	)
 
 	local lamw4linux_env_str=(
-		"#!/bin/bash"
+		"#!/usr/bin/env bash"
 		"[ \"\$LOCAL_LAMW_ENV\"  = \"1\" ] && return"
 		"export PPC_CONFIG_PATH=$PPC_CONFIG_PATH"
 		"export JAVA_HOME=$JAVA_HOME"
@@ -262,36 +277,26 @@ LAMW4LinuxPostConfig(){
 		"export OLD_LAMW4LINUX_EXE_PATH=${LAMW4LINUX_EXE_PATH}.old"
 		"export IGNORE_XFCE_LAMW_ERROR_PATH=$IGNORE_XFCE_LAMW_ERROR_PATH"
 		"export LOCAL_LAMW_ENV=1"
-
-
 	)
+
+	changeBashHeaderDescription 'Description: This script is script configure LAMW environment and startLAMW4Linux'
 	local startlamw4linux_str=(
-		'#!/bin/bash'
-		'#-------------------------------------------------------------------------------------------------#'
-		'### THIS FILE IS AUTOMATICALLY CONFIGURED by LAMW Manager'
-		'###ou may comment out this entry, but any other modifications may be lost.'
-		'#Description: This script is script configure LAMW environment and startLAMW4Linux'
-		'#-------------------------------------------------------------------------------------------------#'
+		"${bash_header[@]}"
 		"source $LAMW4LINUX_LOCAL_ENV"
 		"source $STARTUP_ERROR_LAMW4LINUX_PATH"
 		''
 		"exec \$LAMW4LINUX_EXE_PATH --pcp=\$LAMW_IDE_HOME_CFG \$*"
 	)
-
+	
 	local lazbuild_str=(
-		'#!/bin/bash'
+		'#!/usr/bin/env bash'
 		"source $LAMW4LINUX_LOCAL_ENV"
 		"exec $LAMW_IDE_HOME/lazbuild --pcp=\$LAMW_IDE_HOME_CFG \$*"
 	)
 
-
+	changeBashHeaderDescription 'Description: This script is script configure LAMW environment and  run  a terminal'
 	local lamw4linux_terminal_str=(
-		'#!/bin/bash'
-		'#-------------------------------------------------------------------------------------------------#'
-		'### THIS FILE IS AUTOMATICALLY CONFIGURED by LAMW Manager'
-		'###ou may comment out this entry, but any other modifications may be lost.'
-		'#Description: This script is script configure LAMW environment and  run  a terminal'
-		'#-------------------------------------------------------------------------------------------------#'
+		"${bash_header[@]}"
 		"source $LAMW4LINUX_LOCAL_ENV"
 		""
 		"_LAMW_MANAGER_COMPLETE_PATH=$LAMW_MANAGER_COMPLETION"
