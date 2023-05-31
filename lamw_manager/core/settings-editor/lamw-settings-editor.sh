@@ -552,7 +552,33 @@ CreateSDKSimbolicLinks(){
 
 }
 #--------------------------AARCH64 SETTINGS--------------------------
+updateFpcAndroidDotCfg(){
+	local  -A fpc_android_changes=(
+		['\$LLVM_ANDROID_ARM_LIB_PATH']="$ROOT_LAMW/ndk/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/arm-linux-androideabi/$ANDROID_SDK_TARGET"
+		['\$GCC_ANDROID_ARM_PATH']="${ARM_ANDROID_TOOLS}"
+		['\$LLVM_ANDROID_AARCH64_LIB_PATH']="$ROOT_LAMW/ndk/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/aarch64-linux-android/$ANDROID_SDK_TARGET"
+		['\$GCC_ANDROID_AARCH64_PATH']="$AARCH64_ANDROID_TOOLS"
+		['\$GCC_ANDROID_I386_PATH']="$I386_ANDROID_TOOLS"
+		['\$LLVM_ANDROID_I386_LIB_PATH']="$ROOT_LAMW/ndk/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/i686-linux-android/$ANDROID_SDK_TARGET"
+		['\$GCC_ANDROID_AMD64_PATH']="$AMD64_ANDROID_TOOLS"
+		['\$LLVM_ANDROID_AMD64_LIB_PATH']="$ROOT_LAMW/ndk/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/x86_64-linux-android/$ANDROID_SDK_TARGET"
+	)
 
+	arrayMap fpc_android_changes realPath templatePath '
+    	sed -i "s|${templatePath}|${realPath}|g" "$FPC_ANDROID_CFG" 2>/dev/null'
+}
+
+updateFppkgConfig(){
+	local -A fppkg_changes_str=(
+		['LocalRepository=%LocalRepository%']="LocalRepository=$(dirname $FPPKG_LOCAL_REPOSITORY)/"
+		['Path=%GlobalPath%']="Path=${fpc_trunk_parent}/{CompilerVersion}/"
+		['Prefix=%GlobalPrefix%']="Prefix=$LAMW4LINUX_HOME/usr"
+	)
+
+
+	arrayMap fppkg_changes_str realPath templatePath '
+    	sed -i "s|${templatePath}|${realPath}|g" "$FPPKG_TRUNK_CFG_PATH" 2>/dev/null'
+}
 configureFPCTrunk(){
 	parseFPCTrunk
 	$FPC_MKCFG_EXE -d basepath="$FPC_TRUNK_LIB_PATH" -o "$FPC_CFG_PATH"
@@ -560,40 +586,12 @@ configureFPCTrunk(){
 
 	#this config enable to crosscompile in fpc 
 	local fpc_cfg_str=(
-		"#IFDEF ANDROID"
-		"#IFDEF CPUARM"
-		"-CpARMV7A"
-		"-CfVFPV3"
-		"-Xd"
-		"-XParm-linux-androideabi-"
-		"-Fl$ROOT_LAMW/ndk/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/arm-linux-androideabi/$ANDROID_SDK_TARGET"
-		"-FLlibdl.so"
-		"-FD${ARM_ANDROID_TOOLS}"
-		"#ENDIF"
-		"#IFDEF CPUAARCH64"
-		"-Xd"
-		"-XPaarch64-linux-android-"
-		"-Fl$ROOT_LAMW/ndk/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/aarch64-linux-android/$ANDROID_SDK_TARGET"
-		"-FLlibdl.so"
-		"-FD${AARCH64_ANDROID_TOOLS}"
-		"#ENDIF"
-		"#IFDEF CPUI386"
-		"-Cfsse3"
-		"-Xd"
-		"-XPi686-linux-android-"
-		"-FLlibdl.so"
-		"-FD${I386_ANDROID_TOOLS}"
-		"-Fl$ROOT_LAMW/ndk/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/i686-linux-android/$ANDROID_SDK_TARGET"
-		"#ENDIF"
-		"#IFDEF CPUX86_64"
-		"-Cfsse3"
-		"-Xd"
-		"-XPx86_64-linux-android-"
-		"-FD${AMD64_ANDROID_TOOLS}"
-		"-FLlibdl.so"
-		"-Fl$ROOT_LAMW/ndk/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/x86_64-linux-android/$ANDROID_SDK_TARGET"
-		"#ENDIF"
-		"#ENDIF"
+		"#INCLUDE $FPC_ANDROID_CFG"
+	)
+
+	local -A fpc_android_templates_path=(
+		["$FPC_ANDROID_CFG"]="$LAMW_MANAGER_MODULES_PATH/settings-editor/templates/fpc-android.cfg"
+		["$FPPKG_TRUNK_CFG_PATH"]="$FPC_TRUNK_SOURCE_PATH/$FPC_TRUNK_SVNTAG/utils/fpcmkcfg/fppkg.cfg"
 	)
 
 	local fppkg_local_cfg=(
@@ -602,37 +600,8 @@ configureFPCTrunk(){
 		"Compiler=$FPC_TRUNK_EXEC_PATH/fpc"
 		'OS=Linux'
 	)
-	local fpcpkg_cfg_str=(
-			"[Defaults]"
-			"ConfigVersion=5"
-			"LocalRepository=$(dirname $FPPKG_LOCAL_REPOSITORY)/"
-			"BuildDir={LocalRepository}build/"
-			"ArchivesDir={LocalRepository}archives/"
-			"CompilerConfigDir={LocalRepository}config/"
-			"RemoteMirrors=https://www.freepascal.org/repository/mirrors.xml"
-			"RemoteRepository=auto"
-			"CompilerConfig=default"
-			"FPMakeCompilerConfig=default"
-			"Downloader=FPC"
-			"InstallRepository=user"
-			""
-			"[Repository]"
-			"Name=fpc"
-			"Description=Packages which are installed along with the Free Pascal Compiler"
-			"Path=${fpc_trunk_parent}/{CompilerVersion}/"
-			"Prefix=$LAMW4LINUX_HOME/usr"
-			""
-			"[IncludeFiles]"
-			"FileMask={LocalRepository}config/conf.d/*.conf"
-			""
-			"[Repository]"
-			"Name=user"
-			"Description=User-installed packages"
-			"Path={LocalRepository}lib/fpc/{CompilerVersion}"
-			"Prefix={LocalRepository}"
-		)
 	
-	WriterFileln "$FPPKG_TRUNK_CFG_PATH" fpcpkg_cfg_str
+	
 	WriterFileln "$FPPKG_LOCAL_REPOSITORY_CFG" fppkg_local_cfg
 
 	if [ -e $FPC_CFG_PATH ] ; then  # se exiir /etc/fpc.cfg
@@ -640,6 +609,10 @@ configureFPCTrunk(){
 			AppendFileln "$FPC_CFG_PATH" "fpc_cfg_str" # caso o arquvo ainda não esteja configurado
 		fi
 	fi
+
+	arrayMap fpc_android_templates_path templatePath realPath 'cp $templatePath $realPath'
+	updateFpcAndroidDotCfg
+	updateFppkgConfig
 }
 
 CreateSimbolicLinksAndroidAARCH64(){
