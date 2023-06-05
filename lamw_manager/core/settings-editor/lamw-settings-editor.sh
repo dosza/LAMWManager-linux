@@ -737,7 +737,13 @@ initLAMw4LinuxConfig(){
 
 		updateNodeAttrXML lazarus_env_xml_nodes_attr expected_env_xml_nodes_attr "$lazarus_env_cfg_path"
 
-		if grep 'FppkgConfigFile' $lazarus_env_cfg_path > /dev/null ; then  #insert fppkg_config ref: https://stackoverflow.com/questions/7837879/xmlstarlet-update-an-attribute
+		local fppkg_count="$(grep FppkgConfigFile $lazarus_env_cfg_path -c)"
+		if grep "FppkgConfigFile\sValue=".*"\sValue"   -q "$lazarus_env_cfg_path"  || [ $fppkg_count -ge 2 ]; then 
+			sed -i "/<FppkgConfigFile.*/d" "$lazarus_env_cfg_path"
+		fi
+
+
+		if ! grep 'FppkgConfigFile' $lazarus_env_cfg_path > /dev/null ; then  #insert fppkg_config ref: https://stackoverflow.com/questions/7837879/xmlstarlet-update-an-attribute
 			xmlstarlet ed  --inplace -s "$env_opts_node" -t elem -n "FppkgConfigFile" -v "" -i $fppkg_cfg_node -t attr -n "Value" -v "$FPPKG_TRUNK_CFG_PATH" $lazarus_env_cfg_path
 		else # update fppkg_config
 			local current_fppkg_config_value=$(getNodeAttrXML "$fppkg_cfg_node_attr" $lazarus_env_cfg_path )
