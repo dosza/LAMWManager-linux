@@ -2,6 +2,12 @@
 
 This page contains information about new features and bug fixes.
 
+v0.5.6 - Jun 4, 2023
+---
+
+**Fixes**
++	Fix duplicate attribute in FppkgConfigFile node	
+
 v0.5.5 - May 31, 2023
 ---
 
