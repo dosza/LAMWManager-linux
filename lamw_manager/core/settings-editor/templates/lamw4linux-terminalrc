@@ -79,14 +79,27 @@ cacheGradle(){
 }
 #Run avdmanager
 avdmanager(){
-	$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/avdmanager $*
+	"$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/avdmanager" $@
 }
 
 #Run sdkmanager
 sdkmanager(){
-	$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager $*
+	"$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager" $@
 }
 
+#Run emulator 
+emulator(){
+	local new_emulator="$ANDROID_SDK_ROOT/emulator/emulator"
+	local old_emulator="$ANDROID_SDK_ROOT/tools/emulator"
+	
+	if [ -e "$new_emulator" ]; then
+		$new_emulator $@
+	elif [ -e "$old_emulator" ]; then 
+		$old_emulator $@
+	fi
+}
+
+#Run lamw_manager
 lamw_manager(){
 	if [ ! -e "$LAMW_MANAGER_PATH" ]; then 
 		echo 'lamw_manager not found!'
