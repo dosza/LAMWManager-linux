@@ -675,33 +675,6 @@ updateNodeAttrXML(){
 
 }
 
-CmdLineToolsTrigger(){
-	local model_license_package="$ANDROID_SDK_ROOT/platform-tools/package.xml"
-	local cmdline_tools_package="$CMD_SDK_TOOLS_DIR/latest/package.xml"
-	if [ ! -e $cmdline_tools_package ];then
-		cp $model_license_package $cmdline_tools_package 
-		cmdlineExtraConfig
-	fi
-}
-
-cmdlineExtraConfig(){
-	local pattern_old_xml='xmlns:ns14'
-	local xml_ns_version='3'
-	grep "$pattern_old_xml" $cmdline_tools_package -q && xml_ns_version='5'
-	local cmdline_tools_major_version=${CMD_SDK_TOOLS_VERSION_STR/%\.*}
-	local cmdline_tools_old_str=`grep '</license' $cmdline_tools_package`
-	local cmdline_tools_license_data=`grep '</license>' $cmdline_tools_package | awk -F'<' ' { printf $1 }'`
-	local cmdline_tools_str="${cmdline_tools_license_data}</license><localPackage path=\"cmdline-tools;latest\" "
-	cmdline_tools_str+="obsolete=\"false\"><type-details xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
-	cmdline_tools_str+="xsi:type=\"ns${xml_ns_version}:genericDetailsType\"/><revision>"
-	cmdline_tools_str+="<major>${cmdline_tools_major_version}</major><minor>0</minor></revision>"
-	cmdline_tools_str+="<display-name>Android SDK Command-line Tools (latest)</display-name>"
-	cmdline_tools_str+="<uses-license ref=\"android-sdk-license\"/></localPackage></ns2:repository>"
-	cmdline_tools_old_str=$(GenerateScapesStr "${cmdline_tools_old_str:0:32}")
-	sed -i "/${cmdline_tools_old_str}/d" $cmdline_tools_package
-	printf "%s" "$cmdline_tools_str" >> $cmdline_tools_package
-}
-
 initLAMw4LinuxConfig(){
 	local lazarus_version_str="`$LAMW_IDE_HOME/tools/install/get_lazarus_version.sh`"	
 	local lazarus_env_cfg_path="$LAMW_IDE_HOME_CFG/environmentoptions.xml"
@@ -741,7 +714,6 @@ initLAMw4LinuxConfig(){
 		if grep "FppkgConfigFile\sValue=".*"\sValue"   -q "$lazarus_env_cfg_path"  || [ $fppkg_count -ge 2 ]; then 
 			sed -i "/<FppkgConfigFile.*/d" "$lazarus_env_cfg_path"
 		fi
-
 
 		if ! grep 'FppkgConfigFile' $lazarus_env_cfg_path > /dev/null ; then  #insert fppkg_config ref: https://stackoverflow.com/questions/7837879/xmlstarlet-update-an-attribute
 			xmlstarlet ed  --inplace -s "$env_opts_node" -t elem -n "FppkgConfigFile" -v "" -i $fppkg_cfg_node -t attr -n "Value" -v "$FPPKG_TRUNK_CFG_PATH" $lazarus_env_cfg_path
