@@ -34,6 +34,10 @@ START_LAMW_MANAGER_STR=(
 	"ARGS=\"\$*\""
 	'ARGS=${ARGS/\-\-/}  #This is expansion that removes the first occurrence --. \-  is the escape of -'
 	"export USE_SETUP=1" 
+	"if [[ \"\$ARGS\" =~ (DEBUG) ]]; then"
+	"	exec bash -x ./lamw_manager \$ARGS"
+	"	exit \$?"
+	'fi'
 	"exec ./lamw_manager \$ARGS"
 )
 
