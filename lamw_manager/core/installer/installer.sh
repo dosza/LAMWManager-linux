@@ -259,12 +259,17 @@ GitClone(){
 
 
 GitPull(){
-	if [ "$git_branch" != "" ]; then 
-		gitCheckout
+	if [ "$git_branch" != "" ]; then
+		sucess_filler="$(getCurrentSucessFiller  4 $git_branch)"
+		startProgressBar 
+		if gitCheckout &>/dev/null; then
+			stopAsSuccessProgressBar
+		else stopProgressBarAsFail
+		fi
 	else 
 		changeDirectory "$git_src_dir"
 	fi
-	git config pull.ff only
+	git config pull.ff only	
 	git pull
 	GitReset
 }
@@ -620,27 +625,27 @@ installLAMWPackages(){
 		"--build-ide=" 
 		"--add-package"
 	)
+
+	local bg_pid=''
+
 	#build ide with lamw framework 
 	for((i=0;i< $max_lamw_pcks;i++)); do
 		
 		current_pack="`basename ${LAMW_PACKAGES[i]}`"
 		build_msg="Please wait, starting building ${NEGRITO}${current_pack}${NORMAL}..........................."
 		sucess_filler="$(getCurrentSucessFiller 3 $current_pack)"
-		
-		printf "%s" "$build_msg"
-		./lazbuild ${lamw_build_opts[*]} ${LAMW_PACKAGES[$i]} >/dev/null
-		
-		if [ $? != 0 ]; then 
-			printf  "%s\n" "${FILLER:${#sucess_filler}}${VERMELHO} [FAILS]${NORMAL}"
-			./lazbuild ${lamw_build_opts[*]} ${LAMW_PACKAGES[$i]}
-			[ $? != 0 ] && { echo "$error_lazbuild_msg" && EXIT_STATUS=1 && return ; }
+		startProgressBar
+		if ! ./lazbuild ${lamw_build_opts[*]} ${LAMW_PACKAGES[$i]} >/dev/null; then 
+			stopProgressBarAsFail
+			if ! ./lazbuild ${lamw_build_opts[*]} ${LAMW_PACKAGES[$i]}; then 
+			 	echo "$error_lazbuild_msg" 
+			 	EXIT_STATUS=1 
+			 	return 
+			fi
 		fi
 		
-		printf  "%s\n" "${FILLER:${#sucess_filler}}${VERDE} [OK]${NORMAL}"
-
+		stopAsSuccessProgressBar
 	done
-
-
 }
 #Build lazarus ide
 BuildLazarusIDE(){	
@@ -655,13 +660,14 @@ BuildLazarusIDE(){
 	changeDirectory $LAMW_IDE_HOME
 
 	if [ $# = 0 ]; then
-		printf "%s" "$build_msg"
+		startProgressBar
 		if ! make -s ${make_opts[@]} > /dev/null 2>&1; then
+			stopProgressBarAsFail
 			make -s ${make_opts[@]}
 			check_error_and_exit "$error_build_lazarus_msg" #build all IDE
 		fi
-	 	
-	 	printf  "%s\n" "${FILLER:${#sucess_filler}}${VERDE} [OK]${NORMAL}"
+	 	stopAsSuccessProgressBar
+	 	#printf  "%s\n" "${FILLER:${#sucess_filler}}${VERDE} [OK]${NORMAL}"
 	fi
 	
 	initLAMw4LinuxConfig
@@ -756,7 +762,7 @@ mainInstall(){
 	getGradle
 	getAndroidCmdLineTools
 	getFixLp
-	disableTrapActions
+	resetTrapActions
 	getFPCBuilder
 	getFPCSourcesTrunk
 	getLazarusSources
