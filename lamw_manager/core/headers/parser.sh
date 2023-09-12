@@ -84,22 +84,22 @@ TrapActions(){
 			rm  -rv $file_deleted
 		fi
 	fi
-	
+	[ "$bg_pid" != "" ] && stopProgressBarAsFail
 	rm "$LAMW_MANAGER_LOCK"
 }
 
 TrapTermProcess(){
-	TrapActions
+	TrapActions 
+	wait
 	exit 15
 }
 TrapControlC(){
-	TrapActions
+	TrapActions 
 	exit 2
 }
 
 
-disableTrapActions(){
-	trap - SIGINT  #removendo a traps
+resetTrapActions(){
 	MAGIC_TRAP_INDEX=-1
 }
 
@@ -128,6 +128,7 @@ startImplicitAction(){
 
 #instalando tratadores de sinal	
 trap TrapControlC 2 
+trap TrapTermProcess 15
 
 for arg_index in ${!ARGS[@]}; do 
 	arg=${ARGS[$arg_index]}
@@ -170,9 +171,10 @@ fi
 
 getCurrentSucessFiller(){
 	case $1 in 
-		0) echo "Build to FPC ${NEGRITO}${2}${NORMAL}";;
-		1) echo "Build to Lazarus ${NEGRITO}${2}${NORMAL}";;
-		2) echo "Cleaning to FPC Sources ${NEGRITO}${2}${NORMAL}";;
-		3) echo "Please wait, building ${NEGRITO}${2}${NORMAL}";;
+		0) echo "build to FPC ${NEGRITO}${2}${NORMAL}";;
+		1) echo "build to Lazarus ${NEGRITO}${2}${NORMAL}";;
+		2) echo "cleaning to FPC Sources ${NEGRITO}${2}${NORMAL}";;
+		3) echo "building ${NEGRITO}${2}${NORMAL}";;
+		4) echo "git checkout ${NEGRITO}${2}${NORMAL}";;			
 	esac
 }

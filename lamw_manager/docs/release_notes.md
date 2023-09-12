@@ -2,6 +2,17 @@
 
 This page contains information about new features and bug fixes.
 
+v0.5.7 - Sep 11, 2023
+---
+**Fixes**
++	Repair cmdline-tools (remove version not supported by JDK 8/11)
+
+**News**
++	Add emulator command in **lamw4linux-terminal**
++	Display a **progress bar** while lamw manager works
+	+	**Note**: It is an experimental feature
+
+
 v0.5.6 - Jun 4, 2023
 ---
 

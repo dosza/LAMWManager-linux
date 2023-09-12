@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.5.6
-#Date: 06/04/2023
+#Version: 0.5.7
+#Date: 09/11/2023
 #Description: The "lamw-install.sh" is part of the core of LAMW Manager. This script configures the development environment for LAMW
 #-------------------------------------------------------------------------------------------------#
 
@@ -22,6 +22,7 @@ source "$LAMW_MANAGER_MODULES_PATH/installer/installer.sh"
 source "$LAMW_MANAGER_MODULES_PATH/settings-editor/lamw-settings-editor.sh"
 source "$LAMW_MANAGER_MODULES_PATH/settings-editor/root-lamw-settings-editor.sh"
 source "$LAMW_MANAGER_MODULES_PATH/cross-builder/cross-builder.sh"
+source "$LAMW_MANAGER_MODULES_PATH/components/progress-bar.sh"
 
 getFiller
 checkIfDistroIsLikeDebian
