@@ -48,18 +48,21 @@ BuildFPC(){
 
 buildCurrentFPC(){
 	local error_build_msg="${VERMELHO}Fatal Error:${NORMAL} Falls to build FPC to ${build_aarch[$i]}"
-	local build_msg="Please wait, starting build FPC to ${NEGRITO}${build_aarch[i]}${NORMAL}.............."
+	local build_msg="Please wait, starting build FPC to ${NEGRITO}${build_aarch[i]}${NORMAL}"
 	local sucess_filler="$(getCurrentSucessFiller 0 ${build_aarch[i]})"
-	printf "%s" "$build_msg"
+
+	startProgressBar
 	BuildFPC $i > /dev/null
+	
 	if [ $? != 0 ]; then 
+		stopProgressBarAsFail
 		printf  "%s\n" "${FILLER:${#sucess_filler}}${VERMELHO} [FALLS]${NORMAL}"
 		printf "%s" "$build_msg"
 		BuildFPC $i
 		check_error_and_exit ${error_build_msg[i]}
 	fi
 
-	printf  "%s\n" "${FILLER:${#sucess_filler}}${VERDE} [OK]${NORMAL}"
+	stopAsSuccessProgressBar
 }
 
 getMaxBuildArchs(){
@@ -80,7 +83,7 @@ buildCrossAndroid(){
 	done
 
 	local sucess_filler="$(getCurrentSucessFiller 2 android/Linux)"
-	printf "Please wait, cleaning FPC Sources to ${NEGRITO}Linux/Android${NORMAL}......................."	
+	startProgressBar
 	make -s  clean > /dev/null 2>&1
-	printf  "%s\n" "${FILLER:${#sucess_filler}}${VERDE} [OK]${NORMAL}"
+	stopAsSuccessProgressBar
 }

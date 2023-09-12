@@ -22,6 +22,7 @@ source "$LAMW_MANAGER_MODULES_PATH/installer/installer.sh"
 source "$LAMW_MANAGER_MODULES_PATH/settings-editor/lamw-settings-editor.sh"
 source "$LAMW_MANAGER_MODULES_PATH/settings-editor/root-lamw-settings-editor.sh"
 source "$LAMW_MANAGER_MODULES_PATH/cross-builder/cross-builder.sh"
+source "$LAMW_MANAGER_MODULES_PATH/components/progress-bar.sh"
 
 getFiller
 checkIfDistroIsLikeDebian
