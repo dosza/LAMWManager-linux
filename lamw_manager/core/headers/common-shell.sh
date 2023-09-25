@@ -875,5 +875,10 @@ CheckMinDeps(){
 }
 
 getFiller(){
+	local max_col=$(tput cols)
+	if [ $max_col -lt 120 ]; then 
+		echo -ne '\e[8;80;120t'
+	fi
+	
 	FILLER='..............................................................................'
 }
