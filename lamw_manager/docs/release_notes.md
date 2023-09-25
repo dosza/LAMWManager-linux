@@ -1,6 +1,15 @@
 # LAMW Manager Release Notes
 
 This page contains information about new features and bug fixes.
+v0.5.8 - Sep 25, 2023
+---
+**Fixes**
++	Adjusts the terminal column size
++	Fix progress bar cancellation message
+
+**News**
++	Add New sdkmanager tools
+	+	All items from *\$ANDROID_SDK_ROOT/cmdline-tools/latest/bin*
 
 v0.5.7 - Sep 11, 2023
 ---
