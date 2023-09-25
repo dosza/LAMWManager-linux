@@ -77,15 +77,6 @@ cacheGradle(){
 	[ -e $lamw_tmp ] && cd /tmp && rm -rf $lamw_tmp_base
 	
 }
-#Run avdmanager
-avdmanager(){
-	"$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/avdmanager" $@
-}
-
-#Run sdkmanager
-sdkmanager(){
-	"$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager" $@
-}
 
 #Run emulator 
 emulator(){
@@ -191,6 +182,20 @@ DowngradleAllProjectsFromLAMWWorkspace(){
 
 }
 
+generateSDKToolsCommands(){
+	local cmdline_path="cmdline-tools/latest/bin"
+	if [ -e $ANDROID_SDK_ROOT/$cmdline_path ]; then 
+		cd 	$ANDROID_SDK_ROOT/$cmdline_path
+	else 
+		cmdline_path="tools/bin"
+		cd $ANDROID_SDK_ROOT/$cmdline_path
+	fi
+		
+	for i in *; do
+		eval "function $i { \"\$ANDROID_SDK_ROOT/$cmdline_path/$i\" \$@ ; }"
+		export -f $i
+	done
+}
 
 export -f $LAM4LINUX_TERMINAL_FUNCTIONS
 
@@ -199,5 +204,6 @@ if [ "$LAMW_MANAGER_CALL" = "" ];then
 	echo "Here you can run FPC command line tools, Lazarus and LAMW scripts"
 fi
 
+generateSDKToolsCommands
 cd $CURRENT_LAMW_WORKSPACE
 exec bash $* $_EXTRA_ARGS
