@@ -128,6 +128,16 @@ startImplicitAction(){
 	fi				
 }
 
+getCurrentSucessFiller(){
+	case $1 in 
+		0) echo "build to FPC ${NEGRITO}${2}${NORMAL}";;
+		1) echo "build to Lazarus ${NEGRITO}${2}${NORMAL}";;
+		2) echo "cleaning to FPC Sources ${NEGRITO}${2}${NORMAL}";;
+		3) echo "building ${NEGRITO}${2}${NORMAL}";;
+		4) echo "git checkout ${NEGRITO}${2}${NORMAL}";;			
+	esac
+}
+
 #instalando tratadores de sinal	
 trap TrapControlC 2 
 trap TrapTermProcess 15
