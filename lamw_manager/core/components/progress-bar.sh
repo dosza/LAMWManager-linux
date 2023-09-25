@@ -11,8 +11,11 @@ stopAsSuccessProgressBar(){
 	stopProgressBar 'SIGTERM'
 }
 
-stopProgressBarAsFail(){
+stopProgressBarAsCancel(){
 	stopProgressBar 'SIGUSR1'
+}
+stopProgressBarAsFail(){
+	stopProgressBar 'SIGHUP'
 }
 
 startProgressBar(){
