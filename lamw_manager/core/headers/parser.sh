@@ -84,17 +84,19 @@ TrapActions(){
 			rm  -rv $file_deleted
 		fi
 	fi
-	[ "$bg_pid" != "" ] && stopProgressBarAsFail
+	
 	rm "$LAMW_MANAGER_LOCK"
 }
 
 TrapTermProcess(){
 	TrapActions 
+	[ "$bg_pid" != "" ] && stopProgressBarAsFail
 	wait
 	exit 15
 }
 TrapControlC(){
 	TrapActions 
+	[ "$bg_pid" != "" ] &&  stopProgressBarAsCancel
 	exit 2
 }
 
@@ -169,12 +171,3 @@ fi
 
 
 
-getCurrentSucessFiller(){
-	case $1 in 
-		0) echo "build to FPC ${NEGRITO}${2}${NORMAL}";;
-		1) echo "build to Lazarus ${NEGRITO}${2}${NORMAL}";;
-		2) echo "cleaning to FPC Sources ${NEGRITO}${2}${NORMAL}";;
-		3) echo "building ${NEGRITO}${2}${NORMAL}";;
-		4) echo "git checkout ${NEGRITO}${2}${NORMAL}";;			
-	esac
-}
