@@ -19,6 +19,8 @@ setAndroidSDKCMDParameters(){
 		"ndk-bundle" 
 		"extras;android;m2repository"
 		"extras;google;"{google_play_services,market_apk_expansion,market_licensing}
+		"tools"
+
 	)
 
 	if [ $USE_PROXY = 1 ]; then
@@ -37,14 +39,15 @@ setCheckSum(){
 	ref_sum[$type_sum]="$2"
 }
 setJDKDeps(){
-	local jdk_filters_query=(".[] | select(.binary.os==\"linux\")|select(.binary.architecture==\"x64\")|select(.binary.image_type==\"jdk\")|map(.)")
+	local jdk_filters_query=(".[0]")
+	API_JDK_URL+="$JDK_VERSION/hotspot?architecture=x64&image_type=jdk&os=linux&vendor=eclipse"
 	JDK_JSON="$(Wget -O- -q  "$API_JDK_URL" | jq "${jdk_filters_query[@]}")"
-	JDK_URL="`parseJSONString "$JDK_JSON" ".[0].package.link"`"
-	JDK_TAR="`parseJSONString "$JDK_JSON" ".[0].package.name"`"
-	JDK_FILE="`parseJSONString "$JDK_JSON" ".[2]"`"
-	JAVA_VERSION="11.0.`parseJSONString "$JDK_JSON" ".[4].security"`"
-	JDK_TAR="`parseJSONString "$JDK_JSON" ".[0].package.name"`"
-	setCheckSum JDK_SUM `parseJSONString  "$JDK_JSON" ".[0].package.checksum"` 
+	JDK_URL="`parseJSONString "$JDK_JSON" ".binary.package.link"`"
+	JDK_TAR="`parseJSONString "$JDK_JSON" ".binary.package.name"`"
+	JDK_FILE="`parseJSONString "$JDK_JSON" ".release_name"`"
+	JAVA_VERSION="${JDK_VERSION}.0.`parseJSONString "$JDK_JSON" ".version.security"`"
+	JDK_TAR="`parseJSONString "$JDK_JSON" ".binary.package.name"`"
+	setCheckSum JDK_SUM `parseJSONString  "$JDK_JSON" ".binary.package.checksum"` 
 }
 
 setLAMWPackages(){
@@ -89,6 +92,7 @@ setLAMWDeps(){
 	[ "$LAMW_PACKAGE_JSON" != "" ] && return 
 	getLAMWPackageJSON
 	setLAMWDepsJSON
+	JDK_VERSION=$(getLAMWDep '.dependencies.jdk')
 	ANDROID_SDK_TARGET=$(getLAMWDep '.dependencies.android.platform')
 	ANDROID_BUILD_TOOLS_TARGET=$(getLAMWDep '.dependencies.android.buildTools')
 	GRADLE_VERSION=$(getLAMWDep '.dependencies.gradle')

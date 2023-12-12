@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.5.8
-#Date: 09/20/2023
+#Version: 0.5.9
+#Date: 12/12/2023
 #Description: The "lamw_headers" is part of the core of LAMW Manager. This script contains LAMW Manager variables.
 #-------------------------------------------------------------------------------------------------#
 
@@ -11,13 +11,11 @@
 #										Section Version Variables
 #--------------------------------------------------------------------------------------------------
 
-LAMW_INSTALL_VERSION="0.5.8"
-JDK_VERSION=11
+LAMW_INSTALL_VERSION="0.5.9"
 ANT_VERSION_STABLE='1.10.11'
 CMD_SDK_TOOLS_VERSION="9123335"
 CMD_SDK_TOOLS_VERSION_STR="8.0"
 LAZARUS_STABLE_VERSION="2.0.12"
-SDK_TOOLS_VERSION="25.2.5"
 FPC_TRUNK_VERSION="3.2.2"
 FPC_LAZ_DEB_VERSION="2.0.12"
 FPC_DEB_VERSION="3.2.0-1"
@@ -53,7 +51,7 @@ OLD_LAZARUS_STABLE_VERSION=(
 )
 
 OLD_LAMW_INSTALL_VERSION=(
-	0.5.{7..0}
+	0.5.{8..0}
 	0.4.{8..4}
 	0.4.3{.1,}
 	0.4.2{.{2..1},}
@@ -68,10 +66,10 @@ OLD_LAMW_INSTALL_VERSION=(
 
 #--------------------------------------------------------------------------------------------------
 #										Section Extra String
+JDK_VERSION_DIR="jdk-default"
 #--------------------------------------------------------------------------------------------------
 
-JDK_VENDOR="adoptium"
-JDK_VERSION_DIR=openjdk-${JDK_VERSION}
+
 
 #--------------------------------------------------------------------------------------------------
 #										Section URL
@@ -83,9 +81,8 @@ FPC_DEB_LINK="https://sourceforge.net/projects/lazarus/files/Lazarus%20Linux%20a
 ANT_TAR_URL="https://archive.apache.org/dist/ant/binaries/apache-ant-${ANT_VERSION_STABLE}-bin.tar.xz"
 LAZARUS_STABLE_SRC_LNK="https://gitlab.com/freepascal.org/lazarus/lazarus.git"
 LAMW_PACKAGE_URL="https://raw.githubusercontent.com/jmpessoa/lazandroidmodulewizard/master/package.json"
-API_JDK_URL="https://api.adoptium.net/v3/assets/latest/$JDK_VERSION/hotspot?vendor=$JDK_VENDOR"
+API_JDK_URL="https://api.adoptium.net/v3/assets/latest/"
 FPC_TRUNK_URL="https://gitlab.com/freepascal.org/fpc/source.git"
-SDK_TOOLS_URL="https://dl.google.com/android/repository/tools_r${SDK_TOOLS_VERSION}-linux.zip"
 
 
 	
@@ -163,10 +160,6 @@ declare -A FPC_DEB_SUM=(
 declare -A CMD_SDK_TOOLS_ZIP_SUM=(
 	['checksum_type']=sha256sum
 	['sha256sum']='0bebf59339eaa534f4217f8aa0972d14dc49e7207be225511073c661ae01da0a'
-)
-declare -A SDK_TOOLS_ZIP_SUM=(
-	['checksum_type']=sha1sum
-	['sha1sum']='72df3aa1988c0a9003ccdfd7a13a7b8bd0f47fc1'
 )
 declare -A GRADLE_ZIP_SUM=(
 	['checksum_type']=sha256sum

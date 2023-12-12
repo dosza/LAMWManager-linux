@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.5.8
-#Date: 09/20/2023
+#Version: 0.5.9
+#Date: 12/12/2023
 #Description: "installer.sh" is part of the core of LAMW Manager. Contains routines for installing LAMW development environment
 #-------------------------------------------------------------------------------------------------#
 
@@ -163,7 +163,6 @@ getNameSumByParent(){
 		['getGradle']=GRADLE_ZIP_SUM
 		['getJDK']=JDK_SUM
 		['getAndroidSDKTools']=CMD_SDK_TOOLS_ZIP_SUM
-		['getSDKAntSupportedTools']=SDK_TOOLS_ZIP_SUM
 		['getFPCBuilder']=FPC_DEB_SUM
 	)
 
@@ -220,9 +219,19 @@ getJDK(){
 	if [ $JDK_STATUS = 1 ]; then 
 		[ -e "$OLD_JAVA_HOME" ] && rm -rf "$OLD_JAVA_HOME"
 		changeDirectory "$ROOT_LAMW/jdk"
-		[ -e "$JAVA_HOME" ] && rm -r "$JAVA_HOME"
+		
+
+		if [ -e "$JAVA_HOME" ]; then 
+			local realjdk="$(readlink -f "$JAVA_HOME")"
+			rm -rf "$JAVA_HOME"
+			rm -rf "$realjdk"
+		elif [ -e  "openjdk-${JDK_VERSION}" ]; then 
+			rm "openjdk-${JDK_VERSION}"
+		fi
+		
 		getCompressFile "$JDK_URL" "$JDK_TAR" "tar -zxf $JDK_TAR"
-		mv "$JDK_FILE" "${JDK_VERSION_DIR}"
+		mv "$JDK_FILE" "openjdk-${JDK_VERSION}"
+		ln -s "openjdk-${JDK_VERSION}" "${JDK_VERSION_DIR}"
 	fi
 }
 
@@ -399,19 +408,8 @@ getAndroidSDKTools(){
 	fi
 }
 
-getSDKAntSupportedTools(){
-	initROOT_LAMW
-	changeDirectory $ANDROID_SDK_ROOT
-	if [ ! -e "$SDK_TOOLS_DIR" ];then
-		trap TrapControlC  2
-		MAGIC_TRAP_INDEX=4
-		getCompressFile "$SDK_TOOLS_URL" "$SDK_TOOLS_ZIP" "unzip -o -q $SDK_TOOLS_ZIP"  "MAGIC_TRAP_INDEX=5"
-	fi
-}
-
 getAndroidCmdLineTools(){
 	getAndroidSDKTools
-	getSDKAntSupportedTools
 	AntTrigger
 }
 

@@ -2,6 +2,11 @@
 
 This page contains information about new features and bug fixes.
 
+v0.5.9 - Dec 12, 2023
+---
+**News**
++	Get JDK required by *package.json*
+
 v0.5.8 - Sep 25, 2023
 ---
 **Fixes**
