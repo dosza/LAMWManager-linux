@@ -70,8 +70,6 @@ TrapActions(){
 		"$ANT_HOME"		#1
 		"$GRADLE_ZIP_FILE" #2
 		"$GRADLE_HOME"   #3
-		"$SDK_TOOLS_ZIP" #4
-		"$SDK_TOOLS_DIR" #5
 		"$CMD_SDK_TOOLS_ZIP" #6
 		"$CMD_SDK_TOOLS_DIR" #7
 		"$FIXLP_ZIP"
