@@ -215,4 +215,4 @@ fi
 
 generateSDKToolsCommands
 cd $CURRENT_LAMW_WORKSPACE
-exec bash $* $_EXTRA_ARGS
+exec bash  $_EXTRA_ARGS $@
