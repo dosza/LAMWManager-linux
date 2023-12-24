@@ -6,14 +6,16 @@ updateBuildDotGradle(){
 	local current_compile_sdk="$(grep compileSdkVersion $PWD/build.gradle | sed 's/^[[:blank:]]//g')"
 	local current_target_sdk="$(grep targetSdkVersion $PWD/build.gradle | sed 's/^[[:blank:]]//g')"
 	local current_gradle_plugin=$( grep 'com\.android\.tools.build:gradle' $PWD/build.gradle )
-	local new_compile_sdk="\tcompileSdkVersion $SDK_TARGET\n\tbuildToolsVersion '$ANDROID_BUILD_TOOLS_TARGET'"
+	local new_compile_sdk="\tcompileSdkVersion $SDK_TARGET\n"
 	local new_target_sdk="\t\ttargetSdkVersion $SDK_TARGET"
 	local smartdesigner_path="$LAMW_FRAMEWORK_HOME/android_wizard/smartdesigner.pas"
 	local lint_option="abortOnError false"
 	local lint_new_option='checkReleaseBuilds false'
+	local lamw_mgr_log=$ANDROID_HOME/lamw4linux/lamw-install.log 
+	local gradle_version="$(grep '^GRADLE_VERSION'  $lamw_mgr_log | sed 's/GRADLE_VERSION=//g')"
 	local gradle_plugin_version=$(
-		grep "else Result:=\s'[0-9]\.[0-9]\.[0-9]';\s*\/\/gradle" $smartdesigner_path  | 
-		awk -F ';' ' { print $1 }' | 
+		grep "[0-9]\.[0-9]\.[0-9]\s\s<-->\sGradle\sversão\s${gradle_version}" $smartdesigner_path  -m1 |
+		awk -F ' ' ' { print $1 }' | 
 		sed "s/[[:blank:]]else\sResult:=//g;s/'//g;s/[[:blank:]]//g"
 	)
 
