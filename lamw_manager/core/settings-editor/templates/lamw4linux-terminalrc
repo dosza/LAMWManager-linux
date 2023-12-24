@@ -201,10 +201,17 @@ generateSDKToolsCommands(){
 
 export -f $LAM4LINUX_TERMINAL_FUNCTIONS
 
+if [[ "$-" =~ (x) ]]; then
+	_EXTRA_ARGS+=" -x"
+elif [[ "$-" =~ (v) ]]; then
+	_EXTRA_ARGS+=" -v"
+fi
+
 if [ "$LAMW_MANAGER_CALL" = "" ];then
 	echo "[1mWelcome LAMW4Linux Terminal!![0m"
 	echo "Here you can run FPC command line tools, Lazarus and LAMW scripts"
 fi
+
 
 generateSDKToolsCommands
 cd $CURRENT_LAMW_WORKSPACE
