@@ -26,18 +26,12 @@ GetInitialStatus(){
 
 	[ $? = 0 ] && [ ! -e "$LAMW_INSTALL_LOG" ] && 
 		AUTO_START_LAMW4LINUX=1
-
-	if [ -e "$LAMW_INSTALL_LOG" ]; then
-		local sha256sum="$(sha256sum < "$LAMW_INSTALL_LOG")"
-		LAMW_INSTALL_LOG_SHA['INITIAL']="${sha256sum%%' '*}"
-	fi
 }
 
 GetFinalStatus(){
 	if [ -e "$LAMW_INSTALL_LOG" ]; then
-		local sha256sum="$(sha256sum < "$LAMW_INSTALL_LOG")"
-		LAMW_INSTALL_LOG_SHA['FINAL']="${sha256sum%%' '*}"
-		if [ "${LAMW_INSTALL_LOG_SHA[INITIAL]}" != "${LAMW_INSTALL_LOG_SHA[FINAL]}" ]; then
+		LAMW_INSTALL_LOG_CHANGES['FINAL']="$(grep '^GRADLE_VERSION' $LAMW_INSTALL_LOG | sed 's/GRADLE_VERSION=//g')"
+		if [ "${LAMW_INSTALL_LOG_CHANGES[INITIAL]}" != "${LAMW_INSTALL_LOG_CHANGES[FINAL]}" ] || [ ! -e ~/.gradle ]; then
 			IS_CHANGED_LAMW_INSTALL_LOG=1
 		fi
 	fi
@@ -54,6 +48,7 @@ StopGradleDaemon(){
 		local gradle_version="$(grep '^GRADLE_VERSION' $LAMW_INSTALL_LOG | sed 's/GRADLE_VERSION=//g')"
 		local gradle_path="$ROOT_LAMW/gradle-$gradle_version"
 		GetLocalJavaHome
+		LAMW_INSTALL_LOG_CHANGES['INITIAL']=$gradle_version
 	fi
 
 	if [ "$gradle_path" != "" ] && [ -e "$gradle_path" ]; then 
