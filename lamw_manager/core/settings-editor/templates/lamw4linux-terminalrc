@@ -6,14 +6,16 @@ updateBuildDotGradle(){
 	local current_compile_sdk="$(grep compileSdkVersion $PWD/build.gradle | sed 's/^[[:blank:]]//g')"
 	local current_target_sdk="$(grep targetSdkVersion $PWD/build.gradle | sed 's/^[[:blank:]]//g')"
 	local current_gradle_plugin=$( grep 'com\.android\.tools.build:gradle' $PWD/build.gradle )
-	local new_compile_sdk="\tcompileSdkVersion $SDK_TARGET\n\tbuildToolsVersion '$ANDROID_BUILD_TOOLS_TARGET'"
+	local new_compile_sdk="\tcompileSdkVersion $SDK_TARGET\n"
 	local new_target_sdk="\t\ttargetSdkVersion $SDK_TARGET"
 	local smartdesigner_path="$LAMW_FRAMEWORK_HOME/android_wizard/smartdesigner.pas"
 	local lint_option="abortOnError false"
 	local lint_new_option='checkReleaseBuilds false'
+	local lamw_mgr_log=$ANDROID_HOME/lamw4linux/lamw-install.log 
+	local gradle_version="$(grep '^GRADLE_VERSION'  $lamw_mgr_log | sed 's/GRADLE_VERSION=//g')"
 	local gradle_plugin_version=$(
-		grep "else Result:=\s'[0-9]\.[0-9]\.[0-9]';\s*\/\/gradle" $smartdesigner_path  | 
-		awk -F ';' ' { print $1 }' | 
+		grep "[0-9]\.[0-9]\.[0-9]\s\s<-->\sGradle\sversão\s${gradle_version}" $smartdesigner_path  -m1 |
+		awk -F ' ' ' { print $1 }' | 
 		sed "s/[[:blank:]]else\sResult:=//g;s/'//g;s/[[:blank:]]//g"
 	)
 
@@ -197,13 +199,35 @@ generateSDKToolsCommands(){
 	done
 }
 
+latestproject(){
+	local node_project="//CONFIG/EnvironmentOptions/AutoSave/@LastSavedProjectFile"
+	local lamw4linuxcfg_path="$LAMW_IDE_HOME_CFG/environmentoptions.xml"
+	local projectpath="$(xmlstarlet sel -t -v  $node_project  $lamw4linuxcfg_path)"
+	local projectdir="$(dirname "$projectpath")"
+
+	if [ "$projectpath" = "" ] || [ ! -e "$projectdir" ]; then
+		return
+	fi
+
+	cd "$projectdir"
+	if grep -qm1 LAMW $projectpath; then 
+		cd ..
+	fi
+}
 export -f $LAM4LINUX_TERMINAL_FUNCTIONS
+
+if [[ "$-" =~ (x) ]]; then
+	_EXTRA_ARGS+=" -x"
+elif [[ "$-" =~ (v) ]]; then
+	_EXTRA_ARGS+=" -v"
+fi
 
 if [ "$LAMW_MANAGER_CALL" = "" ];then
 	echo "[1mWelcome LAMW4Linux Terminal!![0m"
 	echo "Here you can run FPC command line tools, Lazarus and LAMW scripts"
 fi
 
+
 generateSDKToolsCommands
 cd $CURRENT_LAMW_WORKSPACE
-exec bash $* $_EXTRA_ARGS
+exec bash  $_EXTRA_ARGS $@
