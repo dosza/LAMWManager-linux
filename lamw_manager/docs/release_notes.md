@@ -2,6 +2,12 @@
 
 This page contains information about new features and bug fixes.
 
+v0.5.9.1 - Dec 29, 2023
+---
+**Fixes**
++	Fixes cacheGradle
++	Fixes missing debug options in lamw4linux-terminal: *-x* and *-v*
+
 v0.5.9 - Dec 12, 2023
 ---
 **News**
