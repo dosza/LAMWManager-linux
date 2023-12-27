@@ -2,7 +2,7 @@
 
 This page contains information about new features and bug fixes.
 
-v0.5.9.1 - Dec 29, 2023
+v0.5.9.1 - Dec 27, 2023
 ---
 **Fixes**
 +	Fixes cacheGradle
