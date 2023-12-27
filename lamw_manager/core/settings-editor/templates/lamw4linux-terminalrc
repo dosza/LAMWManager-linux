@@ -199,6 +199,21 @@ generateSDKToolsCommands(){
 	done
 }
 
+latestproject(){
+	local node_project="//CONFIG/EnvironmentOptions/AutoSave/@LastSavedProjectFile"
+	local lamw4linuxcfg_path="$LAMW_IDE_HOME_CFG/environmentoptions.xml"
+	local projectpath="$(xmlstarlet sel -t -v  $node_project  $lamw4linuxcfg_path)"
+	local projectdir="$(dirname "$projectpath")"
+
+	if [ "$projectpath" = "" ] || [ ! -e "$projectdir" ]; then
+		return
+	fi
+
+	cd "$projectdir"
+	if grep -qm1 LAMW $projectpath; then 
+		cd ..
+	fi
+}
 export -f $LAM4LINUX_TERMINAL_FUNCTIONS
 
 if [[ "$-" =~ (x) ]]; then
