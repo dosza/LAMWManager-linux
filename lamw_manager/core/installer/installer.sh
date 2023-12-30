@@ -719,9 +719,9 @@ getFixLp(){
 
 	[ $USE_FIXLP = 1 ] && return  
 	if [ ! -e $LAMW4LINUX_HOME/usr/bin/fixlp ]; then
-		MAGIC_TRAP_INDEX=8
+		MAGIC_TRAP_INDEX=6
 		export -f  getCompressFile Wget check_error_and_exit getFixLpInSubShell getNameSumByParent
-		export WGET_TIMEOUT FILLER VERDE VERMELHO NORMAL NEGRITO
+		export WGET_TIMEOUT FILLER VERDE VERMELHO NORMAL NEGRITO MAGIC_TRAP_INDEX
 		
 		changeDirectory "$ROOT_LAMW"
 		echo "Please wait, trying get ${NEGRITO}fixlp${NORMAL} ...${FILLER:5} ${NEGRITO}[⏳]$NORMAL"
