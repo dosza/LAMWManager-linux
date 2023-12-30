@@ -70,9 +70,9 @@ TrapActions(){
 		"$ANT_HOME"		#1
 		"$GRADLE_ZIP_FILE" #2
 		"$GRADLE_HOME"   #3
-		"$CMD_SDK_TOOLS_ZIP" #6
-		"$CMD_SDK_TOOLS_DIR" #7
-		"$FIXLP_ZIP"
+		"$CMD_SDK_TOOLS_ZIP" #4
+		"$CMD_SDK_TOOLS_DIR" #5
+		"$FIXLP_ZIP" 
 	)
 	
 	if [ "$MAGIC_TRAP_INDEX" != "-1" ]; then
