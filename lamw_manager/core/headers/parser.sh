@@ -75,11 +75,14 @@ TrapActions(){
 		"$FIXLP_ZIP" 
 	)
 	
+	if [ -e $sha256_current_pp ]; then 
+		magic_trap+=( $sha256_current_pp )
+	fi
+
 	if [ "$MAGIC_TRAP_INDEX" != "-1" ]; then
 		local file_deleted="${magic_trap[MAGIC_TRAP_INDEX]}"
-		if [ -e "$file_deleted" ]; then
-			echo "deleting... $file_deleted"	
-			rm  -rv $file_deleted
+		if [ -e "$file_deleted" ]; then	
+			rm  -r $file_deleted
 		fi
 	fi
 	
