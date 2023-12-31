@@ -93,15 +93,18 @@ registryFPCTrunkIntegrity(){
 	if [ ! -e $sha256_current_pp ]; then 
 		local pppath=${build_aarch[$1],,}
 		local sucess_filler="calculing FPC ${NEGRITO}${build_aarch[$1]}${NORMAL} checksum"
+		local obj_regex='(\.o$)'
 		pppath=${pppath//\//\-}
 
 		MAGIC_TRAP_INDEX=7
 		startProgressBar
 		sha256sum $FPC_TRUNK_LIB_PATH/${ppcs_name[$1]}  > $sha256_current_pp
 		for file in $(find "${FPC_TRUNK_LIB_PATH}/units/${pppath}" "${FPC_TRUNK_LIB_PATH}/fpmkinst/$pppath"); do
-			if [ -f $file ]; then
-				sha256sum $file  >> $sha256_current_pp
+			if [[ -d $file ]] || [[ "$file" =~ $obj_regex ]]; then
+				continue
 			fi
+			sha256sum $file  >> $sha256_current_pp
+	
 		done
 
 		resetTrapActions
