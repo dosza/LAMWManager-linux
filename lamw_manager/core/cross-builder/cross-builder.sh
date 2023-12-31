@@ -92,7 +92,7 @@ checkFPCTrunkIntegrity(){
 registryFPCTrunkIntegrity(){
 	if [ ! -e $sha256_current_pp ]; then 
 		local pppath=${build_aarch[$1],,}
-		local sucess_filler="saving info about integrity of FPC ${NEGRITO}${build_aarch[$1]}${NORMAL}"
+		local sucess_filler="calculing FPC ${NEGRITO}${build_aarch[$1]}${NORMAL} checksum"
 		pppath=${pppath//\//\-}
 
 		MAGIC_TRAP_INDEX=7
