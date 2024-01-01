@@ -76,11 +76,8 @@ changeOwnerAllLAMW(){
 			files_chown+=($NO_EXISTENT_ROOT_LAMW_PARENT)
 	fi
 
-	printf "%s" "Restoring directories ........."
-	local max=${#files_chown[*]} ; [ $max -lt 4 ] && max=4
-	local filler_size="${#FILLER}"
-	local -i rate=$((filler_size/max))
-	local -i offset=$((filler_size-rate))
+	sucess_filler="restoring directories"
+	startProgressBar
 	for ((i=0;i<${#files_chown[*]};i++))
 	do
 		if [ -e ${files_chown[i]} ] ; then
@@ -93,11 +90,9 @@ changeOwnerAllLAMW(){
 				chown $LAMW_USER_GROUP -R ${files_chown[i]}
 			fi
 		fi
-		printf "%s" "${FILLER:$offset}"
 	done
-	filler_size=$(len '.....'); [ $max = 4 ] && filler_size=$(len '.')
-	offset=$((offset+filler_size))
-	printf  "%s\n" "${FILLER:$offset}${VERDE} [OK]${NORMAL}"
+	stopAsSuccessProgressBar
+
 }
 #write log lamw install 
 writeLAMWLogInstall(){
@@ -470,13 +465,9 @@ CleanOldConfig(){
 		"$OLD_FPC_CFG_PATH"
 	)
 
-	local max=${#list_deleted_files[*]}
-	local filler_size="${#FILLER}"
-	local -i rate=$((filler_size/max))
-	local -i offset=$((filler_size-rate))
+	sucess_filler="Uninstalling LAMW4Linux IDE"
 
-	printf "%s" "Uninstalling LAMW4Linux IDE ........."
-
+	startProgressBar
 	for((i=0;i<${#list_deleted_files[*]};i++)); do
 		if [ -e "${list_deleted_files[i]}" ]; then 
 			[ -d  "${list_deleted_files[i]}" ] && local rm_opts="-rf"
@@ -484,12 +475,7 @@ CleanOldConfig(){
 				rm  "${list_deleted_files[i]}" $rm_opts
 			fi
 		fi
-		printf "%s" "${FILLER:$offset}"
 	done
-
-	filler_size=$(len '')
-	offset=$((offset+filler_size))
-	printf  "%s\n" "${FILLER:$offset}${VERDE} [OK]${NORMAL}"
 
 	CleanOldCrossCompileBins
 	update-mime-database   $LAMW_USER_HOME/.local/share/mime/
@@ -498,6 +484,8 @@ CleanOldConfig(){
 	cp ~/.gitconfig ~/.old.git.config
 	sed -i "/directory = $scape_root_lamw/d" ~/.gitconfig
 	unsetLocalRootLAMW
+	stopAsSuccessProgressBar
+
 }
 
 #Create SDK simbolic links

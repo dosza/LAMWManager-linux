@@ -190,18 +190,19 @@ getCompressFile(){
 	local uncompress_command="$3"
 	local before_uncompress="$4"
 	local error_uncompress_msg="${VERMELHO}Error:${NORMAL} corrupt/unsupported file"
-	local initial_msg="Please wait, extracting ${NEGRITO}$compress_file${NORMAL} ..." 
+	local initial_msg="extracting ${NEGRITO}$compress_file${NORMAL} ..." 
 	local sum_name=$(getNameSumByParent "${FUNCNAME[1]}")
 
 	Wget $compress_url
 	if [ -e $compress_file ]; then
-		printf "%s" "$initial_msg"	
+		sucess_filler="$initial_msg"	
+		startProgressBar
 		[ "$before_uncompress" != "" ] &&  eval "$before_uncompress"
 
 		if [ "$sum_name" != '' ]; then 
 			if ! runCheckSum "$sum_name"; then 
 				rm $compress_file
-				printf  "%s\n" "${FILLER:${#compress_file}}${VERMELHO} [FAIL]${NORMAL}"
+				stopProgressBarAsFail
 				echo 'Checksum not matched!!'
 				exit 1;
 			fi
@@ -209,8 +210,8 @@ getCompressFile(){
 
 		$uncompress_command
 		check_error_and_exit "$error_uncompress_msg"
-		printf  "%s\n" "${FILLER:${#compress_file}}${VERDE} [OK]${NORMAL}"
 		rm $compress_file
+		stopAsSuccessProgressBar
 	fi
 }
 
