@@ -98,6 +98,7 @@ case "$1" in
 		if [ $LAMW_INSTALL_STATUS = 0 ]; then 
 			mainInstall
 		else
+			FORCE_LAZARUS_CLEAN_BUILD=1
 			Repair 
 			BuildLazarusIDE
 			changeOwnerAllLAMW 1
