@@ -227,7 +227,7 @@ getJDK(){
 			rm -rf "$JAVA_HOME"
 			rm -rf "$realjdk"
 		elif [ -e  "openjdk-${JDK_VERSION}" ]; then 
-			rm "openjdk-${JDK_VERSION}"
+			rm "openjdk-${JDK_VERSION}" -rf
 		fi
 		
 		getCompressFile "$JDK_URL" "$JDK_TAR" "tar -zxf $JDK_TAR"
