@@ -18,6 +18,7 @@ fi
 
 source "$LAMW_MGR_CORE/core/headers/common-shell.sh"
 source "$LAMW_MGR_CORE/core/headers/lamw_manager_headers"
+source "$LAMW_MGR_CORE//core/components/progress-bar.sh"
 source "$LAMW_MGR_CORE/core/settings-editor/root-lamw-settings-editor.sh"
 
 GetInitialStatus(){
@@ -198,10 +199,10 @@ callLamw4LinuxTerminal(){
 
 cacheGradle(){
 	getFiller
-	local sucess_filler="............"
-	printf "%s" "Please wait, starting caching Gradle ..."
+	local sucess_filler="caching Gradle"
+	startProgressBar
 	callLamw4LinuxTerminal 'cacheGradle' &>/dev/null
-	printf  "%s\n" "${FILLER:${#sucess_filler}}${VERDE} [OK]${NORMAL}"
+	stopAsSuccessProgressBar
 }
 
 CheckNeedLazarusProjectDowngradle(){
@@ -259,5 +260,19 @@ main(){
 	downgradeLazarusProject
 	autoStartLAMW4Linux
 }
+
+TrapTermProcess(){
+	[ "$bg_pid" != "" ] && stopProgressBarAsFail
+	wait
+	exit 15
+}
+TrapControlC(){
+	[ "$bg_pid" != "" ] &&  stopProgressBarAsCancel
+	exit 2
+}
+
+#instalando tratadores de sinal	
+trap TrapControlC 2 
+trap TrapTermProcess 15
 
 main $*
