@@ -190,7 +190,7 @@ getCompressFile(){
 	local uncompress_command="$3"
 	local before_uncompress="$4"
 	local error_uncompress_msg="${VERMELHO}Error:${NORMAL} corrupt/unsupported file"
-	local initial_msg="extracting ${NEGRITO}$compress_file${NORMAL} ..." 
+	local initial_msg="extracting ${NEGRITO}$compress_file${NORMAL}" 
 	local sum_name=$(getNameSumByParent "${FUNCNAME[1]}")
 
 	Wget $compress_url
@@ -789,7 +789,6 @@ mainInstall(){
 	BuildLazarusIDE
 	installFixLp
 	LAMW4LinuxPostConfig
-	enableADBtoUdev
 	writeLAMWLogInstall
 	changeOwnerAllLAMW
 }
