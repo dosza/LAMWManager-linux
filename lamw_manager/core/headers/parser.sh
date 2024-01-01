@@ -75,11 +75,7 @@ TrapActions(){
 		"$FIXLP_ZIP" 
 	)
 	
-	if [ -e $sha256_current_pp ]; then 
-		magic_trap+=( $sha256_current_pp )
-	fi
-
-	if [ "$MAGIC_TRAP_INDEX" != "-1" ]; then
+	if [ $MAGIC_TRAP_INDEX -ge 0 ]; then
 		local file_deleted="${magic_trap[MAGIC_TRAP_INDEX]}"
 		if [ -e "$file_deleted" ]; then	
 			rm  -r $file_deleted
@@ -90,12 +86,17 @@ TrapActions(){
 }
 
 TrapTermProcess(){
+	isProtectedTrapActions && return
+
 	TrapActions 
 	[ "$bg_pid" != "" ] && stopProgressBarAsFail
 	wait
+	
 	exit 15
 }
 TrapControlC(){
+	isProtectedTrapActions && return
+
 	TrapActions 
 	[ "$bg_pid" != "" ] &&  stopProgressBarAsCancel
 	exit 2
@@ -104,6 +105,14 @@ TrapControlC(){
 
 resetTrapActions(){
 	MAGIC_TRAP_INDEX=-1
+}
+
+protectedTrapActions(){
+	MAGIC_TRAP_INDEX=-2
+}
+
+isProtectedTrapActions(){
+	[ $MAGIC_TRAP_INDEX = -2 ]
 }
 
 startImplicitAction(){

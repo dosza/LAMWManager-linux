@@ -102,10 +102,8 @@ registryFPCTrunkIntegrity(){
 	pppath=${pppath//\//\-}
 	local find_paths=("${FPC_TRUNK_LIB_PATH}/units/${pppath}" "${FPC_TRUNK_LIB_PATH}/fpmkinst/$pppath")
 	local obj_regex='(\.o$)'
-
-	MAGIC_TRAP_INDEX=7
-
 	startProgressBar
+	protectedTrapActions
 	sha256sum $FPC_TRUNK_LIB_PATH/${ppcs_name[$1]}  > $sha256_current_pp
 
 	for file in $(find ${find_paths[@]} ); do
@@ -114,9 +112,8 @@ registryFPCTrunkIntegrity(){
 
 		sha256sum $file  >> $sha256_current_pp
 	done
-
-	resetTrapActions
 	stopAsSuccessProgressBar
+	resetTrapActions
 
 
 }

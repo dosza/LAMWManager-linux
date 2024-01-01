@@ -77,6 +77,7 @@ changeOwnerAllLAMW(){
 	fi
 
 	sucess_filler="restoring directories"
+	protectedTrapActions
 	startProgressBar
 	for ((i=0;i<${#files_chown[*]};i++))
 	do
@@ -92,6 +93,7 @@ changeOwnerAllLAMW(){
 		fi
 	done
 	stopAsSuccessProgressBar
+	resetTrapActions
 
 }
 #write log lamw install 
@@ -202,11 +204,15 @@ changeBashHeaderDescription(){
 
 #this  fuction create a INI file to config  all paths used in lamw framework 
 LAMW4LinuxPostConfig(){
+	local sucess_filler="saving LAMW4Linux config"
 	local lazbuild_path="$LAMW4LINUX_HOME/usr/bin/lazbuild"
 	local old_lamw_workspace="$LAMW_USER_HOME/Dev/lamw_workspace"
 	local ant_path=$ANT_HOME/bin
 	local breakline='\\'n
 	local description_index=4
+	
+	startProgressBar
+	protectedTrapActions
 
 	[ -e $old_lamw_workspace ] && 
 		mv $old_lamw_workspace $LAMW_WORKSPACE_HOME
@@ -317,6 +323,9 @@ LAMW4LinuxPostConfig(){
 		SystemTerminalMitigation
 	fi
 	AddLAMWtoStartMenu
+	enableADBtoUdev
+	stopAsSuccessProgressBar
+	resetTrapActions
 }
 
 ActiveProxy(){
