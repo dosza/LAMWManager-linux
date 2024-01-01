@@ -74,42 +74,48 @@ getMaxBuildArchs(){
 }
 
 checkFPCTrunkIntegrity(){
+	local sucess_filler="checking integrity of FPC ${NEGRITO}${build_aarch[$1]}${NORMAL}"
+
 	if [ ! -e $FPC_TRUNK_LIB_PATH/${ppcs_name[$1]} ] || [ ! -e $sha256_current_pp ]; then 
 		return 1;
 	fi
-	local sucess_filler="checking integrity of FPC ${NEGRITO}${build_aarch[$1]}${NORMAL}"
-	
+
 	startProgressBar 
+
 	if ! sha256sum -c $sha256_current_pp --quiet; then
 		rm $sha256_current_pp
 		stopProgressBarAsFail
+		FORCE_LAZARUS_CLEAN_BUILD=1
 		return 1
 	fi
+
 	stopAsSuccessProgressBar
 
 	return 0;
 }
+
 registryFPCTrunkIntegrity(){
-	if [ ! -e $sha256_current_pp ]; then 
-		local pppath=${build_aarch[$1],,}
-		local sucess_filler="calculing FPC ${NEGRITO}${build_aarch[$1]}${NORMAL} checksum"
-		local obj_regex='(\.o$)'
-		pppath=${pppath//\//\-}
-
-		MAGIC_TRAP_INDEX=7
-		startProgressBar
-		sha256sum $FPC_TRUNK_LIB_PATH/${ppcs_name[$1]}  > $sha256_current_pp
-		for file in $(find "${FPC_TRUNK_LIB_PATH}/units/${pppath}" "${FPC_TRUNK_LIB_PATH}/fpmkinst/$pppath"); do
-			if [[ -d $file ]] || [[ "$file" =~ $obj_regex ]]; then
-				continue
-			fi
-			sha256sum $file  >> $sha256_current_pp
+	[  -e $sha256_current_pp ] && return
 	
-		done
+	local sucess_filler="calculing FPC ${NEGRITO}${build_aarch[$1]}${NORMAL} checksum"
+	local pppath=${build_aarch[$1],,}
+	pppath=${pppath//\//\-}
+	local find_paths=("${FPC_TRUNK_LIB_PATH}/units/${pppath}" "${FPC_TRUNK_LIB_PATH}/fpmkinst/$pppath")
+	local obj_regex='(\.o$)'
 
-		resetTrapActions
+	MAGIC_TRAP_INDEX=7
 
-	fi
+	startProgressBar
+	sha256sum $FPC_TRUNK_LIB_PATH/${ppcs_name[$1]}  > $sha256_current_pp
+
+	for file in $(find ${find_paths[@]} ); do
+		
+		([[ -d "$file" ]] || [[ "$file" =~ $obj_regex ]] ) && continue
+
+		sha256sum $file  >> $sha256_current_pp
+	done
+
+	resetTrapActions
 	stopAsSuccessProgressBar
 
 
