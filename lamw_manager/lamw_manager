@@ -16,10 +16,12 @@ else
 	[ $? != 0 ] && export LAMW_MGR_CORE="${0/%\/lamw_manager}" 
 fi
 
-source "$LAMW_MGR_CORE/core/headers/common-shell.sh"
-source "$LAMW_MGR_CORE/core/headers/lamw_manager_headers"
-source "$LAMW_MGR_CORE//core/components/progress-bar.sh"
-source "$LAMW_MGR_CORE/core/settings-editor/root-lamw-settings-editor.sh"
+LAMW_MANAGER_MODULES_PATH=$LAMW_MGR_CORE/core
+
+source "$LAMW_MANAGER_MODULES_PATH/headers/common-shell.sh"
+source "$LAMW_MANAGER_MODULES_PATH/headers/lamw_manager_headers"
+source "$LAMW_MANAGER_MODULES_PATH/components/progress-bar.sh"
+source "$LAMW_MANAGER_MODULES_PATH/settings-editor/root-lamw-settings-editor.sh"
 
 GetInitialStatus(){
 
