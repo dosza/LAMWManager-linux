@@ -378,8 +378,6 @@ getAnt(){
 	changeDirectory "$ROOT_LAMW" 
 	if [ ! -e "$ANT_HOME" ]; then
 		MAGIC_TRAP_INDEX=0 # preperando o indice do arquivo/diretório a ser removido
-		trap TrapControlC  2
-		MAGIC_TRAP_INDEX=1
 		getCompressFile "$ANT_TAR_URL" "$ANT_TAR_FILE" "tar -xf $ANT_TAR_FILE"
 	fi
 
@@ -389,7 +387,6 @@ getGradle(){
 	changeDirectory $ROOT_LAMW
 	if [ ! -e "$GRADLE_HOME" ]; then
 		MAGIC_TRAP_INDEX=2 #Set arquivo a ser removido
-		trap TrapControlC  2 # set armadilha para o signal2 (siginterrupt)
 		getCompressFile "$GRADLE_ZIP_LNK" "$GRADLE_ZIP_FILE" "unzip -o -q $GRADLE_ZIP_FILE" "MAGIC_TRAP_INDEX=3"
 	fi
 }
@@ -402,7 +399,6 @@ getAndroidSDKTools(){
 	if [ ! -e "$CMD_SDK_TOOLS_DIR/latest" ];then
 		mkdir -p "$CMD_SDK_TOOLS_DIR"
 		changeDirectory "$CMD_SDK_TOOLS_DIR"
-		trap TrapControlC  2
 		MAGIC_TRAP_INDEX=4
 		getCompressFile "$CMD_SDK_TOOLS_URL" "$CMD_SDK_TOOLS_ZIP" "unzip -o -q  $CMD_SDK_TOOLS_ZIP" "MAGIC_TRAP_INDEX=5"
 		mv cmdline-tools latest
