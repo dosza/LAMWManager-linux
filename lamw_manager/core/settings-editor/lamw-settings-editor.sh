@@ -473,7 +473,7 @@ CleanOldConfig(){
 		"$OLD_FPC_CFG_PATH"
 	)
 
-	sucess_filler="Uninstalling LAMW4Linux IDE"
+	sucess_filler="uninstalling LAMW4Linux IDE"
 
 	startProgressBar
 	for((i=0;i<${#list_deleted_files[*]};i++)); do
