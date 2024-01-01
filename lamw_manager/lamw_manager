@@ -225,8 +225,13 @@ downgradeLazarusProject(){
 	fi
 }
 
+runLamw4Linux(){
+	startlamw4linux &>/dev/null &
+	sleep 0.01
+}
 autoStartLAMW4Linux(){
 	local minimal_regex='(\-\-minimal)'
+	local sucess_filler="starting ${NEGRITO}LAMW4Linux IDE${NORMAL}"
 	if 	[ $EXIT_STATUS = 0 ] && 
 		[ $IS_CHANGED_LAMW_INSTALL_LOG = 1 ] && 
 		[ -e $LAMW_INSTALL_LOG ] &&
@@ -237,8 +242,9 @@ autoStartLAMW4Linux(){
 
 	if [ $EXIT_STATUS = 0 ] && [ "${XDG_CURRENT_DESKTOP^^}" != "XFCE" ] && 
 		[ $AUTO_START_LAMW4LINUX = 1 ] && [ -e $LAMW_INSTALL_LOG ];then
-		echo "Please wait, starting ${NEGRITO}LAMW4Linux IDE${NORMAL} ..."
-		startlamw4linux &>/dev/null &
+		startProgressBar
+		runLamw4Linux
+		stopAsSuccessProgressBar
 	fi
 
 	exit $EXIT_STATUS
