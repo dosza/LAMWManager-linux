@@ -645,6 +645,17 @@ installLAMWPackages(){
 		stopAsSuccessProgressBar
 	done
 }
+
+checkIfNeedRebuildCleanLazarus(){
+	if 	[ !  -e $LAMW_IDE_HOME/lazbuild ] ||
+		[ !  -e $LAMW_IDE_HOME/lazarus ] ||
+		[ $FORCE_LAZARUS_CLEAN_BUILD =  1 ]
+	then
+		 return 0
+	fi
+	return 1
+
+}
 #Build lazarus ide
 BuildLazarusIDE(){	
 	parseFPCTrunk
@@ -655,15 +666,18 @@ BuildLazarusIDE(){
 		"clean all" "PP=${FPC_TRUNK_LIB_PATH}/ppcx64" "FPC_VERSION=$_FPC_TRUNK_VERSION"  "FPMAKEOPT=-T${CPU_COUNT}")
 	local build_msg="Please wait, starting build Lazarus to ${NEGRITO}x86_64/Linux${NORMAL}.............."
 	local sucess_filler="$(getCurrentSucessFiller 1 x86_64/Linux)"
+	
 	changeDirectory $LAMW_IDE_HOME
 
-	if [ $# = 0 ]; then
+	if  checkIfNeedRebuildCleanLazarus ; then
 		startProgressBar
+		
 		if ! make -s ${make_opts[@]} > /dev/null 2>&1; then
 			stopProgressBarAsFail
 			make -s ${make_opts[@]}
 			check_error_and_exit "$error_build_lazarus_msg" #build all IDE
 		fi
+
 	 	stopAsSuccessProgressBar
 	 	#printf  "%s\n" "${FILLER:${#sucess_filler}}${VERDE} [OK]${NORMAL}"
 	fi
