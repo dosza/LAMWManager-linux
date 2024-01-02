@@ -47,6 +47,8 @@ GetLocalJavaHome(){
 	fi	
 }
 StopGradleDaemon(){
+	local sucess_filler="stopping Gradle Daemons"
+
 	if [ -e "$LAMW_INSTALL_LOG" ] ; then
 		local gradle_version="$(grep '^GRADLE_VERSION' $LAMW_INSTALL_LOG | sed 's/GRADLE_VERSION=//g')"
 		local gradle_path="$ROOT_LAMW/gradle-$gradle_version"
@@ -56,11 +58,13 @@ StopGradleDaemon(){
 
 	if [ "$gradle_path" != "" ] && [ -e "$gradle_path" ]; then 
 		
-		ps ax |  grep gradle | grep $ROOT_LAMW &>/dev/null
-		if [ $? = 0 ]; then 
-			local sucess_filler="stopping Gradle Daemons"  
+		if ps  | 
+			grep "$ROOT_LAMW/gradle-$gradle_version" 
+		then 
 			
+			echo "${sucess_filler^} ..."
 			startProgressBar
+			
 			if $gradle_path/bin/gradle --stop -q &>/dev/null; then
 				stopAsSuccessProgressBar
 			else
