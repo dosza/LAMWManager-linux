@@ -128,7 +128,7 @@ CheckLocalRootLAMW(){
 		fi
 	fi
 
-	LAMW_MANAGER_ENV+=(ROOT_LAMW=$ROOT_LAMW)
+	LAMW_MANAGER_ENV+=(ROOT_LAMW=$ROOT_LAMW NOBLINK=$NOBLINK)
 	LAMW4LINUX_HOME=$ROOT_LAMW/lamw4linux
 	LAMW_FRAMEWORK_HOME=$ROOT_LAMW/lazandroidmodulewizard
 	LAMW_INSTALL_LOG="$LAMW4LINUX_HOME/lamw-install.log"
@@ -257,6 +257,8 @@ main(){
 	CheckFlags DEBUG "DEBUG=1"
 	CheckFlags USE_PKEXEC "PKEXEC=1"
 	CheckFlags ENTER_TO_EXIT "ENTER=1"
+	CheckFlags NOBLINK 'NOBLINK=1'
+	helloMessage 1>&2
 	CheckUserIsSudo
 	CheckLocalRootLAMW
 	GetInitialStatus
@@ -278,9 +280,39 @@ TrapControlC(){
 	[ "$bg_pid" != "" ] &&  stopProgressBarAsCancel
 	exit 2
 }
+helloMessage(){
 
+	LAMW_INSTALL_VERSION=$(
+		grep LAMW_INSTALL_VERSION  -m1  $LAMW_MANAGER_MODULES_PATH/headers/lamw_headers | 
+		awk -F'=' '{ print $2 }' )
+
+	LAMW_INSTALL_VERSION=${LAMW_INSTALL_VERSION//\"/}
+
+	local message='   / /   /   |  /  |/  / |     / /  /  |/  /___ _____  ____ _____ ____  _____
+  / /   / /| | / /|_/ /| | /| / /  / /|_/ / __ `/ __ \/ __ `/ __ `/ _ \/ ___/
+ / /___/ ___ |/ /  / / | |/ |/ /  / /  / / /_/ / / / / /_/ / /_/ /  __/ /    
+/_____/_/  |_/_/  /_/  |__/|__/  /_/  /_/\__,_/_/ /_/\__,_/\__, /\___/_/     
+                                                          /____/'
+   local id=96
+   local blink=5
+   local color=$'\e[1;'$id'm'
+   local color2=$'\e[1;'$blink'm'
+
+   	local lamw_mgr="./lamw_manager"
+	if [ "$USE_SETUP" = "1" ]; then
+		lamw_mgr="bash lamw_manager_setup.sh\t${VERDE}--${NORMAL}"
+	fi
+
+   if [ $NOBLINK =  0 ]; then 
+   		echo -en "\n${color2}${color}$message\tv${LAMW_INSTALL_VERSION}${NORMAL}\n"
+   		echo "${VERMELHO}Warning: ${NORMAL}use ${NEGRITO}NOBLINK=1${NORMAL} if you are photosensitive, sample:" 
+   		echo -e "\t$lamw_mgr ${NEGRITO}NOBLINK=1${NORMAL}\n\n" 
+   else 
+   		echo -en "\n${color}$message\tv${LAMW_INSTALL_VERSION}${NORMAL}\n\n"
+   	fi
+   	
+}
 #instalando tratadores de sinal	
 trap TrapControlC 2 
 trap TrapTermProcess 15
-
 main $*
