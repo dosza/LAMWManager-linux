@@ -7,7 +7,6 @@ v0.5.9.2 - Jan 2, 2024
 **Fixes**
 +	Fix try remove openjdk
 +	Prevents the tool from receiving SIGTERM/SIGINT<br/>in tasks that may compromise the integrity of the installation (atomic operations)
-+	
 
 **News**
 +	Run more fast then older versions
