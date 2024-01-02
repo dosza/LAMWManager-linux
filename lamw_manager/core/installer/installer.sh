@@ -654,7 +654,6 @@ installLAMWPackages(){
 
 checkIfNeedRebuildCleanLazarus(){
 	if 	[ !  -e $LAMW_IDE_HOME/lazbuild ] ||
-		[ !  -e $LAMW_IDE_HOME/lazarus ] ||
 		[ $FORCE_LAZARUS_CLEAN_BUILD =  1 ]
 	then
 		 return 0
