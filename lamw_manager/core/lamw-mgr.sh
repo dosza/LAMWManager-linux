@@ -70,6 +70,7 @@ case "$1" in
 		fi
 	;;
 	"--reinstall")
+		echo ""
 		mainInstall
 	;;
 
