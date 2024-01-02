@@ -117,14 +117,13 @@ isProtectedTrapActions(){
 
 startImplicitAction(){
 	getImplicitInstall
+	echo ""
 	if [ $LAMW_IMPLICIT_ACTION_MODE = 0 ]; then
-		echo "Please wait..."
 		printf "${NEGRITO}Implicit installation of LAMW starting in $TIME_WAIT seconds  ... ${NORMAL}\n"
 		printf "Press control+c to exit ...\n"
 		sleep $TIME_WAIT
 		mainInstall
 	else
-		echo "Please wait ..."
 		printf "${NEGRITO}Implicit LAMW Framework update starting in $TIME_WAIT seconds ... ${NORMAL}\n"
 		printf "Press control+c to exit ...\n"
 		sleep $TIME_WAIT 
