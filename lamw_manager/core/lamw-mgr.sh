@@ -9,7 +9,7 @@
 
 # Verifica condicoes de inicializacao
 
-LAMW_MANAGER_MODULES_PATH=$(dirname "$0")
+export LAMW_MANAGER_MODULES_PATH=$(dirname "$0")
 
 source /etc/os-release
 
