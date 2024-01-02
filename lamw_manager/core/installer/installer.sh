@@ -569,11 +569,15 @@ checkChangeLAMWDeps(){
 
 #get implict install 
 getImplicitInstall(){
+	local sucess_filler='checking your internet connection'
+	startProgressBar
 	if ! ping google.com -q -c4 &>/dev/null; then
 		echo "${VERMELHO}Error:${NORMAL} check your internet connection"
+		stopProgressBarAsFail
 		exit 1
 	fi
 	
+	stopAsSuccessProgressBar
 	if [ ! -e "$LAMW_INSTALL_LOG" ]; then
 		return 
 	else
