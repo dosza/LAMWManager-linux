@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 
-PROGRESS_BAR_PATH="$LAMW_MANAGER_MODULES_PATH/components/bash-progress-bar.sh"
+export PROGRESS_BAR_PATH="$LAMW_MANAGER_MODULES_PATH/components/bash-progress-bar.sh"
 
 stopProgressBar(){
 	kill "-${1}" $bg_pid &>/dev/null

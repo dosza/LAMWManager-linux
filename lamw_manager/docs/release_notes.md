@@ -2,6 +2,18 @@
 
 This page contains information about new features and bug fixes.
 
+v0.5.9.2 - Jan 2, 2024
+---
+**Fixes**
++	Fix try remove openjdk
++	Prevents the tool from receiving SIGTERM/SIGINT<br/>in tasks that may compromise the integrity of the installation (atomic operations)
++	Check connection of internet before to try install/update
+
+**News**
++	Run more fast then older versions
+	+	Reduces the need to rebuild Lazarus and FPC
++	Use the progressbar in all time-consuming tasks
+
 v0.5.9.1 - Dec 27, 2023
 ---
 **Fixes**

@@ -94,6 +94,16 @@
        </pre>
 </p>
 
+#### NOBLINK=1 ####
+<p>
+       <pre>
+              Use the <strong>NOBLINK=1</strong> if you are photosensitive
+                     <strong>Sample:</strong>
+              ./lamw_manager --reset <strong>NOBLINK=1</strong>
+              ./lamw_manager <strong>NOBLINK=1</strong> --reset
+       </pre>
+</p>
+
 #### BUGS ####
 
 <p>
