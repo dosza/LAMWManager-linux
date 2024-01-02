@@ -58,8 +58,15 @@ StopGradleDaemon(){
 		
 		ps ax |  grep gradle | grep $ROOT_LAMW &>/dev/null
 		if [ $? = 0 ]; then 
-			echo "Stopping Gradle Daemons, please wait..."  
-			$gradle_path/bin/gradle --stop
+			local sucess_filler="stopping Gradle Daemons"  
+			
+			startProgressBar
+			if $gradle_path/bin/gradle --stop -q &>/dev/null; then
+				stopAsSuccessProgressBar
+			else
+				stopProgressBarAsFail
+			fi
+
 		fi
 	fi
 }
