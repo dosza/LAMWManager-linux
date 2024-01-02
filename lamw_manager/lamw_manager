@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.5.9.1
-#Date: 12/27/2023
+#Version: 0.5.9.2
+#Date: 01/01/2024
 #Description:The "lamw_manager" is part of the core of LAMW Manager. This script is a wrapper for "core/lamw-instal.sh"
 #-------------------------------------------------------------------------------------------------#
 
@@ -16,9 +16,12 @@ else
 	[ $? != 0 ] && export LAMW_MGR_CORE="${0/%\/lamw_manager}" 
 fi
 
-source "$LAMW_MGR_CORE/core/headers/common-shell.sh"
-source "$LAMW_MGR_CORE/core/headers/lamw_manager_headers"
-source "$LAMW_MGR_CORE/core/settings-editor/root-lamw-settings-editor.sh"
+LAMW_MANAGER_MODULES_PATH=$LAMW_MGR_CORE/core
+
+source "$LAMW_MANAGER_MODULES_PATH/headers/common-shell.sh"
+source "$LAMW_MANAGER_MODULES_PATH/headers/lamw_manager_headers"
+source "$LAMW_MANAGER_MODULES_PATH/components/progress-bar.sh"
+source "$LAMW_MANAGER_MODULES_PATH/settings-editor/root-lamw-settings-editor.sh"
 
 GetInitialStatus(){
 
@@ -55,8 +58,15 @@ StopGradleDaemon(){
 		
 		ps ax |  grep gradle | grep $ROOT_LAMW &>/dev/null
 		if [ $? = 0 ]; then 
-			echo "Stopping Gradle Daemons, please wait..."  
-			$gradle_path/bin/gradle --stop
+			local sucess_filler="stopping Gradle Daemons"  
+			
+			startProgressBar
+			if $gradle_path/bin/gradle --stop -q &>/dev/null; then
+				stopAsSuccessProgressBar
+			else
+				stopProgressBarAsFail
+			fi
+
 		fi
 	fi
 }
@@ -125,7 +135,7 @@ CheckLocalRootLAMW(){
 		fi
 	fi
 
-	LAMW_MANAGER_ENV+=(ROOT_LAMW=$ROOT_LAMW)
+	LAMW_MANAGER_ENV+=(ROOT_LAMW=$ROOT_LAMW NOBLINK=$NOBLINK)
 	LAMW4LINUX_HOME=$ROOT_LAMW/lamw4linux
 	LAMW_FRAMEWORK_HOME=$ROOT_LAMW/lazandroidmodulewizard
 	LAMW_INSTALL_LOG="$LAMW4LINUX_HOME/lamw-install.log"
@@ -198,10 +208,10 @@ callLamw4LinuxTerminal(){
 
 cacheGradle(){
 	getFiller
-	local sucess_filler="............"
-	printf "%s" "Please wait, starting caching Gradle ..."
+	local sucess_filler="caching Gradle"
+	startProgressBar
 	callLamw4LinuxTerminal 'cacheGradle' &>/dev/null
-	printf  "%s\n" "${FILLER:${#sucess_filler}}${VERDE} [OK]${NORMAL}"
+	stopAsSuccessProgressBar
 }
 
 CheckNeedLazarusProjectDowngradle(){
@@ -222,8 +232,13 @@ downgradeLazarusProject(){
 	fi
 }
 
+runLamw4Linux(){
+	startlamw4linux &>/dev/null &
+	sleep 0.01
+}
 autoStartLAMW4Linux(){
 	local minimal_regex='(\-\-minimal)'
+	local sucess_filler="starting ${NEGRITO}LAMW4Linux IDE${NORMAL}"
 	if 	[ $EXIT_STATUS = 0 ] && 
 		[ $IS_CHANGED_LAMW_INSTALL_LOG = 1 ] && 
 		[ -e $LAMW_INSTALL_LOG ] &&
@@ -234,8 +249,9 @@ autoStartLAMW4Linux(){
 
 	if [ $EXIT_STATUS = 0 ] && [ "${XDG_CURRENT_DESKTOP^^}" != "XFCE" ] && 
 		[ $AUTO_START_LAMW4LINUX = 1 ] && [ -e $LAMW_INSTALL_LOG ];then
-		echo "Please wait, starting ${NEGRITO}LAMW4Linux IDE${NORMAL} ..."
-		startlamw4linux &>/dev/null &
+		startProgressBar
+		runLamw4Linux
+		stopAsSuccessProgressBar
 	fi
 
 	exit $EXIT_STATUS
@@ -248,6 +264,8 @@ main(){
 	CheckFlags DEBUG "DEBUG=1"
 	CheckFlags USE_PKEXEC "PKEXEC=1"
 	CheckFlags ENTER_TO_EXIT "ENTER=1"
+	CheckFlags NOBLINK 'NOBLINK=1'
+	helloMessage 1>&2
 	CheckUserIsSudo
 	CheckLocalRootLAMW
 	GetInitialStatus
@@ -260,4 +278,47 @@ main(){
 	autoStartLAMW4Linux
 }
 
+TrapTermProcess(){
+	[ "$bg_pid" != "" ] && stopProgressBarAsFail
+	wait
+	exit 15
+}
+TrapControlC(){
+	[ "$bg_pid" != "" ] &&  stopProgressBarAsCancel
+	exit 2
+}
+helloMessage(){
+
+	LAMW_INSTALL_VERSION=$(
+		grep LAMW_INSTALL_VERSION  -m1  $LAMW_MANAGER_MODULES_PATH/headers/lamw_headers | 
+		awk -F'=' '{ print $2 }' )
+
+	LAMW_INSTALL_VERSION=${LAMW_INSTALL_VERSION//\"/}
+
+	local message="$(<${LAMW_MANAGER_MODULES_PATH}/headers/.hello.txt)"
+	local id=96
+	local italic=3
+	local blink=5
+	local style1=$'\e[1;'$id'm'
+	local style2=$'\e[1;'$blink'm'
+	local style3=$'\e[1;'$italic'm'
+	local version_message="${style3}v${LAMW_INSTALL_VERSION}${NORMAL}"
+
+	local lamw_mgr="./lamw_manager"
+	if [ "$USE_SETUP" = "1" ]; then
+		lamw_mgr="bash lamw_manager_setup.sh\t${VERDE}--${NORMAL}"
+	fi
+
+	if [ $NOBLINK =  0 ]; then 
+		echo -en "\n${style2}${style1}$message\t${version_message}\n\n"
+		echo "${VERMELHO}Warning: ${NORMAL}use ${NEGRITO}NOBLINK=1${NORMAL} if you are photosensitive, sample:" 
+		echo -e "\t$lamw_mgr ${NEGRITO}NOBLINK=1${NORMAL}\n\n" 
+	else 
+		echo -en "\n${style1}$message\t${version_message}${NORMAL}\n\n"
+   	fi
+   	
+}
+#instalando tratadores de sinal	
+trap TrapControlC 2 
+trap TrapTermProcess 15
 main $*

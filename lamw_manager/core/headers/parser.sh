@@ -70,16 +70,15 @@ TrapActions(){
 		"$ANT_HOME"		#1
 		"$GRADLE_ZIP_FILE" #2
 		"$GRADLE_HOME"   #3
-		"$CMD_SDK_TOOLS_ZIP" #6
-		"$CMD_SDK_TOOLS_DIR" #7
-		"$FIXLP_ZIP"
+		"$CMD_SDK_TOOLS_ZIP" #4
+		"$CMD_SDK_TOOLS_DIR" #5
+		"$FIXLP_ZIP" 
 	)
 	
-	if [ "$MAGIC_TRAP_INDEX" != "-1" ]; then
+	if [ $MAGIC_TRAP_INDEX -ge 0 ]; then
 		local file_deleted="${magic_trap[MAGIC_TRAP_INDEX]}"
-		if [ -e "$file_deleted" ]; then
-			echo "deleting... $file_deleted"	
-			rm  -rv $file_deleted
+		if [ -e "$file_deleted" ]; then	
+			rm  -r $file_deleted
 		fi
 	fi
 	
@@ -87,12 +86,17 @@ TrapActions(){
 }
 
 TrapTermProcess(){
+	isProtectedTrapActions && return
+
 	TrapActions 
 	[ "$bg_pid" != "" ] && stopProgressBarAsFail
 	wait
+	
 	exit 15
 }
 TrapControlC(){
+	isProtectedTrapActions && return
+
 	TrapActions 
 	[ "$bg_pid" != "" ] &&  stopProgressBarAsCancel
 	exit 2
@@ -103,16 +107,23 @@ resetTrapActions(){
 	MAGIC_TRAP_INDEX=-1
 }
 
+protectedTrapActions(){
+	MAGIC_TRAP_INDEX=-2
+}
+
+isProtectedTrapActions(){
+	[ $MAGIC_TRAP_INDEX = -2 ]
+}
+
 startImplicitAction(){
 	getImplicitInstall
+	echo ""
 	if [ $LAMW_IMPLICIT_ACTION_MODE = 0 ]; then
-		echo "Please wait..."
 		printf "${NEGRITO}Implicit installation of LAMW starting in $TIME_WAIT seconds  ... ${NORMAL}\n"
 		printf "Press control+c to exit ...\n"
 		sleep $TIME_WAIT
 		mainInstall
 	else
-		echo "Please wait ..."
 		printf "${NEGRITO}Implicit LAMW Framework update starting in $TIME_WAIT seconds ... ${NORMAL}\n"
 		printf "Press control+c to exit ...\n"
 		sleep $TIME_WAIT 

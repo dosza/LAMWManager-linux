@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.5.9.1
-#Date: 12/27/2023
+#Version: 0.5.9.2
+#Date: 01/01/2024
 #Description: "installer.sh" is part of the core of LAMW Manager. Contains routines for installing LAMW development environment
 #-------------------------------------------------------------------------------------------------#
 
@@ -190,18 +190,19 @@ getCompressFile(){
 	local uncompress_command="$3"
 	local before_uncompress="$4"
 	local error_uncompress_msg="${VERMELHO}Error:${NORMAL} corrupt/unsupported file"
-	local initial_msg="Please wait, extracting ${NEGRITO}$compress_file${NORMAL} ..." 
+	local initial_msg="extracting ${NEGRITO}$compress_file${NORMAL}" 
 	local sum_name=$(getNameSumByParent "${FUNCNAME[1]}")
 
 	Wget $compress_url
 	if [ -e $compress_file ]; then
-		printf "%s" "$initial_msg"	
+		sucess_filler="$initial_msg"	
+		startProgressBar
 		[ "$before_uncompress" != "" ] &&  eval "$before_uncompress"
 
 		if [ "$sum_name" != '' ]; then 
 			if ! runCheckSum "$sum_name"; then 
 				rm $compress_file
-				printf  "%s\n" "${FILLER:${#compress_file}}${VERMELHO} [FAIL]${NORMAL}"
+				stopProgressBarAsFail
 				echo 'Checksum not matched!!'
 				exit 1;
 			fi
@@ -209,8 +210,8 @@ getCompressFile(){
 
 		$uncompress_command
 		check_error_and_exit "$error_uncompress_msg"
-		printf  "%s\n" "${FILLER:${#compress_file}}${VERDE} [OK]${NORMAL}"
 		rm $compress_file
+		stopAsSuccessProgressBar
 	fi
 }
 
@@ -226,7 +227,7 @@ getJDK(){
 			rm -rf "$JAVA_HOME"
 			rm -rf "$realjdk"
 		elif [ -e  "openjdk-${JDK_VERSION}" ]; then 
-			rm "openjdk-${JDK_VERSION}"
+			rm "openjdk-${JDK_VERSION}" -rf
 		fi
 		
 		getCompressFile "$JDK_URL" "$JDK_TAR" "tar -zxf $JDK_TAR"
@@ -377,8 +378,6 @@ getAnt(){
 	changeDirectory "$ROOT_LAMW" 
 	if [ ! -e "$ANT_HOME" ]; then
 		MAGIC_TRAP_INDEX=0 # preperando o indice do arquivo/diretório a ser removido
-		trap TrapControlC  2
-		MAGIC_TRAP_INDEX=1
 		getCompressFile "$ANT_TAR_URL" "$ANT_TAR_FILE" "tar -xf $ANT_TAR_FILE"
 	fi
 
@@ -388,7 +387,6 @@ getGradle(){
 	changeDirectory $ROOT_LAMW
 	if [ ! -e "$GRADLE_HOME" ]; then
 		MAGIC_TRAP_INDEX=2 #Set arquivo a ser removido
-		trap TrapControlC  2 # set armadilha para o signal2 (siginterrupt)
 		getCompressFile "$GRADLE_ZIP_LNK" "$GRADLE_ZIP_FILE" "unzip -o -q $GRADLE_ZIP_FILE" "MAGIC_TRAP_INDEX=3"
 	fi
 }
@@ -401,7 +399,6 @@ getAndroidSDKTools(){
 	if [ ! -e "$CMD_SDK_TOOLS_DIR/latest" ];then
 		mkdir -p "$CMD_SDK_TOOLS_DIR"
 		changeDirectory "$CMD_SDK_TOOLS_DIR"
-		trap TrapControlC  2
 		MAGIC_TRAP_INDEX=4
 		getCompressFile "$CMD_SDK_TOOLS_URL" "$CMD_SDK_TOOLS_ZIP" "unzip -o -q  $CMD_SDK_TOOLS_ZIP" "MAGIC_TRAP_INDEX=5"
 		mv cmdline-tools latest
@@ -572,13 +569,22 @@ checkChangeLAMWDeps(){
 
 #get implict install 
 getImplicitInstall(){
-
+	local sucess_filler='checking your internet connection'
+	startProgressBar
+	if ! ping google.com -q -c4 &>/dev/null; then
+		echo "${VERMELHO}Error:${NORMAL} check your internet connection"
+		stopProgressBarAsFail
+		exit 1
+	fi
+	
+	stopAsSuccessProgressBar
 	if [ ! -e "$LAMW_INSTALL_LOG" ]; then
 		return 
 	else
 		grep "Generate LAMW_INSTALL_VERSION=$LAMW_INSTALL_VERSION" "$LAMW_INSTALL_LOG" 	> /dev/null
 		
 		if [ $? = 0 ]; then
+		
 			checkChangeLAMWDeps
 		else
 			local flag_is_old_lamw=0
@@ -645,6 +651,16 @@ installLAMWPackages(){
 		stopAsSuccessProgressBar
 	done
 }
+
+checkIfNeedRebuildCleanLazarus(){
+	if 	[ !  -e $LAMW_IDE_HOME/lazbuild ] ||
+		[ $FORCE_LAZARUS_CLEAN_BUILD =  1 ]
+	then
+		 return 0
+	fi
+	return 1
+
+}
 #Build lazarus ide
 BuildLazarusIDE(){	
 	parseFPCTrunk
@@ -655,15 +671,18 @@ BuildLazarusIDE(){
 		"clean all" "PP=${FPC_TRUNK_LIB_PATH}/ppcx64" "FPC_VERSION=$_FPC_TRUNK_VERSION"  "FPMAKEOPT=-T${CPU_COUNT}")
 	local build_msg="Please wait, starting build Lazarus to ${NEGRITO}x86_64/Linux${NORMAL}.............."
 	local sucess_filler="$(getCurrentSucessFiller 1 x86_64/Linux)"
+	
 	changeDirectory $LAMW_IDE_HOME
 
-	if [ $# = 0 ]; then
+	if  checkIfNeedRebuildCleanLazarus ; then
 		startProgressBar
+		
 		if ! make -s ${make_opts[@]} > /dev/null 2>&1; then
 			stopProgressBarAsFail
 			make -s ${make_opts[@]}
 			check_error_and_exit "$error_build_lazarus_msg" #build all IDE
 		fi
+
 	 	stopAsSuccessProgressBar
 	 	#printf  "%s\n" "${FILLER:${#sucess_filler}}${VERDE} [OK]${NORMAL}"
 	fi
@@ -719,12 +738,14 @@ getFixLp(){
 
 	[ $USE_FIXLP = 1 ] && return  
 	if [ ! -e $LAMW4LINUX_HOME/usr/bin/fixlp ]; then
-		MAGIC_TRAP_INDEX=8
-		export -f  getCompressFile Wget check_error_and_exit getFixLpInSubShell getNameSumByParent
-		export WGET_TIMEOUT FILLER VERDE VERMELHO NORMAL NEGRITO
+		MAGIC_TRAP_INDEX=6
+		export -f  getCompressFile Wget check_error_and_exit getFixLpInSubShell 
+		export -f stopProgressBar getNameSumByParent startProgressBar 
+		export -f stopProgressBarAsFail stopAsSuccessProgressBar
+		export WGET_TIMEOUT FILLER VERDE VERMELHO NORMAL NEGRITO MAGIC_TRAP_INDEX
 		
 		changeDirectory "$ROOT_LAMW"
-		echo "Please wait, trying get ${NEGRITO}fixlp${NORMAL} ...${FILLER:5} ${NEGRITO}[⏳]$NORMAL"
+
 		#call subshell to get fixlp,
 		if ! bash -c getFixLpInSubShell; then 
 			bash -c getFixLpInSubShell
@@ -774,7 +795,6 @@ mainInstall(){
 	BuildLazarusIDE
 	installFixLp
 	LAMW4LinuxPostConfig
-	enableADBtoUdev
 	writeLAMWLogInstall
 	changeOwnerAllLAMW
 }

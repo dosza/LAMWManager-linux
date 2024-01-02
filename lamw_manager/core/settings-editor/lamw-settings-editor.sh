@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (mater-alma)
 #Course: Science Computer
-#Version: 0.5.9.1
-#Date: 12/27/2023
+#Version: 0.5.9.2
+#Date: 01/01/2024
 #Description: The "lamw-manager-settings-editor.sh" is part of the core of LAMW Manager. Responsible for managing LAMW Manager / LAMW configuration files..
 #-----------------------------------------------------------------------f--------------------------#
 #this function builds initial struct directory of LAMW env Development !
@@ -76,11 +76,9 @@ changeOwnerAllLAMW(){
 			files_chown+=($NO_EXISTENT_ROOT_LAMW_PARENT)
 	fi
 
-	printf "%s" "Restoring directories ........."
-	local max=${#files_chown[*]} ; [ $max -lt 4 ] && max=4
-	local filler_size="${#FILLER}"
-	local -i rate=$((filler_size/max))
-	local -i offset=$((filler_size-rate))
+	sucess_filler="restoring directories"
+	protectedTrapActions
+	startProgressBar
 	for ((i=0;i<${#files_chown[*]};i++))
 	do
 		if [ -e ${files_chown[i]} ] ; then
@@ -93,11 +91,10 @@ changeOwnerAllLAMW(){
 				chown $LAMW_USER_GROUP -R ${files_chown[i]}
 			fi
 		fi
-		printf "%s" "${FILLER:$offset}"
 	done
-	filler_size=$(len '.....'); [ $max = 4 ] && filler_size=$(len '.')
-	offset=$((offset+filler_size))
-	printf  "%s\n" "${FILLER:$offset}${VERDE} [OK]${NORMAL}"
+	stopAsSuccessProgressBar
+	resetTrapActions
+
 }
 #write log lamw install 
 writeLAMWLogInstall(){
@@ -114,7 +111,6 @@ writeLAMWLogInstall(){
 		"OLD_ANDROID_SDK=$OLD_ANDROID_SDK"
 		"ANT_VERSION=$ANT_VERSION_STABLE"
 		"GRADLE_VERSION=$GRADLE_VERSION"
-		"SDK_TOOLS_VERSION=$SDK_TOOLS_VERSION"
 		"FPC_VERSION=$fpc_version"
 		"LAZARUS_VERSION=$LAZARUS_STABLE_VERSION"
 		"AARCH64_SUPPORT=$FLAG_FORCE_ANDROID_AARCH64"
@@ -208,11 +204,15 @@ changeBashHeaderDescription(){
 
 #this  fuction create a INI file to config  all paths used in lamw framework 
 LAMW4LinuxPostConfig(){
+	local sucess_filler="saving LAMW4Linux config"
 	local lazbuild_path="$LAMW4LINUX_HOME/usr/bin/lazbuild"
 	local old_lamw_workspace="$LAMW_USER_HOME/Dev/lamw_workspace"
 	local ant_path=$ANT_HOME/bin
 	local breakline='\\'n
 	local description_index=4
+	
+	startProgressBar
+	protectedTrapActions
 
 	[ -e $old_lamw_workspace ] && 
 		mv $old_lamw_workspace $LAMW_WORKSPACE_HOME
@@ -323,6 +323,9 @@ LAMW4LinuxPostConfig(){
 		SystemTerminalMitigation
 	fi
 	AddLAMWtoStartMenu
+	enableADBtoUdev
+	stopAsSuccessProgressBar
+	resetTrapActions
 }
 
 ActiveProxy(){
@@ -470,13 +473,9 @@ CleanOldConfig(){
 		"$OLD_FPC_CFG_PATH"
 	)
 
-	local max=${#list_deleted_files[*]}
-	local filler_size="${#FILLER}"
-	local -i rate=$((filler_size/max))
-	local -i offset=$((filler_size-rate))
+	sucess_filler="uninstalling LAMW4Linux IDE"
 
-	printf "%s" "Uninstalling LAMW4Linux IDE ........."
-
+	startProgressBar
 	for((i=0;i<${#list_deleted_files[*]};i++)); do
 		if [ -e "${list_deleted_files[i]}" ]; then 
 			[ -d  "${list_deleted_files[i]}" ] && local rm_opts="-rf"
@@ -484,12 +483,7 @@ CleanOldConfig(){
 				rm  "${list_deleted_files[i]}" $rm_opts
 			fi
 		fi
-		printf "%s" "${FILLER:$offset}"
 	done
-
-	filler_size=$(len '')
-	offset=$((offset+filler_size))
-	printf  "%s\n" "${FILLER:$offset}${VERDE} [OK]${NORMAL}"
 
 	CleanOldCrossCompileBins
 	update-mime-database   $LAMW_USER_HOME/.local/share/mime/
@@ -498,6 +492,8 @@ CleanOldConfig(){
 	cp ~/.gitconfig ~/.old.git.config
 	sed -i "/directory = $scape_root_lamw/d" ~/.gitconfig
 	unsetLocalRootLAMW
+	stopAsSuccessProgressBar
+
 }
 
 #Create SDK simbolic links

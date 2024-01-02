@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.5.9.1
-#Date: 12/27/2023
+#Version: 0.5.9.2
+#Date: 01/01/2024
 #Description:The "cross-builder.sh" is part of the core of LAMW Manager.  This script contains crosscompile compiler generation routines for ARMv7 / AARCH64- Android
 #-------------------------------------------------------------------------------------------------#
 
@@ -72,14 +72,63 @@ getMaxBuildArchs(){
 		echo $MIN_LAMW_ARCHS
 	fi
 }
+
+checkFPCTrunkIntegrity(){
+	local sucess_filler="checking integrity of FPC ${NEGRITO}${build_aarch[$1]}${NORMAL}"
+
+	if [ ! -e $FPC_TRUNK_LIB_PATH/${ppcs_name[$1]} ] || [ ! -e $sha256_current_pp ]; then 
+		return 1;
+	fi
+
+	startProgressBar 
+
+	if ! sha256sum -c $sha256_current_pp --quiet; then
+		rm $sha256_current_pp
+		stopProgressBarAsFail
+		FORCE_LAZARUS_CLEAN_BUILD=1
+		return 1
+	fi
+
+	stopAsSuccessProgressBar
+
+	return 0;
+}
+
+registryFPCTrunkIntegrity(){
+	[  -e $sha256_current_pp ] && return
+	
+	local sucess_filler="calculing FPC ${NEGRITO}${build_aarch[$1]}${NORMAL} checksum"
+	local pppath=${build_aarch[$1],,}
+	pppath=${pppath//\//\-}
+	local find_paths=("${FPC_TRUNK_LIB_PATH}/units/${pppath}" "${FPC_TRUNK_LIB_PATH}/fpmkinst/$pppath")
+	local obj_regex='(\.o$)'
+	startProgressBar
+	protectedTrapActions
+	sha256sum $FPC_TRUNK_LIB_PATH/${ppcs_name[$1]}  > $sha256_current_pp
+
+	for file in $(find ${find_paths[@]} ); do
+		
+		([[ -d "$file" ]] || [[ "$file" =~ $obj_regex ]] ) && continue
+
+		sha256sum $file  >> $sha256_current_pp
+	done
+	stopAsSuccessProgressBar
+	resetTrapActions
+
+
+}
 #Function to build ARMv7 and AARCH64
 buildCrossAndroid(){
-	local build_aarch=( "x86_64/Linux" {AARCH64,ARMv7,x86_64,i386}/Android)
+	local build_aarch=( "x86_64/Linux" {AARCH64,ARM,x86_64,i386}/Android)
+	local ppcs_name=(ppcx64  ppcrossa64 ppcrossarm ppcrossx64 ppcross386)
 	local max_archs=$(getMaxBuildArchs)
 	changeDirectory "$LAMW4LINUX_HOME/usr/share/fpcsrc/$FPC_TRUNK_SVNTAG"
 	
-	for ((i=0;i<$max_archs;i++)) do 
+	for ((i=0;i<$max_archs;i++)) do
+		local sha256_current_pp=$FPC_TRUNK_LIB_PATH/.sha256sum-${ppcs_name[$i]}.txt
+		checkFPCTrunkIntegrity $i && continue
 		buildCurrentFPC
+		registryFPCTrunkIntegrity $i
 	done
 
 	local sucess_filler="$(getCurrentSucessFiller 2 android/Linux)"
