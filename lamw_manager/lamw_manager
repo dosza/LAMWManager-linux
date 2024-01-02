@@ -295,27 +295,26 @@ helloMessage(){
 
 	LAMW_INSTALL_VERSION=${LAMW_INSTALL_VERSION//\"/}
 
-	local message='   / /   /   |  /  |/  / |     / /  /  |/  /___ _____  ____ _____ ____  _____
-  / /   / /| | / /|_/ /| | /| / /  / /|_/ / __ `/ __ \/ __ `/ __ `/ _ \/ ___/
- / /___/ ___ |/ /  / / | |/ |/ /  / /  / / /_/ / / / / /_/ / /_/ /  __/ /    
-/_____/_/  |_/_/  /_/  |__/|__/  /_/  /_/\__,_/_/ /_/\__,_/\__, /\___/_/     
-                                                          /____/'
-   local id=96
-   local blink=5
-   local color=$'\e[1;'$id'm'
-   local color2=$'\e[1;'$blink'm'
+	local message="$(<${LAMW_MANAGER_MODULES_PATH}/headers/.hello.txt)"
+	local id=96
+	local italic=3
+	local blink=5
+	local style1=$'\e[1;'$id'm'
+	local style2=$'\e[1;'$blink'm'
+	local style3=$'\e[1;'$italic'm'
+	local version_message="${style3}v${LAMW_INSTALL_VERSION}${NORMAL}"
 
-   	local lamw_mgr="./lamw_manager"
+	local lamw_mgr="./lamw_manager"
 	if [ "$USE_SETUP" = "1" ]; then
 		lamw_mgr="bash lamw_manager_setup.sh\t${VERDE}--${NORMAL}"
 	fi
 
-   if [ $NOBLINK =  0 ]; then 
-   		echo -en "\n${color2}${color}$message\tv${LAMW_INSTALL_VERSION}${NORMAL}\n"
-   		echo "${VERMELHO}Warning: ${NORMAL}use ${NEGRITO}NOBLINK=1${NORMAL} if you are photosensitive, sample:" 
-   		echo -e "\t$lamw_mgr ${NEGRITO}NOBLINK=1${NORMAL}\n\n" 
-   else 
-   		echo -en "\n${color}$message\tv${LAMW_INSTALL_VERSION}${NORMAL}\n\n"
+	if [ $NOBLINK =  0 ]; then 
+		echo -en "\n${style2}${style1}$message\t${version_message}\n\n"
+		echo "${VERMELHO}Warning: ${NORMAL}use ${NEGRITO}NOBLINK=1${NORMAL} if you are photosensitive, sample:" 
+		echo -e "\t$lamw_mgr ${NEGRITO}NOBLINK=1${NORMAL}\n\n" 
+	else 
+		echo -en "\n${style1}$message\t${version_message}${NORMAL}\n\n"
    	fi
    	
 }
