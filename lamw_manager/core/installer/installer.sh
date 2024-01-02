@@ -569,13 +569,18 @@ checkChangeLAMWDeps(){
 
 #get implict install 
 getImplicitInstall(){
-
+	if ! ping google.com -q -c4 &>/dev/null; then
+		echo "${VERMELHO}Error:${NORMAL} check your internet connection"
+		exit 1
+	fi
+	
 	if [ ! -e "$LAMW_INSTALL_LOG" ]; then
 		return 
 	else
 		grep "Generate LAMW_INSTALL_VERSION=$LAMW_INSTALL_VERSION" "$LAMW_INSTALL_LOG" 	> /dev/null
 		
 		if [ $? = 0 ]; then
+		
 			checkChangeLAMWDeps
 		else
 			local flag_is_old_lamw=0
