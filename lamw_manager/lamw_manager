@@ -196,6 +196,7 @@ Run(){
 	setLAMWUserOnwerFiles
 	getBashCMD
 	setUseLamwManagerSetup
+
 	if [ $USE_PKEXEC = 1 ] ; then
 		RunAsPolkit $*
 	else
