@@ -273,9 +273,8 @@ main(){
 	CheckUserIsSudo
 	CheckLocalRootLAMW
 	GetInitialStatus
-	testConnectionInternet
 	CheckNeedLazarusProjectDowngradle
-	StopGradleDaemon
+	StopGradleDaemon 1>&2
 	Run $ARGS
 	DelTempFiles
 	GetFinalStatus
