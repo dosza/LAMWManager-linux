@@ -182,6 +182,34 @@ else
 	fi
 fi
 
+testConnectionInternet(){
+	
+	local sucess_filler="checking your internet connection"
+
+	getFiller
+
+	echo "${sucess_filler^} ..."
+
+	startProgressBar
+	
+	if ! ping google.com -q -c4 &>/dev/null; then
+		echo "${VERMELHO}Error:${NORMAL} check your internet connection"
+		sleep 0.02
+		stopProgressBarAsFail
+		exit 1
+	fi
+	stopAsSuccessProgressBar
+}
+
+
+testConnectionInternetOnDemand(){
+	for action in ${NEED_INTERNET_ACTIONS_REGEX[@]};do
+		if [[ "$1" =~ $action ]] || [[ "$1" = "" ]]; then 
+			testConnectionInternet 1>&2
+			return
+		fi
+	done
+}
 
 if [[ "${ARGS[*]}" =~ $MINIMAL_REGEX ]];then 
 	LAMW_MINIMAL_INSTALL=1
