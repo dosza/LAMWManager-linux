@@ -26,7 +26,11 @@ source "$LAMW_MANAGER_MODULES_PATH/components/progress-bar.sh"
 
 getFiller
 checkIfDistroIsLikeDebian
+testConnectionInternetOnDemand $1
+
 #Parameters are useful for understanding script operation
+
+
 case "$1" in
 	"version")
 		printf "${LAMW_INSTALL_WELCOME[*]}"
@@ -97,6 +101,7 @@ case "$1" in
 	"build-lazarus")
 		getStatusInstalation
 		if [ $LAMW_INSTALL_STATUS = 0 ]; then 
+			testConnectionInternet 1>&2
 			mainInstall
 		else
 			FORCE_LAZARUS_CLEAN_BUILD=1

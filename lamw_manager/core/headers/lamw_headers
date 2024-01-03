@@ -175,3 +175,7 @@ declare -A JDK_SUM=(
 	['checksum_type']=sha256sum
 	['sha256sum']=''
 )
+
+declare NEED_INTERNET_ACTIONS_REGEX=(
+	'\-\-'{reinstall,reset{,'\-'aapis},update'\-'lamw,sdkmanager,minimal,use'\-'proxy}
+)
