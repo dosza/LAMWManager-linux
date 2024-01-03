@@ -58,9 +58,7 @@ StopGradleDaemon(){
 
 	if [ "$gradle_path" != "" ] && [ -e "$gradle_path" ]; then 
 		
-		if ps  | 
-			grep "$ROOT_LAMW/gradle-$gradle_version" 
-		then 
+		if ps  -e -o command | grep "^${JAVA_HOME}.*$ROOT_LAMW/gradle" -q ; then
 			
 			echo "${sucess_filler^} ..."
 			startProgressBar
