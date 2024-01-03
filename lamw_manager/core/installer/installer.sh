@@ -569,7 +569,6 @@ checkChangeLAMWDeps(){
 
 #get implict install 
 getImplicitInstall(){
-
 	if [ ! -e "$LAMW_INSTALL_LOG" ]; then
 		return 
 	else
