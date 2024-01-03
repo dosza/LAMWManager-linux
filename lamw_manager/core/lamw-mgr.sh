@@ -74,7 +74,7 @@ case "$1" in
 		fi
 	;;
 	"--reinstall")
-		echo ""
+		printf "Please wait ...\n"
 		mainInstall
 	;;
 
