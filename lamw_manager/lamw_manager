@@ -292,24 +292,6 @@ TrapControlC(){
 	[ "$bg_pid" != "" ] &&  stopProgressBarAsCancel
 	exit 2
 }
-testConnectionInternet(){
-	
-	local sucess_filler="checking your internet connection"
-
-	getFiller
-
-	echo "${sucess_filler^} ..."
-
-	startProgressBar
-	
-	if ! ping google.com -q -c4 &>/dev/null; then
-		echo "${VERMELHO}Error:${NORMAL} check your internet connection"
-		sleep 0.02
-		stopProgressBarAsFail
-		exit 1
-	fi
-	stopAsSuccessProgressBar
-}
 
 helloMessage(){
 
