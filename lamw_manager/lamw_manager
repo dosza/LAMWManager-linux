@@ -50,7 +50,10 @@ StopGradleDaemon(){
 	local sucess_filler="stopping Gradle Daemons"
 
 	if [ -e "$LAMW_INSTALL_LOG" ] ; then
-		local gradle_version="$(grep '^GRADLE_VERSION' $LAMW_INSTALL_LOG | sed 's/GRADLE_VERSION=//g')"
+		local gradle_version="$(grep '^GRADLE_VERSION' $LAMW_INSTALL_LOG |
+		 	sed 's/GRADLE_VERSION=//g'
+		)"
+
 		local gradle_path="$ROOT_LAMW/gradle-$gradle_version"
 		GetLocalJavaHome
 		LAMW_INSTALL_LOG_CHANGES['INITIAL']=$gradle_version
@@ -210,8 +213,8 @@ callLamw4LinuxTerminal(){
 }
 
 cacheGradle(){
-	getFiller
 	local sucess_filler="caching Gradle"
+	getFiller
 	startProgressBar
 	callLamw4LinuxTerminal 'cacheGradle' &>/dev/null
 	stopAsSuccessProgressBar
