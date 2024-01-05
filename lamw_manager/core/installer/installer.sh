@@ -193,21 +193,26 @@ getCompressFile(){
 	local initial_msg="extracting ${NEGRITO}$compress_file${NORMAL}" 
 	local sum_name=$(getNameSumByParent "${FUNCNAME[1]}")
 
-	Wget $compress_url
+	echo -e "\nPlease wait, getting ${compress_file} ...\n"
+	Wget $compress_url -q --show-progress
+	echo ""
 	if [ -e $compress_file ]; then
-		sucess_filler="$initial_msg"	
-		startProgressBar
+			
 		[ "$before_uncompress" != "" ] &&  eval "$before_uncompress"
 
 		if [ "$sum_name" != '' ]; then 
+			sucess_filler="checking ${NEGRITO}$compress_file${NORMAL}"
+			startProgressBar
 			if ! runCheckSum "$sum_name"; then 
 				rm $compress_file
 				stopProgressBarAsFail
 				echo 'Checksum not matched!!'
 				exit 1;
 			fi
+			stopAsSuccessProgressBar
 		fi
-
+		sucess_filler="$initial_msg"
+		startProgressBar
 		$uncompress_command
 		check_error_and_exit "$error_uncompress_msg"
 		rm $compress_file
