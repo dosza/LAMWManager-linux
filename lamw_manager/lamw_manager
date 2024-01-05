@@ -297,7 +297,8 @@ TrapControlC(){
 helloMessage(){
 
 	LAMW_INSTALL_VERSION=$(
-		grep LAMW_INSTALL_VERSION  -m1  $LAMW_MANAGER_MODULES_PATH/headers/lamw_headers | 
+		grep LAMW_INSTALL_VERSION\
+		-m1  $LAMW_MANAGER_MODULES_PATH/headers/lamw_headers | 
 		awk -F'=' '{ print $2 }' )
 
 	LAMW_INSTALL_VERSION=${LAMW_INSTALL_VERSION//\"/}
