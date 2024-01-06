@@ -483,7 +483,7 @@ showPackageNameByIndex(){
 }
 
 printOK(){
-	printf "%s\n" "${FILLER:${#1}}${VERDE} [OK]${NORMAL}"
+	printf "%s\r" "${FILLER:${#1}}${VERDE} [OK]${NORMAL}"
 }
 printFail(){
 	printf "%s\n" "${FILLER:${#1}}${VERMELHO} [FAILS]${NORMAL}"
@@ -503,6 +503,7 @@ systemHasLibsToBuildLazarus(){
 			exit 1
 		fi
 	done
+	echo ""
 	[ ${count} = ${#LIBS[@]} ]
 }
 
@@ -524,6 +525,7 @@ systemHasHeadersToBuildLazarus(){
 		fi
 		((count++))
 	done
+	echo ""
 }
 
 
@@ -540,6 +542,7 @@ systemHasToolsToRunLamwManager(){
 			exit 1
 		fi
 	done
+	echo ""
 
 	[ $count = ${#SOFTWARES[@]} ]
 }
