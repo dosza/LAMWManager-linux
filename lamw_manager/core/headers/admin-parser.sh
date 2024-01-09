@@ -125,8 +125,6 @@ RunAsPolkit(){
 		export EXIT_STATUS=$?
 	fi
 	
-	[  $ENTER_TO_EXIT = 1 ] && echo "press enter to exit ..." && read
-	
 
 }
 
