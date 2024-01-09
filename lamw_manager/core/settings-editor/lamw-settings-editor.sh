@@ -19,6 +19,7 @@ initROOT_LAMW(){
 		$LAMW_IDE_HOME_CFG
 		"$LAMW_USER_MIMES_PATH"
 		"$LAMW_USER_APPLICATIONS_PATH"
+		"$LAMW_USER_HOME/.local/bin"
 	)
 
 	for lamw_dir in ${init_root_lamw_dirs[@]}; do
@@ -54,6 +55,8 @@ AddSDKPathstoProfile(){
 #Esta funcao altera todos o dono de todos arquivos e  pastas do ambiente LAMW de root para o $LAMW_USER_HOME
 #Ou seja para o usuario que invocou o lamw_manager (bootstrap)
 changeOwnerAllLAMW(){
+	[ $UID != 0 ]  && return 
+
 	#case only update-lamw
 	if [ $# = 1 ]; then
 		local files_chown=(
@@ -315,15 +318,15 @@ LAMW4LinuxPostConfig(){
 
 	if [ -e  $LAMW_IDE_HOME/startlamw4linux ]; then
 		chmod +x $LAMW_IDE_HOME/startlamw4linux
-		[ ! -e "/usr/bin/startlamw4linux" ] && 
-			ln -s "$LAMW_IDE_HOME/startlamw4linux" "/usr/bin/startlamw4linux"
+		[ ! -e "$LAMW_USER_HOME/.local/bin/startlamw4linux" ] && 
+			ln -s "$LAMW_IDE_HOME/startlamw4linux" "$LAMW_USER_HOME/.local/bin/startlamw4linux"
 	fi
 
 	if [ $IS_DEBIAN = 0 ] && [ $NEED_XFCE_MITIGATION  = 1 ]; then 
 		SystemTerminalMitigation
 	fi
 	AddLAMWtoStartMenu
-	enableADBtoUdev
+	deleteCoreLock
 	stopAsSuccessProgressBar
 	resetTrapActions
 }
@@ -471,6 +474,7 @@ CleanOldConfig(){
 		"$FPC_TRUNK_LIB_PATH"
 		"/root/.fpc.cfg"
 		"$OLD_FPC_CFG_PATH"
+		"$LAMW_USER_HOME/.local/bin/startlamw4linux"
 	)
 
 	sucess_filler="uninstalling LAMW4Linux IDE"
