@@ -74,7 +74,6 @@ case "$1" in
 	
 		adminInstallTasks
 		runPostInstallActions &
-		echo background task id $!
 	;;
 	"1")
 		CleanOldConfig
