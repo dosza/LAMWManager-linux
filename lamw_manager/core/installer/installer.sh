@@ -760,8 +760,8 @@ mainInstall(){
 	getFiller
 	checkLAMWManagerVersion > /dev/null
 	singleCoreWarning
-	initROOT_LAMW
 	installSystemDependencies
+	initROOT_LAMW
 	setLAMWDeps
 	LAMWPackageManager
 	checkProxyStatus
