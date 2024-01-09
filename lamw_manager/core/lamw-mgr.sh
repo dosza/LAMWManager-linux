@@ -23,6 +23,8 @@ source "$LAMW_MANAGER_MODULES_PATH/settings-editor/lamw-settings-editor.sh"
 source "$LAMW_MANAGER_MODULES_PATH/settings-editor/root-lamw-settings-editor.sh"
 source "$LAMW_MANAGER_MODULES_PATH/cross-builder/cross-builder.sh"
 source "$LAMW_MANAGER_MODULES_PATH/components/progress-bar.sh"
+source "$LAMW_MANAGER_MODULES_PATH/headers/admin-parser.sh"
+
 
 getFiller
 checkIfDistroIsLikeDebian
@@ -41,8 +43,7 @@ case "$1" in
 		UNINSTALL_LAMW=1
 		getStatusInstalation
 		[ $LAMW_INSTALL_STATUS = 1 ] && checkLAMWManagerVersion >/dev/null
-		CleanOldConfig;
-		changeOwnerAllLAMW
+		RunAsAdmin 1
 	;;
 
 	"--sdkmanager")
@@ -81,7 +82,7 @@ case "$1" in
 	"--reset")
 		printf "Please wait ...\n"
 		getStatusInstalation
-		CleanOldConfig
+		RunAsAdmin 2
 		mainInstall
 	;;
 	"--reset-aapis")
