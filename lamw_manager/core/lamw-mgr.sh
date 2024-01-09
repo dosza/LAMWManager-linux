@@ -26,14 +26,15 @@ source "$LAMW_MANAGER_MODULES_PATH/components/progress-bar.sh"
 source "$LAMW_MANAGER_MODULES_PATH/headers/admin-parser.sh"
 
 
+parseFlags
 getFiller
 checkIfDistroIsLikeDebian
 testConnectionInternetOnDemand $1
-
 #Parameters are useful for understanding script operation
 
 
-case "$1" in
+main(){
+	case "$1" in
 	"version")
 		printf "${LAMW_INSTALL_WELCOME[*]}"
 		printf "Linux supported\n${LAMW_LINUX_SPP[*]}"
@@ -114,10 +115,22 @@ case "$1" in
 	"get-root-lamw")
 		echo "$ROOT_LAMW"
 	;;
+	"get-status")
+		getStatusInstalation
+		if [ $LAMW_INSTALL_STATUS = 0 ]; then
+			exit 1
+		fi 
+		exit 0
+	;;
 	*)
 		printf "${VERMELHO}Invalid argument!${NORMAL}\n$(lamw_manager_help)" >&2
 		exit 1
 	;;
-esac
 
+
+	esac
+
+}
+
+main ${ARGS[@]}
 exit $EXIT_STATUS

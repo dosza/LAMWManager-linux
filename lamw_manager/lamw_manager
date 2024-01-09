@@ -82,44 +82,6 @@ DelTempFiles(){
 	[ -e $LAMW_MANAGER_LOCK ] &&  rm $LAMW_MANAGER_LOCK
 }
 
-#Check if $USER is a sudo member 
-
-CheckFlags(){
-	newPtr ref_flag="$1"
-	local flagFind="$2"
-
-	if [[ "$ARGS" =~ $flagFind  ]]; then 
-		export ref_flag=1
-		export ARGS=${ARGS//$flagFind/} # remove todas as ocorrencias de DEBUG=1
-	fi
-}
-
-#Check if DEBUG flag is set 
-getBashCMD(){
-	
-	if [ $DEBUG = 1 ]; then
-		LAMW_MGR_INSTALL="bash -x $LAMW_MGR_INSTALL"
-	fi
-}
-
-
-
-
-setUseLamwManagerSetup(){
-	if [ "$USE_SETUP" = "1" ];
-	then 
-		isSupportedPolkit
-		local support_polkit=$?
-
-		if [ $support_polkit = 0 ]; then 
-			USE_PKEXEC=1
-		fi
-
-		LAMW_MANAGER_ENV+=("USE_SETUP=1")
-	else
-		LAMW_MANAGER_ENV+=("USE_SETUP=0")
-	fi
-}
 
 CheckLocalRootLAMW(){
 	if [ "$LOCAL_ROOT_LAMW" != "" ]; then
@@ -134,33 +96,13 @@ CheckLocalRootLAMW(){
 		fi
 	fi
 
-	LAMW_MANAGER_ENV+=(ROOT_LAMW=$ROOT_LAMW NOBLINK=$NOBLINK)
 	LAMW4LINUX_HOME=$ROOT_LAMW/lamw4linux
 	LAMW_FRAMEWORK_HOME=$ROOT_LAMW/lazandroidmodulewizard
 	LAMW_INSTALL_LOG="$LAMW4LINUX_HOME/lamw-install.log"
+	export NO_EXISTENT_ROOT_LAMW_PARENT
+	export ROOT_LAMW
 }
 
-
-
-#get install status and exit
-getStatus(){
-	
-	local status_regex='(get\-status)'
-
-	if [[ "$*" =~ $status_regex  ]]; then 
-		if [ -e "$LAMW_INSTALL_LOG" ]; then
-			exit 0
-		else
-			exit 1
-		fi
-	fi
-}
-
-setLAMWUserOnwerFiles(){
-	LAMW_MANAGER_ENV+=(
-		LAMW_USER_GROUP=$(stat -c '%U:%G' $LAMW_MANAGER_LOCK) 
-	)
-}
 #Wrapper function to Run LAMW Manager
 
 
@@ -221,25 +163,24 @@ autoStartLAMW4Linux(){
 	exit $EXIT_STATUS
 }
 
+
+parseFlags(){
+	CheckFlags DEBUG "DEBUG=1" 0
+    CheckFlags NOBLINK 'NOBLINK=1' 0
+}
+
 Run(){
-	getStatus $*
 	IsFileBusy lamw_manager $LAMW_MANAGER_LOCK
 	exec 3>$LAMW_MANAGER_LOCK
 	echo "" >&3
-	setLAMWUserOnwerFiles
 	getBashCMD
-	setUseLamwManagerSetup
-	env ${LAMW_MANAGER_ENV[@]} USE_PKEXEC=$USE_PKEXEC DEBUG=$DEBUG $LAMW_MGR_INSTALL $*
+	$LAMW_MGR_INSTALL $*
 	exec 3>&-
 }
 #main function
 main(){
-	
+	parseFlags
 	IsUserRoot "lamw_manager"
-	CheckFlags DEBUG "DEBUG=1"
-	CheckFlags USE_PKEXEC "PKEXEC=1"
-	CheckFlags ENTER_TO_EXIT "ENTER=1"
-	CheckFlags NOBLINK 'NOBLINK=1'
 	helloMessage 1>&2
 	CheckUserIsSudo
 	CheckLocalRootLAMW
