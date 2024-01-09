@@ -25,6 +25,16 @@ if [ ! $UID  = 0  ]; then
 	exit 1
 fi
 
+checkRootLAMWInitStatus(){
+	local parent="$(dirname $ROOT_LAMW)"
+	if [ $UID = 0 ]; then
+		if [ -O $parent ]; then 
+			if [ ! -e $ROOT_LAMW ]; then 
+				initROOT_LAMW
+			fi
+		fi
+	fi
+}
 isLAMWUserOwnerROOTLAMW(){
 	local status=0
 	if [ -e "$ROOT_LAMW" ]; then 
@@ -50,11 +60,10 @@ installSystemDependencies(){
 	fi
 	installDebianDependencies	
 }
-
-
 adminInstallTasks(){
 	checkIfDistroIsLikeDebian
 	LAMWPackageManager
+	checkRootLAMWInitStatus
 	if ! isLAMWUserOwnerROOTLAMW; then
 		changeOwnerAllLAMW
 	fi
