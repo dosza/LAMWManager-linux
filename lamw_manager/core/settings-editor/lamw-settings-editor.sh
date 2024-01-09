@@ -464,6 +464,7 @@ CleanOldConfig(){
 		"/usr/bin/ppcrossa64"
 		"/usr/lib/fpc/$FPC_VERSION/fpmkinst/arm-android"
 		"/usr/bin/startlamw4linux"
+		"$LAMW_USER_HOME/.local/bin/startlamw4linux"
 		"$FPC_CFG_PATH"
 		"$LAMW_IDE_HOME_CFG"
 		"$ROOT_LAMW"
@@ -474,7 +475,7 @@ CleanOldConfig(){
 		"$FPC_TRUNK_LIB_PATH"
 		"/root/.fpc.cfg"
 		"$OLD_FPC_CFG_PATH"
-		"$LAMW_USER_HOME/.local/bin/startlamw4linux"
+		
 	)
 
 	sucess_filler="uninstalling LAMW4Linux IDE"
