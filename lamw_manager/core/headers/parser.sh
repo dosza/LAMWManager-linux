@@ -212,10 +212,17 @@ testConnectionInternetOnDemand(){
 }
 
 
+parseFlags(){
+	CheckFlags DEBUG "DEBUG=1" 1
+    CheckFlags USE_PKEXEC "PKEXEC=1" 1
+    CheckFlags ENTER_TO_EXIT "ENTER=1" 1
+    CheckFlags NOBLINK 'NOBLINK=1' 1
+}
+
+
 if [[ "${ARGS[*]}" =~ $MINIMAL_REGEX ]];then 
 	LAMW_MINIMAL_INSTALL=1
 	ARGS=(${ARGS[@]//'--minimal'/})
 fi
-
 
 
