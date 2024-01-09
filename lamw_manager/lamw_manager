@@ -20,6 +20,7 @@ LAMW_MANAGER_MODULES_PATH=$LAMW_MGR_CORE/core
 
 source "$LAMW_MANAGER_MODULES_PATH/headers/common-shell.sh"
 source "$LAMW_MANAGER_MODULES_PATH/headers/lamw_manager_headers"
+source "$LAMW_MANAGER_MODULES_PATH/headers/admin-parser.sh"
 source "$LAMW_MANAGER_MODULES_PATH/components/progress-bar.sh"
 source "$LAMW_MANAGER_MODULES_PATH/settings-editor/root-lamw-settings-editor.sh"
 
@@ -82,11 +83,7 @@ DelTempFiles(){
 }
 
 #Check if $USER is a sudo member 
-CheckUserIsSudo(){
-	if ! isUsersSudo $USER ; then
-		export USE_PKEXEC=1
-	fi
-}
+
 CheckFlags(){
 	newPtr ref_flag="$1"
 	local flagFind="$2"
@@ -105,10 +102,7 @@ getBashCMD(){
 	fi
 }
 
-isSupportedPolkit(){
-	local error_msg="${VERMELHO}Fatal error:${NORMAL} Cannot run on tty terminal!!"
-	tty | grep 'pts/[0-9]'>/dev/null
-}
+
 
 
 setUseLamwManagerSetup(){
@@ -146,28 +140,7 @@ CheckLocalRootLAMW(){
 	LAMW_INSTALL_LOG="$LAMW4LINUX_HOME/lamw-install.log"
 }
 
-RunAsSudo(){
-	sudo -i env ${LAMW_MANAGER_ENV[@]} $LAMW_MGR_INSTALL $*
-	export EXIT_STATUS=$?
-}
 
-
-#Run LAMW Manager as Police Kit
-RunAsPolkit(){
-	isSupportedPolkit
-	if [ $?  = 0 ]; then 
-		LAMW_MANAGER_ENV+=(DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY)
-		pkexec  env ${LAMW_MANAGER_ENV[@]} $LAMW_MGR_INSTALL $*
-		export EXIT_STATUS=$?
-	else
-		echo $error_msg
-		export EXIT_STATUS=$?
-	fi
-	
-	[  $ENTER_TO_EXIT = 1 ] && echo "press enter to exit ..." && read
-	
-
-}
 
 #get install status and exit
 getStatus(){
@@ -189,22 +162,7 @@ setLAMWUserOnwerFiles(){
 	)
 }
 #Wrapper function to Run LAMW Manager
-Run(){
-	getStatus $*
-	IsFileBusy lamw_manager $LAMW_MANAGER_LOCK
-	exec 3>$LAMW_MANAGER_LOCK
-	echo "" >&3
-	setLAMWUserOnwerFiles
-	getBashCMD
-	setUseLamwManagerSetup
 
-	if [ $USE_PKEXEC = 1 ] ; then
-		RunAsPolkit $*
-	else
-		RunAsSudo $*
-	fi
-	exec 3>&-
-}
 
 callLamw4LinuxTerminal(){
 	export LAMW_MANAGER_CALL=1
@@ -263,6 +221,17 @@ autoStartLAMW4Linux(){
 	exit $EXIT_STATUS
 }
 
+Run(){
+	getStatus $*
+	IsFileBusy lamw_manager $LAMW_MANAGER_LOCK
+	exec 3>$LAMW_MANAGER_LOCK
+	echo "" >&3
+	setLAMWUserOnwerFiles
+	getBashCMD
+	setUseLamwManagerSetup
+	env ${LAMW_MANAGER_ENV[@]} USE_PKEXEC=$USE_PKEXEC DEBUG=$DEBUG $LAMW_MGR_INSTALL $*
+	exec 3>&-
+}
 #main function
 main(){
 	
@@ -277,7 +246,7 @@ main(){
 	GetInitialStatus
 	CheckNeedLazarusProjectDowngradle
 	StopGradleDaemon 1>&2
-	Run $ARGS
+	Run $ARGS 
 	DelTempFiles
 	GetFinalStatus
 	downgradeLazarusProject

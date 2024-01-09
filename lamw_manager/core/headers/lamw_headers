@@ -179,3 +179,9 @@ declare -A JDK_SUM=(
 declare NEED_INTERNET_ACTIONS_REGEX=(
 	'\-\-'{reinstall,reset{,'\-'aapis},update'\-'lamw,sdkmanager,minimal,use'\-'proxy}
 )
+REQUIRED_ADMIN=0
+LAMW_MGR_CORE_ADMIN="$LAMW_MANAGER_MODULES_PATH/lamw-mgr-core-os.sh"
+LAMW_MANAGER_CORE_LOCK="$LAMW_USER_HOME/.lamw_manager_core.lock"
+CROSSBIN_LOCK=$LAMW_USER_HOME/.lamw_manager_cross.lock
+
+

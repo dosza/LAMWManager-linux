@@ -76,14 +76,17 @@ LAMWPackageManager(){
 	local old_lamw_ide_home="$LAMW4LINUX_HOME/lamw4linux"
 	local old_lamw4linux_exec=$old_lamw_ide_home/lamw4linux
 
+	if [ $UID = 0 ]; then 
 
-	[ -e /usr/bin/startlamw4linux ] && 	rm /usr/bin/startlamw4linux
+		[ -e /usr/bin/startlamw4linux ] && 	rm /usr/bin/startlamw4linux
 
-	if [ -e "$old_lamw_ide_home"  ] &&  [ -L $old_lamw_ide_home ] && [ -d $old_lamw_ide_home ]; then # remove deprecated symbolik links
-		if [ -e $old_lamw4linux_exec ]; then
-			rm $old_lamw4linux_exec
+		if [ -e "$old_lamw_ide_home"  ] &&  [ -L $old_lamw_ide_home ] && [ -d $old_lamw_ide_home ]; then # remove deprecated symbolik links
+			if [ -e $old_lamw4linux_exec ]; then
+				rm $old_lamw4linux_exec
+			fi
+			rm "$old_lamw_ide_home"  -rf
 		fi
-		rm "$old_lamw_ide_home"  -rf
+		return 
 	fi
 
 	for((i=0;i<${#OLD_LAZARUS_STABLE_VERSION[*]};i++)); do
@@ -138,22 +141,13 @@ getStatusInstalation(){
 }
 
 
-checkNeedXfceMitigation(){
-	[ $NEED_XFCE_MITIGATION = 1 ] && return 
-	
-	if [ "$LAMW_USER_XDG_CURRENT_DESKTOP" = "XFCE" ] && [ "$LAMW_USER_DESKTOP_SESSION" = "XFCE" ]; then
-		NEED_XFCE_MITIGATION=1
-		PROG_TOOLS+=" gnome-terminal"
-	fi
-}
 
 
 #install deps
 installSystemDependencies(){
-	if [ $IS_DEBIAN = 0 ];then 
-		CheckIfYourLinuxIsSupported; return
+	if isRequiredAdmin ; then
+		RunAsAdmin 0
 	fi
-	installDebianDependencies	
 }
 
 
@@ -785,7 +779,7 @@ mainInstall(){
 	getAndroidAPIS
 	CreateBinutilsSimbolicLinks
 	AddSDKPathstoProfile
-	CleanOldCrossCompileBins
+	deleteCrossBinLock
 	buildCrossAndroid
 	configureFPCTrunk
 	BuildLazarusIDE

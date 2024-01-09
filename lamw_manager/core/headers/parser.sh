@@ -211,6 +211,7 @@ testConnectionInternetOnDemand(){
 	done
 }
 
+
 if [[ "${ARGS[*]}" =~ $MINIMAL_REGEX ]];then 
 	LAMW_MINIMAL_INSTALL=1
 	ARGS=(${ARGS[@]//'--minimal'/})
