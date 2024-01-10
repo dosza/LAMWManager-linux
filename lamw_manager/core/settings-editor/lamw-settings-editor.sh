@@ -322,9 +322,11 @@ LAMW4LinuxPostConfig(){
 			ln -s "$LAMW_IDE_HOME/startlamw4linux" "$LAMW_USER_HOME/.local/bin/startlamw4linux"
 	fi
 
-	if [ $IS_DEBIAN = 0 ] && [ $NEED_XFCE_MITIGATION  = 1 ]; then 
-		SystemTerminalMitigation
+	if [ $IS_DEBIAN = 0 ]; then  
+		CheckIfSystemNeedTerminalMitigation
+		SystemTerminalMitigation 
 	fi
+	
 	AddLAMWtoStartMenu
 	deleteCoreLock
 	stopAsSuccessProgressBar
