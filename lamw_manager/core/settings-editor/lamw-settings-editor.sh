@@ -496,7 +496,8 @@ CleanOldConfig(){
 	update-mime-database   $LAMW_USER_HOME/.local/share/mime/
 	update-desktop-database $LAMW_USER_HOME/.local/share/applications
 	cleanPATHS
-	cp ~/.gitconfig ~/.old.git.config
+
+	[ -e  ~/.gitconfig ] && cp ~/.gitconfig ~/.old.git.config
 	sed -i "/directory = $scape_root_lamw/d" ~/.gitconfig
 	unsetLocalRootLAMW
 	stopAsSuccessProgressBar
