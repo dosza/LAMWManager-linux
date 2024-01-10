@@ -561,7 +561,7 @@ CheckIfSystemNeedTerminalMitigation(){
 		[[ "$desktop_env" =~ $xfce_regex ]]; then 
 			NEED_XFCE_MITIGATION=1
 			SOFTWARES+=(xterm)
-			if [ ! $UID = 0 ]; then 
+			if [ $UID != 0 ]; then 
 				>"$IGNORE_XFCE_LAMW_ERROR_PATH"
 			fi
 	fi
