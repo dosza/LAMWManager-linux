@@ -78,6 +78,7 @@ runPostInstallActions(){
 		CleanOldCrossCompileBins
 }
 
+getFiller
 case "$1" in 
 	"0")
 	
