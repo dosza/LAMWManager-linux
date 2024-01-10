@@ -28,10 +28,8 @@ fi
 checkRootLAMWInitStatus(){
 	local parent="$(dirname $ROOT_LAMW)"
 	if [ $UID = 0 ]; then
-		if [ -O $parent ]; then 
-			if [ ! -e $ROOT_LAMW ]; then 
-				initROOT_LAMW
-			fi
+		if [ ! -e "$ROOT_LAMW" ]; then 
+			initROOT_LAMW
 		fi
 	fi
 }
