@@ -73,7 +73,9 @@ changeOwnerAllLAMW(){
 			"$LAMW_USER_HOME/.android"
 			"$LAMW_USER_HOME/.local/share"
 			"$LAMW_IDE_HOME_CFG"
-			"$LAMW_MANAGER_LOCAL_CONFIG_DIR" )
+			"$LAMW_MANAGER_LOCAL_CONFIG_DIR" 
+			"$LAMW_USER_HOME/.local/bin"
+			)
 
 		[ "$NO_EXISTENT_ROOT_LAMW_PARENT" != "" ] &&
 			files_chown+=($NO_EXISTENT_ROOT_LAMW_PARENT)
