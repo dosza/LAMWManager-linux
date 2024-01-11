@@ -499,8 +499,11 @@ CleanOldConfig(){
 	update-desktop-database $LAMW_USER_HOME/.local/share/applications
 	cleanPATHS
 
-	[ -e  ~/.gitconfig ] && cp ~/.gitconfig ~/.old.git.config
-	sed -i "/directory = $scape_root_lamw/d" ~/.gitconfig
+	if [ -e  ~/.gitconfig ]; then 
+		cp ~/.gitconfig ~/.old.git.config
+		sed -i "/directory = $scape_root_lamw/d" ~/.gitconfig
+	fi
+	
 	unsetLocalRootLAMW
 	stopAsSuccessProgressBar
 
