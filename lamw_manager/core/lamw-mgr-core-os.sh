@@ -36,6 +36,7 @@ isSafeLamwMgrCoreOs(){
 
 CheckIfSafeStartLamwManager(){
 	if ! isSafeLamwMgrCoreOs; then
+		printf "${VERMELHO}Fatal Error: you need run lamw_manager first! ${NORMAL}\n"
 		exit 1
 	fi
 }
@@ -75,6 +76,7 @@ installSystemDependencies(){
 	fi
 	installDebianDependencies	
 }
+
 adminInstallTasks(){
 	checkIfDistroIsLikeDebian
 	LAMWPackageManager
@@ -95,6 +97,7 @@ runPostInstallActions(){
 
 
 main(){
+	
 	CheckIfSafeStartLamwManager
 	getFiller
 
