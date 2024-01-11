@@ -219,6 +219,38 @@ parseFlags(){
 }
 
 
+helloMessage(){
+
+	LAMW_INSTALL_VERSION=$(
+		grep LAMW_INSTALL_VERSION\
+		-m1  $LAMW_MANAGER_MODULES_PATH/headers/lamw_headers | 
+		awk -F'=' '{ print $2 }' )
+
+	LAMW_INSTALL_VERSION=${LAMW_INSTALL_VERSION//\"/}
+
+	local message="$(<${LAMW_MANAGER_MODULES_PATH}/headers/.hello.txt)"
+	local id=96
+	local italic=3
+	local blink=5
+	local style1=$'\e[1;'$id'm'
+	local style2=$'\e[1;'$blink'm'
+	local style3=$'\e[1;'$italic'm'
+	local version_message="${style3}v${LAMW_INSTALL_VERSION}${NORMAL}"
+
+	local lamw_mgr="./lamw_manager"
+	if [ "$USE_SETUP" = "1" ]; then
+		lamw_mgr="bash lamw_manager_setup.sh\t${VERDE}--${NORMAL}"
+	fi
+
+	if [ $NOBLINK =  0 ]; then 
+		echo -en "\n${style2}${style1}$message\t${version_message}\n\n"
+		echo "${VERMELHO}Warning: ${NORMAL}use ${NEGRITO}NOBLINK=1${NORMAL} if you are photosensitive, sample:" 
+		echo -e "\t$lamw_mgr ${NEGRITO}NOBLINK=1${NORMAL}\n\n" 
+	else 
+		echo -en "\n${style1}$message\t${version_message}${NORMAL}\n\n"
+   	fi
+}
+
 if [[ "${ARGS[*]}" =~ $MINIMAL_REGEX ]];then 
 	LAMW_MINIMAL_INSTALL=1
 	ARGS=(${ARGS[@]//'--minimal'/})
