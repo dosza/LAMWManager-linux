@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 GetLocalJavaHome(){
 	local lamw4linux_env="$LAMW4LINUX_HOME/etc/environment"
 	if [ -e $lamw4linux_env ]; then
