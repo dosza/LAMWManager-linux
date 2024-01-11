@@ -9,14 +9,6 @@
 
 # Verifica condicoes de inicializacao
 
-if [ ! -e "$LAMW_MANAGER_LOCK" ]; then
-	printf "${VERMELHO}Fatal Error: you need run lamw_manager first! ${NORMAL}\n"
-	exit 1
-fi
-
-ps ax | grep $PPID | grep 'lamw_manager' > /dev/null
-if [ $? != 0 ]; then
-	echo "${VERMELHO}Fatal Error: you need run lamw_manager first! ${NORMAL}"
-	exit 1
-fi
-
+source "$LAMW_MANAGER_MODULES_PATH/headers/admin-parser.sh"
+source "$LAMW_MANAGER_MODULES_PATH/settings-editor/root-lamw-settings-editor.sh"
+setRootLAMW
