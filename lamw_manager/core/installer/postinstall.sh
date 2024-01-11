@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 runLamw4Linux(){
-	startlamw4linux &>/dev/null &
+	~/.local/bin/startlamw4linux &>/dev/null &
 	sleep 0.01
 }
 autoStartLAMW4Linux(){
