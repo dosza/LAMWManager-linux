@@ -6,6 +6,25 @@
 #Date: 01/10/2024
 #Description: The "lamw-manager-settings-editor.sh" is part of the core of LAMW Manager. Responsible for managing LAMW Manager / LAMW configuration files..
 #-----------------------------------------------------------------------f--------------------------#
+
+initLAMWUserConfig(){
+	[ $UID = 0 ] && return
+	
+	local lamw_user_dirs=(
+		"$LAMW_USER_MIMES_PATH"
+		"$LAMW_USER_APPLICATIONS_PATH"
+		"$LAMW_USER_HOME/.local/bin"
+		$LAMW_USER_HOME/.android
+	)
+
+	local android_repo_cfg="$LAMW_USER_HOME/.android/repositories.cfg"
+	
+	for folder in ${lamw_user_dirs[@]};do
+		[ ! -e "$folder" ] && mkdir -p "$folder"
+	done
+
+	[ ! -e  "$android_repo_cfg" ] && >"$android_repo_cfg"
+}
 #this function builds initial struct directory of LAMW env Development !
 initROOT_LAMW(){
 
@@ -13,21 +32,13 @@ initROOT_LAMW(){
 		$ANDROID_SDK_ROOT
 		"$(dirname $JAVA_HOME)"
 		"$LAMW4LINUX_ETC"
-		$LAMW_USER_HOME/.android
-		$HOME/.android
 		$FPPKG_LOCAL_REPOSITORY
 		$LAMW_IDE_HOME_CFG
-		"$LAMW_USER_MIMES_PATH"
-		"$LAMW_USER_APPLICATIONS_PATH"
-		"$LAMW_USER_HOME/.local/bin"
 	)
 
 	for lamw_dir in ${init_root_lamw_dirs[@]}; do
 		[ ! -e "$lamw_dir" ] && mkdir -p "$lamw_dir"
 	done
-
-	[ ! -e $LAMW_USER_HOME/.android/repositories.cfg ] && touch $LAMW_USER_HOME/.android/repositories.cfg  
-	[ ! -e $HOME/.android/repositories.cfg ] && echo "" > $HOME/.android/repositories.cfg 
 }
 
 enableADBtoUdev(){
