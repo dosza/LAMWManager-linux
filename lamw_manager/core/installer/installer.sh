@@ -762,6 +762,7 @@ mainInstall(){
 	checkLAMWManagerVersion > /dev/null
 	singleCoreWarning
 	installSystemDependencies
+	initLAMWUserConfig
 	initROOT_LAMW
 	setLAMWDeps
 	LAMWPackageManager
