@@ -569,6 +569,7 @@ checkChangeLAMWDeps(){
 #get implict install 
 getImplicitInstall(){
 	if [ ! -e "$LAMW_INSTALL_LOG" ]; then
+		AUTO_START_LAMW4LINUX=1
 		return 
 	else
 		grep "Generate LAMW_INSTALL_VERSION=$LAMW_INSTALL_VERSION" "$LAMW_INSTALL_LOG" 	> /dev/null
