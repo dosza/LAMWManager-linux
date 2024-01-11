@@ -73,6 +73,14 @@ CheckUserIsSudo(){
 	fi
 }
 
+createLamwManagerLock(){
+	exec 3>$LAMW_MANAGER_LOCK
+	echo "" >&3
+}
+deleteLamwManagerLock(){
+	exec 3>&-
+	rm $LAMW_MANAGER_LOCK
+}
 createCoreLock(){
 	exec 4>$LAMW_MANAGER_CORE_LOCK
 	echo "" >&4
