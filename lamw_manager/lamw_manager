@@ -139,11 +139,7 @@ menu(){
 		exit 1
 	;;
 
-
 	esac
-
-
-	deleteLamwManagerLock
 
 }
 
@@ -154,6 +150,7 @@ main(){
 	checkIfDistroIsLikeDebian
 	testConnectionInternetOnDemand $1
 	menu ${ARGS[@]}
+	deleteLamwManagerLock
 	exit $EXIT_STATUS
 }
 
