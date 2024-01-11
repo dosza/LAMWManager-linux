@@ -40,7 +40,7 @@ CheckFlags(){
 getBashCMD(){
 	
 	if [ $DEBUG = 1 ]; then
-		LAMW_MGR_INSTALL="bash -x $LAMW_MGR_INSTALL"
+		LAMW_MGR_CORE_ADMIN="bash -x $LAMW_MGR_CORE_ADMIN"
 	fi
 }
 
@@ -102,6 +102,7 @@ deleteCrossBinLock(){
 RunAsAdmin(){
 	IsFileBusy lamw_manager $LAMW_MANAGER_CORE_LOCK
 	setLAMWManagerEnv
+	getBashCMD	
 	createCoreLock
 	createCrossBinLock
 	if [ $USE_PKEXEC = 1 ] ; then
