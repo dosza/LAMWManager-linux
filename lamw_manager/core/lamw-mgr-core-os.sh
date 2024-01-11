@@ -20,10 +20,25 @@ source "$LAMW_MANAGER_MODULES_PATH/cross-builder/cross-builder.sh"
 source "$LAMW_MANAGER_MODULES_PATH/components/progress-bar.sh"
 
 
-if [ ! $UID  = 0  ]; then 
-	echo 'cannot run without root privileges'
-	exit 1
-fi
+
+isSafeLamwMgrCoreOs(){
+	
+	if [ ! $UID  = 0  ]|| [ ! -e "$LAMW_MANAGER_LOCK" ]; then
+		return 1
+	fi
+
+	if ! ps ax | grep "$PPID\s.*lamw_manager" -q ;then 
+		return 1
+	fi
+
+	return 0
+}
+
+CheckIfSafeStartLamwManager(){
+	if ! isSafeLamwMgrCoreOs; then
+		exit 1
+	fi
+}
 
 checkRootLAMWInitStatus(){
 	local parent="$(dirname $ROOT_LAMW)"
@@ -33,6 +48,7 @@ checkRootLAMWInitStatus(){
 		fi
 	fi
 }
+
 isLAMWUserOwnerROOTLAMW(){
 	local status=0
 	if [ -e "$ROOT_LAMW" ]; then 
@@ -42,6 +58,7 @@ isLAMWUserOwnerROOTLAMW(){
 	fi
 	return $status
 }
+
 checkNeedXfceMitigation(){
 	[ $NEED_XFCE_MITIGATION = 1 ] && return 
 	
@@ -76,6 +93,7 @@ runPostInstallActions(){
 		CleanOldCrossCompileBins
 }
 
+CheckIfSafeStartLamwManager
 getFiller
 case "$1" in 
 	"0")
