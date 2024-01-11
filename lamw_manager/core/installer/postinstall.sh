@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 
 runLamw4Linux(){
 	startlamw4linux &>/dev/null &
