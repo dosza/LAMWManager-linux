@@ -20,20 +20,13 @@ setLAMWManagerEnv(){
 CheckFlags(){
 	newPtr ref_flag="$1"
 	local flagFind="$2"
-	if [ $3 = 0 ]; then 
-		if [[ "$ARGS" =~ $flagFind  ]]; then 
-			export ref_flag=1
-			export ARGS=${ARGS//$flagFind/} # remove todas as ocorrencias de DEBUG=1
+	for i in ${!ARGS[@]}; do 
+		local arg=${ARGS[$i]}
+		if [[ "$arg" =~ $flagFind ]]; then 
+			export export ref_flag=1
+			unset ARGS[$i]
 		fi
-	else 
-		for i in ${!ARGS[@]}; do 
-			local arg=${ARGS[$i]}
-			if [[ "$arg" =~ $flagFind ]]; then 
-				export export ref_flag=1
-				unset ARGS[$i]
-			fi
-		done
-	fi
+	done
 }
 
 #Check if DEBUG flag is set 
