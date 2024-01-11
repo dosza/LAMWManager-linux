@@ -42,12 +42,16 @@ CheckIfSafeStartLamwManager(){
 }
 
 checkRootLAMWInitStatus(){
-	local parent="$(dirname $ROOT_LAMW)"
-	if [ $UID = 0 ]; then
-		if [ ! -e "$ROOT_LAMW" ]; then 
-			initROOT_LAMW
+	( [ $UID != 0 ]|| [ "$NO_EXISTENT_ROOT_LAMW_PARENT" = "" ]) && return 
+
+	local parent="$(dirname NO_EXISTENT_ROOT_LAMW_PARENT)"
+
+	if [ -e $parent ];then
+		if [ -O $parent ]; then
+				initROOT_LAMW
 		fi
 	fi
+
 }
 
 isLAMWUserOwnerROOTLAMW(){
