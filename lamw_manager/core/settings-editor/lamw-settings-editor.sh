@@ -320,8 +320,12 @@ LAMW4LinuxPostConfig(){
 
 	if [ -e  $LAMW_IDE_HOME/startlamw4linux ]; then
 		chmod +x $LAMW_IDE_HOME/startlamw4linux
-		[ ! -e "$LAMW_USER_HOME/.local/bin/startlamw4linux" ] && 
-			ln -s "$LAMW_IDE_HOME/startlamw4linux" "$LAMW_USER_HOME/.local/bin/startlamw4linux"
+		
+		if [  -e "$LAMW_USER_HOME/.local/bin/startlamw4linux" ]  ; then 
+			rm "$LAMW_USER_HOME/.local/bin/startlamw4linux"
+		fi
+		
+		ln -s "$LAMW_IDE_HOME/startlamw4linux" "$LAMW_USER_HOME/.local/bin/startlamw4linux"
 	fi
 
 	if [ $IS_DEBIAN = 0 ]; then  
