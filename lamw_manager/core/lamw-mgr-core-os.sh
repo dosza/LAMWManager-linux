@@ -93,21 +93,26 @@ runPostInstallActions(){
 		CleanOldCrossCompileBins
 }
 
-CheckIfSafeStartLamwManager
-getFiller
-case "$1" in 
-	"0")
-	
-		adminInstallTasks
-		runPostInstallActions &
-	;;
-	"1")
-		CleanOldConfig
-	;;
-	"2")
-		CleanOldConfig
-		adminInstallTasks
-		runPostInstallActions &
-	;;
-esac
 
+main(){
+	CheckIfSafeStartLamwManager
+	getFiller
+
+	case "$1" in 
+		"0")
+		
+			adminInstallTasks
+			runPostInstallActions &
+		;;
+		"1")
+			CleanOldConfig
+		;;
+		"2")
+			CleanOldConfig
+			adminInstallTasks
+			runPostInstallActions &
+		;;
+	esac
+}
+
+main $1
