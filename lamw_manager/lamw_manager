@@ -22,7 +22,6 @@ LAMW_MANAGER_MODULES_PATH=$LAMW_MGR_CORE/core
 source /etc/os-release
 
 #importando modulos de headers 
-source "$LAMW_MANAGER_MODULES_PATH/headers/common-shell.sh"
 source "$LAMW_MANAGER_MODULES_PATH/headers/.index"
 source "$LAMW_MANAGER_MODULES_PATH/installer/services.sh"
 source "$LAMW_MANAGER_MODULES_PATH/installer/distro-overrides.sh"

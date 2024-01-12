@@ -5,7 +5,6 @@ export LAMW_MANAGER_MODULES_PATH=$(dirname "$0")
 source /etc/os-release
 
 #importando modulos de headers 
-source "$LAMW_MANAGER_MODULES_PATH/headers/common-shell.sh"
 source "$LAMW_MANAGER_MODULES_PATH/headers/lamw4linux_env.sh"
 source "$LAMW_MANAGER_MODULES_PATH/headers/lamw_headers"
 source "$LAMW_MANAGER_MODULES_PATH/headers/parser.sh"
