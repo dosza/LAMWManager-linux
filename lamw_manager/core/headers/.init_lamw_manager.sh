@@ -8,7 +8,10 @@
 #-------------------------------------------------------------------------------------------------#
 
 # Verifica condicoes de inicializacao
-
+if  [ $UID = 0 ]; then 
+	echo "${VERMELHO}Fatal error: you cannot run this tool as root "
+	exit 1
+fi
 source "$LAMW_MANAGER_MODULES_PATH/headers/admin-parser.sh"
 source "$LAMW_MANAGER_MODULES_PATH/settings-editor/root-lamw-settings-editor.sh"
 setRootLAMW
