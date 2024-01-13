@@ -1,7 +1,7 @@
 # LAMW Manager
 
 
-[![Version](https://img.shields.io/badge/Release-v0.5.9-blue)](https://github.com/dosza/LAMWManager-linux/blob/v0.5.x/lamw_manager/docs/release_notes.md#v0592---jan-2-2024) [![Build-status](https://img.shields.io/badge/build-stable-brightgreen)](https://github.com/dosza/LAMWManager-linux/releases/download/v0.5.9/lamw_manager_setup.sh) [![license](https://img.shields.io/github/license/dosza/LAMWManager-linux)](https://github.com/dosza/LAMWManager-linux/blob/master/LICENSE) [![Stars](https://img.shields.io/github/stars/dosza/LAMWManager-linux?style=default)](https://github.com/dosza/LAMWManager-linux/stargazers)
+[![Version](https://img.shields.io/badge/Release-v0.6.0-blue)](https://github.com/dosza/LAMWManager-linux/blob/v0.5.x/lamw_manager/docs/release_notes.md#v060---jan-13-2024) [![Build-status](https://img.shields.io/badge/build-stable-brightgreen)](https://github.com/dosza/LAMWManager-linux/releases/download/v0.6.0/lamw_manager_setup.sh) [![license](https://img.shields.io/github/license/dosza/LAMWManager-linux)](https://github.com/dosza/LAMWManager-linux/blob/master/LICENSE) [![Stars](https://img.shields.io/github/stars/dosza/LAMWManager-linux?style=default)](https://github.com/dosza/LAMWManager-linux/stargazers)
 
 LAMW Manager is a command line tool,like *APT*, to automate the **installation**, **configuration** and **upgrade**<br/>the framework [LAMW - Lazarus Android Module Wizard](https://github.com/jmpessoa/lazandroidmodulewizard)
 
@@ -15,8 +15,8 @@ Linux Distro Supported:
 **Note**: Only Linux **x86_64** bits is supported!
 <p>
 	<ul>
-		<li><img src="https://www.debian.org/logos/openlogo-nd.svg" style="width: 16px;"/> Debian GNU/ Linux 10</li>
-		<li><img src="https://assets.ubuntu.com/v1/29985a98-ubuntu-logo32.png" style="width: 16px;"/> Ubuntu 20.04 LTS</li>
+		<li><img src="https://www.debian.org/logos/openlogo-nd.svg" style="width: 16px;"/> Debian GNU/ Linux 12</li>
+		<li><img src="https://assets.ubuntu.com/v1/29985a98-ubuntu-logo32.png" style="width: 16px;"/> Ubuntu 22.04 LTS</li>
 		<li><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Tux.svg/249px-Tux.svg.png" style="width: 16px;"/> <a href="https://github.com/dosza/LAMWManager-linux/blob/master/lamw_manager/docs/other-distros-info.md">Requirements for other Linux</a>
 			<ul>
 				<li>
@@ -60,7 +60,7 @@ LAMW Manager install the following [dependencies] tools:
 Getting Started!!
 ---
 **How to use LAMW Manager:**
-+	Click here to download [*LAMW Manager Setup*](https://github.com/dosza/LAMWManager-linux/releases/download/v0.5.9/lamw_manager_setup.sh)
++	Click here to download [*LAMW Manager Setup*](https://github.com/dosza/LAMWManager-linux/releases/download/v0.6.0/lamw_manager_setup.sh)
 +	Go to download directory and right click *Open in Terminal*
 +	Run command : *bash lamw_manager_setup.sh*¹
 
@@ -98,11 +98,11 @@ Recommended:
 
 Release Notes:
 ---
-For information on new features and bug fixes read the [*Release Notes*](https://github.com/dosza/LAMWManager-linux/blob/v0.5.x/lamw_manager/docs/release_notes.md#v0592---jan-2-2024)
+For information on new features and bug fixes read the [*Release Notes*](https://github.com/dosza/LAMWManager-linux/blob/v0.5.x/lamw_manager/docs/release_notes.md#v060---jan-13-2024)
 
 Congratulations!!
 ---
 You are now a Lazarus for Android developer!</br>[Building Android application with **LAMW** is **RAD**!](https://drive.google.com/open?id=1CeDDpuDfRwYrKpN7VHbossH6GfZUfqjm)
 
-For more info read [**LAMW Manager v0.5.9 Manual**](https://github.com/dosza/LAMWManager-linux/blob/v0.5.x/lamw_manager/docs/man.md)
+For more info read [**LAMW Manager v0.6.0 Manual**](https://github.com/dosza/LAMWManager-linux/blob/v0.5.x/lamw_manager/docs/man.md)
 
