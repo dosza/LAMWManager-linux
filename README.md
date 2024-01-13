@@ -1,7 +1,7 @@
 # LAMW Manager
 
 
-[![Version](https://img.shields.io/badge/Release-v0.6.0-blue)](https://github.com/dosza/LAMWManager-linux/blob/v0.5.x/lamw_manager/docs/release_notes.md#v060---jan-13-2024) [![Build-status](https://img.shields.io/badge/build-stable-brightgreen)](https://github.com/dosza/LAMWManager-linux/releases/download/v0.6.0/lamw_manager_setup.sh) [![license](https://img.shields.io/github/license/dosza/LAMWManager-linux)](https://github.com/dosza/LAMWManager-linux/blob/master/LICENSE) [![Stars](https://img.shields.io/github/stars/dosza/LAMWManager-linux?style=default)](https://github.com/dosza/LAMWManager-linux/stargazers)
+[![Version](https://img.shields.io/badge/Release-v0.6.0-blue)](https://github.com/dosza/LAMWManager-linux/blob/v0.5.x/lamw_manager/docs/release_notes.md#v060---jan-15-2024) [![Build-status](https://img.shields.io/badge/build-stable-brightgreen)](https://github.com/dosza/LAMWManager-linux/releases/download/v0.6.0/lamw_manager_setup.sh) [![license](https://img.shields.io/github/license/dosza/LAMWManager-linux)](https://github.com/dosza/LAMWManager-linux/blob/master/LICENSE) [![Stars](https://img.shields.io/github/stars/dosza/LAMWManager-linux?style=default)](https://github.com/dosza/LAMWManager-linux/stargazers)
 
 LAMW Manager is a command line tool,like *APT*, to automate the **installation**, **configuration** and **upgrade**<br/>the framework [LAMW - Lazarus Android Module Wizard](https://github.com/jmpessoa/lazandroidmodulewizard)
 
@@ -98,7 +98,7 @@ Recommended:
 
 Release Notes:
 ---
-For information on new features and bug fixes read the [*Release Notes*](https://github.com/dosza/LAMWManager-linux/blob/v0.5.x/lamw_manager/docs/release_notes.md#v060---jan-13-2024)
+For information on new features and bug fixes read the [*Release Notes*](https://github.com/dosza/LAMWManager-linux/blob/v0.5.x/lamw_manager/docs/release_notes.md#v060---jan-15-2024)
 
 Congratulations!!
 ---
