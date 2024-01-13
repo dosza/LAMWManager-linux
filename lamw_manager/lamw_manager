@@ -38,11 +38,7 @@ source "$LAMW_MANAGER_MODULES_PATH/components/progress-bar.sh"
 #Parameters are useful for understanding script operation
 
 
-menu(){
-	
-	IsFileBusy "lamw_manager" "$LAMW_MANAGER_LOCK" 1>&2
-	createLamwManagerLock
-	StopGradleDaemon 1>&2
+actions(){
 
 	case "$1" in
 	"version")
@@ -145,10 +141,13 @@ menu(){
 main(){
 	parseFlags
 	helloMessage 1>&2
+	IsFileBusy "lamw_manager" "$LAMW_MANAGER_LOCK" 1>&2
+	createLamwManagerLock
 	getFiller
 	checkIfDistroIsLikeDebian
 	testConnectionInternetOnDemand $1
-	menu ${ARGS[@]}
+	StopGradleDaemon 1>&2
+	actions ${ARGS[@]}
 	deleteLamwManagerLock
 	exit $EXIT_STATUS
 }
