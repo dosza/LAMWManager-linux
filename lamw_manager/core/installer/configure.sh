@@ -78,7 +78,7 @@ mapHeaders(){
 	arrayMap HEADERS file i '
 		[ ! $file = $path ] && continue
 		existent_headers+=($i)'
-	arrayMap existent_headers head i 'declare -g $index=$i'
+	arrayMap existent_headers head j 'declare -g $index=$head'
 }
 setHeadersIndex(){
 	arrayMap HEADERS_DELIMIT path index 'mapHeaders'
