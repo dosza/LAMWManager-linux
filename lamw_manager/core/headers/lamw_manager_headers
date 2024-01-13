@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-DEBUG=0
 ARGS="$*"
 USE_PKEXEC=0
 AUTO_START_LAMW4LINUX=0
