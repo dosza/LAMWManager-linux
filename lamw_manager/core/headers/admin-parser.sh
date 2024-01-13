@@ -31,10 +31,14 @@ CheckFlags(){
 
 #Check if DEBUG flag is set 
 getBashCMD(){
-	
-	if [ $DEBUG = 1 ]; then
-		LAMW_MGR_CORE_ADMIN="bash -x $LAMW_MGR_CORE_ADMIN"
+	if [[ "$-" =~ (x) ]]; then
+		LAMW_MGR_CORE_ADMIN_OPTS=+"-x "
+	elif [[ "$-" =~ (v) ]]; then
+		LAMW_MGR_CORE_ADMIN_OPTS=+"-v "
 	fi
+
+	LAMW_MGR_CORE_ADMIN="bash $LAMW_MGR_CORE_ADMIN_OPTS $LAMW_MGR_CORE_ADMIN"
+
 }
 
 
