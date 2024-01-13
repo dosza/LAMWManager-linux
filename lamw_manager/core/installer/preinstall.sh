@@ -25,7 +25,7 @@ StopGradleDaemon(){
 	fi
 	
 	GetLocalJavaHome
-	local java_real_home=$(readlink $LOCAL_JAVA_HOME)
+	local java_real_home="$(readlink -f "$LOCAL_JAVA_HOME")"
 	if ! ps  -e -o command | grep "^${LOCAL_JAVA_HOME}.*$ROOT_LAMW/gradle\|^${java_real_home}.*$ROOT_LAMW/gradle" -q ; then
 		return
 	fi
