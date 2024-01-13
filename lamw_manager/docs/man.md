@@ -1,4 +1,4 @@
-**&nbsp;&nbsp;&nbsp;lamw_manager(1)&nbsp; 2022 Dec 20 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LAMW Manager man page&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lamw_manager(1)**
+**&nbsp;&nbsp;&nbsp;lamw_manager(1)&nbsp; 2024 Jan 13 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LAMW Manager man page&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lamw_manager(1)**
 
 #### NAME ####
 <p>
@@ -82,17 +82,6 @@
         </pre>
  </p>
 
-
-#### DEBUG ####
-<p>
-       <pre>
-              Use the <strong>DEBUG=1</strong> flag later in any position of ./lamw_manager (flag does 
-              not count as argument)
-                     <strong>Sample:</strong>
-              ./lamw_manager --reset <strong>DEBUG=1</strong>
-              ./lamw_manager <strong>DEBUG=1</strong> --reset
-       </pre>
-</p>
 
 #### NOBLINK=1 ####
 <p>
