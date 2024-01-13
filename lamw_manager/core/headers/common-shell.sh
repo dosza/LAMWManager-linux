@@ -882,3 +882,68 @@ getFiller(){
 	
 	FILLER='..............................................................................'
 }
+
+arrayFilter(){
+
+	if [ $# -lt 3 ]; then return 1; fi 
+
+	case $# in 
+		4)
+			if ! ( isVariableArray $1 && isVariableArray $3 ); then 
+				returnFalse; 
+			fi
+			newPtr refArray=$1			
+			newPtr refFilter=$3
+
+
+			refFilter=()
+				
+
+			if ! isVariableAssociativeArray $1; then 
+				eval "for $2 in \"\${refArray[@]}\" 
+				do
+					if $4; then 
+						refFilter+=(\"\$$2\");
+					fi
+				done"
+			else 
+				eval "for _filterIdx in \${!refArray[@]}; do
+					$2=\${refArray[\$_filterIdx]}
+					if $4; then
+						refFilter[\$_filterIdx]=\"\$$2\"
+					fi
+				done"
+			fi
+
+			 
+			
+		;;
+		5)
+			if ! isVariableArray $1 && isVariableArray $4; then 
+				returnFalse
+			fi
+			
+			newPtr refArray=$1
+			newPtr refFilter=$4
+
+			refFilter=()
+			
+			if ! isVariableAssociativeArray $1; then 
+				eval "for $3 in \"\${!refArray[@]}\"; do 
+					$2=\${refArray[\$$3]}	
+					if $5; then 
+						refFilter+=(\"\$$2\")
+					fi
+				done"
+			else 
+				eval "for $3 in \${!refArray[@]}; do 
+					$2=\${refArray[\$$3]}
+					if $5; then 
+						refFilter[\$$3]=\"\$$2\"
+					fi
+				done"
+			fi	
+		
+		;;
+	esac
+}
