@@ -18,15 +18,15 @@ StopGradleDaemon(){
 	local sucess_filler="stopping Gradle Daemons"
 
 	local gradle_path="$ROOT_LAMW/gradle-$gradle_version"
-		
+	
 
 	if [ "$gradle_path" = "" ]|| [ ! -e "$gradle_path" ]; then 
 		return 
 	fi
 	
 	GetLocalJavaHome
-	
-	if ! ps  -e -o command | grep "^${LOCAL_JAVA_HOME}.*$ROOT_LAMW/gradle" -q ; then
+	local java_real_home=$(readlink $LOCAL_JAVA_HOME)
+	if ! ps  -e -o command | grep "^${LOCAL_JAVA_HOME}.*$ROOT_LAMW/gradle\|^${java_real_home}.*$ROOT_LAMW/gradle" -q ; then
 		return
 	fi
 			
