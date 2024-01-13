@@ -10,7 +10,7 @@ v0.6.0 - Jan 15, 2024
 +	Fixes missing ~/.gitconfig
 
 **News**
-+ 	*/usr/bin/startlamw4linux* link has moved to *\*~/.local/bin/startlamw4linux*
++ 	*/usr/bin/startlamw4linux* link has moved to *~/.local/bin/startlamw4linux*
 +	New **core** architecture 
 	+	Run more fast then older versions
 	+	Reduces the need to run as admin
@@ -18,11 +18,11 @@ v0.6.0 - Jan 15, 2024
 	+	Debian 12
 	+	Ubuntu 22.04 LTS
 +	Removed support:
-	+	**DEBUG=1** flag! *tip: use bash -x*
+	+	**DEBUG=1** flag *tip: use bash -x*
 	+	cacheGradle
 	+ 	Downgrade Lazarus Project
 	+	Ubuntu 20.04 LTS
-	+	Debian 12
+	+	Debian 10
 
 
 
