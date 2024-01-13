@@ -1,13 +1,6 @@
 #!/bin/bash
 
-declare -i X11_INDEX=11
-declare -i GTK2_INDEX=265
-declare -i GDK_INDEX=278
-declare -i CAIRO_INDEX=292
-declare -i PANGO_INDEX=326
-declare -i XTST_INDEX=328
-declare -i ATK_INDEX=362
-declare -i FREEGLUT_INDEX=366
+
 
 declare -A LIBS_DEB_EQUIVALENT=(
 	['libgdk-x11-2.0.so']=libgtk2.0-dev
@@ -27,17 +20,6 @@ declare -A LIBS_DEB_EQUIVALENT=(
 )
 
 
-
-declare -A HEADERS_EQUIVALENT_DEB=(
-	[$X11_INDEX]=libx11-dev
-	[$GTK2_INDEX]=libgtk2.0-dev
-	[$GDK_INDEX]=libgdk-pixbuf2.0-dev
-	[$CAIRO_INDEX]=libcairo2-dev
-	[$PANGO_INDEX]=libpango1.0-dev
-	[$XTST_INDEX]=libxtst-dev
-	[$ATK_INDEX]=libatk1.0-dev
-	[$FREEGLUT_INDEX]=freeglut3-dev
-)
 
 
 
@@ -75,12 +57,45 @@ LIBS=(
 	libglut.so
 )
 
-HEADERS=(
-	$(<$LAMW_MANAGER_MODULES_PATH/installer/headers.txt)
-)
+HEADERS_PATH=$LAMW_MANAGER_MODULES_PATH/installer/headers.txt
+HEADERS=($(<$HEADERS_PATH))
+declare -A HEADERS_DELIMIT=(
+	['X11_INDEX']=/usr/include/X11/extensions/XKBgeom.h
+	['GTK2_INDEX']=/usr/include/gtk-unix-print-2.0/gtk/gtkunixprint.h
+	['GDK_INDEX']=/usr/include/gdk-pixbuf-2.0/gdk-pixbuf/gdk-pixdata.h
+	['CAIRO_INDEX']=/usr/include/cairo/cairo.h
+	['PANGO_INDEX']=/usr/include/pango-1.0/pango/pangoxft.h
+	['XTST_INDEX']=/usr/include/X11/extensions/record.h
+	['ATK_INDEX']=/usr/include/atk-1.0/atk/atkwindow.h
+	['FREEGLUT_INDEX']=/usr/include/GL/glut.h
 
+)
 MESSAGE_INSTALL='Install on your system the package equivalent to:'
 
+
+mapHeaders(){
+	local existent_headers=()
+	arrayMap HEADERS file i '
+		[ ! $file = $path ] && continue
+		existent_headers+=($i)'
+	arrayMap existent_headers head i 'declare -g $index=$i'
+}
+setHeadersIndex(){
+	arrayMap HEADERS_DELIMIT path index 'mapHeaders'
+	declare -Ag HEADERS_EQUIVALENT_DEB=(
+		[$X11_INDEX]=libx11-dev
+		[$GTK2_INDEX]=libgtk2.0-dev
+		[$GDK_INDEX]=libgdk-pixbuf2.0-dev
+		[$CAIRO_INDEX]=libcairo2-dev
+		[$PANGO_INDEX]=libpango1.0-dev
+		[$XTST_INDEX]=libxtst-dev
+		[$ATK_INDEX]=libatk1.0-dev
+		[$FREEGLUT_INDEX]=freeglut3-dev
+	)
+
+
+	
+}
 
 showPackageNameByIndex(){
 	local -i index=$1
@@ -198,6 +213,7 @@ CheckIfSystemNeedTerminalMitigation(){
 }
 
 CheckIfYourLinuxIsSupported(){
+	setHeadersIndex
 	CheckIfSystemNeedTerminalMitigation
 	if systemHasToolsToRunLamwManager; then 
 		if systemHasHeadersToBuildLazarus ; then
@@ -207,3 +223,4 @@ CheckIfYourLinuxIsSupported(){
 		fi
 	fi
 }
+
