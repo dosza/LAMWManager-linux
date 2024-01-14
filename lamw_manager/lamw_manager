@@ -139,14 +139,7 @@ actions(){
 }
 
 main(){
-	parseFlags
-	helloMessage 1>&2
-	IsFileBusy "lamw_manager" "$LAMW_MANAGER_LOCK" 1>&2
-	createLamwManagerLock
-	getFiller
-	checkIfDistroIsLikeDebian
-	testConnectionInternetOnDemand
-	StopGradleDaemon 1>&2
+	initialConfig
 	actions ${ARGS[@]}
 	deleteLamwManagerLock
 	exit $EXIT_STATUS
