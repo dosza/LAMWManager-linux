@@ -557,12 +557,10 @@ setOldLAMW4LinuxActions(){
 }
 
 checkChangeLAMWDeps(){
-	local flag_is_old_lamw=$(updateLAMWDeps)
-			
-	if [ $flag_is_old_lamw = 0 ]; then
+	if isUpdateLAMWDeps; then 
 		export LAMW_IMPLICIT_ACTION_MODE=1
 	else
-		setOldLAMW4LinuxActions $flag_is_old_lamw
+		setOldLAMW4LinuxActions 1
 	fi
 }
 
