@@ -133,8 +133,8 @@ LAMW_INSTALL_WELCOME=(
 )
 
 LAMW_LINUX_SPP=(
-	"\t*Debian 10\n"
-	"\t*Ubuntu 20.04 LTS\n"
+	"\t*Debian 12\n"
+	"\t*Ubuntu 22.04 LTS\n"
 )
 
 LAMW4LINUX_TEMPLATES_PATHS+=(["$LAMW_MENU_ITEM_PATH"]="$LAMW_IDE_HOME/install/lazarus.desktop")
