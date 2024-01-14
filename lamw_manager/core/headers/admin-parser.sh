@@ -89,10 +89,12 @@ createCrossBinLock(){
 }
 
 deleteCoreLock(){
+	[ ! -e  $LAMW_MANAGER_CORE_LOCK ] && return
 	exec 4>&-
 	rm $LAMW_MANAGER_CORE_LOCK
 }
 deleteCrossBinLock(){
+	[ ! -e $CROSSBIN_LOCK ] && return
 	exec 5>&-
 	rm $CROSSBIN_LOCK
 }
