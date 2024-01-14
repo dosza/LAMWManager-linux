@@ -100,7 +100,7 @@ LAMW4LinuxPostConfig(){
 
 
 main(){
-	
+	setSignalHandles
 	CheckIfSafeStartLamwManager
 	getFiller
 
