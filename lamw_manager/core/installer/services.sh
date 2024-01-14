@@ -106,7 +106,7 @@ setLAMWDeps(){
 }
 
 
-updateLAMWDeps(){
+isUpdateLAMWDeps(){
 
 
 	local need_update_lamw_deps=0
@@ -116,6 +116,6 @@ updateLAMWDeps(){
 		need_update_lamw_deps=1
 	fi
 
-	echo "$need_update_lamw_deps"
+	return $need_update_lamw_deps
 
 }
