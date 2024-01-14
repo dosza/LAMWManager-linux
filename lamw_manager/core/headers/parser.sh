@@ -204,7 +204,7 @@ testConnectionInternet(){
 
 testConnectionInternetOnDemand(){
 	for action in ${NEED_INTERNET_ACTIONS_REGEX[@]};do
-		if [[ "$1" =~ $action ]] || [[ "$1" = "" ]]; then 
+		if [[ "${ARGS[@]}" =~ $action ]] || [[ "${ARGS[@]}" = "" ]]; then 
 			testConnectionInternet 1>&2
 			return
 		fi
