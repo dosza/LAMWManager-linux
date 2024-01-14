@@ -84,7 +84,7 @@ TrapActions(){
 	rm "$LAMW_MANAGER_LOCK"
 }
 
-TrapTermProcess(){
+handleSigTerm(){
 	isProtectedTrapActions && return
 
 	TrapActions 
@@ -93,7 +93,7 @@ TrapTermProcess(){
 	
 	exit 15
 }
-TrapControlC(){
+handleSigInt(){
 	isProtectedTrapActions && return
 
 	TrapActions 
@@ -148,8 +148,8 @@ getCurrentSucessFiller(){
 
 #instalando tratadores de sinal	
 setSignalHandles(){
-	trap TrapControlC 2 
-	trap TrapTermProcess 15
+	trap handleSigInt SIGINT 
+	trap handleSigTerm SIGTERM
 }
 
 findUseProxyOpt(){
