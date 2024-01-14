@@ -16,6 +16,7 @@ AUX=$PWD
 
 LAMW_MANAGER_TMP_BUILD="/tmp/lamw_manager_build"
 LAMW_MANAGER_INSTALLER="lamw_manager_setup.sh"
+LAMW_MANAGER_INSTALLER_DEBUG="lamw_manager_setup_debug.sh"
 LAMW_MANAGER_FINAL_INSTALLER="/tmp/$LAMW_MANAGER_INSTALLER"
 START_LAMW_MANAGER_FILE='.start_lamw_manager'
 BUILD_GUI=0
@@ -34,11 +35,6 @@ START_LAMW_MANAGER_STR=(
 	"ARGS=\"\$*\""
 	'ARGS=${ARGS/\-\-/}  #This is expansion that removes the first occurrence --. \-  is the escape of -'
 	"export USE_SETUP=1" 
-	"if [[ \"\$ARGS\" =~ (x) ]]; then"
-	"	exec bash -x ./lamw_manager \$ARGS"
-	"	exit \$?"
-	'fi'
-	"exec ./lamw_manager \$ARGS"
 )
 
 files=(
@@ -73,6 +69,12 @@ initLAMWBuild(){
 	then
 		mkdir $LAMW_MANAGER_TMP_BUILD
 	fi
+	if [ "$1" = "" ]; then
+		START_LAMW_MANAGER_STR+=("exec ./lamw_manager \$ARGS")
+	else
+		START_LAMW_MANAGER_STR+=("exec bash -x ./lamw_manager \$ARGS")
+	fi
+
 	WriterFileln "$AUX/.start_lamw_manager" "START_LAMW_MANAGER_STR"
 	chmod +x "$AUX/.start_lamw_manager"
 }
@@ -125,8 +127,11 @@ main(){
 	CopyFiles
 	changeDirectory $LAMW_MANAGER_TMP_BUILD
 	makeself  --quiet --xz --copy --target '$HOME/lamw_manager' $PWD $LAMW_MANAGER_INSTALLER "LAMW Manager Setup" "./${START_LAMW_MANAGER_FILE}"
+	initLAMWBuild "2"
+	makeself  --quiet --xz --copy --target '$HOME/lamw_manager' $PWD $LAMW_MANAGER_INSTALLER_DEBUG "LAMW Manager Setup" "./${START_LAMW_MANAGER_FILE}"
+	chmod +x $LAMW_MANAGER_INSTALLER_DEBUG $LAMW_MANAGER_INSTALLER
+	cp $LAMW_MANAGER_TMP_BUILD/$LAMW_MANAGER_INSTALLER_DEBUG /tmp
 	cp $LAMW_MANAGER_TMP_BUILD/$LAMW_MANAGER_INSTALLER /tmp
-	chmod +x "$LAMW_MANAGER_FINAL_INSTALLER"
 	RemoveTmpFiles
 }
 
