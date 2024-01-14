@@ -20,6 +20,7 @@ LAMW_MANAGER_INSTALLER_DEBUG="lamw_manager_setup_debug.sh"
 LAMW_MANAGER_FINAL_INSTALLER="/tmp/$LAMW_MANAGER_INSTALLER"
 START_LAMW_MANAGER_FILE='.start_lamw_manager'
 BUILD_GUI=0
+BUILD_DEBUG=0
 
 START_LAMW_MANAGER_STR=(
 	'#!/bin/bash'
@@ -70,13 +71,17 @@ initLAMWBuild(){
 		mkdir $LAMW_MANAGER_TMP_BUILD
 	fi
 	if [ "$1" = "" ]; then
-		START_LAMW_MANAGER_STR+=("exec ./lamw_manager \$ARGS")
+		START_LAMW_MANAGER_STRF=(
+			"${START_LAMW_MANAGER_STR[@]}"
+			"exec ./lamw_manager \$ARGS")
 	else
-		START_LAMW_MANAGER_STR+=("exec bash -x ./lamw_manager \$ARGS")
+		START_LAMW_MANAGER_STRF=(
+			"${START_LAMW_MANAGER_STR[@]}"
+			"exec bash -x ./lamw_manager \$ARGS"
+		)
 	fi
-
-	WriterFileln "$AUX/.start_lamw_manager" "START_LAMW_MANAGER_STR"
-	chmod +x "$AUX/.start_lamw_manager"
+	WriterFileln "$LAMW_MANAGER_TMP_BUILD/.start_lamw_manager" "START_LAMW_MANAGER_STRF"
+	chmod +x "$LAMW_MANAGER_TMP_BUILD/.start_lamw_manager"
 }
 CopyFiles(){
 	#copy directorys and files to LAMW_MANAGER_TMP_BUILD
@@ -114,24 +119,41 @@ RemoveTmpFiles(){
 		fi
 	done
 }
+setBuildMode(){
+	if [ $BUILD_DEBUG = 0 ]; then
+		initLAMWBuild ""
+	else
+		output_lamw_manager_setup="$LAMW_MANAGER_INSTALLER_DEBUG"
+		initLAMWBuild "2"
+	fi
+	makeself_args+=(
+		"$PWD" 
+		"$output_lamw_manager_setup" 
+		"LAMW Manager Setup" 
+		"./${START_LAMW_MANAGER_FILE}"
+	)
+}
 main(){
-	which makeself > /dev/null
-	if [ $? != 0 ]; then
+	local output_lamw_manager_setup="$LAMW_MANAGER_INSTALLER"
+	
+	local makeself_args=(
+		  --quiet --xz --copy --target '$HOME/lamw_manager'
+	)
+	
+	if ! which makeself > /dev/null; then
 		echo "${VERMELHO}Error${NORMAL}:Need install makeself!"
 		echo "Use command: ${VERDE}sudo apt-get install makeself -y${NORMAL}"
 		exit 1
 	fi
-	initLAMWBuild
-	CheckBuildFlag
-	BuildGUI
+
 	CopyFiles
 	changeDirectory $LAMW_MANAGER_TMP_BUILD
-	makeself  --quiet --xz --copy --target '$HOME/lamw_manager' $PWD $LAMW_MANAGER_INSTALLER "LAMW Manager Setup" "./${START_LAMW_MANAGER_FILE}"
-	initLAMWBuild "2"
-	makeself  --quiet --xz --copy --target '$HOME/lamw_manager' $PWD $LAMW_MANAGER_INSTALLER_DEBUG "LAMW Manager Setup" "./${START_LAMW_MANAGER_FILE}"
-	chmod +x $LAMW_MANAGER_INSTALLER_DEBUG $LAMW_MANAGER_INSTALLER
-	cp $LAMW_MANAGER_TMP_BUILD/$LAMW_MANAGER_INSTALLER_DEBUG /tmp
-	cp $LAMW_MANAGER_TMP_BUILD/$LAMW_MANAGER_INSTALLER /tmp
+	CheckBuildFlag 
+	BuildGUI
+	setBuildMode "$1"
+	makeself "${makeself_args[@]}"
+	chmod +x $output_lamw_manager_setup
+	cp $LAMW_MANAGER_TMP_BUILD/$output_lamw_manager_setup /tmp
 	RemoveTmpFiles
 }
 
@@ -139,5 +161,9 @@ case "$1" in
 	"--gui")
 		BUILD_GUI=1
 	;;
+	"--debug"|"debug")
+		BUILD_DEBUG=1
+	;;
 esac
-main
+
+main 
