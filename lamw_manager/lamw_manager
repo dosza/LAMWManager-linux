@@ -145,7 +145,7 @@ main(){
 	createLamwManagerLock
 	getFiller
 	checkIfDistroIsLikeDebian
-	testConnectionInternetOnDemand $1
+	testConnectionInternetOnDemand
 	StopGradleDaemon 1>&2
 	actions ${ARGS[@]}
 	deleteLamwManagerLock
