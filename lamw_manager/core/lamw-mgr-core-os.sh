@@ -72,6 +72,7 @@ checkNeedXfceMitigation(){
 }
 
 
+
 installSystemDependencies(){
 	if [ $IS_DEBIAN = 0 ];then 
 		CheckIfYourLinuxIsSupported; return
@@ -79,7 +80,7 @@ installSystemDependencies(){
 	installDebianDependencies	
 }
 
-adminInstallTasks(){
+mainInstall(){
 	checkIfDistroIsLikeDebian
 	LAMWPackageManager
 	checkRootLAMWInitStatus
@@ -90,7 +91,7 @@ adminInstallTasks(){
 	CleanOldCrossCompileBins
 }
 
-runPostInstallActions(){
+LAMW4LinuxPostConfig(){
 		IsFileBusy  "postInstall actions" "$LAMW_MANAGER_CORE_LOCK" 
 		enableADBtoUdev
 		IsFileBusy "crossbinLock" "$CROSSBIN_LOCK"
@@ -106,16 +107,16 @@ main(){
 	case "$1" in 
 		"0")
 		
-			adminInstallTasks
-			runPostInstallActions &
+			mainInstall
+			LAMW4LinuxPostConfig &
 		;;
 		"1")
 			CleanOldConfig
 		;;
 		"2")
 			CleanOldConfig
-			adminInstallTasks
-			runPostInstallActions &
+			mainInstall
+			LAMW4LinuxPostConfig &
 		;;
 	esac
 }
