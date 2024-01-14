@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-MINIMAL_REGEX='(\-\-minimal)'
 lamw_manager_help(){
 	local lamw_mgr="./lamw_manager"
 	if [ "$USE_SETUP" = "1" ]; then
@@ -148,39 +147,46 @@ getCurrentSucessFiller(){
 }
 
 #instalando tratadores de sinal	
-trap TrapControlC 2 
-trap TrapTermProcess 15
+setSignalHandles(){
+	trap TrapControlC 2 
+	trap TrapTermProcess 15
+}
 
-for arg_index in ${!ARGS[@]}; do 
-	arg=${ARGS[$arg_index]}
-	if [ "$arg" = "--use_proxy" ];then
-		INDEX_FOUND_USE_PROXY=$arg_index
-		break
-	fi
-done
-
-if [ $INDEX_FOUND_USE_PROXY -lt 0 ]; then
-	initParameters
-else 
-	index_proxy_server=$((INDEX_FOUND_USE_PROXY+1))
-	index_server_value=$((index_proxy_server+1))
-	index_port_server=$((index_server_value+1))
-	index_port_value=$((index_port_server+1))
-	if [ "${ARGS[$index_proxy_server]}" = "--server" ]; then
-		if [ "${ARGS[$index_port_server]}" = "--port" ] ;then
-			initParameters "${ARGS[$INDEX_FOUND_USE_PROXY]}" "${ARGS[$index_server_value]}" "${ARGS[$index_port_value]}"
-		else 
-			echo "${VERMELHO}Error:${NORMAL}missing ${NEGRITO}--port${NORMAL}";exit 1
+findUseProxyOpt(){
+	for arg_index in ${!ARGS[@]}; do 
+		arg=${ARGS[$arg_index]}
+		if [ "$arg" = "--use_proxy" ];then
+			INDEX_FOUND_USE_PROXY=$arg_index
+			break
 		fi
-		unset ARGS[$INDEX_FOUND_USE_PROXY]
-		unset ARGS[$index_proxy_server]
-		unset ARGS[$index_server_value]
-		unset ARGS[$index_port_server]
-		unset ARGS[$index_port_value]
+	done
+
+}
+
+parseProxyOpt(){
+	if [ $INDEX_FOUND_USE_PROXY -lt 0 ]; then
+		initParameters
 	else 
-		echo "${VERMELHO}Error:${NORMAL}missing ${NEGRITO}--server${NORMAL}";exit 1
+		index_proxy_server=$((INDEX_FOUND_USE_PROXY+1))
+		index_server_value=$((index_proxy_server+1))
+		index_port_server=$((index_server_value+1))
+		index_port_value=$((index_port_server+1))
+		if [ "${ARGS[$index_proxy_server]}" = "--server" ]; then
+			if [ "${ARGS[$index_port_server]}" = "--port" ] ;then
+				initParameters "${ARGS[$INDEX_FOUND_USE_PROXY]}" "${ARGS[$index_server_value]}" "${ARGS[$index_port_value]}"
+			else 
+				echo "${VERMELHO}Error:${NORMAL}missing ${NEGRITO}--port${NORMAL}";exit 1
+			fi
+			unset ARGS[$INDEX_FOUND_USE_PROXY]
+			unset ARGS[$index_proxy_server]
+			unset ARGS[$index_server_value]
+			unset ARGS[$index_port_server]
+			unset ARGS[$index_port_value]
+		else 
+			echo "${VERMELHO}Error:${NORMAL}missing ${NEGRITO}--server${NORMAL}";exit 1
+		fi
 	fi
-fi
+}
 
 testConnectionInternet(){
 	
@@ -250,9 +256,31 @@ helloMessage(){
    	fi
 }
 
-if [[ "${ARGS[*]}" =~ $MINIMAL_REGEX ]];then 
-	LAMW_MINIMAL_INSTALL=1
-	ARGS=(${ARGS[@]//'--minimal'/})
-fi
+parseMinimalOpt(){
+	if [[ "${ARGS[*]}" =~ $MINIMAL_REGEX ]];then 
+		LAMW_MINIMAL_INSTALL=1
+		ARGS=(${ARGS[@]//'--minimal'/})
+	fi
+}
+
+
+parseOpts(){
+	findUseProxyOpt
+	parseProxyOpt
+	parseMinimalOpt
+	parseFlags
+}
+
+initialConfig(){
+	setSignalHandles
+	parseOpts
+	helloMessage 1>&2
+	IsFileBusy "lamw_manager" "$LAMW_MANAGER_LOCK" 1>&2
+	createLamwManagerLock
+	getFiller
+	checkIfDistroIsLikeDebian
+	testConnectionInternetOnDemand
+	StopGradleDaemon 1>&2
+}
 
 
