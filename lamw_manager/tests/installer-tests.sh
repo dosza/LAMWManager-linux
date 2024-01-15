@@ -45,4 +45,35 @@ testGetImplicitInstall(){
 	assertEquals '[Generate by newer LAMW Manager]' "$expected_message" "$ret"
 }
 
+testCheckLAMWManagerVersion(){
+	echo "Generate LAMW_INSTALL_VERSION=0.5.9"> $LAMW_INSTALL_LOG
+	ret=$(checkLAMWManagerVersion)
+	[ $ret -ge 0 ]
+	assertTrue $?
+
+}
+
+testRepair(){
+	rm -rf $LAMW_INSTALL_LOG
+	Repair 
+	assertTrue '[No need repair, not installed]' $?
+
+
+	#simulate need install dependencies  (using fake commands)
+	which(){ return 1; }	
+
+	installSystemDependencies(){ unset which ;}					
+
+	LAMW4LinuxPostConfig(){ : ; }
+	echo "Generate LAMW_INSTALL_VERSION=0.5.9"> $LAMW_INSTALL_LOG
+	Repair
+	assertFalse '[Need repair - reinstall system tools ]' $?
+
+	#simulate no existent $LAMW_IDE_HOME_CFG
+	which(){ : ;}
+	Repair
+	assertFalse '[Need repair - need run LAMW4LinuxPostConfig ]' $?
+	unset which
+
+}
 . $(which shunit2)
