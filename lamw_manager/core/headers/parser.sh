@@ -52,7 +52,6 @@ initParameters(){
 			export PROXY_SERVER=$2
 			export PORT_SERVER=$3
 			export PROXY_URL="http://$2:$3"
-			printf "PROXY_SERVER=$2\nPORT_SERVER=$3\n"
 		fi
 	fi
 	
