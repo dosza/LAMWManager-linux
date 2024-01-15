@@ -717,8 +717,8 @@ fixesFppkgXmlNode(){
 
 updateLAMW4LinuxConfig(){
 	if grep 'LastCalledByLazarusFullPath' $lazarus_env_cfg_path > /dev/null; then 
-			local lazarus_env_xml_nodes_attr['last_laz_full_path']="${env_opts_node}/LastCalledByLazarusFullPath/@Value"
-			local expected_env_xml_nodes_attr['last_laz_full_path']=$LAMW4LINUX_EXE_PATH
+		lazarus_env_xml_nodes_attr['last_laz_full_path']="${env_opts_node}/LastCalledByLazarusFullPath/@Value"
+		expected_env_xml_nodes_attr['last_laz_full_path']=$LAMW4LINUX_EXE_PATH
 	fi
 
 	[ -e  "${lazarus_env_cfg_path}.bak" ] && rm "${lazarus_env_cfg_path}.bak" 
