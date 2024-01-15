@@ -1,9 +1,10 @@
 if [ -e "$PWD/lamw_manager" ];then 
 	lamw_manager_script="$(realpath ./lamw_manager)"
 else 	
-	lamw_manager_script=$(realpath ../lamw_manager)
+	lamw_manager_script=$(realpath ../lamw_manager)	
 fi
 
+export HOME=$(mktemp -dt  danny.XXXXXXXXXXX)
 
 LAMW_MANAGER_MODULES_PATH=$(dirname $lamw_manager_script)/core
 source "$LAMW_MANAGER_MODULES_PATH/headers/.index"
@@ -23,6 +24,7 @@ source "$LAMW_MANAGER_MODULES_PATH/cross-builder/cross-builder.sh"
 source "$LAMW_MANAGER_MODULES_PATH/components/progress-bar.sh"
 
 export ROOT_LAMW=~/LAMW
+echo $HOME
 testfindProxyOpt(){
 	ARGS=()
 	findUseProxyOpt
@@ -84,5 +86,5 @@ testParseMinimalOpt(){
 	assertEquals "${ARGS[*]}" ""
 }
 
-
+rm -rf $HOME
 . $(which shunit2 ) 
