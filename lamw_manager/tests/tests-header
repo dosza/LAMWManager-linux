@@ -1,3 +1,4 @@
+#!/bin/bash
 if [ -e "$PWD/lamw_manager" ];then 
 	lamw_manager_script="$(realpath ./lamw_manager)"
 else 	
