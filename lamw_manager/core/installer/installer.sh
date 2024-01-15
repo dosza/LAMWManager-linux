@@ -482,47 +482,33 @@ resetAndroidAPIS(){
 
 }
 
+
+isRequiredReinstallDependencies(){
+	local tools="wget git xmlstartlet jq xmlstarlet make"
+	which $tool &>/dev/null
+}
+
 Repair(){
-	local flag_need_repair=0 # flag de reparo 
-	local flag_upgrade_lazarus=0
-	local aux_path="$LAMW4LINUX_HOME/fpcsrc"
-	local expected_fpc_src_path="$FPC_TRUNK_SOURCE_PATH/${FPC_TRUNK_SVNTAG}"
 
-	getStatusInstalation 
-	if [ $LAMW_INSTALL_STATUS = 1 ]; then # só executa essa funcao se o lamw tiver instalado
-		local flag_old_fpc=""
-		checkLAMWManagerVersion > /dev/null
+	local ret=0
 
-		if [ "$(which git)" = "" ] || [ "$(which wget)" = "" ] || 
-		[ "$(which jq)" = "" ] || [ "$(which make)" = "" ]|| 
-		[ "$(which xmlstarlet)" = "" ]; then
-			echo "Missing lamw_manager required tools!, starting install base Dependencies ..."
-			installSystemDependencies
-			flag_need_repair=1
-		fi
-		parseFPCTrunk
-		setLAMWDeps
-		if [ ! -e $expected_fpc_src_path ]; then
-			getFPCSourcesTrunk
-			flag_need_repair=1
-		fi
-		
-		if [ $flag_need_repair = 1 ]; then
-			configureFPCTrunk
-			CleanOldCrossCompileBins
-			buildCrossAndroid
-			BuildLazarusIDE
-			CreateBinutilsSimbolicLinks
-			enableADBtoUdev
-			writeLAMWLogInstall
-			changeOwnerAllLAMW
-		fi
-
-		if [ ! -e $LAMW_IDE_HOME_CFG ]; then
-			mkdir -p "$LAMW_IDE_HOME_CFG"
-			LAMW4LinuxPostConfig
-		fi
+	if getStatusInstalation; then 
+		return 0
 	fi
+	
+
+	if isRequiredReinstallDependencies; then
+		installSystemDependencies
+		ret=1
+	fi
+
+	if [ ! -e $LAMW_IDE_HOME_CFG ]; then
+		mkdir -p "$LAMW_IDE_HOME_CFG"
+		LAMW4LinuxPostConfig
+		ret=1
+	fi
+
+	return $ret 
 }
 
 checkLAMWManagerVersion(){
