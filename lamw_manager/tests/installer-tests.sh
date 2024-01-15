@@ -26,7 +26,7 @@ testGetImplicitInstall(){
 	}
 
 	getImplicitInstall
-	assertEquals '[Implicit actions mode ]' $LAMW_IMPLICIT_ACTION_MODE 1
+	assertEquals '[Implicit actions mode  install]' $LAMW_IMPLICIT_ACTION_MODE 1
 
 	isUpdateLAMWDeps(){
 		return 1
