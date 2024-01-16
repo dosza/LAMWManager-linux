@@ -2,10 +2,29 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (mater-alma)
 #Course: Science Computer
-#Version: 0.5.9.2
-#Date: 01/01/2024
+#Version: 0.6.0
+#Date: 01/10/2024
 #Description: The "lamw-manager-settings-editor.sh" is part of the core of LAMW Manager. Responsible for managing LAMW Manager / LAMW configuration files..
 #-----------------------------------------------------------------------f--------------------------#
+
+initLAMWUserConfig(){
+	[ $UID = 0 ] && return
+	
+	local lamw_user_dirs=(
+		"$LAMW_USER_MIMES_PATH"
+		"$LAMW_USER_APPLICATIONS_PATH"
+		"$LAMW_USER_HOME/.local/bin"
+		$LAMW_USER_HOME/.android
+	)
+
+	local android_repo_cfg="$LAMW_USER_HOME/.android/repositories.cfg"
+	
+	for folder in ${lamw_user_dirs[@]};do
+		[ ! -e "$folder" ] && mkdir -p "$folder"
+	done
+
+	[ ! -e  "$android_repo_cfg" ] && >"$android_repo_cfg"
+}
 #this function builds initial struct directory of LAMW env Development !
 initROOT_LAMW(){
 
@@ -13,20 +32,13 @@ initROOT_LAMW(){
 		$ANDROID_SDK_ROOT
 		"$(dirname $JAVA_HOME)"
 		"$LAMW4LINUX_ETC"
-		$LAMW_USER_HOME/.android
-		$HOME/.android
 		$FPPKG_LOCAL_REPOSITORY
 		$LAMW_IDE_HOME_CFG
-		"$LAMW_USER_MIMES_PATH"
-		"$LAMW_USER_APPLICATIONS_PATH"
 	)
 
 	for lamw_dir in ${init_root_lamw_dirs[@]}; do
 		[ ! -e "$lamw_dir" ] && mkdir -p "$lamw_dir"
 	done
-
-	[ ! -e $LAMW_USER_HOME/.android/repositories.cfg ] && touch $LAMW_USER_HOME/.android/repositories.cfg  
-	[ ! -e $HOME/.android/repositories.cfg ] && echo "" > $HOME/.android/repositories.cfg 
 }
 
 enableADBtoUdev(){
@@ -54,6 +66,8 @@ AddSDKPathstoProfile(){
 #Esta funcao altera todos o dono de todos arquivos e  pastas do ambiente LAMW de root para o $LAMW_USER_HOME
 #Ou seja para o usuario que invocou o lamw_manager (bootstrap)
 changeOwnerAllLAMW(){
+	[ $UID != 0 ]  && return 
+
 	#case only update-lamw
 	if [ $# = 1 ]; then
 		local files_chown=(
@@ -70,7 +84,9 @@ changeOwnerAllLAMW(){
 			"$LAMW_USER_HOME/.android"
 			"$LAMW_USER_HOME/.local/share"
 			"$LAMW_IDE_HOME_CFG"
-			"$LAMW_MANAGER_LOCAL_CONFIG_DIR" )
+			"$LAMW_MANAGER_LOCAL_CONFIG_DIR" 
+			"$LAMW_USER_HOME/.local/bin"
+			)
 
 		[ "$NO_EXISTENT_ROOT_LAMW_PARENT" != "" ] &&
 			files_chown+=($NO_EXISTENT_ROOT_LAMW_PARENT)
@@ -315,15 +331,21 @@ LAMW4LinuxPostConfig(){
 
 	if [ -e  $LAMW_IDE_HOME/startlamw4linux ]; then
 		chmod +x $LAMW_IDE_HOME/startlamw4linux
-		[ ! -e "/usr/bin/startlamw4linux" ] && 
-			ln -s "$LAMW_IDE_HOME/startlamw4linux" "/usr/bin/startlamw4linux"
+		
+		if [  -e "$LAMW_USER_HOME/.local/bin/startlamw4linux" ]  ; then 
+			rm "$LAMW_USER_HOME/.local/bin/startlamw4linux"
+		fi
+		
+		ln -s "$LAMW_IDE_HOME/startlamw4linux" "$LAMW_USER_HOME/.local/bin/startlamw4linux"
 	fi
 
-	if [ $IS_DEBIAN = 0 ] && [ $NEED_XFCE_MITIGATION  = 1 ]; then 
-		SystemTerminalMitigation
+	if [ $IS_DEBIAN = 0 ]; then  
+		CheckIfSystemNeedTerminalMitigation
+		SystemTerminalMitigation 
 	fi
+	
 	AddLAMWtoStartMenu
-	enableADBtoUdev
+	deleteCoreLock
 	stopAsSuccessProgressBar
 	resetTrapActions
 }
@@ -461,6 +483,7 @@ CleanOldConfig(){
 		"/usr/bin/ppcrossa64"
 		"/usr/lib/fpc/$FPC_VERSION/fpmkinst/arm-android"
 		"/usr/bin/startlamw4linux"
+		"$LAMW_USER_HOME/.local/bin/startlamw4linux"
 		"$FPC_CFG_PATH"
 		"$LAMW_IDE_HOME_CFG"
 		"$ROOT_LAMW"
@@ -471,6 +494,7 @@ CleanOldConfig(){
 		"$FPC_TRUNK_LIB_PATH"
 		"/root/.fpc.cfg"
 		"$OLD_FPC_CFG_PATH"
+		
 	)
 
 	sucess_filler="uninstalling LAMW4Linux IDE"
@@ -489,8 +513,12 @@ CleanOldConfig(){
 	update-mime-database   $LAMW_USER_HOME/.local/share/mime/
 	update-desktop-database $LAMW_USER_HOME/.local/share/applications
 	cleanPATHS
-	cp ~/.gitconfig ~/.old.git.config
-	sed -i "/directory = $scape_root_lamw/d" ~/.gitconfig
+
+	if [ -e  ~/.gitconfig ]; then 
+		cp ~/.gitconfig ~/.old.git.config
+		sed -i "/directory = $scape_root_lamw/d" ~/.gitconfig
+	fi
+	
 	unsetLocalRootLAMW
 	stopAsSuccessProgressBar
 
@@ -671,6 +699,35 @@ updateNodeAttrXML(){
 
 }
 
+fixesFppkgXmlNode(){
+	local fppkg_count="$(grep FppkgConfigFile $lazarus_env_cfg_path -c)"
+	
+	if grep "FppkgConfigFile\sValue=".*"\sValue"   -q "$lazarus_env_cfg_path"  || [ $fppkg_count -ge 2 ]; then 
+		sed -i "/<FppkgConfigFile.*/d" "$lazarus_env_cfg_path"
+	fi
+
+	if ! grep 'FppkgConfigFile' $lazarus_env_cfg_path > /dev/null ; then  #insert fppkg_config ref: https://stackoverflow.com/questions/7837879/xmlstarlet-update-an-attribute
+		xmlstarlet ed  --inplace -s "$env_opts_node" -t elem -n "FppkgConfigFile" -v "" -i $fppkg_cfg_node -t attr -n "Value" -v "$FPPKG_TRUNK_CFG_PATH" $lazarus_env_cfg_path
+	else # update fppkg_config
+		local current_fppkg_config_value=$(getNodeAttrXML "$fppkg_cfg_node_attr" $lazarus_env_cfg_path )
+		[ "$current_fppkg_config_value" != "${FPPKG_TRUNK_CFG_PATH}" ] && 
+			xmlstarlet edit  --inplace  -u "$fppkg_cfg_node_attr" -v "$FPPKG_TRUNK_CFG_PATH" "$lazarus_env_cfg_path"	
+	fi 
+}
+
+updateLAMW4LinuxConfig(){
+	if grep 'LastCalledByLazarusFullPath' $lazarus_env_cfg_path > /dev/null; then 
+		lazarus_env_xml_nodes_attr['last_laz_full_path']="${env_opts_node}/LastCalledByLazarusFullPath/@Value"
+		expected_env_xml_nodes_attr['last_laz_full_path']=$LAMW4LINUX_EXE_PATH
+	fi
+
+	[ -e  "${lazarus_env_cfg_path}.bak" ] && rm "${lazarus_env_cfg_path}.bak" 
+	cp $lazarus_env_cfg_path "${lazarus_env_cfg_path}.bak" 
+
+	updateNodeAttrXML lazarus_env_xml_nodes_attr expected_env_xml_nodes_attr "$lazarus_env_cfg_path"
+	fixesFppkgXmlNode
+}
+
 initLAMw4LinuxConfig(){
 	local lazarus_version_str="`$LAMW_IDE_HOME/tools/install/get_lazarus_version.sh`"	
 	local lazarus_env_cfg_path="$LAMW_IDE_HOME_CFG/environmentoptions.xml"
@@ -696,27 +753,6 @@ initLAMw4LinuxConfig(){
 	if [ ! -e "$lazarus_env_cfg_path" ]; then
 		createLazarusEnvCfgFile
 	else
-		if grep 'LastCalledByLazarusFullPath' $lazarus_env_cfg_path > /dev/null; then 
-			local lazarus_env_xml_nodes_attr['last_laz_full_path']="${env_opts_node}/LastCalledByLazarusFullPath/@Value"
-			local expected_env_xml_nodes_attr['last_laz_full_path']=$LAMW4LINUX_EXE_PATH
-		fi
-
-		[ -e  "${lazarus_env_cfg_path}.bak" ] && rm "${lazarus_env_cfg_path}.bak" 
-		cp $lazarus_env_cfg_path "${lazarus_env_cfg_path}.bak" 
-
-		updateNodeAttrXML lazarus_env_xml_nodes_attr expected_env_xml_nodes_attr "$lazarus_env_cfg_path"
-
-		local fppkg_count="$(grep FppkgConfigFile $lazarus_env_cfg_path -c)"
-		if grep "FppkgConfigFile\sValue=".*"\sValue"   -q "$lazarus_env_cfg_path"  || [ $fppkg_count -ge 2 ]; then 
-			sed -i "/<FppkgConfigFile.*/d" "$lazarus_env_cfg_path"
-		fi
-
-		if ! grep 'FppkgConfigFile' $lazarus_env_cfg_path > /dev/null ; then  #insert fppkg_config ref: https://stackoverflow.com/questions/7837879/xmlstarlet-update-an-attribute
-			xmlstarlet ed  --inplace -s "$env_opts_node" -t elem -n "FppkgConfigFile" -v "" -i $fppkg_cfg_node -t attr -n "Value" -v "$FPPKG_TRUNK_CFG_PATH" $lazarus_env_cfg_path
-		else # update fppkg_config
-			local current_fppkg_config_value=$(getNodeAttrXML "$fppkg_cfg_node_attr" $lazarus_env_cfg_path )
-			[ "$current_fppkg_config_value" != "${FPPKG_TRUNK_CFG_PATH}" ] && 
-				xmlstarlet edit  --inplace  -u "$fppkg_cfg_node_attr" -v "$FPPKG_TRUNK_CFG_PATH" "$lazarus_env_cfg_path"	
-		fi 
+		updateLAMW4LinuxConfig
 	fi
 }

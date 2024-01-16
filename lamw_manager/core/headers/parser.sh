@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-MINIMAL_REGEX='(\-\-minimal)'
 lamw_manager_help(){
 	local lamw_mgr="./lamw_manager"
 	if [ "$USE_SETUP" = "1" ]; then
@@ -53,7 +52,6 @@ initParameters(){
 			export PROXY_SERVER=$2
 			export PORT_SERVER=$3
 			export PROXY_URL="http://$2:$3"
-			printf "PROXY_SERVER=$2\nPORT_SERVER=$3\n"
 		fi
 	fi
 	
@@ -85,7 +83,7 @@ TrapActions(){
 	rm "$LAMW_MANAGER_LOCK"
 }
 
-TrapTermProcess(){
+handleSigTerm(){
 	isProtectedTrapActions && return
 
 	TrapActions 
@@ -94,7 +92,7 @@ TrapTermProcess(){
 	
 	exit 15
 }
-TrapControlC(){
+handleSigInt(){
 	isProtectedTrapActions && return
 
 	TrapActions 
@@ -148,45 +146,140 @@ getCurrentSucessFiller(){
 }
 
 #instalando tratadores de sinal	
-trap TrapControlC 2 
-trap TrapTermProcess 15
+setSignalHandles(){
+	trap handleSigInt SIGINT 
+	trap handleSigTerm SIGTERM
+}
 
-for arg_index in ${!ARGS[@]}; do 
-	arg=${ARGS[$arg_index]}
-	if [ "$arg" = "--use_proxy" ];then
-		INDEX_FOUND_USE_PROXY=$arg_index
-		break
-	fi
-done
-
-if [ $INDEX_FOUND_USE_PROXY -lt 0 ]; then
-	initParameters
-else 
-	index_proxy_server=$((INDEX_FOUND_USE_PROXY+1))
-	index_server_value=$((index_proxy_server+1))
-	index_port_server=$((index_server_value+1))
-	index_port_value=$((index_port_server+1))
-	if [ "${ARGS[$index_proxy_server]}" = "--server" ]; then
-		if [ "${ARGS[$index_port_server]}" = "--port" ] ;then
-			initParameters "${ARGS[$INDEX_FOUND_USE_PROXY]}" "${ARGS[$index_server_value]}" "${ARGS[$index_port_value]}"
-		else 
-			echo "${VERMELHO}Error:${NORMAL}missing ${NEGRITO}--port${NORMAL}";exit 1
+findUseProxyOpt(){
+	for arg_index in ${!ARGS[@]}; do 
+		arg=${ARGS[$arg_index]}
+		if [ "$arg" = "--use_proxy" ];then
+			INDEX_FOUND_USE_PROXY=$arg_index
+			break
 		fi
-		unset ARGS[$INDEX_FOUND_USE_PROXY]
-		unset ARGS[$index_proxy_server]
-		unset ARGS[$index_server_value]
-		unset ARGS[$index_port_server]
-		unset ARGS[$index_port_value]
+	done
+
+}
+
+parseProxyOpt(){
+	if [ $INDEX_FOUND_USE_PROXY -lt 0 ]; then
+		initParameters
 	else 
-		echo "${VERMELHO}Error:${NORMAL}missing ${NEGRITO}--server${NORMAL}";exit 1
+		index_proxy_server=$((INDEX_FOUND_USE_PROXY+1))
+		index_server_value=$((index_proxy_server+1))
+		index_port_server=$((index_server_value+1))
+		index_port_value=$((index_port_server+1))
+		if [ "${ARGS[$index_proxy_server]}" = "--server" ]; then
+			if [ "${ARGS[$index_port_server]}" = "--port" ] ;then
+				initParameters "${ARGS[$INDEX_FOUND_USE_PROXY]}" "${ARGS[$index_server_value]}" "${ARGS[$index_port_value]}"
+			else 
+				echo "${VERMELHO}Error:${NORMAL}missing ${NEGRITO}--port${NORMAL}";exit 1
+			fi
+			unset ARGS[$INDEX_FOUND_USE_PROXY]
+			unset ARGS[$index_proxy_server]
+			unset ARGS[$index_server_value]
+			unset ARGS[$index_port_server]
+			unset ARGS[$index_port_value]
+		else 
+			echo "${VERMELHO}Error:${NORMAL}missing ${NEGRITO}--server${NORMAL}";exit 1
+		fi
 	fi
-fi
+}
+
+testConnectionInternet(){
+	
+	local sucess_filler="checking your internet connection"
+
+	getFiller
+
+	echo "${sucess_filler^} ..."
+
+	startProgressBar
+	
+	if ! ping google.com -q -c4 &>/dev/null; then
+		echo "${VERMELHO}Error:${NORMAL} check your internet connection"
+		sleep 0.02
+		stopProgressBarAsFail
+		exit 1
+	fi
+	stopAsSuccessProgressBar
+}
 
 
-if [[ "${ARGS[*]}" =~ $MINIMAL_REGEX ]];then 
-	LAMW_MINIMAL_INSTALL=1
-	ARGS=(${ARGS[@]//'--minimal'/})
-fi
+testConnectionInternetOnDemand(){
+	for action in ${NEED_INTERNET_ACTIONS_REGEX[@]};do
+		if [[ "${ARGS[@]}" =~ $action ]] || [[ "${ARGS[@]}" = "" ]]; then 
+			testConnectionInternet 1>&2
+			return
+		fi
+	done
+}
 
+
+parseFlags(){
+    CheckFlags USE_PKEXEC "PKEXEC=1" 1
+    CheckFlags NOBLINK 'NOBLINK=1' 1
+}
+
+
+helloMessage(){
+
+	LAMW_INSTALL_VERSION=$(
+		grep LAMW_INSTALL_VERSION\
+		-m1  $LAMW_MANAGER_MODULES_PATH/headers/lamw_headers | 
+		awk -F'=' '{ print $2 }' )
+
+	LAMW_INSTALL_VERSION=${LAMW_INSTALL_VERSION//\"/}
+
+	local message="$(<${LAMW_MANAGER_MODULES_PATH}/headers/.hello.txt)"
+	local id=96
+	local italic=3
+	local blink=5
+	local style1=$'\e[1;'$id'm'
+	local style2=$'\e[1;'$blink'm'
+	local style3=$'\e[1;'$italic'm'
+	local version_message="${style3}v${LAMW_INSTALL_VERSION}${NORMAL}"
+
+	local lamw_mgr="./lamw_manager"
+	if [ "$USE_SETUP" = "1" ]; then
+		lamw_mgr="bash lamw_manager_setup.sh\t${VERDE}--${NORMAL}"
+	fi
+
+	if [ $NOBLINK =  0 ]; then 
+		echo -en "\n${style2}${style1}$message\t${version_message}\n\n"
+		echo "${VERMELHO}Warning: ${NORMAL}use ${NEGRITO}NOBLINK=1${NORMAL} if you are photosensitive, sample:" 
+		echo -e "\t$lamw_mgr ${NEGRITO}NOBLINK=1${NORMAL}\n\n" 
+	else 
+		echo -en "\n${style1}$message\t${version_message}${NORMAL}\n\n"
+   	fi
+}
+
+parseMinimalOpt(){
+	if [[ "${ARGS[*]}" =~ $MINIMAL_REGEX ]];then 
+		LAMW_MINIMAL_INSTALL=1
+		ARGS=(${ARGS[@]//'--minimal'/})
+	fi
+}
+
+
+parseOpts(){
+	findUseProxyOpt
+	parseProxyOpt
+	parseMinimalOpt
+	parseFlags
+}
+
+initialConfig(){
+	setSignalHandles
+	parseOpts
+	helloMessage 1>&2
+	IsFileBusy "lamw_manager" "$LAMW_MANAGER_LOCK" 1>&2
+	createLamwManagerLock
+	getFiller
+	checkIfDistroIsLikeDebian
+	testConnectionInternetOnDemand
+	StopGradleDaemon 1>&2
+}
 
 
