@@ -84,6 +84,7 @@ initLAMWBuild(){
 	chmod +x "$LAMW_MANAGER_TMP_BUILD/.start_lamw_manager"
 }
 CopyFiles(){
+	cd $AUX
 	#copy directorys and files to LAMW_MANAGER_TMP_BUILD
 	for((i=0;i<${#files[*]};i++))
 	do 
@@ -145,7 +146,6 @@ main(){
 		echo "Use command: ${VERDE}sudo apt-get install makeself -y${NORMAL}"
 		exit 1
 	fi
-
 	CopyFiles
 	changeDirectory $LAMW_MANAGER_TMP_BUILD
 	CheckBuildFlag 
