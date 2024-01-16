@@ -126,19 +126,9 @@ setBuildMode(){
 		output_lamw_manager_setup="$LAMW_MANAGER_INSTALLER_DEBUG"
 		initLAMWBuild "2"
 	fi
-	makeself_args+=(
-		"$PWD" 
-		"$output_lamw_manager_setup" 
-		"LAMW Manager Setup" 
-		"./${START_LAMW_MANAGER_FILE}"
-	)
 }
 main(){
 	local output_lamw_manager_setup="$LAMW_MANAGER_INSTALLER"
-	
-	local makeself_args=(
-		  --quiet --xz --copy --target '$HOME/lamw_manager'
-	)
 	
 	if ! which makeself > /dev/null; then
 		echo "${VERMELHO}Error${NORMAL}:Need install makeself!"
@@ -151,7 +141,7 @@ main(){
 	setBuildMode "$1"
 	CopyFiles
 	changeDirectory $LAMW_MANAGER_TMP_BUILD
-	makeself "${makeself_args[@]}"
+	makeself --quiet --xz --copy --target '$HOME/lamw_manager' "$PWD" "$output_lamw_manager_setup"  "LAMW Manager Setup" "./${START_LAMW_MANAGER_FILE}"
 	chmod +x $output_lamw_manager_setup
 	cp $LAMW_MANAGER_TMP_BUILD/$output_lamw_manager_setup /tmp
 	RemoveTmpFiles
