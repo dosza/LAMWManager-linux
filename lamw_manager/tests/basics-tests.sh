@@ -1,36 +1,26 @@
 #!/bin/bash
+TEST_MODULES_PATH=$(dirname $(realpath $0))
+source $TEST_MODULES_PATH/tests-header
 
-testLocalRootLAMW(){
-	if [ -e "$PWD/lamw_manager" ];then 
-		local lamw_manager_script="$(realpath ./lamw_manager)"
-	else 	
-		local lamw_manager_script=$(realpath ../lamw_manager)
-	fi
-
-	bash $lamw_manager_script get-status
-
-	[ $? != 0 ] && return 
-
-
-	env LOCAL_ROOT_LAMW="" $lamw_manager_script
-	assertEquals 1  $?
-
-	env LOCAL_ROOT_LAMW=/home $lamw_manager_script
+testCheckisLocalRootLAMWInvalid(){
+	export LOCAL_ROOT_LAMW=/home 
+	ret=$(checkisLocalRootLAMWInvalid)
+	assertEquals 1 $?
+	export LOCAL_ROOT_LAMW=/media 
+	ret=$(checkisLocalRootLAMWInvalid)
 	assertEquals 1 $?
 
-
-	env LOCAL_ROOT_LAMW=/media $lamw_manager_script
+	export LOCAL_ROOT_LAMW=/mnt 
+	ret=$(checkisLocalRootLAMWInvalid)
 	assertEquals 1 $?
 
-	env LOCAL_ROOT_LAMW=/mnt $lamw_manager_script
+	export LOCAL_ROOT_LAMW=/ 
+	ret=$(checkisLocalRootLAMWInvalid)
 	assertEquals 1 $?
 
-	env LOCAL_ROOT_LAMW=/ $lamw_manager_script
-	assertEquals 1 $?
-	
-	env LOCAL_ROOT_LAMW=/boot $lamw_manager_script
+	export LOCAL_ROOT_LAMW=/boot 
+	ret=$(checkisLocalRootLAMWInvalid)
 	assertEquals 1 $?
 }
-
-
 . $(which shunit2 ) 
+rm -rf $HOME

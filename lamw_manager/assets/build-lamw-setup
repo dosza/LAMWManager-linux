@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.5.9.2
-#Date: 01/01/2024
+#Version: 0.6.0
+#Date: 01/10/2024
 #Description: This script generates compiles LAMW Manager source code into an executable installer.
 #Note: This script requires makeself, read more in https://makeself.io/
 #-------------------------------------------------------------------------------------------------#
@@ -16,9 +16,11 @@ AUX=$PWD
 
 LAMW_MANAGER_TMP_BUILD="/tmp/lamw_manager_build"
 LAMW_MANAGER_INSTALLER="lamw_manager_setup.sh"
+LAMW_MANAGER_INSTALLER_DEBUG="lamw_manager_setup_debug.sh"
 LAMW_MANAGER_FINAL_INSTALLER="/tmp/$LAMW_MANAGER_INSTALLER"
 START_LAMW_MANAGER_FILE='.start_lamw_manager'
 BUILD_GUI=0
+BUILD_DEBUG=0
 
 START_LAMW_MANAGER_STR=(
 	'#!/bin/bash'
@@ -34,11 +36,6 @@ START_LAMW_MANAGER_STR=(
 	"ARGS=\"\$*\""
 	'ARGS=${ARGS/\-\-/}  #This is expansion that removes the first occurrence --. \-  is the escape of -'
 	"export USE_SETUP=1" 
-	"if [[ \"\$ARGS\" =~ (DEBUG) ]]; then"
-	"	exec bash -x ./lamw_manager \$ARGS"
-	"	exit \$?"
-	'fi'
-	"exec ./lamw_manager \$ARGS"
 )
 
 files=(
@@ -73,7 +70,17 @@ initLAMWBuild(){
 	then
 		mkdir $LAMW_MANAGER_TMP_BUILD
 	fi
-	WriterFileln "$AUX/.start_lamw_manager" "START_LAMW_MANAGER_STR"
+	if [ "$1" = "" ]; then
+		START_LAMW_MANAGER_STRF=(
+			"${START_LAMW_MANAGER_STR[@]}"
+			"exec ./lamw_manager \$ARGS")
+	else
+		START_LAMW_MANAGER_STRF=(
+			"${START_LAMW_MANAGER_STR[@]}"
+			"exec bash -x ./lamw_manager \$ARGS"
+		)
+	fi
+	WriterFileln "$AUX/.start_lamw_manager" "START_LAMW_MANAGER_STRF"
 	chmod +x "$AUX/.start_lamw_manager"
 }
 CopyFiles(){
@@ -112,21 +119,31 @@ RemoveTmpFiles(){
 		fi
 	done
 }
+setBuildMode(){
+	if [ $BUILD_DEBUG = 0 ]; then
+		initLAMWBuild ""
+	else
+		output_lamw_manager_setup="$LAMW_MANAGER_INSTALLER_DEBUG"
+		initLAMWBuild "2"
+	fi
+}
 main(){
-	which makeself > /dev/null
-	if [ $? != 0 ]; then
+	local output_lamw_manager_setup="$LAMW_MANAGER_INSTALLER"
+	
+	if ! which makeself > /dev/null; then
 		echo "${VERMELHO}Error${NORMAL}:Need install makeself!"
 		echo "Use command: ${VERDE}sudo apt-get install makeself -y${NORMAL}"
 		exit 1
 	fi
-	initLAMWBuild
-	CheckBuildFlag
+	
+	CheckBuildFlag 
 	BuildGUI
+	setBuildMode "$1"
 	CopyFiles
 	changeDirectory $LAMW_MANAGER_TMP_BUILD
-	makeself  --quiet --xz --copy --target '$HOME/lamw_manager' $PWD $LAMW_MANAGER_INSTALLER "LAMW Manager Setup" "./${START_LAMW_MANAGER_FILE}"
-	cp $LAMW_MANAGER_TMP_BUILD/$LAMW_MANAGER_INSTALLER /tmp
-	chmod +x "$LAMW_MANAGER_FINAL_INSTALLER"
+	makeself --quiet --xz --copy --target '$HOME/lamw_manager' "$PWD" "$output_lamw_manager_setup"  "LAMW Manager Setup" "./${START_LAMW_MANAGER_FILE}"
+	chmod +x $output_lamw_manager_setup
+	cp $LAMW_MANAGER_TMP_BUILD/$output_lamw_manager_setup /tmp
 	RemoveTmpFiles
 }
 
@@ -134,5 +151,9 @@ case "$1" in
 	"--gui")
 		BUILD_GUI=1
 	;;
+	"--debug"|"debug")
+		BUILD_DEBUG=1
+	;;
 esac
-main
+
+main 

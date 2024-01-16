@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.5.9.2
-#Date: 01/01/2024
+#Version: 0.6.0
+#Date: 01/10/2024
 #Description: "installer.sh" is part of the core of LAMW Manager. Contains routines for installing LAMW development environment
 #-------------------------------------------------------------------------------------------------#
 
@@ -76,14 +76,17 @@ LAMWPackageManager(){
 	local old_lamw_ide_home="$LAMW4LINUX_HOME/lamw4linux"
 	local old_lamw4linux_exec=$old_lamw_ide_home/lamw4linux
 
+	if [ $UID = 0 ]; then 
 
-	[ -e /usr/bin/startlamw4linux ] && 	rm /usr/bin/startlamw4linux
+		[ -e /usr/bin/startlamw4linux ] && 	rm /usr/bin/startlamw4linux
 
-	if [ -e "$old_lamw_ide_home"  ] &&  [ -L $old_lamw_ide_home ] && [ -d $old_lamw_ide_home ]; then # remove deprecated symbolik links
-		if [ -e $old_lamw4linux_exec ]; then
-			rm $old_lamw4linux_exec
+		if [ -e "$old_lamw_ide_home"  ] &&  [ -L $old_lamw_ide_home ] && [ -d $old_lamw_ide_home ]; then # remove deprecated symbolik links
+			if [ -e $old_lamw4linux_exec ]; then
+				rm $old_lamw4linux_exec
+			fi
+			rm "$old_lamw_ide_home"  -rf
 		fi
-		rm "$old_lamw_ide_home"  -rf
+		return 
 	fi
 
 	for((i=0;i<${#OLD_LAZARUS_STABLE_VERSION[*]};i++)); do
@@ -138,22 +141,13 @@ getStatusInstalation(){
 }
 
 
-checkNeedXfceMitigation(){
-	[ $NEED_XFCE_MITIGATION = 1 ] && return 
-	
-	if [ "$LAMW_USER_XDG_CURRENT_DESKTOP" = "XFCE" ] && [ "$LAMW_USER_DESKTOP_SESSION" = "XFCE" ]; then
-		NEED_XFCE_MITIGATION=1
-		PROG_TOOLS+=" gnome-terminal"
-	fi
-}
 
 
 #install deps
 installSystemDependencies(){
-	if [ $IS_DEBIAN = 0 ];then 
-		CheckIfYourLinuxIsSupported; return
+	if isRequiredAdmin ; then
+		RunAsAdmin 0
 	fi
-	installDebianDependencies	
 }
 
 
@@ -193,21 +187,26 @@ getCompressFile(){
 	local initial_msg="extracting ${NEGRITO}$compress_file${NORMAL}" 
 	local sum_name=$(getNameSumByParent "${FUNCNAME[1]}")
 
-	Wget $compress_url
+	echo -e "\nPlease wait, getting ${compress_file} ...\n"
+	Wget $compress_url -q --show-progress
+	echo ""
 	if [ -e $compress_file ]; then
-		sucess_filler="$initial_msg"	
-		startProgressBar
+			
 		[ "$before_uncompress" != "" ] &&  eval "$before_uncompress"
 
 		if [ "$sum_name" != '' ]; then 
+			sucess_filler="checking ${NEGRITO}$compress_file${NORMAL}"
+			startProgressBar
 			if ! runCheckSum "$sum_name"; then 
 				rm $compress_file
 				stopProgressBarAsFail
 				echo 'Checksum not matched!!'
 				exit 1;
 			fi
+			stopAsSuccessProgressBar
 		fi
-
+		sucess_filler="$initial_msg"
+		startProgressBar
 		$uncompress_command
 		check_error_and_exit "$error_uncompress_msg"
 		rm $compress_file
@@ -483,47 +482,33 @@ resetAndroidAPIS(){
 
 }
 
+
+isRequiredReinstallDependencies(){
+	local tools="wget git xmlstartlet jq xmlstarlet make"
+	which $tool &>/dev/null
+}
+
 Repair(){
-	local flag_need_repair=0 # flag de reparo 
-	local flag_upgrade_lazarus=0
-	local aux_path="$LAMW4LINUX_HOME/fpcsrc"
-	local expected_fpc_src_path="$FPC_TRUNK_SOURCE_PATH/${FPC_TRUNK_SVNTAG}"
 
-	getStatusInstalation 
-	if [ $LAMW_INSTALL_STATUS = 1 ]; then # só executa essa funcao se o lamw tiver instalado
-		local flag_old_fpc=""
-		checkLAMWManagerVersion > /dev/null
+	local ret=0
 
-		if [ "$(which git)" = "" ] || [ "$(which wget)" = "" ] || 
-		[ "$(which jq)" = "" ] || [ "$(which make)" = "" ]|| 
-		[ "$(which xmlstarlet)" = "" ]; then
-			echo "Missing lamw_manager required tools!, starting install base Dependencies ..."
-			installSystemDependencies
-			flag_need_repair=1
-		fi
-		parseFPCTrunk
-		setLAMWDeps
-		if [ ! -e $expected_fpc_src_path ]; then
-			getFPCSourcesTrunk
-			flag_need_repair=1
-		fi
-		
-		if [ $flag_need_repair = 1 ]; then
-			configureFPCTrunk
-			CleanOldCrossCompileBins
-			buildCrossAndroid
-			BuildLazarusIDE
-			CreateBinutilsSimbolicLinks
-			enableADBtoUdev
-			writeLAMWLogInstall
-			changeOwnerAllLAMW
-		fi
-
-		if [ ! -e $LAMW_IDE_HOME_CFG ]; then
-			mkdir -p "$LAMW_IDE_HOME_CFG"
-			LAMW4LinuxPostConfig
-		fi
+	if getStatusInstalation; then 
+		return 0
 	fi
+	
+
+	if isRequiredReinstallDependencies; then
+		installSystemDependencies
+		ret=1
+	fi
+
+	if [ ! -e $LAMW_IDE_HOME_CFG ]; then
+		mkdir -p "$LAMW_IDE_HOME_CFG"
+		LAMW4LinuxPostConfig
+		ret=1
+	fi
+
+	return $ret 
 }
 
 checkLAMWManagerVersion(){
@@ -558,27 +543,17 @@ setOldLAMW4LinuxActions(){
 }
 
 checkChangeLAMWDeps(){
-	local flag_is_old_lamw=$(updateLAMWDeps)
-			
-	if [ $flag_is_old_lamw = 0 ]; then
+	if isUpdateLAMWDeps; then 
 		export LAMW_IMPLICIT_ACTION_MODE=1
 	else
-		setOldLAMW4LinuxActions $flag_is_old_lamw
+		setOldLAMW4LinuxActions 1
 	fi
 }
 
 #get implict install 
 getImplicitInstall(){
-	local sucess_filler='checking your internet connection'
-	startProgressBar
-	if ! ping google.com -q -c4 &>/dev/null; then
-		echo "${VERMELHO}Error:${NORMAL} check your internet connection"
-		stopProgressBarAsFail
-		exit 1
-	fi
-	
-	stopAsSuccessProgressBar
 	if [ ! -e "$LAMW_INSTALL_LOG" ]; then
+		AUTO_START_LAMW4LINUX=1
 		return 
 	else
 		grep "Generate LAMW_INSTALL_VERSION=$LAMW_INSTALL_VERSION" "$LAMW_INSTALL_LOG" 	> /dev/null
@@ -770,8 +745,9 @@ mainInstall(){
 	getFiller
 	checkLAMWManagerVersion > /dev/null
 	singleCoreWarning
-	initROOT_LAMW
 	installSystemDependencies
+	initLAMWUserConfig
+	initROOT_LAMW
 	setLAMWDeps
 	LAMWPackageManager
 	checkProxyStatus
@@ -789,7 +765,7 @@ mainInstall(){
 	getAndroidAPIS
 	CreateBinutilsSimbolicLinks
 	AddSDKPathstoProfile
-	CleanOldCrossCompileBins
+	deleteCrossBinLock
 	buildCrossAndroid
 	configureFPCTrunk
 	BuildLazarusIDE

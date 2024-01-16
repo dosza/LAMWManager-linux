@@ -1,85 +1,5 @@
 #!/bin/bash
 
-updateBuildDotGradle(){
-	
-	[ "${FUNCNAME[1]}"	!= 'cacheGradle' ] && return 1
-	local current_compile_sdk="$(grep compileSdkVersion $PWD/build.gradle | sed 's/^[[:blank:]]//g')"
-	local current_target_sdk="$(grep targetSdkVersion $PWD/build.gradle | sed 's/^[[:blank:]]//g')"
-	local current_gradle_plugin=$( grep 'com\.android\.tools.build:gradle' $PWD/build.gradle )
-	local new_compile_sdk="\tcompileSdkVersion $SDK_TARGET\n"
-	local new_target_sdk="\t\ttargetSdkVersion $SDK_TARGET"
-	local smartdesigner_path="$LAMW_FRAMEWORK_HOME/android_wizard/smartdesigner.pas"
-	local lint_option="abortOnError false"
-	local lint_new_option='checkReleaseBuilds false'
-	local lamw_mgr_log=$ANDROID_HOME/lamw4linux/lamw-install.log 
-	local gradle_version="$(grep '^GRADLE_VERSION'  $lamw_mgr_log | sed 's/GRADLE_VERSION=//g')"
-	local gradle_plugin_version=$(
-		grep "[0-9]\.[0-9]\.[0-9]\s\s<-->\sGradle\sversão\s${gradle_version}" $smartdesigner_path  -m1 |
-		awk -F ' ' ' { print $1 }' | 
-		sed "s/[[:blank:]]else\sResult:=//g;s/'//g;s/[[:blank:]]//g"
-	)
-
-	local new_plugin_gradle_applied="\tclasspath 'com.android.tools.build:gradle:${gradle_plugin_version}'"
-
-	sed -i "s/$current_gradle_plugin/$new_plugin_gradle_applied/g" $PWD/build.gradle
-	sed -i "/^[[:blank:]]buildToolsVersion/d" build.gradle
-	sed -i "s/$current_target_sdk/$new_target_sdk/g;s/$current_compile_sdk/$new_compile_sdk/g"  $PWD/build.gradle
-	sed -i "s/$lint_option/\t$lint_new_option\n\t$lint_option/g" build.gradle 
-
-	if grep androidx build.gradle -i -q ;then 
-		echo 'android.useAndroidX=true' >> gradle.properties
-		echo 'android.enableJetifier=true' >>gradle.properties
-	fi
-
-}
-
-saveLocalDotProperties(){
-	[ "${FUNCNAME[1]}"	!= 'cacheGradle' ] && return 1
-
-	local max_cpu="$(grep -c ^processor /proc/cpuinfo)"
-	echo "sdk.dir=$ANDROID_SDK_ROOT"> local.properties
-	echo "ndk.dir=$ANDROID_SDK_ROOT/ndk-bundle" >> local.properties
-	echo 'org.gradle.configureondemand=true' >> local.properties
-	echo 'org.gradle.daemon=true'	>> local.properties
-	echo 'org.gradle.parallel=true' >> local.properties
-	echo "org.gradle.workers.max=$max_cpu"  >>local.properties
-	
-
-	
-}
-
-cacheGradle(){
-
-	local lamw_tmp_base=$(mktemp -d -t lamw.XXXXXXXX)
-	local lamw_tmp="$lamw_tmp_base/$(echo $LAMW_FRAMEWORK_HOME | awk -F'/' '{ print $NF }' )"
-
-	local lamw_demos=(
-		demos/GUI/AppHelloWord
-		demos/GUI/AppCompatBasicDemo1
-	)
-	
-	[ ! -e $lamw_tmp ] && mkdir -p $lamw_tmp
-
-	for dir in ${lamw_demos[@]};do
-		demo=$lamw_tmp/$(echo $dir | awk -F'/' '{ print $NF }' )
-		lamw_tmp_demos+=($demo)
-		cp $LAMW_FRAMEWORK_HOME/${dir} -r $lamw_tmp
-	done
-
-	for demo in ${lamw_tmp_demos[@]};do
-		cd "$demo"
-		updateBuildDotGradle
-		saveLocalDotProperties
-		gradle clean build
-
-	done
-
-	gradle --stop
-
-	[ -e $lamw_tmp ] && cd /tmp && rm -rf $lamw_tmp_base
-	
-}
-
 #Run emulator 
 emulator(){
 	local new_emulator="$ANDROID_SDK_ROOT/emulator/emulator"
@@ -222,11 +142,8 @@ elif [[ "$-" =~ (v) ]]; then
 	_EXTRA_ARGS+=" -v"
 fi
 
-if [ "$LAMW_MANAGER_CALL" = "" ];then
-	echo "[1mWelcome LAMW4Linux Terminal!![0m"
-	echo "Here you can run FPC command line tools, Lazarus and LAMW scripts"
-fi
-
+echo "[1mWelcome LAMW4Linux Terminal!![0m"
+echo "Here you can run FPC command line tools, Lazarus and LAMW scripts"
 
 generateSDKToolsCommands
 cd $CURRENT_LAMW_WORKSPACE

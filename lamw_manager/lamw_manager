@@ -2,11 +2,12 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.5.9.2
-#Date: 01/01/2024
-#Description:The "lamw_manager" is part of the core of LAMW Manager. This script is a wrapper for "core/lamw-instal.sh"
+#Version: 0.6.0
+#Date: 01/10/2024
+#Description: The "lamw-install.sh" is part of the core of LAMW Manager. This script configures the development environment for LAMW
 #-------------------------------------------------------------------------------------------------#
 
+# Verifica condicoes de inicializacao
 
 #Get Directory of LAMW Manager Core
 if [ -e "$PWD/lamw_manager" ] && [ ! -d "$PWD/lamw_manager" ]; then
@@ -18,307 +19,130 @@ fi
 
 LAMW_MANAGER_MODULES_PATH=$LAMW_MGR_CORE/core
 
-source "$LAMW_MANAGER_MODULES_PATH/headers/common-shell.sh"
-source "$LAMW_MANAGER_MODULES_PATH/headers/lamw_manager_headers"
+source /etc/os-release
+
+#importando modulos de headers 
+source "$LAMW_MANAGER_MODULES_PATH/headers/.index"
+source "$LAMW_MANAGER_MODULES_PATH/installer/services.sh"
+source "$LAMW_MANAGER_MODULES_PATH/installer/distro-overrides.sh"
+source "$LAMW_MANAGER_MODULES_PATH/installer/configure.sh"
+source "$LAMW_MANAGER_MODULES_PATH/installer/installer.sh"
+source "$LAMW_MANAGER_MODULES_PATH/installer/preinstall.sh"
+source "$LAMW_MANAGER_MODULES_PATH/installer/postinstall.sh"
+source "$LAMW_MANAGER_MODULES_PATH/settings-editor/lamw-settings-editor.sh"
+source "$LAMW_MANAGER_MODULES_PATH/cross-builder/cross-builder.sh"
 source "$LAMW_MANAGER_MODULES_PATH/components/progress-bar.sh"
-source "$LAMW_MANAGER_MODULES_PATH/settings-editor/root-lamw-settings-editor.sh"
-
-GetInitialStatus(){
-
-	tty | grep  'pts/[0-9]' > /dev/null
-
-	[ $? = 0 ] && [ ! -e "$LAMW_INSTALL_LOG" ] && 
-		AUTO_START_LAMW4LINUX=1
-}
-
-GetFinalStatus(){
-	if [ -e "$LAMW_INSTALL_LOG" ]; then
-		LAMW_INSTALL_LOG_CHANGES['FINAL']="$(grep '^GRADLE_VERSION' $LAMW_INSTALL_LOG | sed 's/GRADLE_VERSION=//g')"
-		if [ "${LAMW_INSTALL_LOG_CHANGES[INITIAL]}" != "${LAMW_INSTALL_LOG_CHANGES[FINAL]}" ] || [ ! -e ~/.gradle ]; then
-			IS_CHANGED_LAMW_INSTALL_LOG=1
-		fi
-	fi
-}
-
-GetLocalJavaHome(){
-	local lamw4linux_env="$LAMW4LINUX_HOME/etc/environment"
-	if [ -e $lamw4linux_env ]; then
-		export JAVA_HOME=$(grep '^export JAVA_HOME' "$lamw4linux_env" | sed 's|export JAVA_HOME=||g')
-	fi	
-}
-StopGradleDaemon(){
-	if [ -e "$LAMW_INSTALL_LOG" ] ; then
-		local gradle_version="$(grep '^GRADLE_VERSION' $LAMW_INSTALL_LOG | sed 's/GRADLE_VERSION=//g')"
-		local gradle_path="$ROOT_LAMW/gradle-$gradle_version"
-		GetLocalJavaHome
-		LAMW_INSTALL_LOG_CHANGES['INITIAL']=$gradle_version
-	fi
-
-	if [ "$gradle_path" != "" ] && [ -e "$gradle_path" ]; then 
-		
-		ps ax |  grep gradle | grep $ROOT_LAMW &>/dev/null
-		if [ $? = 0 ]; then 
-			local sucess_filler="stopping Gradle Daemons"  
-			
-			startProgressBar
-			if $gradle_path/bin/gradle --stop -q &>/dev/null; then
-				stopAsSuccessProgressBar
-			else
-				stopProgressBarAsFail
-			fi
-
-		fi
-	fi
-}
-
-#Del lamw-overrides
-DelTempFiles(){ 
-	[ -e $LAMW_MANAGER_LOCK ] &&  rm $LAMW_MANAGER_LOCK
-}
-
-#Check if $USER is a sudo member 
-CheckUserIsSudo(){
-	if ! isUsersSudo $USER ; then
-		export USE_PKEXEC=1
-	fi
-}
-CheckFlags(){
-	newPtr ref_flag="$1"
-	local flagFind="$2"
-
-	if [[ "$ARGS" =~ $flagFind  ]]; then 
-		export ref_flag=1
-		export ARGS=${ARGS//$flagFind/} # remove todas as ocorrencias de DEBUG=1
-	fi
-}
-
-#Check if DEBUG flag is set 
-getBashCMD(){
-	
-	if [ $DEBUG = 1 ]; then
-		LAMW_MGR_INSTALL="bash -x $LAMW_MGR_INSTALL"
-	fi
-}
-
-isSupportedPolkit(){
-	local error_msg="${VERMELHO}Fatal error:${NORMAL} Cannot run on tty terminal!!"
-	tty | grep 'pts/[0-9]'>/dev/null
-}
 
 
-setUseLamwManagerSetup(){
-	if [ "$USE_SETUP" = "1" ];
-	then 
-		isSupportedPolkit
-		local support_polkit=$?
 
-		if [ $support_polkit = 0 ]; then 
-			USE_PKEXEC=1
-		fi
-
-		LAMW_MANAGER_ENV+=("USE_SETUP=1")
-	else
-		LAMW_MANAGER_ENV+=("USE_SETUP=0")
-	fi
-}
-
-CheckLocalRootLAMW(){
-	if [ "$LOCAL_ROOT_LAMW" != "" ]; then
-		setRootLAMW
-	else 
-		isVariableDeclared LOCAL_ROOT_LAMW
-		if [ $? = 0 ]; then
-			echo "${VERMELHO}Fatal error: LOCAL_ROOT_LAMW is declared as empty!${NORMAL}"
-			exit 1
-		else 
-			setRootLAMW
-		fi
-	fi
-
-	LAMW_MANAGER_ENV+=(ROOT_LAMW=$ROOT_LAMW NOBLINK=$NOBLINK)
-	LAMW4LINUX_HOME=$ROOT_LAMW/lamw4linux
-	LAMW_FRAMEWORK_HOME=$ROOT_LAMW/lazandroidmodulewizard
-	LAMW_INSTALL_LOG="$LAMW4LINUX_HOME/lamw-install.log"
-}
-
-RunAsSudo(){
-	sudo -i env ${LAMW_MANAGER_ENV[@]} $LAMW_MGR_INSTALL $*
-	export EXIT_STATUS=$?
-}
+#Parameters are useful for understanding script operation
 
 
-#Run LAMW Manager as Police Kit
-RunAsPolkit(){
-	isSupportedPolkit
-	if [ $?  = 0 ]; then 
-		LAMW_MANAGER_ENV+=(DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY)
-		pkexec  env ${LAMW_MANAGER_ENV[@]} $LAMW_MGR_INSTALL $*
-		export EXIT_STATUS=$?
-	else
-		echo $error_msg
-		export EXIT_STATUS=$?
-	fi
-	
-	[  $ENTER_TO_EXIT = 1 ] && echo "press enter to exit ..." && read
-	
+actions(){
 
-}
+	case "$1" in
+	"version")
+		printf "${LAMW_INSTALL_WELCOME[*]}"
+		printf "Linux supported\n${LAMW_LINUX_SPP[*]}"
+	;;
 
-#get install status and exit
-getStatus(){
-	
-	local status_regex='(get\-status)'
+	"uninstall")
+		LAMW_MANAGER_ENV+=(UNINSTALL_LAMW=1)
+		getStatusInstalation
+		[ $LAMW_INSTALL_STATUS = 1 ] && checkLAMWManagerVersion >/dev/null
+		RunAsAdmin 1
+	;;
 
-	if [[ "$*" =~ $status_regex  ]]; then 
-		if [ -e "$LAMW_INSTALL_LOG" ]; then
-			exit 0
+	"--sdkmanager")
+		getStatusInstalation;
+		[ $LAMW_INSTALL_STATUS = 0 ] && mainInstall
+		echo "Please wait, starting ${NEGRITO}Android SDK Manager Command Line ${NORMAL} ..."
+		getAndroidAPIS  ${ARGS[@]:1}
+		changeOwnerAllLAMW
+ 
+	;;
+	"--update-lamw")
+		getStatusInstalation
+		if [ $LAMW_INSTALL_STATUS  = 0 ]; then
+			mainInstall
+
 		else
+
+			Repair
+			if ! isUpdateLAMWDeps ; then
+				echo "${VERMELHO}Warning:There are updates for LAMW4Linux${NORMAL}"
+				echo "run ${NEGRITO}./lamw_manager to update:${NORMAL}"
+			fi
+			checkProxyStatus;
+			echo "Updating LAMW";
+			getLAMWFramework;
+			sleep 1;
+			BuildLazarusIDE "1"
+			changeOwnerAllLAMW "1";
+		fi
+	;;
+	"--reinstall")
+		printf "Please wait ...\n"
+		mainInstall
+	;;
+
+	"--reset")
+		printf "Please wait ...\n"
+		getStatusInstalation
+		RunAsAdmin 2
+		mainInstall
+	;;
+	"--reset-aapis")
+		getStatusInstalation
+		if [ $LAMW_INSTALL_STATUS = 1 ]; then
+			resetAndroidAPIS
+		else
+			mainInstall
+		fi
+	;;
+	"" | "--use_proxy" |"--minimal")
+		startImplicitAction
+		autoStartLAMW4Linux
+	;;
+	"--help"| "help") 
+		lamw_manager_help
+	;;
+	"build-lazarus")
+		getStatusInstalation
+		if [ $LAMW_INSTALL_STATUS = 0 ]; then 
+			testConnectionInternet 1>&2
+			mainInstall
+		else
+			FORCE_LAZARUS_CLEAN_BUILD=1
+			Repair 
+			BuildLazarusIDE
+			changeOwnerAllLAMW 1
+		fi
+	;;
+	"get-root-lamw")
+		echo "$ROOT_LAMW"
+	;;
+	"get-status")
+		getStatusInstalation
+		if [ $LAMW_INSTALL_STATUS = 0 ]; then
 			exit 1
-		fi
-	fi
+		fi 
+		exit 0
+	;;
+	*)
+		printf "${VERMELHO}Invalid argument!${NORMAL}\n$(lamw_manager_help)" >&2
+		exit 1
+	;;
+
+	esac
+
 }
 
-setLAMWUserOnwerFiles(){
-	LAMW_MANAGER_ENV+=(
-		LAMW_USER_GROUP=$(stat -c '%U:%G' $LAMW_MANAGER_LOCK) 
-	)
-}
-#Wrapper function to Run LAMW Manager
-Run(){
-	getStatus $*
-	IsFileBusy lamw_manager $LAMW_MANAGER_LOCK
-	exec 3>$LAMW_MANAGER_LOCK
-	echo "" >&3
-	setLAMWUserOnwerFiles
-	getBashCMD
-	setUseLamwManagerSetup
-	if [ $USE_PKEXEC = 1 ] ; then
-		RunAsPolkit $*
-	else
-		RunAsSudo $*
-	fi
-	exec 3>&-
-}
-
-callLamw4LinuxTerminal(){
-	export LAMW_MANAGER_CALL=1
-	local lamw_termnal="$ROOT_LAMW/lamw4linux/usr/bin/lamw4linux-terminal"
-	$lamw_termnal -c "$1"
-}
-
-cacheGradle(){
-	getFiller
-	local sucess_filler="caching Gradle"
-	startProgressBar
-	callLamw4LinuxTerminal 'cacheGradle' &>/dev/null
-	stopAsSuccessProgressBar
-}
-
-CheckNeedLazarusProjectDowngradle(){
-	if [ $AUTO_START_LAMW4LINUX = 0 ] && [ -e $LAMW_INSTALL_LOG ]; then
-		local lazarus_version=$(grep LAZARUS_VERSION $LAMW_INSTALL_LOG)
-		local lazarus_version_pattern='(2\.2\.[0-9])'
-
-		if [[ "$lazarus_version" =~ $lazarus_version_pattern ]];then 
-			RUN_DOWNGRADE_LPI=1
-		fi
-	fi
-}
-
-
-downgradeLazarusProject(){
-	if [ $IS_CHANGED_LAMW_INSTALL_LOG = 1 ] && [ $RUN_DOWNGRADE_LPI = 1 ]; then
-		callLamw4LinuxTerminal 'DowngradleAllProjectsFromLAMWWorkspace'
-	fi
-}
-
-runLamw4Linux(){
-	startlamw4linux &>/dev/null &
-	sleep 0.01
-}
-autoStartLAMW4Linux(){
-	local minimal_regex='(\-\-minimal)'
-	local sucess_filler="starting ${NEGRITO}LAMW4Linux IDE${NORMAL}"
-	if 	[ $EXIT_STATUS = 0 ] && 
-		[ $IS_CHANGED_LAMW_INSTALL_LOG = 1 ] && 
-		[ -e $LAMW_INSTALL_LOG ] &&
-		[[ ! "$ARGS" =~ $minimal_regex ]]; then
-		cacheGradle
-	fi
-
-
-	if [ $EXIT_STATUS = 0 ] && [ "${XDG_CURRENT_DESKTOP^^}" != "XFCE" ] && 
-		[ $AUTO_START_LAMW4LINUX = 1 ] && [ -e $LAMW_INSTALL_LOG ];then
-		startProgressBar
-		runLamw4Linux
-		stopAsSuccessProgressBar
-	fi
-
+main(){
+	initialConfig
+	actions ${ARGS[@]}
+	deleteLamwManagerLock
 	exit $EXIT_STATUS
 }
 
-#main function
-main(){
-	
-	IsUserRoot "lamw_manager"
-	CheckFlags DEBUG "DEBUG=1"
-	CheckFlags USE_PKEXEC "PKEXEC=1"
-	CheckFlags ENTER_TO_EXIT "ENTER=1"
-	CheckFlags NOBLINK 'NOBLINK=1'
-	helloMessage 1>&2
-	CheckUserIsSudo
-	CheckLocalRootLAMW
-	GetInitialStatus
-	CheckNeedLazarusProjectDowngradle
-	StopGradleDaemon
-	Run $ARGS
-	DelTempFiles
-	GetFinalStatus
-	downgradeLazarusProject
-	autoStartLAMW4Linux
-}
-
-TrapTermProcess(){
-	[ "$bg_pid" != "" ] && stopProgressBarAsFail
-	wait
-	exit 15
-}
-TrapControlC(){
-	[ "$bg_pid" != "" ] &&  stopProgressBarAsCancel
-	exit 2
-}
-helloMessage(){
-
-	LAMW_INSTALL_VERSION=$(
-		grep LAMW_INSTALL_VERSION  -m1  $LAMW_MANAGER_MODULES_PATH/headers/lamw_headers | 
-		awk -F'=' '{ print $2 }' )
-
-	LAMW_INSTALL_VERSION=${LAMW_INSTALL_VERSION//\"/}
-
-	local message="$(<${LAMW_MANAGER_MODULES_PATH}/headers/.hello.txt)"
-	local id=96
-	local italic=3
-	local blink=5
-	local style1=$'\e[1;'$id'm'
-	local style2=$'\e[1;'$blink'm'
-	local style3=$'\e[1;'$italic'm'
-	local version_message="${style3}v${LAMW_INSTALL_VERSION}${NORMAL}"
-
-	local lamw_mgr="./lamw_manager"
-	if [ "$USE_SETUP" = "1" ]; then
-		lamw_mgr="bash lamw_manager_setup.sh\t${VERDE}--${NORMAL}"
-	fi
-
-	if [ $NOBLINK =  0 ]; then 
-		echo -en "\n${style2}${style1}$message\t${version_message}\n\n"
-		echo "${VERMELHO}Warning: ${NORMAL}use ${NEGRITO}NOBLINK=1${NORMAL} if you are photosensitive, sample:" 
-		echo -e "\t$lamw_mgr ${NEGRITO}NOBLINK=1${NORMAL}\n\n" 
-	else 
-		echo -en "\n${style1}$message\t${version_message}${NORMAL}\n\n"
-   	fi
-   	
-}
-#instalando tratadores de sinal	
-trap TrapControlC 2 
-trap TrapTermProcess 15
-main $*
+main
