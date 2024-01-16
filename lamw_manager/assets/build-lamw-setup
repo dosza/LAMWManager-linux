@@ -80,11 +80,10 @@ initLAMWBuild(){
 			"exec bash -x ./lamw_manager \$ARGS"
 		)
 	fi
-	WriterFileln "$LAMW_MANAGER_TMP_BUILD/.start_lamw_manager" "START_LAMW_MANAGER_STRF"
-	chmod +x "$LAMW_MANAGER_TMP_BUILD/.start_lamw_manager"
+	WriterFileln "$AUX/.start_lamw_manager" "START_LAMW_MANAGER_STRF"
+	chmod +x "$AUX/.start_lamw_manager"
 }
 CopyFiles(){
-	cd $AUX
 	#copy directorys and files to LAMW_MANAGER_TMP_BUILD
 	for((i=0;i<${#files[*]};i++))
 	do 
@@ -146,11 +145,12 @@ main(){
 		echo "Use command: ${VERDE}sudo apt-get install makeself -y${NORMAL}"
 		exit 1
 	fi
-	CopyFiles
-	changeDirectory $LAMW_MANAGER_TMP_BUILD
+	
 	CheckBuildFlag 
 	BuildGUI
 	setBuildMode "$1"
+	CopyFiles
+	changeDirectory $LAMW_MANAGER_TMP_BUILD
 	makeself "${makeself_args[@]}"
 	chmod +x $output_lamw_manager_setup
 	cp $LAMW_MANAGER_TMP_BUILD/$output_lamw_manager_setup /tmp
