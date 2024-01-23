@@ -83,7 +83,7 @@ Know Issues
 ---
 #### Cannot Build LAMW Demos ####
 
-By default LAMW Manager uses (Android) Crosscompile to **ARMv7+vFPV3**, but [*LAMW Demos*](https://github.com/jmpessoa/lazandroidmodulewizard/tree/v0.6.x/demos) uses **ARMV6+Cfsoft**, you need apply this configuration:
+By default LAMW Manager uses (Android) Crosscompile to **ARMv7+vFPV3**, but [*LAMW Demos*](https://github.com/jmpessoa/lazandroidmodulewizard/tree/master/demos) uses **ARMV6+Cfsoft**, you need apply this configuration:
 1.	Open your LAMW Demo with LAMW4Linux
 2.	On menu bar go to Project --> Project Options ... --> [LAMW] Android Project Options --> Build --> Chipset --> ARMV7a+FVPv3
 
