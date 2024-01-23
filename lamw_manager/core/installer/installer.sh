@@ -364,24 +364,6 @@ getLAMWFramework(){
 }
 
 
-AntTrigger(){
-	if [ $OLD_ANDROID_SDK = 0 ] && [ -e "$ANDROID_SDK_ROOT/tools/ant" ]; then 
-		mv  "$ANDROID_SDK_ROOT/tools/ant" "$ANDROID_SDK_ROOT/tools/.ant"
-	fi
-}
-
-#this function get ant 
-getAnt(){
-	[ $OLD_ANDROID_SDK = 0 ] && return   #sem ação se ant nao é suportado
-		
-	changeDirectory "$ROOT_LAMW" 
-	if [ ! -e "$ANT_HOME" ]; then
-		MAGIC_TRAP_INDEX=0 # preperando o indice do arquivo/diretório a ser removido
-		getCompressFile "$ANT_TAR_URL" "$ANT_TAR_FILE" "tar -xf $ANT_TAR_FILE"
-	fi
-
-}
-
 getGradle(){
 	changeDirectory $ROOT_LAMW
 	if [ ! -e "$GRADLE_HOME" ]; then
@@ -753,7 +735,6 @@ mainInstall(){
 	checkProxyStatus
 	requestFixlpSnapshot
 	getJDK
-	getAnt
 	getGradle
 	getAndroidCmdLineTools
 	getFixLp
