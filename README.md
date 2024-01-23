@@ -5,6 +5,9 @@
 
 LAMW Manager is a command line tool,like *APT*, to automate the **installation**, **configuration** and **upgrade**<br/>the framework [LAMW - Lazarus Android Module Wizard](https://github.com/jmpessoa/lazandroidmodulewizard)
 
+Warning:
+---
+This repository underwent **maintenance** and had its **commits rewritten**, if you cloned this repository you will need to delete it and clone it again
 
 What do you get?
 ---
@@ -26,7 +29,6 @@ Linux Distro Supported:
 		</li>
 	</ul>
 </p>
-
 
 LAMW Manager install the following [dependencies] tools:
 ---
