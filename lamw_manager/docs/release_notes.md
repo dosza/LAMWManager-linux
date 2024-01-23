@@ -2,6 +2,15 @@
 
 This page contains information about new features and bug fixes.
 
+v0.6.1 - Jan 22, 2024
+---
+
+**Warning**
+This repository underwent **maintenance** and had its **commits rewritten**, if you cloned this repository you will need to delete it and clone it again
+
+**Fixes**
++	Fixes missing *\$LAMW_MANAGER_PATH* in *lamw4linux-terminal*
+
 v0.6.0 - Jan 15, 2024
 ---
 
