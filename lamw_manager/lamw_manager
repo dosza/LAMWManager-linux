@@ -72,9 +72,10 @@ actions(){
 			getLAMWFramework;
 			sleep 1;
 			BuildLazarusIDE "1"
-			changeOwnerAllLAMW "1";
+			
 		fi
 	;;
+
 	"--reinstall")
 		printf "Please wait ...\n"
 		mainInstall
