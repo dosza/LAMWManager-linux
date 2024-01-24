@@ -373,7 +373,7 @@ getGradle(){
 }
 
 #Get Gradle and SDK Tools 
-getAndroidSDKTools(){
+getAndroidCmdLineTools(){
 	initROOT_LAMW
 	changeDirectory $ANDROID_SDK_ROOT
 	
@@ -384,11 +384,6 @@ getAndroidSDKTools(){
 		getCompressFile "$CMD_SDK_TOOLS_URL" "$CMD_SDK_TOOLS_ZIP" "unzip -o -q  $CMD_SDK_TOOLS_ZIP" "MAGIC_TRAP_INDEX=5"
 		mv cmdline-tools latest
 	fi
-}
-
-getAndroidCmdLineTools(){
-	getAndroidSDKTools
-	AntTrigger
 }
 
 
