@@ -1,4 +1,4 @@
-**&nbsp;&nbsp;&nbsp;lamw_manager(1)&nbsp; 2024 Jan 13 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LAMW Manager man page&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lamw_manager(1)**
+**&nbsp;&nbsp;&nbsp;lamw_manager(1)&nbsp; 2024 Jan 23 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LAMW Manager man page&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lamw_manager(1)**
 
 #### NAME ####
 <p>
@@ -16,7 +16,7 @@
               ./lamw_manager       [<strong>ACTION</strong>] [<strong>OPTIONS</strong>]
               ./lamw_manager       [<strong>OPTIONS</strong>]
               ./lamw_manager       [<strong>uninstall</strong>] [<strong>--reset</strong>] [<strong>--reset-aapis</strong>] 
-                                   [<strong>--sdkmanager</strong>]  [<strong>--avdmanager</strong>] 
+                                   [<strong>--sdkmanager</strong>] [<strong>--avdmanager</strong>] 
                                    [<strong>--update-lamw</strong>] 
                                    [<strong>--minimal</strong>] [<strong>--reinstall</strong>] [<strong>--help</strong>]
        </pre>
