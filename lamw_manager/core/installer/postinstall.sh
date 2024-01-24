@@ -13,3 +13,7 @@ autoStartLAMW4Linux(){
 		stopAsSuccessProgressBar
 	fi
 }
+
+runAvdManager(){
+	"$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/avdmanager" $@
+}

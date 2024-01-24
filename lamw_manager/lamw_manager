@@ -125,6 +125,14 @@ actions(){
 		exit 0
 	;;
 	
+	"--avdmanager")
+		if getStatusInstalation; then 
+			mainInstall
+		fi
+
+		runAvdManager ${ARGS[@]:1}
+
+	;;
 	*)
 		printf "${VERMELHO}Invalid argument!${NORMAL}\n$(lamw_manager_help)" >&2
 		exit 1

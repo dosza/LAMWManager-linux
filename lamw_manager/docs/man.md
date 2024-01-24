@@ -16,7 +16,8 @@
               ./lamw_manager       [<strong>ACTION</strong>] [<strong>OPTIONS</strong>]
               ./lamw_manager       [<strong>OPTIONS</strong>]
               ./lamw_manager       [<strong>uninstall</strong>] [<strong>--reset</strong>] [<strong>--reset-aapis</strong>] 
-                                   [<strong>--sdkmanager</strong>] [<strong>--update-lamw</strong>] 
+                                   [<strong>--sdkmanager</strong>]  [<strong>--avdmanager</strong>] 
+                                   [<strong>--update-lamw</strong>] 
                                    [<strong>--minimal</strong>] [<strong>--reinstall</strong>] [<strong>--help</strong>]
        </pre>
 </p>
@@ -57,6 +58,7 @@
               <strong>--reset-aapis</strong>            Reset Android API's to default
               <strong>--help</strong>                   Show this help
               <strong>--sdkmanager</strong>   <strong>[ARGS]</strong>    Run Android SDK Manager
+              <strong>--avdmanager</strong>   <strong>[ARGS]</strong>    Run Android Device Manager
               <strong>--update-lamw</strong>            Just upgrade LAMW Framework  (with 
                                  the  latest  version avaliable in git )
        </pre>
