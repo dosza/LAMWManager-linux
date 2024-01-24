@@ -594,7 +594,7 @@ installLAMWPackages(){
 		if ! ./lazbuild ${lamw_build_opts[*]} ${LAMW_PACKAGES[$i]} >/dev/null; then 
 			stopProgressBarAsFail
 			if ! ./lazbuild ${lamw_build_opts[*]} ${LAMW_PACKAGES[$i]}; then 
-			 	echo "$error_lazbuild_msg" 
+			 	echo "$error_lazbuild_msg $current_pack" 
 			 	EXIT_STATUS=1 
 			 	return 
 			fi
