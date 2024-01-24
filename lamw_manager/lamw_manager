@@ -126,10 +126,7 @@ actions(){
 	;;
 	
 	"--avdmanager")
-		if getStatusInstalation; then 
-			mainInstall
-		fi
-
+		getStatusInstalation && mainInstall
 		runAvdManager ${ARGS[@]:1}
 
 	;;
