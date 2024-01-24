@@ -89,5 +89,18 @@ testUpdateNodeAttrXML(){
 }
 
 
+testLAMW4LinuxPostConfig(){
+	initROOT_LAMW
+	initLAMWUserConfig
+	mkdir $LAMW4LINUX_HOME/usr/{lib,bin,local} -p
+	>"$LAMW_IDE_HOME/startlamw4linux"
+	LAMW4LinuxPostConfig
+	
+	ls "$LAMW4LINUX_TERMINAL_EXEC_PATH" "$LAMW_IDE_HOME_CFG/LAMW.ini" "$LAMW_IDE_HOME/startlamw4linux" "$LAMW4LINUX_LOCAL_ENV" &>/dev/null
+	
+	assertTrue $?
+}
+
+
 . $(which shunit2)
 rm -rf $HOME
