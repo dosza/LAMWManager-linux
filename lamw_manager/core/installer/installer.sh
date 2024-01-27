@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.6.0
-#Date: 01/10/2024
+#Version: 0.6.1
+#Date: 01/23/2024
 #Description: "installer.sh" is part of the core of LAMW Manager. Contains routines for installing LAMW development environment
 #-------------------------------------------------------------------------------------------------#
 
@@ -364,24 +364,6 @@ getLAMWFramework(){
 }
 
 
-AntTrigger(){
-	if [ $OLD_ANDROID_SDK = 0 ] && [ -e "$ANDROID_SDK_ROOT/tools/ant" ]; then 
-		mv  "$ANDROID_SDK_ROOT/tools/ant" "$ANDROID_SDK_ROOT/tools/.ant"
-	fi
-}
-
-#this function get ant 
-getAnt(){
-	[ $OLD_ANDROID_SDK = 0 ] && return   #sem ação se ant nao é suportado
-		
-	changeDirectory "$ROOT_LAMW" 
-	if [ ! -e "$ANT_HOME" ]; then
-		MAGIC_TRAP_INDEX=0 # preperando o indice do arquivo/diretório a ser removido
-		getCompressFile "$ANT_TAR_URL" "$ANT_TAR_FILE" "tar -xf $ANT_TAR_FILE"
-	fi
-
-}
-
 getGradle(){
 	changeDirectory $ROOT_LAMW
 	if [ ! -e "$GRADLE_HOME" ]; then
@@ -391,7 +373,7 @@ getGradle(){
 }
 
 #Get Gradle and SDK Tools 
-getAndroidSDKTools(){
+getAndroidCmdLineTools(){
 	initROOT_LAMW
 	changeDirectory $ANDROID_SDK_ROOT
 	
@@ -402,11 +384,6 @@ getAndroidSDKTools(){
 		getCompressFile "$CMD_SDK_TOOLS_URL" "$CMD_SDK_TOOLS_ZIP" "unzip -o -q  $CMD_SDK_TOOLS_ZIP" "MAGIC_TRAP_INDEX=5"
 		mv cmdline-tools latest
 	fi
-}
-
-getAndroidCmdLineTools(){
-	getAndroidSDKTools
-	AntTrigger
 }
 
 
@@ -617,7 +594,7 @@ installLAMWPackages(){
 		if ! ./lazbuild ${lamw_build_opts[*]} ${LAMW_PACKAGES[$i]} >/dev/null; then 
 			stopProgressBarAsFail
 			if ! ./lazbuild ${lamw_build_opts[*]} ${LAMW_PACKAGES[$i]}; then 
-			 	echo "$error_lazbuild_msg" 
+			 	echo "$error_lazbuild_msg $current_pack" 
 			 	EXIT_STATUS=1 
 			 	return 
 			fi
@@ -753,7 +730,6 @@ mainInstall(){
 	checkProxyStatus
 	requestFixlpSnapshot
 	getJDK
-	getAnt
 	getGradle
 	getAndroidCmdLineTools
 	getFixLp

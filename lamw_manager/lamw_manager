@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.6.0
-#Date: 01/10/2024
+#Version: 0.6.1
+#Date: 01/23/2024
 #Description: The "lamw-install.sh" is part of the core of LAMW Manager. This script configures the development environment for LAMW
 #-------------------------------------------------------------------------------------------------#
 
@@ -48,26 +48,20 @@ actions(){
 
 	"uninstall")
 		LAMW_MANAGER_ENV+=(UNINSTALL_LAMW=1)
-		getStatusInstalation
-		[ $LAMW_INSTALL_STATUS = 1 ] && checkLAMWManagerVersion >/dev/null
 		RunAsAdmin 1
 	;;
 
 	"--sdkmanager")
-		getStatusInstalation;
-		[ $LAMW_INSTALL_STATUS = 0 ] && mainInstall
+		getStatusInstalation && mainInstall
 		echo "Please wait, starting ${NEGRITO}Android SDK Manager Command Line ${NORMAL} ..."
 		getAndroidAPIS  ${ARGS[@]:1}
-		changeOwnerAllLAMW
- 
 	;;
+
 	"--update-lamw")
-		getStatusInstalation
-		if [ $LAMW_INSTALL_STATUS  = 0 ]; then
+		if getStatusInstalation; then
 			mainInstall
 
 		else
-
 			Repair
 			if ! isUpdateLAMWDeps ; then
 				echo "${VERMELHO}Warning:There are updates for LAMW4Linux${NORMAL}"
@@ -78,9 +72,10 @@ actions(){
 			getLAMWFramework;
 			sleep 1;
 			BuildLazarusIDE "1"
-			changeOwnerAllLAMW "1";
+			
 		fi
 	;;
+
 	"--reinstall")
 		printf "Please wait ...\n"
 		mainInstall
@@ -93,13 +88,13 @@ actions(){
 		mainInstall
 	;;
 	"--reset-aapis")
-		getStatusInstalation
-		if [ $LAMW_INSTALL_STATUS = 1 ]; then
+		if ! getStatusInstalation; then
 			resetAndroidAPIS
 		else
 			mainInstall
 		fi
 	;;
+
 	"" | "--use_proxy" |"--minimal")
 		startImplicitAction
 		autoStartLAMW4Linux
@@ -107,27 +102,33 @@ actions(){
 	"--help"| "help") 
 		lamw_manager_help
 	;;
+
 	"build-lazarus")
-		getStatusInstalation
-		if [ $LAMW_INSTALL_STATUS = 0 ]; then 
+		if getStatusInstalation; then 
 			testConnectionInternet 1>&2
 			mainInstall
 		else
 			FORCE_LAZARUS_CLEAN_BUILD=1
 			Repair 
 			BuildLazarusIDE
-			changeOwnerAllLAMW 1
 		fi
 	;;
+
 	"get-root-lamw")
 		echo "$ROOT_LAMW"
 	;;
+
 	"get-status")
-		getStatusInstalation
-		if [ $LAMW_INSTALL_STATUS = 0 ]; then
+		if getStatusInstalation; then
 			exit 1
 		fi 
 		exit 0
+	;;
+	
+	"--avdmanager")
+		getStatusInstalation && mainInstall
+		runAvdManager ${ARGS[@]:1}
+
 	;;
 	*)
 		printf "${VERMELHO}Invalid argument!${NORMAL}\n$(lamw_manager_help)" >&2

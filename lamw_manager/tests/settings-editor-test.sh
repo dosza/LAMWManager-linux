@@ -60,5 +60,47 @@ testInitLAMw4LinuxConfig(){
 
 }
 
+testGetNodeAttrXML(){
+	local xml_f="$HOME/test-nde.xml"
+	local xml_s='<?xml version="1.0" encoding="UTF-8"?>\n<root>\n\t<message>Hello World</message>\n</root>'
+	local message_node='//root/message'
+
+	printf "%b" "$xml_s" > $xml_f
+	local message_value=$(getNodeAttrXML $message_node $xml_f)
+
+	assertEquals '[Get existent node]' "$message_value" "Hello World"
+	local message_value=$(getNodeAttrXML '/root/message/@value' $xml_f)
+	assertEquals '[Get no existent node]' "$message_value" ""
+}
+
+testUpdateNodeAttrXML(){
+	
+	local -A xml_node_attr=(['root']='/root/message/@value')
+	local -A xml_node_attr_value=(['root']='make clean all')
+	local xml_f="$HOME/test-nde.xml"
+	local xml_s='<?xml version="1.0" encoding="UTF-8"?>\n<root>\n\t<message value="Hello World"></message>\n</root>'
+	local message_node='//root/message/@value'
+	
+	printf "%b" "$xml_s" > $xml_f
+	updateNodeAttrXML xml_node_attr  xml_node_attr_value $xml_f
+	
+	local message_value=$(getNodeAttrXML $message_node $xml_f)
+	assertEquals '[Get node after update]' "$message_value" "make clean all"
+}
+
+
+testLAMW4LinuxPostConfig(){
+	initROOT_LAMW
+	initLAMWUserConfig
+	mkdir $LAMW4LINUX_HOME/usr/{lib,bin,local} -p
+	>"$LAMW_IDE_HOME/startlamw4linux"
+	LAMW4LinuxPostConfig
+	
+	ls "$LAMW4LINUX_TERMINAL_EXEC_PATH" "$LAMW_IDE_HOME_CFG/LAMW.ini" "$LAMW_IDE_HOME/startlamw4linux" "$LAMW4LINUX_LOCAL_ENV" &>/dev/null
+	
+	assertTrue $?
+}
+
+
 . $(which shunit2)
 rm -rf $HOME

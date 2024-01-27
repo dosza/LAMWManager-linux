@@ -76,4 +76,52 @@ testRepair(){
 	unset which
 
 }
+
+testBuildLazarus(){
+	initROOT_LAMW
+	initLAMWUserConfig
+	mkdir $LAMW4LINUX_HOME/usr/{lib,bin,local} $LAMW_IDE_HOME -p
+	mkdir -p $LAMW_IDE_HOME/tools/install/
+	echo "echo $LAZARUS_STABLE_VERSION" >$LAMW_IDE_HOME/tools/install/get_lazarus_version.sh
+	chmod +x $LAMW_IDE_HOME/tools/install/get_lazarus_version.sh
+	make(){ 
+		cp $(which echo) $LAMW_IDE_HOME/lazbuild
+		cp $(which echo) $LAMW_IDE_HOME/lazarus
+		cp $(which echo) $LAMW_IDE_HOME/startlazarus
+	}	
+	BuildLazarusIDE
+	assertTrue '[Build lazarus as success]' $?
+	rm $LAMW_IDE_HOME/lazbuild $LAMW_IDE_HOME/lazarus $LAMW_IDE_HOME/startlazarus
+
+	make(){
+		cp $(which echo) $LAMW_IDE_HOME/lazbuild
+		cp $(which echo) $LAMW_IDE_HOME/lazarus
+		cp $(which echo) $LAMW_IDE_HOME/startlazarus
+		return 1
+	}
+
+
+	ret=$(BuildLazarusIDE )
+	assertFalse '[Build lazarus as failed]' $?
+	unset make
+
+}
+
+testInstallLAMWPackages(){
+	setLazBuild(){
+		echo -e "#!/bin/bash\necho lazbuild \$@\nsleep 0.2\n exit $1" > $LAMW_IDE_HOME/lazbuild
+	}
+	local laz_path=$ANDROID_HOME/lazandroidmodulewizard/
+	LAMW_PACKAGES=( 
+		$laz_path/{android_bridges/tfpandroidbridge_pack.lpk,android_wizard/lazandroidwizardpack.lpk,ide_tools/amw_ide_tools.lpk}
+    )
+	setLazBuild 0
+	installLAMWPackages
+	assertTrue '[Install package as success]' $?
+
+	setLazBuild 1
+	installLAMWPackages
+	assertEquals '[Install package as failed]' 1 $EXIT_STATUS 
+}
+
 . $(which shunit2)

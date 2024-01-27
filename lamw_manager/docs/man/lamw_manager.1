@@ -1,5 +1,5 @@
 .\" Manpage for lamw_manager
-.TH lamw_manager 1 "2024 Jan 13" "v0.6.0" "LAMW manager"
+.TH lamw_manager 1 "2024 Jan 23" "v0.6.1" "LAMW manager"
 .SH NAME
 lamw_manager -\ manager to LAMW framework
 .SH SINOPSIS
@@ -13,10 +13,10 @@ lamw_manager
 .br 
  ./lamw_manager 	[\fBOPTIONS\fR]
 .br
- ./lamw_manager 	[\fBACTIONS\fR] [\fBOPTIONS\fR] DEBUG=1
+ ./lamw_manager 	[\fBACTIONS\fR] [\fBOPTIONS\fR]
 .br
  ./lamw_manager 	[\fBuninstall\fR] [\fB\-\-reset\fR] [\fB\-\-reset-aapis\fR]
- 			 	[\fB\-\-sdkmanager\fR] [\fB\-\-update-lamw\fR] 
+ 			 	[\fB\-\-sdkmanager\fR] [\fB\-\-avdmanager\fR] [\fB\-\-update-lamw\fR] 
                     [\fB\-\-minimal\fR] [\fB\-\-reinstall\fR] [\fB\-\-help\fR]
 .SH DESCRIPTION
 LAMW Manager is a command line tool,like APT, to automate the installation, configuration and upgrade the framework 
@@ -32,8 +32,7 @@ sample:
 .SH ACTIONS
 \fBuninstall\fR 		            Clean all LAMW
 .SH OPTIONS
-\fB\-\-minimal\fR                       Install LAMW and dependencies with minimal crosscompile to 
-                                Android
+\fB\-\-minimal\fR                       Install LAMW and dependencies with minimal crosscompile to Android
 .br
 \fB\-\-reinstall\fR                     Reinstall LAMW and dependencies without reset
 .br
@@ -44,6 +43,9 @@ sample:
 \fB\-\-help\fR   			            Show this help
 .br
 \fB\-\-sdkmanager\fR  		\fB[ARGS]\fR      Run Android SDK Manager
+.br
+.br
+\fB\-\-avdmanager\fR        \fB[ARGS]\fR      Run Android Device Manager
 .br
 \fB\-\-update\-lamw\fR  	            Just upgrade LAMW Framework(with the latest version avaliable in git)
 .SH PROXY OPTIONS

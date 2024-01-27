@@ -16,7 +16,9 @@ lamw_manager_help(){
 	"\t${NEGRITO}${lamw_mgr//\-\-/'      '}${NORMAL}                              Install LAMW and dependencies¹\n"
 	"\t$lamw_mgr\t${VERDE}--minimal${NORMAL}                   Install LAMW and dependencies with minimal crosscompile to Android¹\n"
 	"\t$lamw_mgr\t${VERDE}--reinstall${NORMAL}                 Reinstall LAMW and dependencies without reset³\n"
+	
 	"\t$lamw_mgr\t${VERDE}--sdkmanager${NORMAL}\t${VERDE}[ARGS]${NORMAL}      Install LAMW and Run Android SDK Manager⁴\n"
+	"\t$lamw_mgr\t${VERDE}--avdmanager${NORMAL}\t${VERDE}[ARGS]${NORMAL}      Install LAMW and Run Android Device Manager\n"
 	"\t$lamw_mgr\t${VERDE}--update-lamw${NORMAL}               To just upgrade LAMW framework (with the latest version available in git)\n"
 	"\t$lamw_mgr\t${VERDE}--reset${NORMAL}                     To clean and reinstall LAMW\n"
 	"\t$lamw_mgr\t${VERDE}--reset-aapis${NORMAL}               Reset Android API's to default\n"
