@@ -3,16 +3,37 @@
 
 export LAMW_MANAGER_API_URL='https://api.github.com/repos/dosza/lamwmanager-linux/releases/latest'
 
-compareVersion(){
-	local v1=(${1//\./ })
-	local v2=(${2//\./ })
-	local v1_str=${1//\./}
-	local v2_str=${2//\./}
-	local rv_limit=4
+trimVersion(){
 	
-	[ ${#v1} -lt $rv_limit ] && local v1_str+=0
-	[ ${#v2} -lt $rv_limit ] && local v2_str+=0
+	local rv_limit=4
+	v1=(${1//\./ })
+	v2=(${2//\./ })
+	v2=(${v2[@],,})
+	v1=(${v1[@],,})
+	v1=(${v1[@]//'-r'/ })
+	v2=(${v2[@]//'-r'/ })
+	v1_str=${1//\./}
+	v2_str=${2//\./}
+	v1_str=${v1_str,,}
+	v2_str=${v2_str,,}
+	v1_str=${v1_str//'-r'/}
+	v2_str=${v2_str//'-r'/}
 
+	[ ${#v1[@]} -lt $rv_limit ] && [ ${v1[2]}  -lt 10 ] && v1_str+=00
+	[ ${#v2[@]} -lt $rv_limit ] && [ ${v2[2]}  -lt 10 ] && v2_str+=00
+}
+compareVersion(){
+	local v1=()
+	local v2=()
+	local v1_str=""
+	local v2_str=""
+	local rv_limit=4
+
+
+	[ "$2" = "" ] && return 1
+
+	trimVersion $1 $2
+	
 	[ $v1_str -lt $v2_str ]
 
 }
@@ -27,6 +48,7 @@ checkLAMWManageUpdates(){
 		grep  "^Generate LAMW_INSTALL_VERSION=" $ANDROID_HOME/lamw4linux/lamw-install.log |
 		awk -F= '{  print $2 }'
 	)
+
 
 	if compareVersion $lamw_manager_current_version $lamw_manager_latest;then 
 		local zenity_message='there is update to Lamw Manager available'
