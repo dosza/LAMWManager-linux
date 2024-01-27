@@ -31,6 +31,7 @@ declare -A LAMW4LINUX_TEMPLATES_PATHS=(
 	["$STARTUP_ERROR_LAMW4LINUX_PATH"]="$LAMW4LINUX_TEMPLATES_BASE_PATH/startup-check-errors-lamw4linux.sh"
 	["$LAMW4LINUX_ETC/lamw4linux-terminalrc"]="$LAMW4LINUX_TEMPLATES_BASE_PATH/lamw4linux-terminalrc"
 	["$LAMW_MANAGER_COMPLETION"]="$LAMW_MANAGER_MODULES_PATH/headers/.lamw_comple.sh"
+	["$LAMW4LINUX_HOME/usr/bin/update-lamw-manager"]="$LAMW4LINUX_TEMPLATES_BASE_PATH/update-lamw-manager.sh"
 )
 
 OLD_ANDROID_SDK=0

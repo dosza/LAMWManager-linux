@@ -148,7 +148,7 @@ initTemplatePaths(){
 	arrayMap LAMW4LINUX_TEMPLATES_PATHS templatePath realPath '
 		cp $templatePath $realPath
 	'
-
+	chmod +x "$LAMW4LINUX_HOME/usr/bin/update-lamw-manager"
 }
 
 menuTrigger(){
