@@ -134,6 +134,69 @@ latestproject(){
 		cd ..
 	fi
 }
+
+
+compareVersion(){
+	local v1=(${1//\./ })
+	local v2=(${2//\./ })
+	local v1_str=${1//\./}
+	local v2_str=${2//\./}
+	local rv_limit=4
+	
+	[ ${#v1} -lt $rv_limit ] && local v1_str+=0
+	[ ${#v2} -lt $rv_limit ] && local v2_str+=0
+
+	[ $v1_str -lt $v2_str ]
+
+}
+checkLAMWManageUpdates(){
+	local lamw_manager_api_url='https://api.github.com/repos/dosza/lamwmanager-linux/releases/latest'
+	local lamw_manager_latest=$(
+		wget -qO- $lamw_manager_api_url | 
+		jq .tag_name |
+		sed 's/"//g;s/v//g'
+	)
+
+	local lamw_manager_current_version=$(
+		grep  "^Generate LAMW_INSTALL_VERSION=" $ANDROID_HOME/lamw4linux/lamw-install.log |
+		awk -F= '{  print $2 }'
+	)
+
+	if compareVersion $lamw_manager_current_version $lamw_manager_latest;then 
+		local zenity_message='there is update to Lamw Manager available'
+		[ $1 = 0 ] && zenity  --title "${zenity_title}" --notification --width 480 --text "${zenity_message}"
+		return 0
+	fi
+	return 1
+}
+
+get-lamw-manager-updates(){
+	local lamw_manager_setup_api_url='https://api.github.com/repos/dosza/lamwmanager-linux/releases/latest'
+	
+	if ! checkLAMWManageUpdates 1; then
+		return 
+	fi	
+	
+	lamw_manager_setup=$(
+		wget -qO- $lamw_manager_setup_api_url | 
+		jq .assets[].browser_download_url |
+		sed 's/"//g'
+	)
+
+	[ "$lamw_manager_setup" = "" ] && return 1
+
+	cd /tmp
+	wget -qc --show-progress "$lamw_manager_setup"
+	echo -en "Do you want run ./lamw_manager_setup.sh y/n? "
+
+	read -n 1 answer
+	[[ "${answer,,}" != 'y' ]] && return 
+	
+	bash ./lamw_manager_setup.sh 
+
+	cd $OLDPWD
+
+}
 export -f $LAM4LINUX_TERMINAL_FUNCTIONS
 
 if [[ "$-" =~ (x) ]]; then
@@ -141,9 +204,12 @@ if [[ "$-" =~ (x) ]]; then
 elif [[ "$-" =~ (v) ]]; then
 	_EXTRA_ARGS+=" -v"
 fi
-
+ 
 echo "[1mWelcome LAMW4Linux Terminal!![0m"
 echo "Here you can run FPC command line tools, Lazarus and LAMW scripts"
+
+checkLAMWManageUpdates 0 &
+
 
 generateSDKToolsCommands
 cd $CURRENT_LAMW_WORKSPACE
