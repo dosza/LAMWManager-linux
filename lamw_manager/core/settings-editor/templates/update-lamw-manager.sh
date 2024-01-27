@@ -57,6 +57,7 @@ get-lamw-manager-updates(){
 	read -n 1 answer
 	[[ "${answer,,}" != 'y' ]] && return 
 	
+	echo ""
 	bash ./lamw_manager_setup.sh 
 
 	cd $OLDPWD
