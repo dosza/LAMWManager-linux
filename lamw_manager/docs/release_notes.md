@@ -2,13 +2,23 @@
 
 This page contains information about new features and bug fixes.
 
+v0.6.2 - Jan 28, 2024
+---
+
+**News**
++	Adds new tool: *update-lamw-manager* in *lamw4linux-terminal*
+	+	Now you are notified when there is new lamw_manager version
+	+	**Tip**: run *update-lamw-manager get* to upgrade your *lamw4linux*
+	+ 	**Note**: this notification is show (only) when do you open *lamw4linux-terminal*
+
+
 v0.6.1 - Jan 22, 2024
 ---
 
 **Warning**
 This repository underwent **maintenance** and had its **commits rewritten**, if you cloned this repository you will need to delete it and clone it again
 
-**Fixes**
+**Fixes** 
 +	Fixes missing *\$LAMW_MANAGER_PATH* in *lamw4linux-terminal*
 
 v0.6.0 - Jan 15, 2024
