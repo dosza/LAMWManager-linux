@@ -466,14 +466,13 @@ v0.3.4 - March 10, 2020
 	
 v0.3.3 - R2 - February 25, 2020
 ---
+
 **Fixed:**
-	
 +	Error: Build Lazarus with FPC 3.2.0
 	
 v0.3.3 - R1 - December 3, 2019
 ---
-**Fixed:**
-	
+**Fixed:**	
 +	Error: Install APT Dependencies on Debian 10 Buster
 	
 v0.3.3 - November 26, 2019
@@ -513,15 +512,13 @@ v0.3.2 - August 19, 2019
 +	Your now open Projects from File Manager
 +	Start LAMW4Linux from the terminal with the command: *startlamw4linux*
 	
-**Fixed:**
-	
+**Fixed:**	
 +	PPC_CONFIG_PATH fixed
 +	FPC *trunk* has replaced to FPC 3.2.0
 		
 v0.3.1 - August 1, 2019
 ---
 **News:**
-	
 +	FPC 3.3.1(trunk)
 +	Build Freepascal - 3.3.1 x86_64/Linux
 +	Build Freepascal Cross-compile ARMv7/Android
