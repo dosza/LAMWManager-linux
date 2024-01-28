@@ -53,6 +53,7 @@ isOutdatedVersion(){
 
 }
 checkLAMWManageUpdates(){
+	local update_message='There is a LAMW Manager new version available'
 	local lamw_manager_latest=$(
 		wget -qO- $LAMW_MANAGER_API_URL | 
 		jq .tag_name |
@@ -66,13 +67,13 @@ checkLAMWManageUpdates(){
 
 
 	if isOutdatedVersion $lamw_manager_current_version $lamw_manager_latest;then 
-		local zenity_message='There is a LAMW Manager new version  available'
 		if [ $1 = 0 ]; then
 			if ! ls /tmp/.update-lamw-manager* &>/dev/null; then
-				zenity  --title "${zenity_title}" --notification --width 480 --text "${zenity_message}"
+				zenity  --title "${zenity_title}" --notification --width 480 --text "${update_message}"
 				mktemp -t .update-lamw-manager.XXXXXXXXXXXXX &>/dev/null
 			fi
-
+		else
+			echo $update_message
 		fi
 		return 0
 	fi
