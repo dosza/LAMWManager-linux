@@ -67,12 +67,18 @@ checkLAMWManageUpdates(){
 
 	if isOutdatedVersion $lamw_manager_current_version $lamw_manager_latest;then 
 		local zenity_message='There is a LAMW Manager new version  available'
-		[ $1 = 0 ] && zenity  --title "${zenity_title}" --notification --width 480 --text "${zenity_message}"
+		if [ $1 = 0 ]; then
+			if ! ls /tmp/.update-lamw-manager* &>/dev/null; then
+				zenity  --title "${zenity_title}" --notification --width 480 --text "${zenity_message}"
+				mktemp -t .update-lamw-manager.XXXXXXXXXXXXX
+			fi
+
+		fi
 		return 0
 	fi
 	return 1
 }
-
+	
 getLamwManagerUpdates(){
 	
 	if ! checkLAMWManageUpdates 1; then

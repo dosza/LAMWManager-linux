@@ -32,6 +32,16 @@ testCheckLAMWManageUpdates(){
 	checkLAMWManageUpdates 1
 	assertFalse '[v1 > v2]' $?
 
+	#test user notification
+	rm -f /tmp/.update-lamw-manager* &>/dev/null
+	echo "Generate LAMW_INSTALL_VERSION=0.6.0"> $LAMW_INSTALL_LOG
+	checkLAMWManageUpdates 0
+	assertTrue '[v1 < v2 and with a unique user notification]' $?
+
+	echo "Generate LAMW_INSTALL_VERSION=0.6.0"> $LAMW_INSTALL_LOG
+	checkLAMWManageUpdates 0
+	assertTrue '[v1 < v2 and without user notification]' $?
+
 
 }
 
