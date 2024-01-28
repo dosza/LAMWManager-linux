@@ -15,11 +15,33 @@ test-get-lamw-manager-updates(){
 }
 
 test-checkLAMWManageUpdates(){
-	:
+	initROOT_LAMW
+	
+	wget(){ echo '' ; }
+	echo "Generate LAMW_INSTALL_VERSION=0.6.2"> $LAMW_INSTALL_LOG
+	checkLAMWManageUpdates 1
+	
+	assertFalse '[v2 empty]' $?
+
+	wget(){ echo '{ "tag_name": "0.6.2" } ' ; }
+	checkLAMWManageUpdates 1
+	assertFalse '[v1 == v2]' $?
+	
+	echo "Generate LAMW_INSTALL_VERSION=0.6.0"> $LAMW_INSTALL_LOG
+	checkLAMWManageUpdates 1
+	assertTrue '[v1 < v2]' $?
+
+
+	wget(){ echo '{ "tag_name": "0.6.1" } ' ; }
+	echo "Generate LAMW_INSTALL_VERSION=0.6.2"> $LAMW_INSTALL_LOG
+	checkLAMWManageUpdates 1
+	assertFalse '[v1 > v2]' $?
+
+
 }
 
 test-compareVersion(){
-	
+
 	compareVersion "0.6.1" ""
 	assertFalse '[v2 empty]' $?
 
