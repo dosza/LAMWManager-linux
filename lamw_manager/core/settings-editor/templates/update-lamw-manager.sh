@@ -70,7 +70,7 @@ checkLAMWManageUpdates(){
 		if [ $1 = 0 ]; then
 			if ! ls /tmp/.update-lamw-manager* &>/dev/null; then
 				zenity  --title "${zenity_title}" --notification --width 480 --text "${zenity_message}"
-				mktemp -t .update-lamw-manager.XXXXXXXXXXXXX
+				mktemp -t .update-lamw-manager.XXXXXXXXXXXXX &>/dev/null
 			fi
 
 		fi
