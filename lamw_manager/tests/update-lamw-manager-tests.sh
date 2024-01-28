@@ -1,7 +1,7 @@
 #!/bin/bash
 TEST_MODULES_PATH=$(dirname $(realpath $0))
 source $TEST_MODULES_PATH/tests-header
-source "$LAMW_MANAGER_MODULES_PATH/settings-editor/templates/update-lamw-manager.sh"
+source "$LAMW_MANAGER_MODULES_PATH/settings-editor/templates/update-lamw-manager.sh" &>/dev/null
 export ROOT_LAMW=~/LAMW
 
 
