@@ -76,7 +76,7 @@ checkLAMWManageUpdates(){
 get-lamw-manager-updates(){
 	
 	if ! checkLAMWManageUpdates 1; then
-		return 
+		return 1
 	fi	
 	
 	lamw_manager_setup=$(
@@ -88,11 +88,14 @@ get-lamw-manager-updates(){
 	[ "$lamw_manager_setup" = "" ] && return 1
 
 	cd /tmp
-	wget -qc --show-progress "$lamw_manager_setup"
+	if !	wget -qc --show-progress "$lamw_manager_setup"; then
+		return  1
+	fi
+	
 	echo -en "Do you want run ./lamw_manager_setup.sh y/n? "
 
 	read -n 1 answer
-	[[ "${answer,,}" != 'y' ]] && return 
+	[[ "${answer,,}" != 'y' ]] && return 1
 	
 	echo ""
 	bash ./lamw_manager_setup.sh 
