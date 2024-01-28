@@ -102,6 +102,7 @@ get-lamw-manager-updates(){
 }
 
 
+[ $0 != bash ] && 
 case "$1" in 
 	"get")
 		get-lamw-manager-updates
