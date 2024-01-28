@@ -3,9 +3,11 @@
 
 export LAMW_MANAGER_API_URL='https://api.github.com/repos/dosza/lamwmanager-linux/releases/latest'
 
+isLess(){
+	[ $1 -lt $2 ]
+}
+
 trimVersion(){
-	
-	local rv_limit=4
 	v1=(${1//\./ })
 	v2=(${2//\./ })
 	v2=(${v2[@],,})
@@ -18,9 +20,23 @@ trimVersion(){
 	v2_str=${v2_str,,}
 	v1_str=${v1_str//'-r'/}
 	v2_str=${v2_str//'-r'/}
+	local v1_patch=${v1[2]}
+	local v2_patch=${v2[2]}
+	local v1_len=${#v1[@]}
+	local v2_len=${#v2[@]}
+	local rv_limit=4
+	
+	if isLess $v1_len $rv_limit; then 
+		isLess $v1_patch 10 && v1_str+=00
+	elif isLess ${v1[3]} 10; then
+		v1_str+=0
+	fi
 
-	[ ${#v1[@]} -lt $rv_limit ] && [ ${v1[2]}  -lt 10 ] && v1_str+=00
-	[ ${#v2[@]} -lt $rv_limit ] && [ ${v2[2]}  -lt 10 ] && v2_str+=00
+	if isLess $v2_len $rv_limit;then 
+		isLess $v2_patch 10  && v2_str+=00
+	elif isLess ${v2[3]} 10; then
+		v2_str+=0
+	fi
 }
 compareVersion(){
 	local v1=()
@@ -33,8 +49,7 @@ compareVersion(){
 	[ "$2" = "" ] && return 1
 
 	trimVersion $1 $2
-	
-	[ $v1_str -lt $v2_str ]
+	isLess $v1_str  $v2_str 
 
 }
 checkLAMWManageUpdates(){
