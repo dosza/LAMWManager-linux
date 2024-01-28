@@ -9,11 +9,6 @@ export ROOT_LAMW=~/LAMW
 
 
 
-test-get-lamw-manager-updates(){
-	:
-
-}
-
 test-checkLAMWManageUpdates(){
 	initROOT_LAMW
 	
@@ -86,6 +81,39 @@ test-trimVersion(){
 	assertEquals '[Trim v2 4 digits -r ]' "05310" "$v2_str"
 
 }
+
+
+test-get-lamw-manager-updates(){
+
+	checkLAMWManageUpdates(){ return 1; }
+	get-lamw-manager-updates
+	assertFalse '[No action is required]' $?
+
+	checkLAMWManageUpdates(){ return 0; }
+	wget(){ echo ; }
+	get-lamw-manager-updates
+	assertFalse '[lamw_manager_setup = '']' $?
+
+	wget(){ 
+		echo '{"assets": [ { "tag_name" : "0.6.2","browser_download_url": "https://localhost/lamw_manager_setup.sh" } ]}' 
+		echo 'exit 0' > /tmp/lamw_manager_setup.sh
+	}
+	
+
+	echo n | get-lamw-manager-updates
+	assertFalse '[no run setup ]' $?
+
+	echo y | get-lamw-manager-updates
+	assertTrue '[run setup ]' $?
+
+	wget(){ return 	1; }
+	echo y | get-lamw-manager-updates
+	assertFalse '[wget failed ]' $?
+	
+
+
+}
+
 
 
 . $(which shunit2)
