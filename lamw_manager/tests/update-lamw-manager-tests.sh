@@ -124,6 +124,16 @@ testGetLamwManagerUpdates(){
 
 }
 
+testUsage(){
+	local expected_message="update-lamw-manager [option]
+		-get, get 			Get new lamw_manager_setup.sh
+		-check, check 			Check if exists an update available
+		-h, help 			Show this help"
+
+	local message="$(usage 2>&1)"
+	assertEquals "$expected_message" "$message"
+}
+
 
 
 . $(which shunit2)
