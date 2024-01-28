@@ -111,15 +111,26 @@ getLamwManagerUpdates(){
 
 }
 
+usage(){
+	echo "update-lamw-manager [option]
+		-get, get 			Get new lamw_manager_setup.sh
+		-check, check 			Check if exists an update available
+		-h, help 			Show this help"
+}
 
 [ $0 = bash ] && return 
 
 case "$1" in 
-	"get")
+	"get"|"-get")
 		getLamwManagerUpdates
 	;;
 	"")
 		checkLAMWManageUpdates 0
+	;;
+	"check"|"-check")
+		checkLAMWManageUpdates 1
+	;;
+	"-h"|"help") usage 1>&2
 	;;
 	*) 
 		false
