@@ -19,7 +19,20 @@ test-checkLAMWManageUpdates(){
 }
 
 test-compareVersion(){
-	:
+	
+	compareVersion "0.6.1" ""
+	assertFalse '[v2 empty]' $?
+
+	compareVersion "0.6.1"  "0.6.1"
+	assertFalse '[v1 == v2]' $?
+
+	compareVersion "0.6.0" "0.6.1"
+	assertTrue '[v1 < v2]' $?
+	
+	compareVersion "0.6.2" "0.6.1"
+	assertFalse '[v1 > v2]' $?
+
+
 }
 
 test-trimVersion(){
