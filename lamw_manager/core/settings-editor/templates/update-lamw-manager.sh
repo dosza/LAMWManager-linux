@@ -38,7 +38,7 @@ trimVersion(){
 		v2_str+=0
 	fi
 }
-compareVersion(){
+isOutdatedVersion(){
 	local v1=()
 	local v2=()
 	local v1_str=""
@@ -65,15 +65,15 @@ checkLAMWManageUpdates(){
 	)
 
 
-	if compareVersion $lamw_manager_current_version $lamw_manager_latest;then 
-		local zenity_message='there is update to Lamw Manager available'
+	if isOutdatedVersion $lamw_manager_current_version $lamw_manager_latest;then 
+		local zenity_message='There is a LAMW Manager new version  available'
 		[ $1 = 0 ] && zenity  --title "${zenity_title}" --notification --width 480 --text "${zenity_message}"
 		return 0
 	fi
 	return 1
 }
 
-get-lamw-manager-updates(){
+getLamwManagerUpdates(){
 	
 	if ! checkLAMWManageUpdates 1; then
 		return 1
@@ -109,7 +109,7 @@ get-lamw-manager-updates(){
 
 case "$1" in 
 	"get")
-		get-lamw-manager-updates
+		getLamwManagerUpdates
 	;;
 	"")
 		checkLAMWManageUpdates 0

@@ -9,7 +9,7 @@ export ROOT_LAMW=~/LAMW
 
 
 
-test-checkLAMWManageUpdates(){
+testCheckLAMWManageUpdates(){
 	initROOT_LAMW
 	
 	wget(){ echo '' ; }
@@ -35,24 +35,24 @@ test-checkLAMWManageUpdates(){
 
 }
 
-test-compareVersion(){
+testIsOutdatedVersion(){
 
-	compareVersion "0.6.1" ""
+	isOutdatedVersion "0.6.1" ""
 	assertFalse '[v2 empty]' $?
 
-	compareVersion "0.6.1"  "0.6.1"
+	isOutdatedVersion "0.6.1"  "0.6.1"
 	assertFalse '[v1 == v2]' $?
 
-	compareVersion "0.6.0" "0.6.1"
+	isOutdatedVersion "0.6.0" "0.6.1"
 	assertTrue '[v1 < v2]' $?
 	
-	compareVersion "0.6.2" "0.6.1"
+	isOutdatedVersion "0.6.2" "0.6.1"
 	assertFalse '[v1 > v2]' $?
 
 
 }
 
-test-trimVersion(){
+testTrimVersion(){
 	local v1=()
 	local v2=()
 	local v1_str=""
@@ -83,15 +83,15 @@ test-trimVersion(){
 }
 
 
-test-get-lamw-manager-updates(){
+testGetLamwManagerUpdates(){
 
 	checkLAMWManageUpdates(){ return 1; }
-	get-lamw-manager-updates
+	getLamwManagerUpdates
 	assertFalse '[No action is required]' $?
 
 	checkLAMWManageUpdates(){ return 0; }
 	wget(){ echo ; }
-	get-lamw-manager-updates
+	getLamwManagerUpdates
 	assertFalse '[lamw_manager_setup = '']' $?
 
 	wget(){ 
@@ -100,14 +100,14 @@ test-get-lamw-manager-updates(){
 	}
 	
 
-	echo n | get-lamw-manager-updates
+	echo n | getLamwManagerUpdates
 	assertFalse '[no run setup ]' $?
 
-	echo y | get-lamw-manager-updates
+	echo y | getLamwManagerUpdates
 	assertTrue '[run setup ]' $?
 
 	wget(){ return 	1; }
-	echo y | get-lamw-manager-updates
+	echo y | getLamwManagerUpdates
 	assertFalse '[wget failed ]' $?
 	
 
