@@ -5,12 +5,14 @@ This page contains information about new features and bug fixes.
 v0.6.2 - Jan 28, 2024
 ---
 
+**Fixes**
++	Fixes missing *--avdmanager* in releases notes.
+
 **News**
 +	Adds new tool: *update-lamw-manager* in *lamw4linux-terminal*
 	+	Now you are notified when there is new lamw_manager version
 	+	**Tip**: run *update-lamw-manager get* to upgrade your *lamw4linux*
 	+ 	**Note**: this notification is show (only) when do you open *lamw4linux-terminal*
-
 
 v0.6.1 - Jan 22, 2024
 ---
@@ -20,6 +22,10 @@ This repository underwent **maintenance** and had its **commits rewritten**, if 
 
 **Fixes** 
 +	Fixes missing *\$LAMW_MANAGER_PATH* in *lamw4linux-terminal*
+
+**News**
++	Now you can run **avdmanager** from lamw_manager
+	+ use option *--avdmanager* to run Android Device Manager,
 
 v0.6.0 - Jan 15, 2024
 ---
