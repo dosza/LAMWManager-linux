@@ -54,9 +54,9 @@ jobs:
       - name: Create tag and release
         run: |
           cd ~/work/LAMWManager-linux/LAMWManager-linux
-          for version in $(git log --pretty=format:'%s');do if echo $version |  grep -o -E '^v[0-9]+\.[0-9]+\.[0-9]+'; then break; fi; done
-          echo "version =$version"
           git checkout base-state
+          for version in $(git log --pretty=format:'%s');do if echo "$version" |  grep -o -E '^v[0-9]+\.[0-9]+\.[0-9]+'; then break; fi; done
+          echo "version  = version"
           git tag -a $version -m "Release $version"
           git push origin $version
 
