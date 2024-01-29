@@ -140,7 +140,7 @@ main(){
 	BuildGUI
 	setBuildMode "$1"
 	CopyFiles
-	changeDirectory $LAMW_MANAGER_TMP_BUILD
+	cd $LAMW_MANAGER_TMP_BUILD
 	makeself --quiet --xz --copy --target '$HOME/lamw_manager' "$PWD" "$output_lamw_manager_setup"  "LAMW Manager Setup" "./${START_LAMW_MANAGER_FILE}"
 	chmod +x $output_lamw_manager_setup
 	cp $LAMW_MANAGER_TMP_BUILD/$output_lamw_manager_setup /tmp
