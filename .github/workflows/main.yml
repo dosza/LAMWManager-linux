@@ -60,6 +60,11 @@ jobs:
           for version in $(git log --pretty=format:'%s');do
           if [[ "$version" =~ $version_regex ]];then
           echo $version
+          fi
+          done
+          for version in $(git log --pretty=format:'%s');do
+          if [[ "$version" =~ $version_regex ]];then
+          echo $version
           break
           fi
           done
