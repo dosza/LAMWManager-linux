@@ -54,8 +54,8 @@ jobs:
       - name: Get tag
         run: |
           cd ~/work/LAMWManager-linux/LAMWManager-linux
-          git log --pretty=format:'%s' | grep -o -E '^v[0-9]+\.[0-9]+\.[0-9]+' -m1> ~/lamw-tag.txt
-          cat ~/lamw-tag
+          git log --pretty=format:'%s' | grep '^v[0-9]\.[0-9]\.[0-9]+' -m1 > ~/lamw-tag.txt
+          cat ~/lamw-tag.txt
 
       - name: Create tag and release
         run: |
