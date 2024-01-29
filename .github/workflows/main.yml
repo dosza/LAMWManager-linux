@@ -43,7 +43,7 @@ jobs:
     needs: build-and-release
 
     env:
-      GH_TOKEN: ${{ secrets.LAMW_MGR_TOKEN }}
+      LAMW_MGR_TOKEN: ${{ secrets.LAMW_MGR_TOKEN }}
 
     steps:
       - name: Checkout code
