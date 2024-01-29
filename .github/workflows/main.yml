@@ -16,6 +16,9 @@ jobs:
   build-and-release:
     runs-on: ubuntu-latest
 
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -56,7 +59,7 @@ jobs:
           cd ~/work/LAMWManager-linux/LAMWManager-linux
           headers_file=~/work/LAMWManager-linux/LAMWManager-linux/lamw_manager/core/headers/lamw_headers
           version=$(grep "^LAMW_INSTALL_VERSION" $headers_file  | awk -F= '{ print $2 }' | sed 's/"//g')
-          echo "$version" > ~/lamw-tag.txt
+          echo "v$version" > ~/lamw-tag.txt
 
       - name: Create tag and release
         run: |
