@@ -46,18 +46,10 @@ jobs:
           git config --global user.email "actions@github.com"
           git config --global user.name "GitHub Actions"
 
-      - name: Get the version from the commit message
-        run: |
-          cd ~/work/LAMWManager-linux/LAMWManager-linux
-          for version in $(git log --pretty=format:'%s');do if echo $version |  grep -o -E 'v[0-9]+\.[0-9]+\.[0-9]+'; then break; fi; done
-          if [ "$version" = "" ]; then
-          exit 1
-          fi
-          export version
-
       - name: Create tag and release
         run: |
           cd ~/work/LAMWManager-linux/LAMWManager-linux
+          for version in $(git log --pretty=format:'%s');do if echo $version |  grep -o -E 'v[0-9]+\.[0-9]+\.[0-9]+'; then break; fi; done
           git tag -a $version -m "Release $version"
           git push origin $version
 
