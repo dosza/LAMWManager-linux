@@ -21,7 +21,6 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install makeself
-            - name: Run script from repository root
       
       - name: Run script from repository root
         run: |
