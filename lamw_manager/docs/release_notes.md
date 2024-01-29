@@ -2,14 +2,30 @@
 
 This page contains information about new features and bug fixes.
 
+v0.6.2 - Jan 28, 2024
+---
+
+**Fixes**
++	Fixes missing *--avdmanager* in releases notes.
+
+**News**
++	Adds new tool: *update-lamw-manager* in *lamw4linux-terminal*
+	+	Now you are notified when there is new lamw_manager version
+	+	**Tip**: run *update-lamw-manager get* to upgrade your *lamw4linux*
+	+ 	**Note**: this notification is show (only) when do you open *lamw4linux-terminal*
+
 v0.6.1 - Jan 22, 2024
 ---
 
 **Warning**
 This repository underwent **maintenance** and had its **commits rewritten**, if you cloned this repository you will need to delete it and clone it again
 
-**Fixes**
+**Fixes** 
 +	Fixes missing *\$LAMW_MANAGER_PATH* in *lamw4linux-terminal*
+
+**News**
++	Now you can run **avdmanager** from lamw_manager
+	+ use option *--avdmanager* to run Android Device Manager,
 
 v0.6.0 - Jan 15, 2024
 ---
@@ -450,14 +466,13 @@ v0.3.4 - March 10, 2020
 	
 v0.3.3 - R2 - February 25, 2020
 ---
+
 **Fixed:**
-	
 +	Error: Build Lazarus with FPC 3.2.0
 	
 v0.3.3 - R1 - December 3, 2019
 ---
-**Fixed:**
-	
+**Fixed:**	
 +	Error: Install APT Dependencies on Debian 10 Buster
 	
 v0.3.3 - November 26, 2019
@@ -497,15 +512,13 @@ v0.3.2 - August 19, 2019
 +	Your now open Projects from File Manager
 +	Start LAMW4Linux from the terminal with the command: *startlamw4linux*
 	
-**Fixed:**
-	
+**Fixed:**	
 +	PPC_CONFIG_PATH fixed
 +	FPC *trunk* has replaced to FPC 3.2.0
 		
 v0.3.1 - August 1, 2019
 ---
 **News:**
-	
 +	FPC 3.3.1(trunk)
 +	Build Freepascal - 3.3.1 x86_64/Linux
 +	Build Freepascal Cross-compile ARMv7/Android

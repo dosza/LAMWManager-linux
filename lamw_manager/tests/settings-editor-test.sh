@@ -25,7 +25,7 @@ testCreateLazarusEnvCfgFile(){
 
 testAddLAMWtoStartMenu(){
 	initROOT_LAMW
-	mkdir $LAMW_IDE_HOME/install -p
+	mkdir $LAMW_IDE_HOME/install $LAMW4LINUX_HOME/usr/bin -p
 	cd $LAMW_IDE_HOME/install
 	wget -qc "https://raw.githubusercontent.com/alrieckert/lazarus/master/install/lazarus.desktop"
 	wget -qc "https://raw.githubusercontent.com/alrieckert/lazarus/master/install/lazarus-mime.xml" 

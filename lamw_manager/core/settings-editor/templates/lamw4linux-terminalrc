@@ -134,6 +134,8 @@ latestproject(){
 		cd ..
 	fi
 }
+
+
 export -f $LAM4LINUX_TERMINAL_FUNCTIONS
 
 if [[ "$-" =~ (x) ]]; then
@@ -141,9 +143,12 @@ if [[ "$-" =~ (x) ]]; then
 elif [[ "$-" =~ (v) ]]; then
 	_EXTRA_ARGS+=" -v"
 fi
-
+ 
 echo "[1mWelcome LAMW4Linux Terminal!![0m"
 echo "Here you can run FPC command line tools, Lazarus and LAMW scripts"
+
+update-lamw-manager &
+
 
 generateSDKToolsCommands
 cd $CURRENT_LAMW_WORKSPACE
