@@ -33,6 +33,10 @@ testParseProxyOpt(){
 
 testTestConnectionInternetOnDemand(){
 	ARGS=()
+	ping(){
+		sleep 0.2
+	}
+	
 	testConnectionInternetOnDemand
 	assertTrue '[Implicit Action]' $?
 
