@@ -43,7 +43,7 @@ jobs:
     needs: build-and-release
 
     env:
-      LAMW_MGR_TOKEN: ${{ secrets.LAMW_MGR_TOKEN }}
+      GH_TOKEN: ${{ secrets.GH_TOKEN}}
 
     steps:
       - name: Checkout code
@@ -51,7 +51,7 @@ jobs:
 
       - name: Set up GitHub CLI
         run: |
-          echo "${{ secrets.LAMW_MGR_TOKEN }}" | gh auth login --with-token
+          echo "${{ secrets.GH_TOKEN }}" | gh auth login --with-token
 
       - name: Set up Git
         run: |
