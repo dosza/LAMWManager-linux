@@ -31,7 +31,9 @@ jobs:
         run: bash ~/work/LAMWManager-linux/LAMWManager-linux/lamw_manager/tests/run_tests
 
       - name: Build setup
-        run:  bash  ~/work/LAMWManager-linux/LAMWManager-linux/lamw_manager/assets/build-lamw-setup
+        run: |
+          cd ~/work/LAMWManager-linux/LAMWManager-linux/lamw_manager/assets
+          bash  ~/work/LAMWManager-linux/LAMWManager-linux/lamw_manager/assets/build-lamw-setup
 
   create-release:
     runs-on: ubuntu-latest
