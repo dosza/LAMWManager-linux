@@ -54,20 +54,8 @@ jobs:
       - name: Get tag
         run: |
           cd ~/work/LAMWManager-linux/LAMWManager-linux
-          git checkout v0.6.x
-          git pull
-          version_regex="(^v[0-9]\.[0-9]\.[0-9])"
-          for version in $(git log --pretty=format:'%s');do
-          if [[ "$version" =~ $version_regex ]];then
-          echo $version
-          fi
-          done
-          for version in $(git log --pretty=format:'%s');do
-          if [[ "$version" =~ $version_regex ]];then
-          echo $version
-          break
-          fi
-          done
+          headers_file=~/work/LAMWManager-linux/LAMWManager-linux/lamw_manager/core/headers/lamw_headers
+          version=$(grep "^LAMW_INSTALL_VERSION=" $headers_file  | awk-F= '{ print $2 }' | sed 's/"//g')
           echo "$version" > ~/lamw-tag.txt
 
       - name: Create tag and release
