@@ -54,7 +54,7 @@ jobs:
       - name: Create tag and release
         run: |
           cd ~/work/LAMWManager-linux/LAMWManager-linux
-          version=$(git log --pretty=format:'%s' | grep '^v[0-9]+\.[0-9]+\.[0-9]+' -m1)
+          version=$(git log --pretty=format:'%s' | grep -o -E '^v[0-9]+\.[0-9]+\.[0-9]+' -m1)
           echo "version  = $version"
           git tag -a $version -m "Release $version"
           git push origin $version
