@@ -56,7 +56,13 @@ jobs:
           cd ~/work/LAMWManager-linux/LAMWManager-linux
           git checkout v0.6.x
           git pull
-          for version in $(git log --pretty=format:'%s'); do if echo $version |  grep -o -E ^v'[0-9]+\.[0-9]+\.[0-9]+'; then break; fi; done
+          version_regex="(^v[0-9]\.[0-9]\.[0-9])"
+          for version in $(git log --pretty=format:'%s');do
+          if [[ "$version" =~ $version_regex ]];then
+          echo $version
+          break
+          fi
+          done
           echo "$version" > ~/lamw-tag.txt
 
       - name: Create tag and release
