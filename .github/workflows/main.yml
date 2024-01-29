@@ -2,6 +2,9 @@ name: CI/CD
 
 on:
   pull_request:
+    types:
+      - closed
+      
     branches:
       - base-state
 
