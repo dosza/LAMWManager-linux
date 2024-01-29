@@ -24,7 +24,7 @@ jobs:
       
       - name: Run script from repository root
         run: |
-          ls -la 
+          cd ~/work/LAMWManager-linux/LAMWManager-linux
 
       - name: Run tests
         run: ./lamw_manager/tests/run-tests
