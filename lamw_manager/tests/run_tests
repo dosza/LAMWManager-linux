@@ -5,7 +5,7 @@ RUN_PATH="$(realpath $(dirname $0))"
 cd $RUN_PATH
 
 for script in *.sh; do
-	if bash $script; then
+	if bash -x $script; then
 		echo "Test $script passed"
 	else
 		echo "Test $script failed"
