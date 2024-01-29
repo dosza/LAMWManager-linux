@@ -17,6 +17,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Install makeself
+        run: |
+          sudo apt-get update
+          sudo apt-get install makeself
+            - name: Run script from repository root
+      
+      - name: Run script from repository root
+        run: |
+          ls -la 
+
       - name: Run tests
         run: ./lamw_manager/tests/run-tests
 
