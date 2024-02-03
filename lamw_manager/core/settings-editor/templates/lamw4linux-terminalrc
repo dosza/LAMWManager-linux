@@ -135,7 +135,30 @@ latestproject(){
 	fi
 }
 
+setForbiddenCommand(){
+	
+	local -A commands=(
+		["gnome-shell"]="\-\-replace"e
+	    ["kquitapp5"]="plasmashell"
+	    ["kstart"]="plasmashell"
+	    ["xfwm4"]="\-\-replace" 
+		["lxqt-panel"]="\-\-replace" 
+		["mate-panel"]="\-\-replace" 
+		["cinnamon"]="\-\-replace"
+	)
 
+	for command in "${!commands[@]}";do
+		pattern=${commands[$command]}
+		eval "function $command {
+			if [[ \"\$@\" =~ $pattern ]]; then
+				echo \"You cannot replace your desktop shell Here\"
+				return 1
+			fi
+			\$(which $command) \$@
+		}"
+		export -f $command
+	done
+}
 export -f $LAM4LINUX_TERMINAL_FUNCTIONS
 
 if [[ "$-" =~ (x) ]]; then
@@ -149,7 +172,7 @@ echo "Here you can run FPC command line tools, Lazarus and LAMW scripts"
 
 update-lamw-manager &
 
-
+setForbiddenCommand
 generateSDKToolsCommands
 cd $CURRENT_LAMW_WORKSPACE
 exec bash  $_EXTRA_ARGS $@
