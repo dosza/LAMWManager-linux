@@ -150,7 +150,8 @@ setDesktopSessionReplaceProtection(){
 	for command in "${!commands[@]}";do
 		pattern=${commands[$command]}
 		eval "function $command {
-			if [[ \"\$@\" =~ $pattern ]]; then
+			forbiddenPattern=\"$pattern\"
+			if [[ \"\$@\" =~ \$forbiddenPattern ]]; then
 				echo \"You cannot replace your desktop shell Here\"
 				return 1
 			fi
