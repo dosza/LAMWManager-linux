@@ -15,21 +15,18 @@ checkisLocalRootLAMWInvalid(){
 		/usr{,/{bin,games,include,lib,lib32,libexec,libx32,local,sbin,share,src}}
 	)
 
-	for ((i = 0 ; i < ${#invalid_paths_pattern[@]};i++)); do
-
-		if [[ "$LOCAL_ROOT_LAMW" =~ ${invalid_paths_pattern[$i]} ]]; then 
-			echo "${VERMELHO}Fatal error${NORMAL}: You cannot install in ${VERMELHO}${LOCAL_ROOT_LAMW}${NORMAL} !!"
+	arrayMap invalid_paths_pattern pattern '
+		if [[ "$LOCAL_ROOT_LAMW" =~  $pattern ]]; then
+			echo "${VERMELHO}Fatal error${NORMAL}: You cannot install in ${VERMELHO}${LOCAL_ROOT_LAMW}${NORMAL} !!" &&
 			exit 1
-		fi
-	done
+		fi'
 
-	for ((i = 0 ; i < ${#invalid_paths[@]};i++)); do
-		if [ "$LOCAL_ROOT_LAMW" = "${invalid_paths[i]}" ]; then
+	arrayMap invalid_paths error_path '
+		if [ "$LOCAL_ROOT_LAMW" = "$error_path" ]; then
 			echo "${VERMELHO}Fatal error: this a Filesystem Hierarchy Standard (FHS) folder, need a  unique subfolder!${NORMAL}"
 			echo "${NEGRITO}Sample: LOCAL_ROOT_LAMW=$LOCAL_ROOT_LAMW/LAMW${NORMAL}"
-			exit 1;
-		fi
-	done
+			exit 1
+		fi'
 
 	[ -e "$LOCAL_ROOT_LAMW"  ] && mountpoint "$LOCAL_ROOT_LAMW" &> /dev/null
 	if [ $? = 0 ]; then
