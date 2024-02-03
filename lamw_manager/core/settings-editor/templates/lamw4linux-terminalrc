@@ -135,10 +135,10 @@ latestproject(){
 	fi
 }
 
-setForbiddenCommand(){
+setDesktopSessionReplaceProtection(){
 	
 	local -A commands=(
-		["gnome-shell"]="\-\-replace"e
+		["gnome-shell"]="\-\-replace"
 	    ["kquitapp5"]="plasmashell"
 	    ["kstart"]="plasmashell"
 	    ["xfwm4"]="\-\-replace" 
@@ -172,7 +172,7 @@ echo "Here you can run FPC command line tools, Lazarus and LAMW scripts"
 
 update-lamw-manager &
 
-setForbiddenCommand
+setDesktopSessionReplaceProtection
 generateSDKToolsCommands
 cd $CURRENT_LAMW_WORKSPACE
 exec bash  $_EXTRA_ARGS $@
