@@ -139,5 +139,5 @@ RunAsPolkit(){
 
 isSupportedPolkit(){
 	local error_msg="${VERMELHO}Fatal error:${NORMAL} Cannot run on tty terminal!!"
-	tty | grep 'pts/[0-9]'>/dev/null
+	tty | grep 'pts/[0-9]'>/dev/null && which pkexec &>/dev/null
 }

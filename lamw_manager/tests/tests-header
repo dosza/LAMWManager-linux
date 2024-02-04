@@ -5,7 +5,9 @@ else
 	lamw_manager_script=$(realpath ../lamw_manager)	
 fi
 
-export HOME=$(mktemp -dt  danny.XXXXXXXXXXX)
+export HOME=$(mktemp -dt  home.XXXXXXX)
+mkdir -p "$HOME/$USER"
+export HOME="$HOME/$USER"
 export ROOT_LAMW=~/LAMW
 LAMW_MANAGER_MODULES_PATH=$(dirname $lamw_manager_script)/core
 source "$LAMW_MANAGER_MODULES_PATH/headers/common-shell.sh"

@@ -2,7 +2,7 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.6.2
+#Version: 0.6.3
 #Description: This script contains routines for completing LAMW Manager arguments.
 #Ref:https://www.vivaolinux.com.br/dica/Shell-script-autocompletion-Como-implementar
 #-------------------------------------------------------------------------------------------------#
@@ -36,7 +36,7 @@ _lamw_manager() {
 	COMPREPLY=()
 	cur="${COMP_WORDS[COMP_CWORD]}"
 	prev="${COMP_WORDS[COMP_CWORD-1]}"
-	opts="--help  --minimal --port --reinstall --reset --reset-aapis --sdkmanager  --server --update-lamw  --use_proxy"
+	opts="--help  --minimal --port --reinstall --reset --reset-aapis --sdkmanager --avdmanager --server --update-lamw  --use_proxy"
 
 	if [[ ${cur} == -* ]] ; then
 		COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )

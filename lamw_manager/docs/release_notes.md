@@ -2,6 +2,15 @@
 
 This page contains information about new features and bug fixes.
 
+v0.6.3 - 5 Feb, 2024
+---
+
+**Fixes**
++	Fix missing --avdmanager completation
++	Fix missing pkexec in *isSupportedPolkit*
++	Adds desktop session protection
+	+	Prevents desktop shell replace into lamw4linux-terminal
+
 v0.6.2 - Jan 28, 2024
 ---
 
