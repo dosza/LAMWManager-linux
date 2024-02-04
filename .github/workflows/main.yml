@@ -64,8 +64,10 @@ jobs:
 
       - name: Create tag and release
         run: |
+          cd ~/work/LAMWManager-linux/LAMWManager-linux/lamw_manager/assets
           version=$(<~/lamw-tag.txt)
+          releases_notes_str="$(bash get-releases-notes.sh)"
           echo $version
           git tag -a $version -m "Release $version"
           git push origin $version
-          gh release create $version -t "Release $version" -n "Release notes for $version" /tmp/lamw_manager_setup.sh
+          gh release create $version -t "$version" -n "$releases_notes_str" /tmp/lamw_manager_setup.sh
