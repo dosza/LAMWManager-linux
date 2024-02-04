@@ -6,7 +6,7 @@ on:
       - closed
 
     branches:
-      - v0.6.x-test
+      - base-state
 
   release:
     types:
