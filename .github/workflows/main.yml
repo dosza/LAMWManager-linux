@@ -58,6 +58,8 @@ jobs:
 
       - name: Build setup
         run: |
+          sudo apt-get update
+          sudo apt-get install makeself shunit2 xmlstarlet jq
           cd ~/work/LAMWManager-linux/LAMWManager-linux/lamw_manager/assets
           bash -x ./build-lamw-setup
 
