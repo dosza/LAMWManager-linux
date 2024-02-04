@@ -24,20 +24,18 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install makeself shunit2 xmlstarlet jq
-      
-      - name: Run script from repository root
-        run: |
-          cd ~/work/LAMWManager-linux/LAMWManager-linux
-          ls
 
       - name: Run tests
-        run: bash ~/work/LAMWManager-linux/LAMWManager-linux/lamw_manager/tests/run_tests
+        run: |
+          cd ~/work/LAMWManager-linux/LAMWManager-linux/lamw_manager/tests
+          bash ./run_tests
+
 
   create-release:
     runs-on: ubuntu-latest
     needs: build-and-release
     environment: GH_TOKEN
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -58,10 +56,10 @@ jobs:
           version=$(grep "^LAMW_INSTALL_VERSION" $headers_file  | awk -F= '{ print $2 }' | sed 's/"//g')
           echo "v$version" > ~/lamw-tag.txt
 
-       - name: Build setup
+      - name: Build setup
         run: |
           cd ~/work/LAMWManager-linux/LAMWManager-linux/lamw_manager/assets
-          bash -x ~/work/LAMWManager-linux/LAMWManager-linux/lamw_manager/assets/build-lamw-setup
+          bash -x ./build-lamw-setup
 
       - name: Create tag and release
         run: |
