@@ -38,6 +38,7 @@ jobs:
           cd ~/work/LAMWManager-linux/LAMWManager-linux/lamw_manager/assets
           bash -x ~/work/LAMWManager-linux/LAMWManager-linux/lamw_manager/assets/build-lamw-setup
           cp /tmp/lamw_manager_setup.sh ~/lamw_manager_setup.sh
+          ls ~
 
   create-release:
     runs-on: ubuntu-latest
@@ -70,6 +71,7 @@ jobs:
           version=$(<~/lamw-tag.txt)
           releases_notes_str="$(bash get-releases-notes.sh)"
           echo $version
+          ls ~
           git tag -a $version -m "Release $version"
           git push origin $version
           gh release create $version -t "$version" -n "$releases_notes_str" ~/lamw_manager_setup.sh
