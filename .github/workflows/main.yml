@@ -69,6 +69,8 @@ jobs:
           version=$(<~/lamw-tag.txt)
           releases_notes_str="$(bash get-releases-notes.sh)"
           echo $version
+          git checkout base-state
+          git pull
           git tag -a $version -m "Release $version"
           git push origin $version
           gh release create $version -t "$version" -n "$releases_notes_str" /tmp/lamw_manager_setup.sh
