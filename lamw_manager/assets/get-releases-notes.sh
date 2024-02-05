@@ -27,8 +27,9 @@ arrayMap  RELEASES_NOTES_STREAM line index '
 	fi'
 
 RELEASES_NOTES_STREAM=(${RELEASES_NOTES_STREAM[@]:$INDEX_MATCH_V})
+REGEX_VERSION_DELIMITER='(^###)'
 arrayMap  RELEASES_NOTES_STREAM line index '
-	if [[ "$line" =~ "---" ]] && [ $index -gt $INDEX_MATCH_V ]; then
+	if [[ "$line" =~ $REGEX_VERSION_DELIMITER ]] && [ $index -gt $INDEX_MATCH_V ]; then
 		INDEX_END=$index
 		let INDEX_END-=1
 		break
