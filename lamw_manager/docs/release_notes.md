@@ -4,8 +4,8 @@ This page contains information about new features and bug fixes.
 
 Latest
 ---
-### v0.6.3 - 5 Feb, 2024 ###
 
+### v0.6.3 - 5 Feb, 2024 ###
 
 **Fixes**
 +	Fix missing --avdmanager completation
@@ -14,7 +14,6 @@ Latest
 	+	Prevents desktop shell replace into lamw4linux-terminal
 
 ### v0.6.2 - Jan 28, 2024 ###
-
 
 **Fixes**
 +	Fixes missing *--avdmanager* in releases notes.
@@ -27,7 +26,6 @@ Latest
 
 ### v0.6.1 - Jan 22, 2024 ###
 
-
 **Warning**
 This repository underwent **maintenance** and had its **commits rewritten**, if you cloned this repository you will need to delete it and clone it again
 
@@ -39,7 +37,6 @@ This repository underwent **maintenance** and had its **commits rewritten**, if 
 	+ use option *--avdmanager* to run Android Device Manager,
 
 ### v0.6.0 - Jan 15, 2024 ###
-
 
 **Fixes**
 +	Remove unecessary dependencie (like debian): *freeglut3*
@@ -113,12 +110,10 @@ This repository underwent **maintenance** and had its **commits rewritten**, if 
 
 ### v0.5.6 - Jun 4, 2023 ###
 
-
 **Fixes**
 +	Fix duplicate attribute in FppkgConfigFile node	
 
 ### v0.5.5 - May 31, 2023 ###
-
 
 **News**
 +	Install *fpc-android.cfg* and *fppkg.cfg* using templates
@@ -130,7 +125,6 @@ This repository underwent **maintenance** and had its **commits rewritten**, if 
 
 ### v0.5.4 - May 13, 2023 ###
 
-
 **Fixes**
 +	Fixes getFixLp
 +	Fixes to non-debian systems
@@ -141,7 +135,6 @@ This repository underwent **maintenance** and had its **commits rewritten**, if 
 +	Remove unnecessary APT dependencies
 
 ### v0.5.3-r1 - Mar 9, 2023 ###
-
 
 This is a maintenance release, the upgrade to this release is intended for those who have problems with **CINNAMON** or **Manjaro**
 
@@ -155,7 +148,7 @@ This is a maintenance release, the upgrade to this release is intended for those
 +	Added OpenSuse Docs
 
 ### v0.5.3 - Jan 7, 2023
---
+
 **Fixes**
 +	Fixes fpc source code path in git (ambiguous path)
 +	Fixes missing bc
@@ -165,8 +158,8 @@ This is a maintenance release, the upgrade to this release is intended for those
 	+	Use multi-thread in build lazarus
 	+	Do git clone *\-\-jobs* param.
 
-### v0.5.2 - Dec 21, 2022
---
+### v0.5.2 - Dec 21, 2022 ###
+
 **Fixes**
 +	Remove unnecessary APT dependencies.
 +	Prevents lamw_manager from not installing in \~/snap and /usr/lib/lazarus folders
