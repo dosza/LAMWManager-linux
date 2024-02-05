@@ -53,7 +53,7 @@ LAMW Manager install the following [dependencies] tools:
 
 
 **Notes**
-1. The minimum Android API and Build Tools required by LAMW and specified in [*package.json*](https://github.com/jmpessoa/lazandroidmodulewizard/blob/v0.6.x/package.json) are installed 
+1. The minimum Android API and Build Tools required by LAMW and specified in [*package.json*](https://github.com/jmpessoa/lazandroidmodulewizard/blob/master/package.json) are installed 
 
 Getting Started!!
 ---
