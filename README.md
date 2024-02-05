@@ -14,7 +14,7 @@ Linux Distro Supported:
 **Note**: Only Linux **x86_64** bits is supported!
 <p>
 	<ul>
-		<li><img src="https://www.debian.org/logos/openlogo-nd.svg" style="width: 16px;"/> Debian GNU/ Linux 12</li>
+		<li><img src="https://www.debian.org/logos/openlogo-nd.svg" style="width: 16px;"/> Debian 12</li>
 		<li><img src="https://assets.ubuntu.com/v1/29985a98-ubuntu-logo32.png" style="width: 16px;"/> Ubuntu 22.04 LTS</li>
 		<li><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Tux.svg/249px-Tux.svg.png" style="width: 16px;"/> <a href="https://github.com/dosza/LAMWManager-linux/blob/v0.6.x/lamw_manager/docs/other-distros-info.md">Requirements for other Linux</a>
 			<ul>
