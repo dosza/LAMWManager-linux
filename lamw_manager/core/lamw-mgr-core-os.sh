@@ -46,7 +46,7 @@ checkRootLAMWInitStatus(){
 
 	if [ -e $parent ];then
 		if [ -O $parent ]; then
-				initROOT_LAMW
+			initROOT_LAMW
 		fi
 	fi
 
