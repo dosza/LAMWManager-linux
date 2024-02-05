@@ -19,6 +19,7 @@ VERSION=$(
 INDEX_MATCH_V=0
 INDEX_END=0
 VERSION_REGEX="$(GenerateScapesStr "$VERSION")"
+REGEX_VERSION_DELIMITER='(^###)'
 
 arrayMap  RELEASES_NOTES_STREAM line index '
 	if [[ "$line" =~ $VERSION_REGEX ]]; then
@@ -27,7 +28,7 @@ arrayMap  RELEASES_NOTES_STREAM line index '
 	fi'
 
 RELEASES_NOTES_STREAM=(${RELEASES_NOTES_STREAM[@]:$INDEX_MATCH_V})
-REGEX_VERSION_DELIMITER='(^###)'
+
 arrayMap  RELEASES_NOTES_STREAM line index '
 	if [[ "$line" =~ $REGEX_VERSION_DELIMITER ]] && [ $index -gt $INDEX_MATCH_V ]; then
 		INDEX_END=$index
