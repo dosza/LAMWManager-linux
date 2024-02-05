@@ -92,10 +92,15 @@ mainInstall(){
 }
 
 LAMW4LinuxPostConfig(){
+	if [ -e  "$LAMW_MANAGER_CORE_LOCK" ]; then 
 		IsFileBusy  "postInstall actions" "$LAMW_MANAGER_CORE_LOCK" 
 		enableADBtoUdev
+	fi
+
+	if [ -e "$CROSSBIN_LOCK" ]; then 
 		IsFileBusy "crossbinLock" "$CROSSBIN_LOCK"
 		CleanOldCrossCompileBins
+	fi
 }
 
 
