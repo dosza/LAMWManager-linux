@@ -19,7 +19,7 @@ Latest
 		+	~/.local/bin will be only in *\$PATH* if ~/.profile and ~/.bashrc are configured
 		+	Tip: if ~/.profile and ~/.bashrc does not exists:
 		
-```console
+```bash
 		cp /etc/skel/.profile ~
 		cp /etc/skel/.bashrc ~
 		# restart your session
