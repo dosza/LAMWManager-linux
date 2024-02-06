@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.6.3
-#Date: 02/04/2024
+#Version: 0.6.4
+#Date: 02/06/2024
 #Description: The "lamw-install.sh" is part of the core of LAMW Manager. This script configures the development environment for LAMW
 #-------------------------------------------------------------------------------------------------#
 
@@ -65,7 +65,7 @@ actions(){
 			Repair
 			if ! isUpdateLAMWDeps ; then
 				echo "${VERMELHO}Warning:There are updates for LAMW4Linux${NORMAL}"
-				echo "run ${NEGRITO}./lamw_manager to update:${NORMAL}"
+				echo "run ${NEGRITO} ${LAMW_MANAGER_RUN} to update:${NORMAL}"
 			fi
 			checkProxyStatus;
 			echo "Updating LAMW";

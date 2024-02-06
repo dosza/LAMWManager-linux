@@ -68,5 +68,15 @@ testParseMinimalOpt(){
 	assertEquals "${ARGS[*]}" ""
 }
 
+testStLAMWManagerRunStr(){
+	unset USE_SETUP
+
+	setLAMWManagerRunStr
+	assertEquals "./lamw_manager" "$LAMW_MANAGER_RUN"
+	USE_SETUP=1
+	setLAMWManagerRunStr
+	assertEquals "bash lamw_manager_setup.sh" "$LAMW_MANAGER_RUN"
+}
+
 rm -rf $HOME
 . $(which shunit2 ) 
