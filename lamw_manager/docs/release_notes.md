@@ -12,6 +12,18 @@ Latest
 
 **News**
 +	Now README.md always point to latest release
++	Now you can run lamw4linux-terminal from command line
+	+	Notes:
+		+	lamw4linux-terminal and startlamw4linux is configured in *~/.local/bin*
+		+	if ~/.local/bin does not exists will be create
+		+	~/.local/bin will be only in *\$PATH* if ~/.profile and ~/.bashrc are configured
+		+	Tip: if ~/.profile and ~/.bashrc does not exists:
+		
+		```sh
+			cp /etc/skel/.profile ~
+			cp /etc/skel/.bashrc ~
+			# restart your session 
+		```
 
 
 ### v0.6.3 - 5 Feb, 2024 ###
