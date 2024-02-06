@@ -5,6 +5,15 @@ This page contains information about new features and bug fixes.
 Latest
 ---
 
+### v0.6.4 - 6 Feb, 2024 ###
+
+**Fixes**
++	Fixes *--update-lamw* outdated warning
+
+**News**
++	Now README.md always point to latest release
+
+
 ### v0.6.3 - 5 Feb, 2024 ###
 
 **Fixes**
