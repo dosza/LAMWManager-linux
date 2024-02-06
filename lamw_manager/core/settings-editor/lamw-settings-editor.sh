@@ -339,6 +339,12 @@ LAMW4LinuxPostConfig(){
 		ln -s "$LAMW_IDE_HOME/startlamw4linux" "$LAMW_USER_HOME/.local/bin/startlamw4linux"
 	fi
 
+	if [ -e  "$LAMW_USER_HOME/.local/bin/lamw4linux-terminal" ]; then
+		rm "$LAMW_USER_HOME/.local/bin/lamw4linux-terminal"
+	fi 
+
+	ln -s "$LAMW4LINUX_TERMINAL_EXEC_PATH" "$LAMW_USER_HOME/.local/bin/lamw4linux-terminal"
+	
 	if [ $IS_DEBIAN = 0 ]; then  
 		CheckIfSystemNeedTerminalMitigation
 		SystemTerminalMitigation 
@@ -484,6 +490,7 @@ CleanOldConfig(){
 		"/usr/lib/fpc/$FPC_VERSION/fpmkinst/arm-android"
 		"/usr/bin/startlamw4linux"
 		"$LAMW_USER_HOME/.local/bin/startlamw4linux"
+		"$LAMW_USER_HOME/.local/bin/lamw4linux-terminal"
 		"$FPC_CFG_PATH"
 		"$LAMW_IDE_HOME_CFG"
 		"$ROOT_LAMW"
