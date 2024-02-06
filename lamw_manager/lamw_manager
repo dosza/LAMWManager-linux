@@ -65,7 +65,7 @@ actions(){
 			Repair
 			if ! isUpdateLAMWDeps ; then
 				echo "${VERMELHO}Warning:There are updates for LAMW4Linux${NORMAL}"
-				echo "run ${NEGRITO}./lamw_manager to update:${NORMAL}"
+				echo "run ${NEGRITO} ${LAMW_MANAGER_RUN} to update:${NORMAL}"
 			fi
 			checkProxyStatus;
 			echo "Updating LAMW";
