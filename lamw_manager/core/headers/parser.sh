@@ -1,9 +1,16 @@
 #!/usr/bin/env bash
 
-lamw_manager_help(){
-	local lamw_mgr="./lamw_manager"
+setLAMWManagerRunStr(){
+	LAMW_MANAGER_RUN="./lamw_manager"
 	if [ "$USE_SETUP" = "1" ]; then
-		lamw_mgr="bash lamw_manager_setup.sh\t${VERDE}--${NORMAL}"
+		LAMW_MANAGER_RUN="bash lamw_manager_setup.sh"
+	fi
+}
+
+lamw_manager_help(){
+	local lamw_mgr="$LAMW_MANAGER_RUN"
+	if [ "$USE_SETUP" = "1" ]; then
+		lamw_mgr="$LAMW_MANAGER_RUN\t${VERDE}--${NORMAL}"
 	fi
 
 	LAMW_OPTS=(
@@ -243,9 +250,9 @@ helloMessage(){
 	local style3=$'\e[1;'$italic'm'
 	local version_message="${style3}v${LAMW_INSTALL_VERSION}${NORMAL}"
 
-	local lamw_mgr="./lamw_manager"
+	local lamw_mgr="$LAMW_MANAGER_RUN"
 	if [ "$USE_SETUP" = "1" ]; then
-		lamw_mgr="bash lamw_manager_setup.sh\t${VERDE}--${NORMAL}"
+		lamw_mgr="$LAMW_MANAGER_RUN\t${VERDE}--${NORMAL}"
 	fi
 
 	if [ $NOBLINK =  0 ]; then 
@@ -273,6 +280,7 @@ parseOpts(){
 }
 
 initialConfig(){
+	setLAMWManagerRunStr
 	setSignalHandles
 	parseOpts
 	helloMessage 1>&2
