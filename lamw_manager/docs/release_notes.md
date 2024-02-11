@@ -5,6 +5,11 @@ This page contains information about new features and bug fixes.
 Latest
 ---
 
+### v0.6.5 - 11 Feb, 2024 ###
+
+**Fixes**
++	Fix  android NDK LLVM linkage (missing library)
+
 ### v0.6.4 - 6 Feb, 2024 ###
 
 **Fixes**
