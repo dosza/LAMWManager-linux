@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (mater-alma)
 #Course: Science Computer
-#Version: 0.6.4
-#Date: 02/06/2024
+#Version: 0.6.5
+#Date: 02/11/2024
 #Description: The "lamw-manager-settings-editor.sh" is part of the core of LAMW Manager. Responsible for managing LAMW Manager / LAMW configuration files..
 #-----------------------------------------------------------------------f--------------------------#
 
@@ -574,14 +574,14 @@ CreateSDKSimbolicLinks(){
 #--------------------------AARCH64 SETTINGS--------------------------
 updateFpcAndroidDotCfg(){
 	local  -A fpc_android_changes=(
-		['\$LLVM_ANDROID_ARM_LIB_PATH']="$ROOT_LAMW/ndk/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/arm-linux-androideabi/$ANDROID_SDK_TARGET"
+		['\$LLVM_ANDROID_ARM_LIB_PATH']="$ROOT_LAMW/ndk/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/arm-linux-androideabi/30"
 		['\$GCC_ANDROID_ARM_PATH']="${ARM_ANDROID_TOOLS}"
-		['\$LLVM_ANDROID_AARCH64_LIB_PATH']="$ROOT_LAMW/ndk/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/aarch64-linux-android/$ANDROID_SDK_TARGET"
+		['\$LLVM_ANDROID_AARCH64_LIB_PATH']="$ROOT_LAMW/ndk/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/aarch64-linux-android/30"
 		['\$GCC_ANDROID_AARCH64_PATH']="$AARCH64_ANDROID_TOOLS"
 		['\$GCC_ANDROID_I386_PATH']="$I386_ANDROID_TOOLS"
-		['\$LLVM_ANDROID_I386_LIB_PATH']="$ROOT_LAMW/ndk/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/i686-linux-android/$ANDROID_SDK_TARGET"
+		['\$LLVM_ANDROID_I386_LIB_PATH']="$ROOT_LAMW/ndk/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/i686-linux-android/30"
 		['\$GCC_ANDROID_AMD64_PATH']="$AMD64_ANDROID_TOOLS"
-		['\$LLVM_ANDROID_AMD64_LIB_PATH']="$ROOT_LAMW/ndk/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/x86_64-linux-android/$ANDROID_SDK_TARGET"
+		['\$LLVM_ANDROID_AMD64_LIB_PATH']="$ROOT_LAMW/ndk/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/x86_64-linux-android/30"
 	)
 
 	arrayMap fpc_android_changes realPath templatePath '
