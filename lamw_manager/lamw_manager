@@ -118,9 +118,7 @@ actions(){
 	;;
 
 	"get-status")
-		if getStatusInstalation; then
-			exit 1
-		fi 
+		getStatusInstalation && exit 1
 		exit 0
 	;;
 	
