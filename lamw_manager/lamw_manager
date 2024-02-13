@@ -34,10 +34,7 @@ source "$LAMW_MANAGER_MODULES_PATH/cross-builder/cross-builder.sh"
 source "$LAMW_MANAGER_MODULES_PATH/components/progress-bar.sh"
 
 
-
 #Parameters are useful for understanding script operation
-
-
 actions(){
 
 	case "$1" in
@@ -87,6 +84,7 @@ actions(){
 		RunAsAdmin 2
 		mainInstall
 	;;
+
 	"--reset-aapis")
 		if ! getStatusInstalation; then
 			resetAndroidAPIS
@@ -99,6 +97,7 @@ actions(){
 		startImplicitAction
 		autoStartLAMW4Linux
 	;;
+
 	"--help"| "help") 
 		lamw_manager_help
 	;;
@@ -128,8 +127,8 @@ actions(){
 	"--avdmanager")
 		getStatusInstalation && mainInstall
 		runAvdManager ${ARGS[@]:1}
-
 	;;
+
 	*)
 		printf "${VERMELHO}Invalid argument!${NORMAL}\n$(lamw_manager_help)" >&2
 		exit 1
