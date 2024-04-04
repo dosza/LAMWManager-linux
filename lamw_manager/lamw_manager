@@ -51,7 +51,7 @@ actions(){
 	"--sdkmanager")
 		getStatusInstalation && mainInstall
 		echo "Please wait, starting ${NEGRITO}Android SDK Manager Command Line ${NORMAL} ..."
-		getAndroidAPIS  ${ARGS[@]:1}
+		getAndroidAPIS  "${ARGS[@]:1}"
 	;;
 
 	"--update-lamw")
@@ -124,7 +124,7 @@ actions(){
 	
 	"--avdmanager")
 		getStatusInstalation && mainInstall
-		runAvdManager ${ARGS[@]:1}
+		runAvdManager "${ARGS[@]:1}"
 	;;
 
 	*)

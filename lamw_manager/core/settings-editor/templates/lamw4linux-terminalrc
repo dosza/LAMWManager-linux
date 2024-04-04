@@ -6,9 +6,9 @@ emulator(){
 	local old_emulator="$ANDROID_SDK_ROOT/tools/emulator"
 	
 	if [ -e "$new_emulator" ]; then
-		$new_emulator $@
+		$new_emulator "$@"
 	elif [ -e "$old_emulator" ]; then 
-		$old_emulator $@
+		$old_emulator "$@"
 	fi
 }
 
@@ -19,7 +19,7 @@ lamw_manager(){
 		return 1
 	fi
 	
-	$LAMW_MANAGER_PATH $*
+	$LAMW_MANAGER_PATH "$@"
 }
 
 DowngradleLazarusLpi(){
@@ -114,7 +114,7 @@ generateSDKToolsCommands(){
 	fi
 		
 	for i in *; do
-		eval "function $i { \"\$ANDROID_SDK_ROOT/$cmdline_path/$i\" \$@ ; }"
+		eval "function $i { \"\$ANDROID_SDK_ROOT/$cmdline_path/$i\" \"\$@\" ; }"
 		export -f $i
 	done
 }
@@ -155,7 +155,7 @@ setDesktopSessionReplaceProtection(){
 				echo \"You cannot replace your desktop shell Here\"
 				return 1
 			fi
-			\$(which $command) \$@
+			\$(which $command) \"\$@\"
 		}"
 		export -f $command
 	done
@@ -176,4 +176,4 @@ update-lamw-manager &
 setDesktopSessionReplaceProtection
 generateSDKToolsCommands
 cd $CURRENT_LAMW_WORKSPACE
-exec bash  $_EXTRA_ARGS $@
+exec bash  $_EXTRA_ARGS "$@"
