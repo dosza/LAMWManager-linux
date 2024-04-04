@@ -88,8 +88,6 @@ TrapActions(){
 			rm  -r $file_deleted
 		fi
 	fi
-	
-	rm "$LAMW_MANAGER_LOCK"
 }
 
 handleSigTerm(){
@@ -109,6 +107,10 @@ handleSigInt(){
 	exit 2
 }
 
+handleExit(){
+	deleteLamwManagerLock
+	deleteCoreLock
+}
 
 resetTrapActions(){
 	MAGIC_TRAP_INDEX=-1
@@ -158,6 +160,7 @@ getCurrentSucessFiller(){
 setSignalHandles(){
 	trap handleSigInt SIGINT 
 	trap handleSigTerm SIGTERM
+	trap handleExit EXIT
 }
 
 findUseProxyOpt(){
