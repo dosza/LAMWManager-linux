@@ -4,6 +4,10 @@ This page contains information about new features and bug fixes.
 
 Latest
 ---
+### v0.6.6 - 05 Apr, 2024 ###
+
+**Fixes**
++	Do *handleExit* delete locks
 
 ### v0.6.5 - 11 Feb, 2024 ###
 
