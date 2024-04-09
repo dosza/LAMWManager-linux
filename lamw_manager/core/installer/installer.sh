@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.6.5
-#Date: 02/11/2024
+#Version: 0.6.6
+#Date: 04/04/2024
 #Description: "installer.sh" is part of the core of LAMW Manager. Contains routines for installing LAMW development environment
 #-------------------------------------------------------------------------------------------------#
 
@@ -24,16 +24,7 @@ singleCoreWarning(){
 	fi
 }
 
-checkUnsupportedCmdlineTools(){
-	local ret=1
-	local unsupported_cmdlinetools_version=10
-	local cmdline_tools_prop_path="$CMD_SDK_TOOLS_DIR/latest/source.properties"
-	if [ -e $cmdline_tools_prop_path ]; then 
-		local cmdline_tools_query="$(grep Pkg.Revision= $cmdline_tools_prop_path | awk -F= ' { print $NF }' ) > $unsupported_cmdlinetools_version "
-		local cmdline_tools_query_result=$(echo "$cmdline_tools_query" | bc)
-		[ "$cmdline_tools_query_result" = "1" ] && ret=0
-	fi
-}
+
 checkOldCmdlineTools(){
 	local ret=1
 	local cmdline_tools_prop_path="$CMD_SDK_TOOLS_DIR/latest/source.properties"
@@ -51,7 +42,7 @@ resolvesCmdlineToolsConflicts(){
 		rm -rf "$CMD_SDK_TOOLS_DIR/latest/package.xml"
 	fi
 
-	if  ( checkOldCmdlineTools || checkUnsupportedCmdlineTools ); then 
+	if   checkOldCmdlineTools ; then 
 		if [ -e "$CMD_SDK_TOOLS_DIR/latest" ]; then 
 			rm -rf "$CMD_SDK_TOOLS_DIR/latest"
 		fi

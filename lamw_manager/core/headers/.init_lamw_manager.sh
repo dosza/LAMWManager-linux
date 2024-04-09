@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.6.5
-#Date: 02/11/2024
+#Version: 0.6.6
+#Date: 04/04/2024
 #Description: The ".init_lamw_manager.sh" is part of the core of LAMW Manager. This script check conditions to init LAMW Manager
 #-------------------------------------------------------------------------------------------------#
 

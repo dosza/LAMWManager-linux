@@ -103,7 +103,7 @@ LAMW4LinuxPostConfig(){
 	fi
 }
 
-
+handleExit(){ :; }
 main(){
 	setSignalHandles
 	CheckIfSafeStartLamwManager
