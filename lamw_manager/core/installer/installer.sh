@@ -466,7 +466,7 @@ resetAndroidAPIS(){
 
 isRequiredReinstallDependencies(){
 	local tools="wget git xmlstartlet jq xmlstarlet make"
-	which $tool &>/dev/null
+	which $tools &>/dev/null
 }
 
 Repair(){
