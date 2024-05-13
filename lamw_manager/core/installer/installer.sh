@@ -147,7 +147,7 @@ getNameSumByParent(){
 	local -A sum_names=(
 		['getGradle']=GRADLE_ZIP_SUM
 		['getJDK']=JDK_SUM
-		['getAndroidSDKTools']=CMD_SDK_TOOLS_ZIP_SUM
+		['getAndroidCmdLineTools']=CMD_SDK_TOOLS_ZIP_SUM
 		['getFPCBuilder']=FPC_DEB_SUM
 	)
 
