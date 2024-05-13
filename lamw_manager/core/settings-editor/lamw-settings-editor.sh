@@ -354,19 +354,20 @@ LAMW4LinuxPostConfig(){
 
 	if [ -e  $LAMW_IDE_HOME/startlamw4linux ]; then
 		chmod +x $LAMW_IDE_HOME/startlamw4linux
-		
-		if [  -e "$LAMW_USER_HOME/.local/bin/startlamw4linux" ]  ; then 
-			rm "$LAMW_USER_HOME/.local/bin/startlamw4linux"
+			
+		if ! ln -s "$LAMW_IDE_HOME/startlamw4linux" "$LAMW_USER_HOME/.local/bin/startlamw4linux"  &>/dev/null; then
+			rm -rf "$LAMW_USER_HOME/.local/bin/startlamw4linux"
+			ln -s "$LAMW_IDE_HOME/startlamw4linux" "$LAMW_USER_HOME/.local/bin/startlamw4linux";
 		fi
 		
-		ln -s "$LAMW_IDE_HOME/startlamw4linux" "$LAMW_USER_HOME/.local/bin/startlamw4linux"
+
+		if ! ln -s "$LAMW4LINUX_TERMINAL_EXEC_PATH" "$LAMW_USER_HOME/.local/bin/lamw4linux-terminal" &>/dev/null; then
+			rm -rf "$LAMW_USER_HOME/.local/bin/lamw4linux-terminal"
+			ln -s "$LAMW4LINUX_TERMINAL_EXEC_PATH" "$LAMW_USER_HOME/.local/bin/lamw4linux-terminal"
+		fi
 	fi
 
-	if [ -e  "$LAMW_USER_HOME/.local/bin/lamw4linux-terminal" ]; then
-		rm "$LAMW_USER_HOME/.local/bin/lamw4linux-terminal"
-	fi 
 
-	ln -s "$LAMW4LINUX_TERMINAL_EXEC_PATH" "$LAMW_USER_HOME/.local/bin/lamw4linux-terminal"
 	
 	if [ $IS_DEBIAN = 0 ]; then  
 		CheckIfSystemNeedTerminalMitigation
