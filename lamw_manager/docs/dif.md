@@ -12,7 +12,7 @@ LAMW Sources									| ✅️	| ✅️
 Gradle											| ✅️	| ✅️
 OpenJDK (java)									| ✅️	| ✅️
 Android SDK and Android API's					| ✅️	| ✅
-Android NDK 									| ✅️	| ✅️						
+Android NDK 									| ✅️	| ✅️				
 Automatic update of LAMW minimum requirements	| ✅️	| ✅️
 Run sdkmanager from lamw_manager				| ✅️	| ✅️
 Choice install folder/directory					| ✅️	| ✅️
