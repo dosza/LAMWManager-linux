@@ -4,6 +4,15 @@ This page contains information about new features and bug fixes.
 
 Latest
 ---
+### v0.6.7 - 13 May, 2024 ###
+
+**News**
++	Add support to wget2 client in Fedora 
+
+**Fixes**
++	Fixes wget2 bug param
++	Replaces "\$\*" to "\$@" in settings-editor
++	Fixes missing *update-desktop-database*
 
 ### v0.6.6 - 05 Apr, 2024 ###
 

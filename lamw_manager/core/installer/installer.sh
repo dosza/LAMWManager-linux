@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.6.6
-#Date: 04/04/2024
+#Version: 0.6.7
+#Date: 05/09/2024
 #Description: "installer.sh" is part of the core of LAMW Manager. Contains routines for installing LAMW development environment
 #-------------------------------------------------------------------------------------------------#
 
@@ -147,7 +147,7 @@ getNameSumByParent(){
 	local -A sum_names=(
 		['getGradle']=GRADLE_ZIP_SUM
 		['getJDK']=JDK_SUM
-		['getAndroidSDKTools']=CMD_SDK_TOOLS_ZIP_SUM
+		['getAndroidCmdLineTools']=CMD_SDK_TOOLS_ZIP_SUM
 		['getFPCBuilder']=FPC_DEB_SUM
 	)
 
@@ -169,6 +169,17 @@ runCheckSum(){
 		;;
 	esac
 }
+
+# set wget progress bar param
+# compability function to wget2 client
+setWgetProgressBarParam(){
+	if env LC_ALL=c wget  --help | grep  -q "\-\-show\-progress" 2>/dev/null;then 
+		progress_bar_args="--show-progress"
+	else
+		progress_bar_args='--progress=bar --force-progress' 
+	fi
+}
+
 getCompressFile(){
 	local compress_url="$1"
 	local compress_file="$2"
@@ -177,9 +188,11 @@ getCompressFile(){
 	local error_uncompress_msg="${VERMELHO}Error:${NORMAL} corrupt/unsupported file"
 	local initial_msg="extracting ${NEGRITO}$compress_file${NORMAL}" 
 	local sum_name=$(getNameSumByParent "${FUNCNAME[1]}")
-
+	local progress_bar_args
+	
+	setWgetProgressBarParam
 	echo -e "\nPlease wait, getting ${compress_file} ...\n"
-	Wget $compress_url -q --show-progress
+	Wget $compress_url -q $progress_bar_args
 	echo ""
 	if [ -e $compress_file ]; then
 			
@@ -453,7 +466,7 @@ resetAndroidAPIS(){
 
 isRequiredReinstallDependencies(){
 	local tools="wget git xmlstartlet jq xmlstarlet make"
-	which $tool &>/dev/null
+	which $tools &>/dev/null
 }
 
 Repair(){
@@ -685,6 +698,7 @@ getFixLp(){
 		export -f  getCompressFile Wget check_error_and_exit getFixLpInSubShell 
 		export -f stopProgressBar getNameSumByParent startProgressBar 
 		export -f stopProgressBarAsFail stopAsSuccessProgressBar
+		export -f setWgetProgressBarParam	
 		export WGET_TIMEOUT FILLER VERDE VERMELHO NORMAL NEGRITO MAGIC_TRAP_INDEX
 		
 		changeDirectory "$ROOT_LAMW"

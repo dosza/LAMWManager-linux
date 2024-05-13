@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.6.6
-#Date: 04/04/2024
+#Version: 0.6.7
+#Date: 05/09/2024
 #Description: The "lamw_headers" is part of the core of LAMW Manager. This script contains LAMW Manager variables.
 #-------------------------------------------------------------------------------------------------#
 
@@ -11,7 +11,7 @@
 #										Section Version Variables
 #--------------------------------------------------------------------------------------------------
 
-LAMW_INSTALL_VERSION="0.6.6"
+LAMW_INSTALL_VERSION="0.6.7"
 ANT_VERSION_STABLE='1.10.11'
 CMD_SDK_TOOLS_VERSION="11076708"
 CMD_SDK_TOOLS_VERSION_STR="12.0"
@@ -51,7 +51,7 @@ OLD_LAZARUS_STABLE_VERSION=(
 )
 
 OLD_LAMW_INSTALL_VERSION=(
-	0.6.{5..0}
+	0.6.{6..0}
 	0.5.9{.{2..1},}
 	0.5.{8..0}
 	0.4.{8..4}
@@ -125,7 +125,7 @@ FPC_DEB="fpc-laz_${FPC_DEB_VERSION}_amd64.deb"
 LAMW_FRAMEWORK_HOME="$ROOT_LAMW/lazandroidmodulewizard"
 
 LIBS_ANDROID="libx11-dev libgtk2.0-dev libgdk-pixbuf2.0-dev libcairo2-dev libpango1.0-dev libxtst-dev libatk1.0-dev freeglut3-dev "
-PROG_TOOLS="git make gcc libc6-dev zip unzip gdb wget jq xmlstarlet psmisc zenity bc"
+PROG_TOOLS="git make gcc libc6-dev zip unzip gdb wget jq xmlstarlet psmisc zenity bc desktop-file-utils"
 
 FPC_TRUNK_SOURCE_PATH="$LAMW4LINUX_HOME/usr/share/fpcsrc"
 

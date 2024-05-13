@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (mater-alma)
 #Course: Science Computer
-#Version: 0.6.6
-#Date: 04/04/2024
+#Version: 0.6.7
+#Date: 05/09/2024
 #Description: The "lamw-manager-settings-editor.sh" is part of the core of LAMW Manager. Responsible for managing LAMW Manager / LAMW configuration files..
 #-----------------------------------------------------------------------f--------------------------#
 
@@ -160,8 +160,34 @@ menuTrigger(){
 	chmod +x $2
 }
 
+
+isLikeGnome(){
+	[[ "$desktop_env" =~ $gnome_regex ]] ||
+	[[ "$desktop_env" =~ $cinnamon_regex ]]
+}
+
+isXfce(){
+	[[ "$desktop_env" =~ $xfce_regex ]]
+}
+#detect Icon by desktop env
+detectTerminalIcon(){
+	local desktop_env="$DESKTOP_SESSION $XDG_CURRENT_DESKTOP"
+	local gnome_regex="(GNOME)"
+	local xfce_regex="(XFCE)"
+	local cinnamon_regex="(X\-CINNAMON)"
+	
+	if isLikeGnome ;then 
+		terminal_icon='org.gnome.Terminal'
+	elif isXfce ; then 
+		terminal_icon='org.xfce.terminal'
+	fi
+
+}
+
 #Add LAMW4Linux to menu 
 AddLAMWtoStartMenu(){
+	local terminal_icon='utilities-terminal'
+	
 	local -A lamw_desktop_file_str=( 
 		["Name"]="LAMW4Linux IDE"
 		["Comment"]="A Lazarus IDE [and all equirements!] ready to develop for Android!"   
@@ -170,8 +196,10 @@ AddLAMWtoStartMenu(){
 		["StartupWMClass"]="LAMW4Linux"
 	)
 
+	detectTerminalIcon
 	local  -A lamw4linux_terminal_desktop_str=(
 		["Exec"]="$LAMW4LINUX_TERMINAL_EXEC_PATH" 
+		["Icon"]="$terminal_icon"
 	)
 
     initTemplatePaths
@@ -190,24 +218,19 @@ SystemTerminalMitigation(){
 	[ $IS_DEBIAN = 1 ] && return 
 	
 	local xterm_path=$(which xterm)
-	local desktop_env="$LAMW_USER_DESKTOP_SESSION $LAMW_USER_XDG_CURRENT_DESKTOP"
+	local desktop_env="$DESKTOP_SESSION $XDG_CURRENT_DESKTOP"
 	local gnome_regex="(GNOME)"
 	local cinnamon_regex="(X\-CINNAMON)"
-	local xfce_regex="(XFCE)"
 	local lamw4linux_bin="$LAMW4LINUX_HOME/usr/bin"
 	local lamw4linux_gnome_terminal="$lamw4linux_bin/gnome-terminal"
 	local lamw4linux_xfce_terminal="$lamw4linux_bin/xfce4-terminal"
 	
 	# is a gnome system or cinnamon
-	if 	[[ "$desktop_env" =~ $gnome_regex ]] ||
-		[[ "$desktop_env" =~ $cinnamon_regex ]]; then
-		
+	if isLikeGnome; then 
 		[ -e "$lamw4linux_gnome_terminal" ] && rm $lamw4linux_gnome_terminal
 		ln -s $xterm_path "$lamw4linux_gnome_terminal"
-	
 	# is a xfce system 
-	elif [[ "$desktop_env" =~ $xfce_regex ]]; then 
-
+	elif isXfce; then 
 		[ -e "$lamw4linux_xfce_terminal" ] && rm "$lamw4linux_xfce_terminal"
 		ln -s $xterm_path  "$lamw4linux_xfce_terminal"
 
@@ -296,13 +319,13 @@ LAMW4LinuxPostConfig(){
 		"source $LAMW4LINUX_LOCAL_ENV"
 		"source $STARTUP_ERROR_LAMW4LINUX_PATH"
 		''
-		"exec \$LAMW4LINUX_EXE_PATH --pcp=\$LAMW_IDE_HOME_CFG \$*"
+		"exec \$LAMW4LINUX_EXE_PATH --pcp=\$LAMW_IDE_HOME_CFG \"\$@\""
 	)
 	
 	local lazbuild_str=(
 		'#!/usr/bin/env bash'
 		"source $LAMW4LINUX_LOCAL_ENV"
-		"exec $LAMW_IDE_HOME/lazbuild --pcp=\$LAMW_IDE_HOME_CFG \$*"
+		"exec $LAMW_IDE_HOME/lazbuild --pcp=\$LAMW_IDE_HOME_CFG \"\$@\""
 	)
 
 	changeBashHeaderDescription 'Description: This script is script configure LAMW environment and  run  a terminal'
@@ -331,19 +354,20 @@ LAMW4LinuxPostConfig(){
 
 	if [ -e  $LAMW_IDE_HOME/startlamw4linux ]; then
 		chmod +x $LAMW_IDE_HOME/startlamw4linux
-		
-		if [  -e "$LAMW_USER_HOME/.local/bin/startlamw4linux" ]  ; then 
-			rm "$LAMW_USER_HOME/.local/bin/startlamw4linux"
+			
+		if ! ln -s "$LAMW_IDE_HOME/startlamw4linux" "$LAMW_USER_HOME/.local/bin/startlamw4linux"  &>/dev/null; then
+			rm -rf "$LAMW_USER_HOME/.local/bin/startlamw4linux"
+			ln -s "$LAMW_IDE_HOME/startlamw4linux" "$LAMW_USER_HOME/.local/bin/startlamw4linux";
 		fi
 		
-		ln -s "$LAMW_IDE_HOME/startlamw4linux" "$LAMW_USER_HOME/.local/bin/startlamw4linux"
+
+		if ! ln -s "$LAMW4LINUX_TERMINAL_EXEC_PATH" "$LAMW_USER_HOME/.local/bin/lamw4linux-terminal" &>/dev/null; then
+			rm -rf "$LAMW_USER_HOME/.local/bin/lamw4linux-terminal"
+			ln -s "$LAMW4LINUX_TERMINAL_EXEC_PATH" "$LAMW_USER_HOME/.local/bin/lamw4linux-terminal"
+		fi
 	fi
 
-	if [ -e  "$LAMW_USER_HOME/.local/bin/lamw4linux-terminal" ]; then
-		rm "$LAMW_USER_HOME/.local/bin/lamw4linux-terminal"
-	fi 
 
-	ln -s "$LAMW4LINUX_TERMINAL_EXEC_PATH" "$LAMW_USER_HOME/.local/bin/lamw4linux-terminal"
 	
 	if [ $IS_DEBIAN = 0 ]; then  
 		CheckIfSystemNeedTerminalMitigation
@@ -517,8 +541,8 @@ CleanOldConfig(){
 	done
 
 	CleanOldCrossCompileBins
-	update-mime-database   $LAMW_USER_HOME/.local/share/mime/
-	update-desktop-database $LAMW_USER_HOME/.local/share/applications
+	update-mime-database   $LAMW_USER_HOME/.local/share/mime/ &>/dev/null
+	update-desktop-database $LAMW_USER_HOME/.local/share/applications &>/dev/null
 	cleanPATHS
 
 	if [ -e  ~/.gitconfig ]; then 

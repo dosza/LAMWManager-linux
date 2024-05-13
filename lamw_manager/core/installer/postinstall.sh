@@ -15,5 +15,5 @@ autoStartLAMW4Linux(){
 }
 
 runAvdManager(){
-	"$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/avdmanager" $@
+	"$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/avdmanager" "$@"
 }
