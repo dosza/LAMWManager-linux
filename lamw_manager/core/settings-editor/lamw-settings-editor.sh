@@ -296,13 +296,13 @@ LAMW4LinuxPostConfig(){
 		"source $LAMW4LINUX_LOCAL_ENV"
 		"source $STARTUP_ERROR_LAMW4LINUX_PATH"
 		''
-		"exec \$LAMW4LINUX_EXE_PATH --pcp=\$LAMW_IDE_HOME_CFG \$*"
+		"exec \$LAMW4LINUX_EXE_PATH --pcp=\$LAMW_IDE_HOME_CFG \"\$@\""
 	)
 	
 	local lazbuild_str=(
 		'#!/usr/bin/env bash'
 		"source $LAMW4LINUX_LOCAL_ENV"
-		"exec $LAMW_IDE_HOME/lazbuild --pcp=\$LAMW_IDE_HOME_CFG \$*"
+		"exec $LAMW_IDE_HOME/lazbuild --pcp=\$LAMW_IDE_HOME_CFG \"\$@\""
 	)
 
 	changeBashHeaderDescription 'Description: This script is script configure LAMW environment and  run  a terminal'
