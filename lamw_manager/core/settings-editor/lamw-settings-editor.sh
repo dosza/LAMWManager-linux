@@ -160,8 +160,34 @@ menuTrigger(){
 	chmod +x $2
 }
 
+
+isLikeGnome(){
+	[[ "$desktop_env" =~ $gnome_regex ]] ||
+	[[ "$desktop_env" =~ $cinnamon_regex ]]
+}
+
+isXfce(){
+	[[ "$desktop_env" =~ $xfce_regex ]]
+}
+#detect Icon by desktop env
+detectTerminalIcon(){
+	local desktop_env="$DESKTOP_SESSION $XDG_CURRENT_DESKTOP"
+	local gnome_regex="(GNOME)"
+	local xfce_regex="(XFCE)"
+	local cinnamon_regex="(X\-CINNAMON)"
+	
+	if isLikeGnome ;then 
+		terminal_icon='org.gnome.Terminal'
+	elif isXfce ; then 
+		terminal_icon='org.xfce.terminal'
+	fi
+
+}
+
 #Add LAMW4Linux to menu 
 AddLAMWtoStartMenu(){
+	local terminal_icon='utilities-terminal'
+	
 	local -A lamw_desktop_file_str=( 
 		["Name"]="LAMW4Linux IDE"
 		["Comment"]="A Lazarus IDE [and all equirements!] ready to develop for Android!"   
@@ -170,8 +196,10 @@ AddLAMWtoStartMenu(){
 		["StartupWMClass"]="LAMW4Linux"
 	)
 
+	detectTerminalIcon
 	local  -A lamw4linux_terminal_desktop_str=(
 		["Exec"]="$LAMW4LINUX_TERMINAL_EXEC_PATH" 
+		["Icon"]="$terminal_icon"
 	)
 
     initTemplatePaths
@@ -190,24 +218,19 @@ SystemTerminalMitigation(){
 	[ $IS_DEBIAN = 1 ] && return 
 	
 	local xterm_path=$(which xterm)
-	local desktop_env="$LAMW_USER_DESKTOP_SESSION $LAMW_USER_XDG_CURRENT_DESKTOP"
+	local desktop_env="$DESKTOP_SESSION $XDG_CURRENT_DESKTOP"
 	local gnome_regex="(GNOME)"
 	local cinnamon_regex="(X\-CINNAMON)"
-	local xfce_regex="(XFCE)"
 	local lamw4linux_bin="$LAMW4LINUX_HOME/usr/bin"
 	local lamw4linux_gnome_terminal="$lamw4linux_bin/gnome-terminal"
 	local lamw4linux_xfce_terminal="$lamw4linux_bin/xfce4-terminal"
 	
 	# is a gnome system or cinnamon
-	if 	[[ "$desktop_env" =~ $gnome_regex ]] ||
-		[[ "$desktop_env" =~ $cinnamon_regex ]]; then
-		
+	if isLikeGnome; then 
 		[ -e "$lamw4linux_gnome_terminal" ] && rm $lamw4linux_gnome_terminal
 		ln -s $xterm_path "$lamw4linux_gnome_terminal"
-	
 	# is a xfce system 
-	elif [[ "$desktop_env" =~ $xfce_regex ]]; then 
-
+	elif isXfce; then 
 		[ -e "$lamw4linux_xfce_terminal" ] && rm "$lamw4linux_xfce_terminal"
 		ln -s $xterm_path  "$lamw4linux_xfce_terminal"
 
