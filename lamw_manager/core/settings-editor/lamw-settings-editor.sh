@@ -540,8 +540,8 @@ CleanOldConfig(){
 	done
 
 	CleanOldCrossCompileBins
-	update-mime-database   $LAMW_USER_HOME/.local/share/mime/
-	update-desktop-database $LAMW_USER_HOME/.local/share/applications
+	update-mime-database   $LAMW_USER_HOME/.local/share/mime/ &>/dev/null
+	update-desktop-database $LAMW_USER_HOME/.local/share/applications &>/dev/null
 	cleanPATHS
 
 	if [ -e  ~/.gitconfig ]; then 
