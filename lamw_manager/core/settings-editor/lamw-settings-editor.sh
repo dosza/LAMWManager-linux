@@ -14,7 +14,8 @@ initLAMWUserConfig(){
 		"$LAMW_USER_MIMES_PATH"
 		"$LAMW_USER_APPLICATIONS_PATH"
 		"$LAMW_USER_HOME/.local/bin"
-		$LAMW_USER_HOME/.android
+		"$LAMW_USER_HOME/.android"
+		"$LAMW_IDE_HOME_CFG"
 	)
 
 	local android_repo_cfg="$LAMW_USER_HOME/.android/repositories.cfg"
@@ -32,8 +33,7 @@ initROOT_LAMW(){
 		$ANDROID_SDK_ROOT
 		"$(dirname $JAVA_HOME)"
 		"$LAMW4LINUX_ETC"
-		$FPPKG_LOCAL_REPOSITORY
-		$LAMW_IDE_HOME_CFG
+		$FPPKG_LOCAL_REPOSITORY	
 	)
 
 	for lamw_dir in ${init_root_lamw_dirs[@]}; do
