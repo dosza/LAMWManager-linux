@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.6.7
-#Date: 05/09/2024
+#Version: 0.6.8
+#Date: 10/13/2024
 #Description: The "lamw_headers" is part of the core of LAMW Manager. This script contains LAMW Manager variables.
 #-------------------------------------------------------------------------------------------------#
 LAMW_IDE_HOME_CFG="$LAMW_USER_HOME/.lamw4linux"
