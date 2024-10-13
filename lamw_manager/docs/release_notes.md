@@ -4,6 +4,15 @@ This page contains information about new features and bug fixes.
 
 Latest
 ---
+
+### v0.6.8 - 14 Oct, 2024 ###
+
+**News**
++	Migrate to Lazarus 2.2.0
+
+**Fixes**
++	Fixes missing *TGDBMIDebuggerBase*
+
 ### v0.6.7 - 13 May, 2024 ###
 
 **News**
