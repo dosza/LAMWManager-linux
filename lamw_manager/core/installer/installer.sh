@@ -284,7 +284,7 @@ GitPull(){
 		sucess_filler="$(getCurrentSucessFiller  4 $git_branch)"
 		startProgressBar 
 		
-		if gitCheckout 1>/dev/null; then
+		if gitCheckout &>/dev/null; then
 			stopAsSuccessProgressBar
 		else stopProgressBarAsFail
 		fi
