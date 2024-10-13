@@ -13,7 +13,8 @@ Latest
 **Fixes**
 +	Fixes missing *TGDBMIDebuggerBase*
 
-**Note** There is a [issue](https://forum.lazarus.freepascal.org/index.php?topic=60477.0) with this version.
+**Note**: There is a [issue](https://forum.lazarus.freepascal.org/index.php?topic=60477.0) with this version.
+
 ### v0.6.7 - 13 May, 2024 ###
 
 **News**
