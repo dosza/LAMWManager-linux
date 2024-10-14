@@ -4,6 +4,19 @@ This page contains information about new features and bug fixes.
 
 Latest
 ---
+
+### v0.6.8 - 14 Oct, 2024 ###
+
+**News**
++	Migrate to Lazarus 2.2.0
+
+**Fixes**
++	Fixes missing *TGDBMIDebuggerBase*
++	Fixes initialization of *ROOT_LAMW*
++	Fixes error *--reset* command
+
+**Note**: There is a [issue](https://forum.lazarus.freepascal.org/index.php?topic=60477.0) with this version.
+
 ### v0.6.7 - 13 May, 2024 ###
 
 **News**

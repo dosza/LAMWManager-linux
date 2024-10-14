@@ -2,10 +2,14 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (Alma Mater)
 #Course: Science Computer
-#Version: 0.6.7
-#Date: 05/09/2024
+#Version: 0.6.8
+#Date: 10/13/2024
 #Description: "installer.sh" is part of the core of LAMW Manager. Contains routines for installing LAMW development environment
 #-------------------------------------------------------------------------------------------------#
+
+
+#auxiliar function (must be override after change tag or branch)
+afterChangeBranchOrTag(){ :; }
 
 #this function return true if computer is multicore processor
 isMultiCoreProcessor(){
@@ -255,6 +259,10 @@ gitCheckout(){
 	if [ -e "$git_src_dir" ]; then
 		changeDirectory "$git_src_dir" 
 		git config advice.detachedHead false
+		local current_tag=$(git describe --tags --abbrev=0)
+		if [ "$current_tag" != "$git_branch" ];then
+			afterChangeBranchOrTag
+		fi
 		git checkout $git_branch
 	fi
 }
@@ -275,6 +283,7 @@ GitPull(){
 	if [ "$git_branch" != "" ]; then
 		sucess_filler="$(getCurrentSucessFiller  4 $git_branch)"
 		startProgressBar 
+		
 		if gitCheckout &>/dev/null; then
 			stopAsSuccessProgressBar
 		else stopProgressBarAsFail
@@ -353,8 +362,15 @@ getLazarusSources(){
 			rm "$old_lazarus_trunk" -rf
 		fi
 	fi
+
+	#override afterChangeBranchOrTag to mark force rebuild lazarus
+	function afterChangeBranchOrTag { FORCE_LAZARUS_CLEAN_BUILD=1 ; }
+	
 	changeDirectory $LAMW4LINUX_HOME
 	getFromGit "$LAZARUS_STABLE_SRC_LNK" "$LAMW_IDE_HOME" "$LAZARUS_STABLE"
+
+	#reset afterChangeBranchOrTag
+	function afterChangeBranchOrTag { :; }
 }
 
 #GET LAMW FrameWork

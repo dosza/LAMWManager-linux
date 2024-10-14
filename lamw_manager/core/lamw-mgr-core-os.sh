@@ -39,15 +39,13 @@ CheckIfSafeStartLamwManager(){
 	fi
 }
 
-checkRootLAMWInitStatus(){
-	( [ $UID != 0 ]|| [ "$NO_EXISTENT_ROOT_LAMW_PARENT" = "" ]) && return 
 
-	local parent="$(dirname NO_EXISTENT_ROOT_LAMW_PARENT)"
+safeInitRootLAMW(){
+ 	[ $UID != 0 ]  && return 
 
-	if [ -e $parent ];then
-		if [ -O $parent ]; then
-			initROOT_LAMW
-		fi
+	if [ ! -e "$ROOT_LAMW" ];then
+		mkdir -p  "$ROOT_LAMW"
+		changeOwnerAllLAMW
 	fi
 
 }
@@ -83,10 +81,7 @@ installSystemDependencies(){
 mainInstall(){
 	checkIfDistroIsLikeDebian
 	LAMWPackageManager
-	checkRootLAMWInitStatus
-	if ! isLAMWUserOwnerROOTLAMW; then
-		changeOwnerAllLAMW
-	fi
+	safeInitRootLAMW
 	installSystemDependencies
 	CleanOldCrossCompileBins
 }
