@@ -12,6 +12,8 @@ Latest
 
 **Fixes**
 +	Fixes missing *TGDBMIDebuggerBase*
++	Fixes initialization of *ROOT_LAMW*
++	Fixes error *--reset* command
 
 **Note**: There is a [issue](https://forum.lazarus.freepascal.org/index.php?topic=60477.0) with this version.
 
