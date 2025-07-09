@@ -5,6 +5,28 @@ This page contains information about new features and bug fixes.
 Latest
 ---
 
+### v0.6.10 - 09 Jul, 2025 ###
+
+**Fixes**
++	Fixes remove node *Fppkg*
+
+**Note:** Important, you can fix,  you can edit ~/.lamw4linux/environmentoptions.xml:
+Look ***</FppkgConfigFile>*** and remove this tag and history block
+
+Example:
+ ```xml
+   <History Count="1">
+        <Item1 Value="/opt/lamw/lamw4linux/usr/lib/fpc/3.2.2/fppkg.cfg"/>
+      </History>
+      <History Count="1">
+        <Item1 Value="/opt/lamw/lamw4linux/usr/lib/fpc/3.2.2/fppkg.cfg"/>
+      </History>
+    </FppkgConfigFile>
+```
+
+After, execute ./lamw_manager and will be recreate *FppkgConfigFile* node
+
+
 ### v0.6.9 - 12 Jan, 2025 ### 
 
 **News**
