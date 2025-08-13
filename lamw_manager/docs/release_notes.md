@@ -4,6 +4,11 @@ This page contains information about new features and bug fixes.
 
 Latest
 ---
+### v0.6.11 - 12 Ago, 2025 ###
+
+**News**
++ Migrate to Lazarus 3.8
++	Add experimental suport to 16 KB pages on Android 64 bits [Read more](https://developer.android.com/guide/practices/page-sizes)
 
 ### v0.6.10 - 09 Jul, 2025 ###
 
