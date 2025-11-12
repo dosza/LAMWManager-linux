@@ -2,8 +2,8 @@
 #-------------------------------------------------------------------------------------------------#
 #Universidade federal de Mato Grosso (mater-alma)
 #Course: Science Computer
-#Version: 0.6.11
-#Date: 08/12/2025
+#Version: 0.6.12
+#Date: 11/11/2025
 #Description: The "lamw-manager-settings-editor.sh" is part of the core of LAMW Manager. Responsible for managing LAMW Manager / LAMW configuration files..
 #-----------------------------------------------------------------------f--------------------------#
 
@@ -694,12 +694,13 @@ createLazarusEnvCfgFile(){
 		"		<TestBuildDirectory Value=\"/tmp\">"
 		"		</TestBuildDirectory>"
 		"		<FppkgConfigFile Value=\"${FPPKG_TRUNK_CFG_PATH}\"/>"
-		'		<Debugger Class="TGDBMIDebugger">'
-		'			<Configs>'
-		'				<Config ConfigName="FpDebug" ConfigClass="TFpDebugDebugger" Active="True"/>'
-		"				<Config ConfigName=\"Gdb\" ConfigClass=\"TGDBMIDebugger\" DebuggerFilename=\"$(which gdb)\"/>"
-		'			</Configs>'
-		"		</Debugger>"
+		'<Debugger>'
+		'	<Configs>'
+		'		<Config ConfigName="FpDebug" ConfigClass="TFpDebugDebugger" Active="True"/>'
+		"		<Config ConfigName="Gdb" ConfigClass="TGDBMIDebugger" DebuggerFilename=\"$(which gdb)\"/>"
+		'	</Configs>'
+		'</Debugger>'
+		''	
 		"	</EnvironmentOptions>"
 		"</CONFIG>"
 	)
