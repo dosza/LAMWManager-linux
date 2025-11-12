@@ -3,6 +3,12 @@
 This page contains information about new features and bug fixes.
 
 Latest
+--- 
+
+### v0.6.12 - 12 Nov, 2025 ###
+
+**News**
++ Migrate Lazarus from 3.8 to 4.4
 ---
 ### v0.6.11 - 12 Ago, 2025 ###
 
