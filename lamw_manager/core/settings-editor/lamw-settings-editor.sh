@@ -697,7 +697,7 @@ createLazarusEnvCfgFile(){
 		'<Debugger>'
 		'	<Configs>'
 		'		<Config ConfigName="FpDebug" ConfigClass="TFpDebugDebugger" Active="True"/>'
-		"		<Config ConfigName="Gdb" ConfigClass="TGDBMIDebugger" DebuggerFilename=\"$(which gdb)\"/>"
+		"		<Config ConfigName=\"Gdb\" ConfigClass=\"TGDBMIDebugger\" DebuggerFilename=\"$(which gdb)\"/>"
 		'	</Configs>'
 		'</Debugger>'
 		''	
