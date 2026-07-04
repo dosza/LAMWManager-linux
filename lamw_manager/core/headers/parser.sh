@@ -209,7 +209,8 @@ testConnectionInternet(){
 
 	startProgressBar
 	
-	if ! ping google.com -q -c4 &>/dev/null; then
+
+	if ! nslookup google.com  &>/dev/null ; then
 		echo "${VERMELHO}Error:${NORMAL} check your internet connection"
 		sleep 0.02
 		stopProgressBarAsFail
