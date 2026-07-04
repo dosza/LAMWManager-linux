@@ -5,6 +5,21 @@ This page contains information about new features and bug fixes.
 Latest
 --- 
 
+### v0.6.13 - 03 Jul, 2026 ###
+
+**News**
++	Migrate to Lazarus 4.8
++ Supports to:
+	+	Ubuntu 26.04
+	+	Debian 13
+
++ Remove support:
+	+	Debian 12
+	+ Ubuntu 22.04
+
+**Fixes**
++	Uses nslookup to check network status.
+
 ### v0.6.12 - 12 Nov, 2025 ###
 
 **News**
