@@ -4,6 +4,10 @@ This page contains information about new features and bug fixes.
 
 Latest
 --- 
+### v0.6.15 - 19 Sep, 2026 ###
+**Fixes**
++ Fixes version control
+
 ### v0.6.14 - 19 Sep, 2026 ###
 
 **Fixes**
