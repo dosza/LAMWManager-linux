@@ -4,6 +4,11 @@ This page contains information about new features and bug fixes.
 
 Latest
 --- 
+### v0.6.14 - 19 Sep, 2026 ###
+
+**Fixes**
++ Replace libgdk-pixbuf2.0-dev to libgdk-pixbuf-2.0-dev
++ Remove depracated android package *tools*
 
 ### v0.6.13 - 03 Jul, 2026 ###
 
